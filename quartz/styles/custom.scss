@@ -6,6 +6,11 @@
   letter-spacing: 0.08em;
 }
 
+.page-logo {
+  height: 30px;
+  width: auto;
+}
+
 a {
   &.internal {
     text-decoration-color: rgba(255, 106, 31, 0.4);
