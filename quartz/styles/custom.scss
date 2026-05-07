@@ -1,3 +1,40 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+.page-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+a {
+  &.internal {
+    text-decoration-color: rgba(255, 106, 31, 0.4);
+
+    &:hover {
+      text-decoration-color: #ff6a1f;
+    }
+  }
+}
+
+.graph > h3,
+.backlinks > h3,
+.toc > h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+}
+
+.explorer > h2 button .fold-icon {
+  color: #ff6a1f;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em;
+}
+
+article h1 {
+  font-weight: 700;
+}
