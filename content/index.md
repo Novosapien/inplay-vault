@@ -2,14 +2,14 @@
 title: InPlay Trading Challenge
 ---
 
-# InPlay Trading Challenge — Product Vault
+# InPlay Trading Challenge Product Vault
 
-This is the living product knowledge base for the InPlay Trading Challenge — a simulated sports equity trading platform where users trade team stocks during live NFL and college football seasons.
+This is the living product knowledge base for the InPlay Trading Challenge a simulated sports equity trading platform where users trade team stocks during live NFL and college football seasons.
 
 ## Navigation
 
-- **[[Vision/vision|Vision]]** — Full product vision extracted from the founding workshop
-- **[[Meetings/06-05-2026-vision-workshop|Vision Workshop Transcript]]** — Raw source transcript from the 2-hour workshop session
+- **[[Vision/vision|Vision]]** Full product vision extracted from the founding workshop
+- **[[Meetings/06-05-2026-vision-workshop|Vision Workshop Transcript]]** Raw source transcript from the 2-hour workshop session
 
 ## Vault Structure
 
