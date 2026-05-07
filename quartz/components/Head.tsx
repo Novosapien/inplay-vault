@@ -86,6 +86,24 @@ export default (() => {
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
+        <script dangerouslySetInnerHTML={{__html: `
+          window.hypothesisConfig = function () {
+            return {
+              branding: {
+                accentColor: '#FF6A1F',
+                ctaBackgroundColor: '#FF6A1F',
+                ctaTextColor: '#FFFFFF',
+                selectionFontFamily: 'Inter, sans-serif',
+                annotationFontFamily: 'Inter, sans-serif'
+              },
+              theme: 'clean',
+              focus: {
+                user: { groups: ['EXwM4bJ2'] }
+              }
+            };
+          };
+        `}} />
+        <script src="https://hypothes.is/embed.js" async></script>
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js
           .filter((resource) => resource.loadTime === "beforeDOMReady")
