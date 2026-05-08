@@ -772,15 +772,18 @@ Edwin's overall target: "an 18 to 55 year old who loves sports and wants to try 
 ```mermaid
 graph LR
     Global[InPlay Global Website] --> Challenge[Challenge Website]
-    Challenge --> Onboarding[Customer Onboarding]
+    Challenge --> AppStores[App Stores]
+    AppStores --> Onboarding[Customer Onboarding]
     Onboarding --> Dashboard[Personal Dashboard]
     Dashboard --> Info[Information / Bloomberg Terminal]
     Dashboard --> Trading[Trading]
     Dashboard --> Referral[Referral]
     Dashboard --> ThirdSpace[Third Space]
+    Dashboard --> Education[Education]
     Info --> Trading
     Referral --> Trading
     ThirdSpace --> Info
+    Education --> Trading
 ```
 
 ### System Layout
@@ -797,27 +800,40 @@ graph LR
 │   Web (Pre-App)      │   Mobile App                                 │
 │                      │                                              │
 │  ┌────────────────┐  │  ┌────────────────────────────────────────┐  │
-│  │ InPlay Global  │  │  │         Personal Dashboard             │  │
+│  │ InPlay Global  │  │  │       Customer Onboarding              │  │
+│  │ Website        │  │  │  signup · KYC · account · referral code│  │
+│  └──────┬─────────┘  │  └──────────────────┬─────────────────────┘  │
+│         │            │                     │                        │
+│  ┌──────▼─────────┐  │  ┌──────────────────▼─────────────────────┐  │
+│  │ Challenge      │  │  │         Personal Dashboard             │  │
 │  │ Website        │──┼─▶│  money · referrals · rankings · games  │  │
 │  └────────────────┘  │  └──────┬────────┬────────┬────────┬──────┘  │
 │                      │         │        │        │        │         │
-│  ┌────────────────┐  │  ┌──────▼─────┐ ┌▼──────┐ ┌▼─────┐ ┌▼─────┐ │
-│  │ Challenge      │  │  │Information │ │Trading│ │Refer-│ │Third │ │
-│  │ Website        │──┼─▶│/ Bloomberg │ │       │ │ral   │ │Space │ │
-│  └────────────────┘  │  │            │ │       │ │      │ │      │ │
-│         │            │  │• News feed │ │• Buy/ │ │• Code│ │• Chat│ │
-│         │            │  │• Market    │ │  sell │ │  gen │ │• Shar│ │
-│         ▼            │  │  data      │ │• Long/│ │• Dual│ │  ed  │ │
-│  ┌────────────────┐  │  │• Team page │ │  short│ │  side│ │  trad│ │
-│  │ Customer       │  │  │• Game page │ │• P&L  │ │  rew-│ │  es  │ │
-│  │ Onboarding     │──┼─▶│• Stats     │ │• Port-│ │  ards│ │• Fan-│ │
-│  │                │  │  │• Leader-   │ │  folio│ │• Wall│ │  dom │ │
-│  │• Signup        │  │  │  boards    │ │• Wall-│ │  et  │ │      │ │
-│  │• KYC (Persona) │  │  │• Block     │ │  et   │ │• Soc-│ │      │ │
-│  │• Account create│  │  │  alerts    │ │  mgmt │ │  ial │ │      │ │
-│  │• Referral code │  │  │            │ │       │ │  earn│ │      │ │
-│  │• 100K credited │  │  │            │ │       │ │• Spon│ │      │ │
-│  └────────────────┘  │  └────────────┘ └───────┘ └──────┘ └──────┘ │
+│  (drives app         │  ┌──────▼─────┐ ┌▼──────┐ ┌▼─────┐ ┌▼─────┐ │
+│   download &         │  │Information │ │Trading│ │Refer-│ │Third │ │
+│   signup)            │  │/ Bloomberg │ │       │ │ral   │ │Space │ │
+│                      │  │            │ │       │ │      │ │      │ │
+│                      │  │• News feed │ │• Buy/ │ │• Code│ │• Chat│ │
+│                      │  │• Market    │ │  sell │ │  gen │ │• Shar│ │
+│                      │  │  data      │ │• Long/│ │• Dual│ │  ed  │ │
+│                      │  │• Team page │ │  short│ │  side│ │  trad│ │
+│                      │  │• Game page │ │• P&L  │ │  rew-│ │  es  │ │
+│                      │  │• Stats     │ │• Port-│ │  ards│ │• Fan-│ │
+│                      │  │• Leader-   │ │  folio│ │• Wall│ │  dom │ │
+│                      │  │  boards    │ │• Wall-│ │  et  │ │      │ │
+│                      │  │• Block     │ │  et   │ │• Soc-│ │      │ │
+│                      │  │  alerts    │ │  mgmt │ │  ial │ │      │ │
+│                      │  │            │ │       │ │  earn│ │      │ │
+│                      │  │            │ │       │ │• Spon│ │      │ │
+│                      │  └────────────┘ └───────┘ └──────┘ └──────┘ │
+│                      │                                              │
+│                      │  ┌────────────────────────────────────────┐  │
+│                      │  │            Education                   │  │
+│                      │  │  • Trading basics (buy/sell/long/short)│  │
+│                      │  │  • Momentum, volatility, risk mgmt    │  │
+│                      │  │  • 40,000 foot level — not granular   │  │
+│                      │  │  • Financial literacy transfer         │  │
+│                      │  └────────────────────────────────────────┘  │
 │                      │                                              │
 ├──────────────────────┴──────────────────────────────────────────────┤
 │                     EXTERNAL DEPENDENCIES                           │
@@ -840,6 +856,7 @@ graph LR
 | **Trading** | Trade execution and portfolio management | Buy/sell/long/short execution, order management, portfolio view, P&L tracking (daily/weekly/monthly), trading wallet (100K cap), referral wallet reload (below 25K trigger), position management (seconds to weeks), real-time during live games | Collecting |
 | **Referral** | Growth engine — viral referral mechanics and reward system | Auto-generated referral codes, dual-sided reward (1,000 referrer / 500 referee on KYC completion), referral wallet (no cap, resets end of season), social media engagement credits (follow/comment = InPlay dollars), summer pre-launch program, bonus multiplier days (e.g., July 4th = 2x), sponsor redemption for large referral bank holders | Collecting |
 | **Third Space** | Community and social layer — stickiness, not core product | Share executed trades (long/short), strategy discussion, fandom chat, social proofing, organic peer learning, meme-stock-style dynamics possible. InPlay does NOT curate or summarise sentiment | Collecting |
+| **Education** | Trading education — basics to get users started, not in-depth training | Trading fundamentals (buy, sell, long, short), momentum trading, volatility, risk management basics. Edwin: "at a 40,000 foot level." Scope driven by market feedback — "let the market tell us what we're supposed to create." Financial literacy transfer to traditional markets. Potential college syllabus integration | Collecting |
 
 ### Cross-Cutting Concerns
 
