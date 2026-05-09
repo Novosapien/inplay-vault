@@ -15,22 +15,8 @@ A simulated sports equity trading platform where users trade team stocks during 
 | [[vision]] | Product vision -- what we're building and why | Defined |
 | [[architecture]] | Cross-cutting technical decisions -- tech stack, infrastructure, integrations | Not started |
 | [[components]] | Component map -- all major parts of the product | In progress |
-
-## What's New
-
-- **Information Layer fully documented** -- component doc with all 10 sections complete, plus 6 sub-components with entity journeys, acceptance criteria, data requirements, and dependencies
-  - [[single-game-page]] -- the core convergence screen, 3 journeys defined
-  - [[leaderboard]] -- 3 verticals, 4 time horizons, proximity alerts, 3 journeys defined
-  - [[discovery-home]] -- app entry point, search, game cards, 3 journeys defined
-  - [[team-page]] -- research dashboard, historical data, live enrichment, 3 journeys defined
-  - [[game-day-overview]] -- multi-game monitoring, aggregate P&L, 3 journeys defined
-  - [[research-tab]] -- placeholder only, 10 questions for next call
-- **Sub-component template updated** -- entity journeys now split into 3a (isolated) and 3b (cross-component) with handoff points and integration contracts
-- **Vault restructured** -- `content/` renamed to `vault/`, full directory skeleton in place for all 8 components + architecture
-
-## To-Dos
-
-See [[todos]] for the full checklist.
+| [[whats-new]] | Latest updates and changes | Rolling |
+| [[todos]] | Open items and checklist | Rolling |
 
 ## Recent Activity
 
