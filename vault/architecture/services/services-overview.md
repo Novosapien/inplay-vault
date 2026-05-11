@@ -42,6 +42,7 @@ API Gateway (path-based routing)
 | **Market Data Service** | `/market/*` | Teams, games, news, stats, Sport Radar data | 20 |
 | **Social Service** | `/social/*` | Referrals, leaderboards, notifications | 10 |
 | **Ad Service** | `/ads/*` | Campaign delivery, impression tracking, targeting | 10 |
+| **Leaderboard Service** | N/A (internal, no REST API) | Subscribes to NATS price/fill events, updates Redis sorted sets in real-time | 1 (always-on) |
 
 ## Non-Cloud-Run Services
 
@@ -55,7 +56,6 @@ API Gateway (path-based routing)
 
 | Job | Schedule | Purpose |
 |-----|----------|---------|
-| Leaderboard Recalc | Every 5-15 seconds (Cloud Scheduler) | Calculate P&L, risk-adjusted, and comeback rankings |
 | End-of-Day Settlement | Daily after market close | Expire orders, snapshot P&L, calculate prizes |
 | Referral Processor | Triggered on KYC completion | Credit referrer (1,000) and referee (500) InPlay dollars |
 

@@ -56,21 +56,29 @@ Handles the referral engine, leaderboards, and push notifications. The referral 
 
 ## Leaderboard Architecture
 
-Leaderboards are calculated by a Cloud Run Job every 5-15 seconds, not by this service. This service only queries the pre-computed results from Redis sorted sets.
+Leaderboards are maintained by a persistent **Leaderboard Service** that subscribes to NATS for price changes and fill events. Updates are event-driven and near-real-time -- not batch-calculated on a timer.
+
+The Social Service only queries the pre-computed results from Redis sorted sets.
 
 ```
-Cloud Run Job (every 5-15s):
-  → Read all user positions + current prices
-  → Calculate P&L for every user
-  → Calculate risk-adjusted returns
-  → Calculate comeback scores (recovery from deepest drawdown)
-  → Write results to Redis sorted sets
-  → Publish top changes to Centrifugo (leaderboard.{vertical}.{timeframe})
+Leaderboard Service (persistent Cloud Run service, subscribes to NATS):
+  → Subscribes to market.quote.> (all price changes)
+  → Subscribes to order.*.* (all fills)
+  → Maintains position cache in Redis (indexed by symbol for fast lookup)
+  → On price change: recalculates P&L for all holders of that symbol
+  → On fill: updates position cache, recalculates that user's P&L
+  → Writes to Redis sorted sets incrementally (ZADD per affected user)
+  → Publishes top movers to NATS → Centrifugo (leaderboard.{vertical}.{timeframe})
 
 Social Service (on user request):
   → ZREVRANGE on Redis sorted set → return top N users
   → ZRANK for user's position → return proximity indicator
 ```
+
+**Why event-driven, not batch polling:**
+At 1M users, querying all positions from PostgreSQL every 5 seconds is expensive (5M+ rows). The event-driven approach only recalculates users affected by each price change or fill. If Cowboys price changes and 50K users hold Cowboys, only those 50K scores are updated -- not all 1M.
+
+PostgreSQL is only read at service startup (load initial positions into Redis) and end-of-day (reconciliation/snapshot).
 
 ### Three Competition Verticals
 

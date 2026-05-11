@@ -12,7 +12,128 @@ The InPlay Trading Challenge is a simulated sports equity trading platform targe
 
 This architecture covers the trading challenge only -- not the production trading platform.
 
-The system consists of 5 Cloud Run API services, a FIX Gateway on Compute Engine, Centrifugo for real-time WebSocket delivery on a Managed Instance Group, and a React Native (Expo) frontend serving iOS, Android, and web from a single codebase.
+The system consists of 6 Cloud Run services (5 API + 1 Leaderboard), a FIX Gateway on Compute Engine, Centrifugo for real-time WebSocket delivery on a Managed Instance Group, NATS JetStream as the message backbone, and a React Native (Expo) frontend serving iOS, Android, and web from a single codebase.
+
+## System Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              CLIENTS                                        │
+│                  React Native (Expo) -- iOS, Android, Web                   │
+│                         Single codebase, no server                          │
+│                  Web bundle served from Cloud CDN                           │
+│                                                                             │
+│              WebSocket (wss://)              HTTPS (REST)                    │
+└───────────────────┬─────────────────────────────┬───────────────────────────┘
+                    │                              │
+                    ▼                              ▼
+┌───────────────────────────────┐  ┌──────────────────────────────────────────┐
+│        CENTRIFUGO             │  │         CLOUD LOAD BALANCER              │
+│   (Managed Instance Group)    │  │         + CLOUD ARMOR                    │
+│                               │  │         + API GATEWAY                    │
+│   1M-5M WebSocket connections │  │                                          │
+│   NATS broker mode (native)   │  │   SSL · DDoS · JWT · Rate Limiting      │
+│   Last-value cache            │  │   Path-based routing to services         │
+│   3-25 VMs (game-day scaling) │  │                                          │
+└───────────┬───────────────────┘  └──────┬─────┬─────┬─────┬─────┬──────────┘
+            │                             │     │     │     │     │
+            │ subscribes                  │     │     │     │     │
+            │                             ▼     ▼     ▼     ▼     ▼
+            │                        ┌─────────────────────────────────────┐
+            │                        │      CLOUD RUN SERVICES             │
+            │                        │                                     │
+            │                        │  /trading/*  → Trading Service      │
+            │                        │  /auth/*     → Auth Service         │
+            │                        │  /market/*   → Market Data Service  │
+            │                        │  /social/*   → Social Service       │
+            │                        │  /ads/*      → Ad Service           │
+            │                        │                                     │
+            │                        │  Leaderboard Service (internal,     │
+            │                        │  no REST API, subscribes to NATS)   │
+            │                        └──────────────────┬──────────────────┘
+            │                                           │
+            ▼                                           ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          NATS JETSTREAM                                      │
+│                     (3-node cluster, message backbone)                       │
+│                                                                             │
+│   All real-time messaging flows through NATS:                               │
+│   market.quote.{symbol}     market.book.{symbol}     market.trade.{symbol}  │
+│   market.status.{symbol}    market.session            order.{user}.{id}     │
+│   position.{user}           leaderboard.{v}.{t}      ad.{user}             │
+│                                                                             │
+│   Persistent (JetStream) · Message replay · Last-value cache                │
+│   18M msgs/sec throughput · <0.1ms latency                                  │
+└────────────────────────────────────────┬────────────────────────────────────┘
+                                         │
+                                         │ publishes to / subscribes from
+                                         │
+┌────────────────────────────────────────┼────────────────────────────────────┐
+│              tZERO CO-LOCATION         │                                    │
+│                                        │                                    │
+│  ┌─────────────────────────────────────▼──────────────────────────────┐     │
+│  │              FIX GATEWAY (Compute Engine VM)                        │     │
+│  │                                                                    │     │
+│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │     │
+│  │   │ IOI Adapter  │  │ MD Adapter   │  │ OE Adapter   │            │     │
+│  │   │ (order book) │  │ (quotes,     │  │ (orders,     │            │     │
+│  │   │              │  │  trades,     │  │  fills,      │            │     │
+│  │   │              │  │  OHLC)       │  │  cancels)    │            │     │
+│  │   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘            │     │
+│  │          │ FIX 4.2         │ FIX 4.2         │ FIX 4.2            │     │
+│  └──────────┼─────────────────┼─────────────────┼────────────────────┘     │
+│             ▼                 ▼                  ▼                          │
+│  ┌──────────────────────────────────────────────────────────────────┐       │
+│  │                     tZERO EXCHANGE (ATS)                         │       │
+│  │         Order matching · Price discovery · Execution             │       │
+│  └──────────────────────────────────────────────────────────────────┘       │
+│                                                                            │
+│  FIX Gateway Standby (failover, ~5-10s takeover)                           │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         DATA STORES                                          │
+│                                                                             │
+│   ┌──────────────────────────┐    ┌──────────────────────────────────┐      │
+│   │  PostgreSQL (Cloud SQL)  │    │  Redis (Memorystore)             │      │
+│   │                          │    │                                  │      │
+│   │  Source of truth:        │    │  Speed layer:                    │      │
+│   │  Users, orders,          │    │  Leaderboard sorted sets (12)    │      │
+│   │  positions, wallets,     │    │  Wallet balance cache            │      │
+│   │  referrals, teams,       │    │  Session cache                   │      │
+│   │  campaigns, KYC records  │    │  Position cache (by symbol)      │      │
+│   │                          │    │  Geo queries (ad targeting)      │      │
+│   │  ACID transactions       │    │  FIX sequence numbers            │      │
+│   │  for wallet operations   │    │  Pre-computed ad targeting sets  │      │
+│   └──────────────────────────┘    └──────────────────────────────────┘      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       EXTERNAL SERVICES                                      │
+│                                                                             │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│   │ Sport Radar  │  │ Persona      │  │ FCM / APNs   │  │ tZERO REST   │   │
+│   │ Game data,   │  │ KYC: age,    │  │ Push notifs  │  │ Historical   │   │
+│   │ stats, news  │  │ identity,    │  │ iOS/Android  │  │ data, accts  │   │
+│   │              │  │ bot detect   │  │              │  │              │   │
+│   └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Tech Stack Summary
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React Native (Expo) -- iOS, Android, Web |
+| API Services | Python / FastAPI (6 Cloud Run services) |
+| FIX Gateway | Python / QuickFIX (Compute Engine VM) |
+| Real-Time Delivery | Centrifugo (Managed Instance Group, NATS broker mode) |
+| Message Bus | NATS JetStream (3-node cluster) |
+| Database | PostgreSQL (Cloud SQL) |
+| Cache / Data Structures | Redis (Memorystore) |
+| Cloud Platform | Google Cloud Platform |
 
 ## Architecture Sections
 

@@ -45,7 +45,7 @@ With a Managed Instance Group:
 | `market.session` | Trading session phase | FIX v8 session status |
 | `order.{userId}.{orderId}` | Order status, fills | OE execution reports |
 | `position.{userId}` | Position, P&L | OE execution reports |
-| `leaderboard.{vertical}.{timeframe}` | Rankings | Competition Cloud Run Job |
+| `leaderboard.{vertical}.{timeframe}` | Rankings | Leaderboard Service (event-driven) |
 | `ad.{userId}` | Targeted ad delivery | Ad Service |
 
 ## Publishing (Python)

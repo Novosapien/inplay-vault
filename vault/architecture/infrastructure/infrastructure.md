@@ -13,8 +13,10 @@ Cloud Run Services (5 API services, auto-scaling)
 ├── Social Service       /social/*      min=10 game day
 └── Ad Service           /ads/*         min=10 game day
 
+Cloud Run Services (persistent, event-driven)
+└── Leaderboard Service   (subscribes to NATS, updates Redis sorted sets in real-time)
+
 Cloud Run Jobs (scheduled batch processing)
-├── Leaderboard recalculation (every 5-15 seconds)
 ├── End-of-day settlement (daily after market close)
 └── Referral reward processing (triggered on KYC completion)
 
@@ -74,7 +76,7 @@ Centrifugo uses NATS as its broker natively -- publishes to NATS are automatical
 ### Memorystore (Redis)
 
 Two roles (NOT used for messaging -- NATS handles that):
-1. **Sorted Sets** -- leaderboard rankings (12 total: 3 verticals × 4 timeframes). Written by Cloud Run Jobs, read by Social Service.
+1. **Sorted Sets** -- leaderboard rankings (12 total: 3 verticals × 4 timeframes). Updated incrementally by Leaderboard Service (event-driven via NATS), read by Social Service.
 2. **Cache** -- wallet balances, session tokens, user profiles, FIX sequence numbers, pre-computed ad targeting segments, geo queries (GEORADIUS for ad targeting).
 
 ### Cloud Load Balancer + Cloud Armor
@@ -91,6 +93,6 @@ Serves the React Native web app bundle (HTML + JS + CSS). Static files cached at
 ### Cloud Scheduler
 
 Triggers:
-- Leaderboard recalculation Cloud Run Job (every 5-15 seconds)
+- Game-day scaling commands (pre-kickoff: scale up; post-game: scale down)
 - End-of-day settlement Cloud Run Job (daily)
 - Game-day scaling commands (pre-kickoff: scale up min-instances and Centrifugo MIG; post-game: scale down)
