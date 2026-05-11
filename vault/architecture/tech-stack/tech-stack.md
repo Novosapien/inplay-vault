@@ -1,6 +1,5 @@
-# InPlay Trading Challenge -- Tech Stack
+# Tech Stack
 
-> **Architecture:** [[architecture]]
-> **Status:** Not started
-
-Frameworks, languages, databases, and rationale for technology choices.
+> Moved to [[tech-stack]] in the decisions/ directory.
+>
+> See [[architecture]] for the full architecture index.
