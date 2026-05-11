@@ -61,9 +61,9 @@ graph TB
         TZERO_REST[tZERO REST API]
     end
 
-    APP -- WebSocket --> CENT
-    APP -- HTTPS --> LB
-    APP -- download --> CDN
+    APP -- "WebSocket (subscribe to channels)" --> CENT
+    APP -- "HTTPS (REST)" --> LB
+    APP -. "first load" .-> CDN
     LB --> TRADING
     LB --> AUTH
     LB --> MARKET
@@ -72,8 +72,9 @@ graph TB
     LB --> LEADER
 
     TRADING -- "NATS request/reply" --> FIX
-    CENT -- subscribes --> NATS
-    FIX -- publishes --> NATS
+    NATS -- "delivers: prices, fills,<br/>game events, leaderboards" --> CENT
+    CENT -- "WebSocket push" --> APP
+    FIX -- "publishes: market data,<br/>order fills, positions" --> NATS
     FIX -- FIX 4.2 --> TZERO
     FIX_STANDBY -. failover .-> FIX
 ```
