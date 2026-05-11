@@ -30,22 +30,25 @@ graph TB
         CENT[Centrifugo<br/>Managed Instance Group<br/>1M-5M WebSocket connections]
     end
 
-    subgraph CloudRun["Cloud Run Services"]
+    subgraph CloudRun["Cloud Run Services (Python/FastAPI)"]
         TRADING[Trading Service<br/>/trading/*]
         AUTH[Auth Service<br/>/auth/*]
         MARKET[Market Data Service<br/>/market/*]
         SOCIAL[Social Service<br/>/social/*]
         ADS[Ad Service<br/>/ads/*]
-        LEADER[Leaderboard Service<br/>/leaderboard/*]
+    end
+
+    subgraph CloudRunBun["Cloud Run Services (Bun/TypeScript)"]
+        LEADER[Leaderboard Service<br/>/leaderboard/*<br/>CPU-heavy P&L recalculation]
     end
 
     subgraph Messaging
         NATS[NATS JetStream<br/>3-node cluster<br/>Message backbone]
     end
 
-    subgraph Data["Data Stores"]
-        PG[(PostgreSQL<br/>Cloud SQL)]
-        REDIS[(Redis<br/>Memorystore)]
+    subgraph Data["Data Stores (read/write by all Cloud Run services)"]
+        PG[(PostgreSQL · Cloud SQL<br/>Source of truth: users, orders,<br/>positions, wallets, referrals)]
+        REDIS[(Redis · Memorystore<br/>Speed layer: leaderboard sorted sets,<br/>wallet cache, session cache, geo queries)]
     end
 
     subgraph tZero["tZERO Co-Location"]
@@ -61,9 +64,12 @@ graph TB
         TZERO_REST[tZERO REST API]
     end
 
+    %% Client connections
     APP -- "WebSocket (subscribe to channels)" --> CENT
     APP -- "HTTPS (REST)" --> LB
     APP -. "first load" .-> CDN
+
+    %% API Gateway routes to services
     LB --> TRADING
     LB --> AUTH
     LB --> MARKET
@@ -71,11 +77,34 @@ graph TB
     LB --> ADS
     LB --> LEADER
 
-    TRADING -- "NATS request/reply" --> FIX
-    NATS -- "delivers: prices, fills,<br/>game events, leaderboards" --> CENT
-    CENT -- "WebSocket push" --> APP
+    %% All Cloud Run services read/write data stores
+    TRADING --> PG
+    TRADING --> REDIS
+    AUTH --> PG
+    AUTH --> REDIS
+    MARKET --> PG
+    MARKET --> REDIS
+    SOCIAL --> PG
+    ADS --> PG
+    ADS --> REDIS
+    LEADER --> PG
+    LEADER --> REDIS
+
+    %% Real-time flow: FIX Gateway → NATS → Centrifugo → Clients
+    TRADING -- "NATS request/reply<br/>(order submission)" --> FIX
     FIX -- "publishes: market data,<br/>order fills, positions" --> NATS
+    NATS -- "delivers: prices, fills,<br/>game events, leaderboards" --> CENT
+    CENT -- "WebSocket push<br/>(real-time updates)" --> APP
+
+    %% NATS subscribers
+    TRADING -. "subscribes: fills" .-> NATS
+    LEADER -. "subscribes: prices, fills" .-> NATS
+    ADS -. "subscribes: game events" .-> NATS
+    LEADER -. "publishes: leaderboard.*" .-> NATS
+
+    %% FIX Gateway
     FIX -- FIX 4.2 --> TZERO
+    FIX --> REDIS
     FIX_STANDBY -. failover .-> FIX
 ```
 
@@ -224,7 +253,8 @@ sequenceDiagram
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React Native (Expo) -- iOS, Android, Web |
-| API Services | Python / FastAPI (6 Cloud Run services) |
+| API Services | Python / FastAPI (5 Cloud Run services) |
+| Leaderboard Service | Bun / TypeScript (Cloud Run, CPU-heavy P&L recalculation) |
 | FIX Gateway | Python / QuickFIX (Compute Engine VM) |
 | Real-Time Delivery | Centrifugo (Managed Instance Group, NATS broker mode) |
 | Message Bus | NATS JetStream (3-node cluster) |

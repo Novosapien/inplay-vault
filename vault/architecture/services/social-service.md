@@ -28,15 +28,10 @@ Handles the referral engine, leaderboards, and push notifications. The referral 
 | GET | `/social/referral/stats` | Referral count, wallet balance, history |
 | GET | `/social/referral/wallet` | Referral wallet balance and transaction history |
 
-### Leaderboards
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/social/leaderboard/{vertical}/{timeframe}` | Get leaderboard (vertical: pnl/risk/comeback, timeframe: daily/weekly/monthly/season) |
-| GET | `/social/leaderboard/me` | User's ranking across all verticals and timeframes |
-| GET | `/social/leaderboard/proximity` | "You are 112 places from cashing" |
-
 ### Notifications
+
+> **Note:** Leaderboard endpoints have moved to the [[leaderboard-service]] at `/leaderboard/*`.
+
 
 | Method | Path | Description |
 |--------|------|-------------|
