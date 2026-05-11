@@ -9,8 +9,7 @@
 |-------|-----------|-----------|
 | **Mobile + Web App** | React Native (Expo) | Single codebase for iOS, Android, and web. Team knows React. Expo has mature WebSocket and web support. |
 | **Marketing Sites** | Static site / lightweight framework | Doesn't need app infrastructure. SEO matters here. |
-| **API Services** | Python / FastAPI | Team's primary language. Async-first, native WebSocket support, Pydantic validation. Used for Trading, Auth, Market Data, Social, and Ad services. |
-| **Leaderboard Service** | Bun / TypeScript | CPU-heavy P&L recalculation on every price change across thousands of users. Bun's performance advantage over Python matters here. TypeScript shared with React Native frontend. |
+| **API Services** | Python / FastAPI | Team's primary language. Async-first, native WebSocket support, Pydantic validation. Used for all 6 Cloud Run services (see open question on Leaderboard Service below). |
 | **Trading Gateway** | Python / QuickFIX | Maintains 4 FIX 4.2 sessions to tZERO. Python keeps the gateway in the same language as most backend services. |
 | **Real-Time Delivery** | Centrifugo | Purpose-built WebSocket fan-out server. Handles 1M+ connections, last-value cache, channel-based pub/sub. Deployed as a Docker container, configured via YAML, interacted with via Python and JavaScript SDKs. |
 | **Message Bus** | NATS JetStream | Purpose-built messaging server. 18M msgs/sec throughput, persistent message delivery, built-in last-value cache, message replay on reconnect. Centrifugo uses NATS as its broker natively. No messages lost if a service restarts. |

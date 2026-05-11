@@ -24,37 +24,38 @@ graph TB
         APP[React Native App<br/>iOS · Android · Web]
     end
 
-    subgraph Edge["Edge Layer (GCP)"]
-        CDN[Cloud CDN<br/>Web app bundle]
-        LB[Cloud Load Balancer<br/>+ Cloud Armor<br/>+ API Gateway]
+    CDN[Cloud CDN<br/>Web app bundle]
+
+    subgraph EdgeRT["Real-Time Path"]
         CENT[Centrifugo<br/>Managed Instance Group<br/>1M-5M WebSocket connections]
     end
 
-    subgraph CloudRun["Cloud Run Services (Python/FastAPI)"]
+    subgraph EdgeREST["REST Path"]
+        LB[Cloud Load Balancer + Cloud Armor<br/>+ API Gateway<br/>SSL · DDoS · JWT · Rate Limiting]
+    end
+
+    subgraph CloudRun["Cloud Run Services"]
         TRADING[Trading Service<br/>/trading/*]
         AUTH[Auth Service<br/>/auth/*]
         MARKET[Market Data Service<br/>/market/*]
         SOCIAL[Social Service<br/>/social/*]
         ADS[Ad Service<br/>/ads/*]
-    end
-
-    subgraph CloudRunBun["Cloud Run Services (Bun/TypeScript)"]
-        LEADER[Leaderboard Service<br/>/leaderboard/*<br/>CPU-heavy P&L recalculation]
+        LEADER[Leaderboard Service<br/>/leaderboard/*]
     end
 
     subgraph Messaging
         NATS[NATS JetStream<br/>3-node cluster<br/>Message backbone]
     end
 
-    subgraph Data["Data Stores (read/write by all Cloud Run services)"]
-        PG[(PostgreSQL · Cloud SQL<br/>Source of truth: users, orders,<br/>positions, wallets, referrals)]
-        REDIS[(Redis · Memorystore<br/>Speed layer: leaderboard sorted sets,<br/>wallet cache, session cache, geo queries)]
+    subgraph Data["Data Stores"]
+        PG[(PostgreSQL · Cloud SQL<br/>Source of truth)]
+        REDIS[(Redis · Memorystore<br/>Speed layer)]
     end
 
     subgraph tZero["tZERO Co-Location"]
         FIX[FIX Gateway<br/>Compute Engine VM<br/>4 FIX 4.2 sessions]
         FIX_STANDBY[FIX Gateway Standby]
-        TZERO[tZERO Exchange<br/>ATS]
+        TZERO[tZERO Exchange · ATS]
     end
 
     subgraph External["External Services"]
@@ -65,44 +66,31 @@ graph TB
     end
 
     %% Client connections
-    APP -- "WebSocket (subscribe to channels)" --> CENT
-    APP -- "HTTPS (REST)" --> LB
+    APP -- "WebSocket" --> CENT
+    APP -- "HTTPS REST" --> LB
     APP -. "first load" .-> CDN
 
-    %% API Gateway routes to services
-    LB --> TRADING
-    LB --> AUTH
-    LB --> MARKET
-    LB --> SOCIAL
-    LB --> ADS
-    LB --> LEADER
+    %% Load balancer sits on top of Cloud Run services
+    LB --> CloudRun
 
-    %% All Cloud Run services read/write data stores
-    TRADING --> PG
-    TRADING --> REDIS
-    AUTH --> PG
-    AUTH --> REDIS
-    MARKET --> PG
-    MARKET --> REDIS
-    SOCIAL --> PG
-    ADS --> PG
-    ADS --> REDIS
-    LEADER --> PG
-    LEADER --> REDIS
+    %% Cloud Run services read/write data stores (two clean arrows)
+    CloudRun -- "queries + writes" --> PG
+    CloudRun -- "cache reads + writes" --> REDIS
 
-    %% Real-time flow: FIX Gateway → NATS → Centrifugo → Clients
-    TRADING -- "NATS request/reply<br/>(order submission)" --> FIX
+    %% Real-time data flow (the main loop)
     FIX -- "publishes: market data,<br/>order fills, positions" --> NATS
-    NATS -- "delivers: prices, fills,<br/>game events, leaderboards" --> CENT
-    CENT -- "WebSocket push<br/>(real-time updates)" --> APP
+    NATS -- "delivers real-time updates" --> CENT
+    CENT -- "WebSocket push" --> APP
 
-    %% NATS subscribers
+    %% Trading Service → FIX Gateway for order execution
+    TRADING -- "NATS request/reply<br/>(order submission)" --> FIX
+
+    %% NATS subscribers (services that need real-time events)
     TRADING -. "subscribes: fills" .-> NATS
-    LEADER -. "subscribes: prices, fills" .-> NATS
-    ADS -. "subscribes: game events" .-> NATS
-    LEADER -. "publishes: leaderboard.*" .-> NATS
+    LEADER -. "subscribes: prices, fills<br/>publishes: leaderboard updates" .-> NATS
+    ADS -. "subscribes: game events<br/>publishes: ad triggers" .-> NATS
 
-    %% FIX Gateway
+    %% FIX Gateway connections
     FIX -- FIX 4.2 --> TZERO
     FIX --> REDIS
     FIX_STANDBY -. failover .-> FIX
@@ -253,8 +241,7 @@ sequenceDiagram
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React Native (Expo) -- iOS, Android, Web |
-| API Services | Python / FastAPI (5 Cloud Run services) |
-| Leaderboard Service | Bun / TypeScript (Cloud Run, CPU-heavy P&L recalculation) |
+| API Services | Python / FastAPI (6 Cloud Run services) |
 | FIX Gateway | Python / QuickFIX (Compute Engine VM) |
 | Real-Time Delivery | Centrifugo (Managed Instance Group, NATS broker mode) |
 | Message Bus | NATS JetStream (3-node cluster) |
