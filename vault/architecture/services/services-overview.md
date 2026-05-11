@@ -42,7 +42,7 @@ API Gateway (path-based routing)
 | **Market Data Service** | `/market/*` | Teams, games, news, stats, Sport Radar data | 20 |
 | **Social Service** | `/social/*` | Referrals, leaderboards, notifications | 10 |
 | **Ad Service** | `/ads/*` | Campaign delivery, impression tracking, targeting | 10 |
-| **Leaderboard Service** | N/A (internal, no REST API) | Subscribes to NATS price/fill events, updates Redis sorted sets in real-time | 1 (always-on) |
+| **Leaderboard Service** | `/leaderboard/*` | Subscribes to NATS price/fill events, updates Redis sorted sets in real-time, serves leaderboard queries | 2 (always-on) |
 
 ## Non-Cloud-Run Services
 

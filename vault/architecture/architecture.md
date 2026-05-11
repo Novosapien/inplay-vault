@@ -36,7 +36,7 @@ graph TB
         MARKET[Market Data Service<br/>/market/*]
         SOCIAL[Social Service<br/>/social/*]
         ADS[Ad Service<br/>/ads/*]
-        LEADER[Leaderboard Service<br/>internal, no REST API]
+        LEADER[Leaderboard Service<br/>/leaderboard/*]
     end
 
     subgraph Messaging
@@ -69,7 +69,9 @@ graph TB
     LB --> MARKET
     LB --> SOCIAL
     LB --> ADS
+    LB --> LEADER
 
+    TRADING -- "NATS request/reply" --> FIX
     CENT -- subscribes --> NATS
     FIX -- publishes --> NATS
     FIX -- FIX 4.2 --> TZERO
@@ -78,22 +80,22 @@ graph TB
 
 ### Service Connection Map -- Who Talks to What
 
-Not all services connect to NATS. Only services that deal with real-time events do. Auth, Market Data, and Social are REST-only services that read from PostgreSQL and Redis.
+Not all services connect to NATS. Only services dealing with real-time events do. Auth, Market Data, and Social are REST-only services reading from PostgreSQL and Redis.
 
 ```mermaid
 graph LR
-    subgraph NATS_Connected["Services connected to NATS"]
-        TRADING[Trading Service]
-        LEADER[Leaderboard Service]
-        ADS[Ad Service]
-        FIX[FIX Gateway]
-        CENT[Centrifugo]
+    subgraph NATS_Connected["Connected to NATS"]
+        FIX[FIX Gateway<br/>publishes all market data + fills]
+        TRADING[Trading Service<br/>request/reply for orders<br/>subscribes for fills]
+        LEADER[Leaderboard Service<br/>subscribes to prices + fills<br/>publishes leaderboard updates<br/>serves /leaderboard/* REST API]
+        ADS[Ad Service<br/>subscribes to game events<br/>publishes ad triggers]
+        CENT[Centrifugo<br/>subscribes to all via broker mode]
     end
 
-    subgraph REST_Only["REST-only services (no NATS)"]
+    subgraph REST_Only["REST-only (no NATS)"]
         AUTH[Auth Service]
         MARKET[Market Data Service]
-        SOCIAL[Social Service]
+        SOCIAL[Social Service<br/>referrals + notifications only]
     end
 
     subgraph Data
@@ -110,9 +112,14 @@ graph LR
         TZERO_REST[tZERO REST]
     end
 
-    %% NATS connections
+    %% Order flow: Trading Service → FIX Gateway via NATS request/reply
+    TRADING -- "NATS request/reply:<br/>gateway.orders.new" --> FIX
+    
+    %% FIX Gateway publishes results to NATS
     FIX -- "publishes: market.*, order.*, position.*" --> NATS
-    TRADING -- "publishes: orders.new.*" --> NATS
+    FIX -- "FIX 4.2" --> TZERO
+    
+    %% Services subscribing to NATS
     TRADING -- "subscribes: order fills" --> NATS
     LEADER -- "subscribes: prices, fills" --> NATS
     LEADER -- "publishes: leaderboard.*" --> NATS
@@ -120,23 +127,20 @@ graph LR
     ADS -- "publishes: ad.*" --> NATS
     CENT -- "subscribes: all (broker mode)" --> NATS
 
-    %% FIX to tZERO
-    FIX -- "FIX 4.2" --> TZERO
-
-    %% PostgreSQL connections
+    %% PostgreSQL connections (all services)
     TRADING --> PG
     AUTH --> PG
     MARKET --> PG
     SOCIAL --> PG
     ADS --> PG
+    LEADER --> PG
 
     %% Redis connections
     TRADING -- "wallet cache" --> REDIS
     AUTH -- "session cache" --> REDIS
     MARKET -- "data cache" --> REDIS
-    SOCIAL -- "leaderboard sorted sets" --> REDIS
-    ADS -- "geo queries, targeting sets" --> REDIS
     LEADER -- "sorted sets, position cache" --> REDIS
+    ADS -- "geo queries, targeting sets" --> REDIS
     FIX -- "FIX seq numbers" --> REDIS
 
     %% External API connections
@@ -183,8 +187,8 @@ sequenceDiagram
     participant APP as User's App
     participant GW as API Gateway
     participant TS as Trading Service
-    participant NATS as NATS JetStream
     participant FIX as FIX Gateway
+    participant NATS as NATS JetStream
     participant T0 as tZERO
     participant CENT as Centrifugo
     participant REDIS as Redis
@@ -195,17 +199,12 @@ sequenceDiagram
     TS->>REDIS: Check wallet balance
     REDIS-->>TS: Balance: 87,430
     Note over TS: Validate order (~10ms total)
-    TS->>NATS: publish orders.new.cowboys
+    TS->>FIX: NATS request/reply (gateway.orders.new)
+    FIX-->>TS: {status: "accepted", clOrdId: "ORD456"}
     TS-->>APP: 200 OK {status: "acknowledged"}
     Note over APP: User sees "Order Pending"
     
-    NATS->>FIX: deliver order
     FIX->>T0: FIX NewOrderSingle
-    T0-->>FIX: ExecutionReport (Accepted)
-    FIX->>NATS: publish order.user123.ORD456 (accepted)
-    NATS->>CENT: deliver
-    CENT->>APP: WebSocket "Order Accepted"
-    
     T0-->>FIX: ExecutionReport (Filled)
     FIX->>NATS: publish order.user123.ORD456 (filled)
     

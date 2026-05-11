@@ -10,11 +10,12 @@ Google Cloud API Gateway provides path-based routing to 5 Cloud Run services, JW
 ## Routing
 
 ```
-api.inplay.com/auth/*     → Auth Service (Cloud Run)
-api.inplay.com/trading/*  → Trading Service (Cloud Run)
-api.inplay.com/market/*   → Market Data Service (Cloud Run)
-api.inplay.com/social/*   → Social Service (Cloud Run)
-api.inplay.com/ads/*      → Ad Service (Cloud Run)
+api.inplay.com/auth/*         → Auth Service (Cloud Run)
+api.inplay.com/trading/*      → Trading Service (Cloud Run)
+api.inplay.com/market/*       → Market Data Service (Cloud Run)
+api.inplay.com/social/*       → Social Service (Cloud Run)
+api.inplay.com/ads/*          → Ad Service (Cloud Run)
+api.inplay.com/leaderboard/*  → Leaderboard Service (Cloud Run)
 ```
 
 Centrifugo is on a separate domain (`realtime.inplay.com`) and does not go through the API Gateway. Centrifugo validates JWTs itself.
