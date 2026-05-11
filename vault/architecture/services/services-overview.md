@@ -7,7 +7,7 @@
 
 5 Cloud Run API services + FIX Gateway (Compute Engine) + Centrifugo (Managed Instance Group).
 
-Services do NOT call each other. They share PostgreSQL and Redis directly.
+Services do NOT call each other. They share PostgreSQL, Redis, and NATS JetStream.
 
 ```
 React Native App
@@ -21,7 +21,7 @@ API Gateway (path-based routing)
   ├── /trading/*  → Trading Service ───────┤
   ├── /market/*   → Market Data Service ───┤──── all read/write ───► PostgreSQL
   ├── /social/*   → Social Service ────────┤                         Redis
-  └── /ads/*      → Ad Service ────────────┘
+  └── /ads/*      → Ad Service ────────────┘                         NATS JetStream
                                            │
                    shared/ code is INSIDE   │
                    each container:          │
@@ -30,6 +30,7 @@ API Gateway (path-based routing)
                    • persona_client.py ─────┼──► Persona KYC
                    • jwt.py                 │
                    • redis_client.py        │
+                   • nats_client.py         │
 ```
 
 ## Cloud Run Services
@@ -133,7 +134,7 @@ from shared.models.user import User
 
 ### Why Services Don't Call Each Other
 
-Services share data through PostgreSQL and Redis, not through HTTP calls to each other. This avoids:
+Services share data through PostgreSQL, Redis, and NATS JetStream -- not through HTTP calls to each other. This avoids:
 - Cascading failures (Service A down → Service B down)
 - Latency compounding (each network hop adds 1-5ms)
 - Distributed debugging complexity

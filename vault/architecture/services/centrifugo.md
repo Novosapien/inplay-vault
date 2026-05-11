@@ -90,15 +90,16 @@ client.connect();
 | Post-game | Hold | Don't scale down | Wait for users to disconnect naturally |
 | Late night (2am+) | 5 | ~1M connections | Cloud Scheduler |
 
-## Configuration
+## NATS Broker Mode
 
-Centrifugo is configured via a YAML file. No Go code is written -- it's infrastructure.
+Centrifugo uses NATS JetStream as its broker natively. When any service publishes to a NATS subject matching a Centrifugo channel name, Centrifugo picks it up and delivers to all subscribed WebSocket clients. No bridge service needed.
 
 ```yaml
-engine:
-  type: redis
-  redis:
-    address: redis://your-memorystore:6379
+# centrifugo config.yaml
+broker:
+  type: nats
+  nats:
+    url: "nats://your-nats-server:4222"
 
 token:
   hmac_secret_key: "same-secret-as-fastapi-jwt"
@@ -106,3 +107,5 @@ token:
 api:
   key: "your-api-key"
 ```
+
+This means the FIX Gateway publishes once to NATS, and both Centrifugo (for client delivery) and backend services (for processing) receive the message. One publish, multiple consumers.

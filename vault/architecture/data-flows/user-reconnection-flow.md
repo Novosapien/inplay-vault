@@ -13,7 +13,7 @@ WiFi drops
   │  During the 3-second gap:
   │  → FIX sessions to tZERO completely UNAFFECTED (server-side)
   │  → Market data and order events continue flowing into Redis
-  │  → Centrifugo continues receiving updates from Redis
+  │  → Centrifugo continues receiving updates from NATS
   │  → If user had open orders, fills processed server-side normally
   │
 WiFi returns

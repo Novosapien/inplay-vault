@@ -42,9 +42,9 @@ Serves team pages, game pages, news, stats, and historical data. Read-heavy serv
 | Team info, player stats | Sport Radar API | Redis cache, 5-minute TTL |
 | Historical price data | tZERO REST API | Redis cache, 1-hour TTL (doesn't change intra-day) |
 | Game schedule | Sport Radar API | Redis cache, 1-hour TTL |
-| Live game data | Sport Radar real-time feed → Redis pub/sub → Centrifugo | Not served by this service -- goes direct via Centrifugo |
+| Live game data | Sport Radar real-time feed → NATS → Centrifugo | Not served by this service -- goes direct via Centrifugo |
 | News articles | Sport Radar editorial feed | PostgreSQL (persistent), Redis cache for recent |
-| Block trade alerts | FIX Gateway → Redis pub/sub | PostgreSQL (persistent), delivered real-time via Centrifugo |
+| Block trade alerts | FIX Gateway → NATS → Centrifugo | PostgreSQL (persistent), delivered real-time via Centrifugo |
 | Favourites | User action | PostgreSQL |
 
 ## Note on Real-Time vs REST

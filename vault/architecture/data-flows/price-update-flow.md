@@ -14,11 +14,11 @@ FIX Gateway parses FIX message, normalizes to JSON envelope
   │
   │  Hop 2: <2ms (binary FIX parsing, no disk I/O)
   ▼
-Publishes to Redis channel: market.trade.cowboys
+Publishes to NATS JetStream subject: market.trade.cowboys
   │
-  │  Hop 3: <2ms (in-memory pub/sub)
+  │  Hop 3: <0.5ms (NATS in-memory pub/sub)
   ▼
-Centrifugo picks up from Redis
+Centrifugo picks up from NATS (native broker mode)
   │
   │  Hop 4: <5ms (same datacenter)
   ▼
@@ -41,7 +41,7 @@ Total: <56ms typical, <100ms p99
 |-----|-----------|----------------|-------|
 | 1 | tZERO → FIX Gateway (network) | <1ms | Co-located or low-latency link |
 | 2 | FIX Gateway parse + normalize | <2ms | Binary FIX parsing, no disk I/O |
-| 3 | Gateway → Redis publish | <2ms | In-memory pub/sub |
+| 3 | Gateway → NATS JetStream publish | <0.5ms | NATS in-memory pub/sub |
 | 4 | Redis → Centrifugo → Client (network) | <5ms + <30ms | Same datacenter + geographic |
 | 5 | Client render | <16ms | Single frame at 60fps |
 | **Total** | | **<56ms typical** | Buffer to 100ms for p99 |

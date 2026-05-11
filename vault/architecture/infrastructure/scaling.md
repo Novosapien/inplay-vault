@@ -33,7 +33,7 @@ SCALES VIA GCP TIER CHANGES (if needed):
 
 Market data from tZERO is per-symbol, not per-user: 500 symbols × 50 updates/sec = 25,000 msgs/sec regardless of whether 10K or 5M users are watching. The fan-out to users is Centrifugo's job.
 
-Orders scale with users but are absorbed by Cloud Run Trading Service → Redis queue → FIX Gateway drains at tZERO's acceptance rate. The FIX Gateway is a message pump, not a scaling bottleneck.
+Orders scale with users but are absorbed by Cloud Run Trading Service → NATS JetStream → FIX Gateway drains at tZERO's acceptance rate. The FIX Gateway is a message pump, not a scaling bottleneck.
 
 ## Cloud Run Cold Start Mitigation
 

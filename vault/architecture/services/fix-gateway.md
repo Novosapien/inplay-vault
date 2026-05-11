@@ -7,7 +7,7 @@
 
 ## Overview
 
-Maintains persistent FIX 4.2 sessions to tZERO. Parses raw FIX messages, normalises them into JSON envelopes, and publishes to Redis channels. Consumes order requests from a Redis queue and sends them to tZERO via FIX.
+Maintains persistent FIX 4.2 sessions to tZERO. Parses raw FIX messages, normalises them into JSON envelopes, and publishes to NATS JetStream subjects. Consumes order requests from a NATS subject and sends them to tZERO via FIX.
 
 - **Platform:** Compute Engine VM (co-located with tZERO for <1ms latency)
 - **Language:** Python / QuickFIX
@@ -84,7 +84,7 @@ FIX 4.2 requires persistent TCP sessions with heartbeats, sequence numbers, and 
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐    │
 │  │  ORDER QUEUE CONSUMER                             │    │
-│  │  Reads validated orders from Redis queue           │    │
+│  │  Reads validated orders from NATS subject           │    │
 │  │  Converts to FIX NewOrderSingle (MsgType=D)       │    │
 │  │  Sends via OE Adapter                             │    │
 │  └──────────────────────────────────────────────────┘    │
@@ -94,8 +94,8 @@ FIX 4.2 requires persistent TCP sessions with heartbeats, sequence numbers, and 
 ## High Availability
 
 - Active/standby VM configuration
-- FIX session state (sequence numbers) stored in Redis
-- Orders queued in Redis -- survive gateway restart
+- FIX session state (sequence numbers) stored in Redis cache
+- Orders queued in NATS JetStream -- survive gateway restart (persistent)
 - Standby monitors primary health, establishes new FIX sessions on failure (~5-10 second failover)
 - On IOI/MD reconnection: full state replay from tZERO (no incremental recovery)
 - On Order Entry reconnection: standard FIX gap detection and resend

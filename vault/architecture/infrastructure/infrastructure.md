@@ -25,9 +25,12 @@ Compute Engine VMs (persistent FIX sessions)
 ├── FIX Gateway Primary (co-located with tZERO)
 └── FIX Gateway Standby (co-located with tZERO)
 
+NATS JetStream (message backbone, 3-node cluster)
+└── All real-time messaging: market data, orders, fills, events
+
 Managed Services
 ├── Cloud SQL (PostgreSQL)
-├── Memorystore (Redis)
+├── Memorystore (Redis -- cache and data structures only, NOT messaging)
 ├── Cloud Load Balancer + Cloud Armor
 ├── Cloud CDN (serves React Native web app bundle)
 ├── Google Cloud API Gateway
@@ -57,12 +60,22 @@ Tables: users, orders, positions, wallets, referrals, teams, games, news, campai
 
 All 5 Cloud Run services read/write to the same Cloud SQL instance. Services do NOT call each other -- they share data through the database.
 
+### NATS JetStream (Message Backbone)
+
+3-node cluster for high availability. Handles all real-time messaging:
+- Market data (quotes, trades, book updates, security status)
+- Order lifecycle events (new, fill, cancel, reject)
+- Position/P&L updates
+- Game events (from Sport Radar)
+- Ad triggers and leaderboard updates
+
+Centrifugo uses NATS as its broker natively -- publishes to NATS are automatically delivered to WebSocket clients. JetStream provides persistence: if a service restarts, it replays missed messages on reconnect.
+
 ### Memorystore (Redis)
 
-Three roles:
-1. **Pub/Sub** -- market data channels, order events, leaderboard updates. FIX Gateway publishes, Centrifugo subscribes.
-2. **Sorted Sets** -- leaderboard rankings (12 total: 3 verticals × 4 timeframes). Written by Cloud Run Jobs, read by Social Service.
-3. **Cache** -- wallet balances, session tokens, user profiles, market data last-value cache, FIX sequence numbers, pre-computed ad targeting segments.
+Two roles (NOT used for messaging -- NATS handles that):
+1. **Sorted Sets** -- leaderboard rankings (12 total: 3 verticals × 4 timeframes). Written by Cloud Run Jobs, read by Social Service.
+2. **Cache** -- wallet balances, session tokens, user profiles, FIX sequence numbers, pre-computed ad targeting segments, geo queries (GEORADIUS for ad targeting).
 
 ### Cloud Load Balancer + Cloud Armor
 

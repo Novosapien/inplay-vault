@@ -17,11 +17,11 @@ The Trading Service is the hot path for order execution. It is deployed as its o
 
 - Order validation (auth, limits, format, ClOrdID rules)
 - Wallet balance checks (reads from Redis cache)
-- Publishes validated orders to Redis queue for FIX Gateway consumption
+- Publishes validated orders to NATS JetStream for FIX Gateway consumption
 - Returns immediate acknowledgment to user ("order received")
 - Wallet management (trading wallet 100K cap, referral wallet reload logic below 25K trigger)
 - Position management and P&L calculation
-- Processes fill confirmations from FIX Gateway via Redis pub/sub
+- Processes fill confirmations from FIX Gateway via NATS JetStream subscription
 
 ## Request Flow
 
@@ -55,8 +55,8 @@ API Gateway → /trading/orders → Trading Service
 │                                                          │
 │  4. Order Publisher                                       │
 │     - Generate ClOrdID (max 20 chars, no leading zeroes)  │
-│     - Publish to Redis order queue                        │
-│     - FIX Gateway consumes from this queue                │
+│     - Publish to NATS JetStream (orders.new subject)      │
+│     - FIX Gateway subscribes to this subject              │
 │                                                          │
 │  5. Response                                              │
 │     - Return immediate ack to client                      │
@@ -64,7 +64,7 @@ API Gateway → /trading/orders → Trading Service
 │     - User does NOT wait for tZERO to process             │
 │                                                          │
 │  Background: Fill Processor                               │
-│     - Subscribes to order.{userId}.* on Redis             │
+│     - Subscribes to order.{userId}.> on NATS JetStream     │
 │     - On fill: update PostgreSQL (positions, wallet, P&L) │
 │     - On reject: update order status                      │
 │     - On bust: recalculate position and P&L               │
