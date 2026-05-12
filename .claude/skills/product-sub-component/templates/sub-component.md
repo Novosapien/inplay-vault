@@ -22,7 +22,7 @@ This template defines the structure for a **sub-component document** — a detai
 
 # [Project Name] — [Sub-Component Name]
 
-> **Component:** [[component-name]]  <!-- Replace with the actual component name, e.g. [[bloomberg-terminal]] -->
+> **Component:** [[component-name]]  <!-- Shortest-path wikilink to the parent component file, e.g. [[trading]] or [[information-layer]]. The file lives two directories up at ../../component-name.md but Obsidian resolves by file name. -->
 > **Date:** ___
 > **Status:** Collecting | Defined | Ready for build | In build | Complete
 > **Owner:** ___
@@ -246,7 +246,7 @@ _OR:_
 
 | Sub-Sub-Component | Overview | Status | Link |
 |------------------|----------|--------|------|
-| _Name_ | _One-line description_ | _Status_ | _[[path]]_ |
+| _Name_ | _One-line description_ | _Status_ | _[[sub-components/name/name]]_ |
 | | | | |
 
 ---
@@ -256,7 +256,7 @@ _OR:_
 ```markdown
 # [Project Name] — [Sub-Component Name]
 
-> **Component:** [[component-name]]  <!-- Replace with the actual component name, e.g. [[bloomberg-terminal]] -->
+> **Component:** [[component-name]]  <!-- Shortest-path wikilink, e.g. [[trading]] -->
 > **Date:** [Date]
 > **Status:** [Status]
 > **Owner:** [Names]

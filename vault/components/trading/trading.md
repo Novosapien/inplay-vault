@@ -267,11 +267,11 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 
 ## Sub-Components
 
-| Sub-Component | Overview | Status |
+| Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|
 | Order Entry | Buy/sell modal -- context-aware team defaults, quantity/price input, limit order execution. Persistent access across all pages. 3 clicks or fewer target | Collecting | [[sub-components/order-entry/order-entry]] |
-| Order Status | View pending/open orders and their current state (pending, partial fill, etc.). Cancel and modify actions. Where users check "what's happening with my orders?" | Proposed | |
-| Fill Confirmation | Notification when a fill happens (in-app + push) plus trade receipt/detail view. The moment the user learns their order executed. Potential high-value ad placement moment (post-MVP) | Proposed | |
+| Order Status | View pending/open orders and their current state (pending, partial fill, etc.). Cancel and modify actions. Where users check "what's happening with my orders?" | Collecting | [[sub-components/order-status/order-status]] |
+| Fill Confirmation | Notification when a fill happens (in-app + push) plus trade receipt/detail view. The moment the user learns their order executed. Potential high-value ad placement moment (post-MVP) | Collecting | [[sub-components/fill-confirmation/fill-confirmation]] |
 | Portfolio View | Current positions across all teams, unrealised P&L, total portfolio value | Proposed | |
 | Trade History | Past trades -- what was bought/sold, when, at what price, realised P&L | Proposed | |
 | Wallet Management | Trading wallet (100K cap), referral wallet, reload mechanism (below 25K trigger), balance display | Proposed | |

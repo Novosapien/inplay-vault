@@ -90,6 +90,14 @@ After extraction:
     5. Questions for next call
 ```
 
+## Linking Conventions
+
+**Backlink to parent component:** Use shortest-path wikilink: `[[component-name]]` (e.g., `[[trading]]`, `[[information-layer]]`). The sub-component file lives at `vault/components/{component}/sub-components/{sub}/{sub}.md` — two directories below the parent component file — but Obsidian resolves by file name.
+
+**File placement:** Each sub-component gets its own folder: `sub-components/{name}/{name}.md`. Additional files (changelog, assets) live alongside it in the same folder.
+
+**Backfill the parent:** After writing the sub-component document, update the parent component's Sub-Components table. The link column format is `[[sub-components/name/name]]` (relative from the component directory).
+
 ## Entity Journey Extraction
 
 When extracting journeys from transcripts:
