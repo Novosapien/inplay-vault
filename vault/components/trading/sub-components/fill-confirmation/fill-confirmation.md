@@ -18,7 +18,7 @@ This sub-component handles two things: the alert and the receipt. The alert is a
 
 Edwin was emphatic about this being fast and prominent: the fill notification is what keeps the trading loop spinning. User gets filled on a buy at 3, sees the notification, immediately places a sell at 7. Without it, users have to manually check Order Status, which breaks the flow and reduces trading activity.
 
-This is also the natural surface for post-MVP sponsored moments -- a brand owning the fill celebration ("You earned $380 -- congratulations by Bank of America"). Not MVP scope, but the sub-component should be designed with that extensibility in mind.
+This is also the natural surface for post-MVP sponsored moments -- a brand owning the fill celebration ("You earned $380 -- congratulations by Bank of America," Edwin). The team aligned that ads belong after the trade completes, not during the trade flow (Max: "when you're trading, let the trade flow happen. Don't worry about your advertising"). Skye reinforced this: "when you've completed the sale, something else happens. Then that can be potentially owned by a brand." Skye also identified brand-moment matching: energy drinks owning volatility moments, crypto wallets owning leaderboard payouts. Not MVP scope, but the sub-component should be designed with that extensibility in mind.
 
 **Entities that interact with it:**
 
@@ -63,7 +63,7 @@ _Fill History:_
 
 **Business rules:**
 
-- Fill notifications must arrive in real time -- target sub-50ms from tZERO execution report to user's screen (via FIX Gateway -> NATS -> Centrifugo)
+- Fill notifications must arrive in real time -- target sub-50ms from tZERO execution report to user's screen (via FIX Gateway -> NATS -> Centrifugo). _(Latency target and infrastructure from architecture docs)_
 - Partial fills generate a notification per fill event -- user sees "50 of 100 shares filled" then later "50 of 100 shares filled" (or a single "100 shares fully filled" if it happens at once)
 - Execution busts (ExecType=H) should generate a prominent correction notification -- "your previous fill of X shares has been reversed"
 - Execution corrections (ExecType=G) should update the receipt with corrected price/quantity

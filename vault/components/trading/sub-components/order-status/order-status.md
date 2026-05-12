@@ -4,7 +4,8 @@
 > **Date:** 2026-05-11
 > **Status:** Collecting
 > **Owner:** George Westbrook
-> **Sources:** _[[meetings/11-06-2026-trading-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[architecture/integrations/t0]]_
+> **Note:** Order Status was not directly discussed in the 11-06-2026 trading component session. Content is derived from the vision workshop, architecture docs (tZERO FIX specs), and reasonable inference from the limit-order-only decision.
 
 ---
 
@@ -50,8 +51,8 @@ _Order States Displayed:_
 _Actions:_
 
 - User can cancel a pending or partially filled order (unfilled portion only)
-- Cancel is immediate -- no "are you sure?" dialog, consistent with Order Entry philosophy
-- Cancel confirmation feedback: "order cancelled" or "cancel rejected: too late" (order filled between tap and cancel request)
+- Cancel requires a confirmation step ("are you sure you want to cancel this order?") -- unlike order placement which is instant, cancels are where fat-finger errors are most disruptive (accidentally cancelling an order you wanted to keep). This is a deliberate departure from the no-confirmation principle on order entry
+- Cancel confirmation feedback after confirmed: "order cancelled" or "cancel rejected: too late" (order filled between tap and cancel request)
 - Modify/replace an order's price or quantity -- post-MVP. tZERO handles this as an atomic cancel-and-replace (MsgType=G), new ClOrdID replaces the old one
 
 _Navigation:_
@@ -139,7 +140,7 @@ graph TD
 **Acceptance criteria:**
 
 - [ ] Cancel button visible on pending and partially filled orders
-- [ ] No confirmation dialog -- cancel on tap, consistent with Order Entry
+- [ ] Cancel requires confirmation tap ("are you sure?") before submitting to tZERO
 - [ ] Cancel confirmation or rejection shown immediately
 - [ ] If cancel rejected because order filled, user is clearly told why
 - [ ] Partially filled orders: only the unfilled remainder is cancelled, filled portion is retained
