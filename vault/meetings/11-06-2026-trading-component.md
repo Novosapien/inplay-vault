@@ -1,0 +1,1436 @@
+**
+
+May 11, 2026
+
+## Modules 2 and 3 - Inplay Simulator App - Transcript
+
+### 00:00:00
+
+   
+Cody Haugen: Oh yeah.  
+Max Kingaby: Hi guys. Hello guys.  
+Cody Haugen: Good morning.  
+Skye Capazorio: Hi.  
+Max Kingaby: How is  
+Cody Haugen: Morning.  
+Max Kingaby: everyone?  
+Cody Haugen: All good. Thank  
+Edwin: What's up  
+Gary Anderson: Good.  
+Skye Capazorio: Yeah,  
+Cody Haugen: you.  
+Skye Capazorio: Dary, you look like there's like a haze in your in your  
+Edwin: all  
+Gary Anderson: Yeah. I So yeah, my son my son gave me his uh computer from college and I don't know if the screen is acting  
+Skye Capazorio: office.  
+Gary Anderson: weird or what's going on. Maybe it's I have the window open. I don't know. I don't know what it is.  
+Edwin: Very mystical.  
+Gary Anderson: Oh,  
+Edwin: I'd leave it.  
+Gary Anderson: that's better.  
+Edwin: Look like a wise man.  
+Gary Anderson: Right. That's better. It's a little  
+Edwin: There we go.  
+Gary Anderson: better.  
+Edwin: All right. Hello  
+Cody Haugen: Hello. Good  
+Skye Capazorio: Good  
+Max Kingaby: more to be let in.  
+Cody Haugen: morning.  
+Edwin: all.  
+Max Kingaby: Just letting people in.  
+Skye Capazorio: morning.  
+Max Kingaby: Oh, they've got that now.  
+   
+ 
+
+### 00:01:02
+
+   
+Max Kingaby: That's nice. Just hover over. Oh, that's very nice. Here we go. Hello, Troy. We've seen a new feature on Google which we quite like. Usually it takes two or three clicks to let someone in. Now they've got a hover over admit with one click.  
+Edwin: Well, you love that  
+Max Kingaby: Yeah.  
+Edwin: Google. Did you fall in love when you were working at Google or something,  
+Max Kingaby: Okay.  
+Edwin: Brett?  
+Max Kingaby: So, so you you know what they say about drinking the Kool-Aid, right?  
+Edwin: I do.  
+Max Kingaby: And I drank the drank the Kool-Aid and I was essentially country manager for the cloud business across Africa, Greece, Israel, and Turkey. And I was drinking the Kool-Aid, loving it, thinking it was all awesome. Then it was about year four, I said, I'm going to be a Googler for life. And it was at that moment I started feeling,  
+Edwin: Wow.  
+Max Kingaby: yeah, I think it's time for me to go.  
+Edwin: You know, that's how cults work.  
+Max Kingaby: Too late.  
+   
+ 
+
+### 00:01:59
+
+   
+Edwin: You know, cults bring you in, next thing you know, you're on some weird island drinking.  
+Max Kingaby: some weird things.  
+Edwin: Exactly.  
+Max Kingaby: Exactly.  
+Edwin: Um, well, yeah. So, I hope everyone had a great weekend and and you know, we're still making great progress. not to be the uh the guy, but it's uh the 11th of uh May and here we are. So, just reminding all of us and not just the Rebel Labs crew or what are you guys going to be called now? Invosio or what is  
+Max Kingaby: Novo Sapion.  
+Edwin: it?  
+Max Kingaby: So essentially George and I have mer merged our businesses together about two months  
+Edwin: Oh,  
+Max Kingaby: ago and we just haven't got round to doing all the  
+Edwin: congratulations  
+Max Kingaby: rebranding bits because it's a pain in the  
+George Westbrook: Excuse  
+Edwin: Oh, I know.  
+Max Kingaby: butt.  
+Edwin: I know. But you know what? That's great. Congratulations on both you guys. That's  
+Max Kingaby: Thank you. And it's quite a cool,  
+Edwin: awesome.  
+Max Kingaby: it's a way better brand than Rebel Labs, you know, new human  
+   
+ 
+
+### 00:03:01
+
+   
+George Westbrook: me.  
+Edwin: I I I like Rebel Labs. I mean,  
+Max Kingaby: um  
+Edwin: as a Rebel myself, I always thought it was a great name. Um, but listen, when you bring George in, he's swinging that uh that brilliant experience around. Got you got to go with a new  
+Max Kingaby: Yeah. Yeah. Exactly.  
+Edwin: name.  
+Max Kingaby: We got to make it uh Well, we keeping the Rebel Technologist brand. Rebel Technologies brand becomes uh our community because we've got about 6,000 followers on our  
+Edwin: Cool.  
+Max Kingaby: newsletter and we got about four and a half thousand across our social media platforms and that becomes like our community, right? We're building rebel technologists kind of play.  
+Edwin: Cool. Well,  
+Max Kingaby: Yeah.  
+Edwin: I'm I'm wishing you guys great success uh and much more business after we get done.  
+Max Kingaby: Yeah.  
+Cody Haugen: Look,  
+Max Kingaby: Um, so I just step one is I think we might do a quick training course. How does everyone feel about getting a quick training course on that Novo link we sent this weekend?  
+   
+ 
+
+### 00:04:02
+
+   
+Max Kingaby: I don't know how if anyone had luck getting in there,  
+Edwin: I did not I I clicked on it.  
+Max Kingaby: having a browse around.  
+Edwin: It had trouble with it.  
+George Westbrook: Did Did the link Did it say it expired?  
+Edwin: I believe it  
+George Westbrook: Yeah. Yeah,  
+Edwin: did.  
+George Westbrook: that that was the one setting I hadn't changed is I think it was like a an hour expiry.  
+Edwin: Yeah. If can you send out a new one, George?  
+George Westbrook: Yeah. Yeah, I'll get a new one sent  
+Edwin: That'd be  
+Max Kingaby: But George was taking me through it end to end this weekend and I  
+George Westbrook: out.  
+Edwin: great.  
+Cody Haugen: I know. Yeah. Link, George,  
+Max Kingaby: was Yeah,  
+Cody Haugen: if you don't mind resending it to us as well.  
+Max Kingaby: we'll do it to everybody and it gets there's a lot in there. So, we figured we'll just do a quick 5m minute overview with you guys on how to find the documents, how to uh read through it, and then how to put in review comments.  
+   
+ 
+
+### 00:04:58
+
+   
+Max Kingaby: So, we've enabled the ability to do a review. So, you kind of highlight a section, and then you put down what your review is, assign it to somebody, um, and then that person can also see what it's about. And then we've got these administrators who's responsible for that section of content. and then that person and we'll decide that now that person has the final say and then we can take a lot of that change the necessary documentation but it's the same tool that we're going to be using to do all the reviews on the landing page um all the reviews on your global site. Um so what we'll do is we'll start with the global site. We'll get it to a stage this afternoon. It's still very early stage, but we want to just get it up there. And we'll also use that as a bit of a test bed to make sure that you guys are comfortable using some of the mechanisms to go, I don't like we like that from a a graphics point of view beyond just a a copy kind of point of view.  
+   
+ 
+
+### 00:05:56
+
+   
+Edwin: Cool.  
+Max Kingaby: Whereas the documents are all just copy. It's copy copy copy copy. What we're going to cover today are two modules. after that um we think it's really important to get a head start on the trade module um only because as we go we spent a lot of time on the architecture this weekend after doing quite a deep dive on the T0 uh APIs and they got some custom APIs well it's custom it's more like the industry standard in the space but it's fairly custom compared to building a API gateway And so instead of being able to host it on something called uh containers, we're probably going to have to look at something more like a VM to manage it. But then we'll think about how we scale those VMs. Um we figured let's let's start talking about that trade mechanism and get those conversations going with T0. And as much as it's a fairly simple module, we just need to get cracking on that. That's the one with the biggest risk as far as we can see.  
+   
+ 
+
+### 00:07:13
+
+   
+Max Kingaby: And after that, we'll make a crack on getting the onboarding module right. And then when you guys have spare time,  
+Edwin: Okay.  
+Max Kingaby: go through some of the components that we've already done. And we're really just looking for did we correctly interpret it? Did we understand this part correctly? We load all our meetings on there. We load all the transcripts from the meetings. All the work Sky is doing around content and branding will go on there as well. So you can also start getting a sense of how we're interpreting your brand um entity and how that's going to be exposed. Sky, we finished that pretty much today about 15 minutes ago, right? Are you happy with that where it's  
+Skye Capazorio: Sorry, I'm in on mute.  
+Max Kingaby: landing?  
+Skye Capazorio: Yes, very happy with it. Um, it's great and excited to see it come into action this  
+Max Kingaby: Yeah. So, we'll we'll put all that stuff up there so you guys can also see how audiences were defined,  
+   
+ 
+
+### 00:08:06
+
+   
+Skye Capazorio: week.  
+Max Kingaby: our uh content pillars are being defined. Um, so you can be part of that process. Um, all of that will be up there. George, uh, do you want to hop on and just do a quick walk through, like two, three minutes and and let's also explain where we've got bugs that we need you just to be patient with  
+George Westbrook: Okay.  
+Max Kingaby: us, like the refresh screen before,  
+George Westbrook: Yeah. Yeah.  
+Max Kingaby: you know, little things like that that we'll fix,  
+George Westbrook: Yeah.  
+Max Kingaby: but they they do have bugs at the moment.  
+George Westbrook: There we go. Can everyone see  
+Max Kingaby: Almost.  
+George Westbrook: this?  
+Max Kingaby: Yes. Do you want to zoom in a bit?  
+George Westbrook: That good? There we go. So, yeah, I think show showed this before.  
+Edwin: perfect.  
+Skye Capazorio: Yep.  
+George Westbrook: Um, so the main two se well, the only two sections you're going to see for the time being are this home, which is all the links to anything is going to be here.  
+   
+ 
+
+### 00:09:08
+
+   
+George Westbrook: Um, so click open website. it will take you to that specific module.  
+Skye Capazorio: Good.  
+George Westbrook: Um, the main one that we'll need for now is this inplay vault. Um, so if you I always prefer a dark mode, but if you change what you want there. So, like I said, we're going to be building this out over time. what we were all doing over the weekend. Um, we're starting to map out the modules, still called components here, but the modules. Um, the only one that's got a bit of meat in it at the moment is obviously the information layer one. Um, so here's like an overview document. Um, and then there's all of the identified subcomponents there as well. Um, so the discovery home, the game day overview, leaderboard. The only one where I'd say we we might need to do a little bit more of a discussion is the the research tab. Um, like what what does that look like from your point of view, but everything else is is is pretty fresh uh fleshed out.  
+   
+ 
+
+### 00:10:12
+
+   
+George Westbrook: Um, and quite quite happy with where that's landed. Um, these are ever changing, ever evolving documents. Um, so don't think this is there's going to be loads of changes we're going to need to make to these. Um, but we'll do them over time. So if there's anything that you don't like, let's just say this section. Um, sometimes when you highlight it, it won't come up. So you have to refresh. That's just a little bug. So highlight it. Click annotate. Login. I did have a login. One second. this one here. See a highlight. If it doesn't show up, refresh the page, click annotate, add in a comment, and then they'll and then everybody can see all of the comments there. So next time we come in, we can see, okay, want to change this to be um a simulated sports equity platform where users can see and trade team stocks. Little tiny things like that. Just making sure that we're really nailing the wording.  
+   
+ 
+
+### 00:11:32
+
+   
+Max Kingaby: and CC  
+George Westbrook: Um when it uh we need to make we we need to make sure the users are  
+Max Kingaby: somebody.  
+George Westbrook: in there. Um,  
+Max Kingaby: Yeah.  
+George Westbrook: and then it would just be you do at and then you can at a specific person and then they'll they'll be able to see it as well. Um, I think I showed you this last time as well. Um, so if you want to add feedback, there's the little feedback thing here. Log in. Once again, I'm on the wrong account.  
+Max Kingaby: Where was that? I didn't see that.  
+George Westbrook: I've got one.  
+Max Kingaby: Yeah, I was underneath your thing.  
+George Westbrook: Can you see that now?  
+Max Kingaby: Oh, yeah. The orange thing. Oh, there. The orange thing down the bottom corner. Yeah.  
+George Westbrook: Then log into this and then when you click feedback it'll pop up here. Take the screenshot. You can select select the components. Move this over here.  
+Max Kingaby: said three.  
+   
+ 
+
+### 00:12:34
+
+   
+George Westbrook: So select that, add in a comment.  
+Max Kingaby: Okay.  
+George Westbrook: You can draw around things as well. Add in a comment.  
+Edwin: It's really  
+George Westbrook: Same with the shape. And then click submit.  
+Edwin: cool.  
+George Westbrook: Then what we what we've added in is each person will be approved for a certain module. So you'll see all of the feedback come up here. Um anyone can add a comment down here but only the specified person for each module can actually approve it. So pending approval that's the start the start um it will they all start as that approved obviously if it's approved can add a comment in there needs clarification if it needs clarification. So what one I suppose it helps helps everyone they can see the pending approval ones um and then filter it by if they they are the owner for it.  
+Edwin: Cool.  
+George Westbrook: So it's kind of like a a task list but for us as well we can see the ones that are approved. We can go in and then we can just start getting the fixes fixes sorted.  
+   
+ 
+
+### 00:13:46
+
+   
+Edwin: So, George, sorry to interrupt you, just so I understand this. So anyone on the team can go in and you know make a a comment and then that  
+George Westbrook: Um,  
+Edwin: comment has pending status until whoever in play appoints is approves that. um change um so whoever we put in charge of the change uh orders uh they approve it and then you guys put it into uh production.  
+George Westbrook: yeah.  
+Edwin: Okay,  
+George Westbrook: Yeah. Yeah. So like our day will probably be we go in,  
+Max Kingaby: Yep.  
+Edwin: perfect.  
+George Westbrook: we have a look at them, work through the backlog, get all the changes sorted, notify you when they're where when they're updated. There'll be a specific deployment that we'll have so that obviously we we'll valid like humans will validate that okay this change is actually what we wanted.  
+Edwin: Cool.  
+George Westbrook: This bug is actually gone before before we push it up the stack to the different deployments.  
+Max Kingaby: And so I think this will also be important for when we do our  
+George Westbrook: Um  
+Edwin: Cool.  
+Max Kingaby: um oh god what do we call them touchdowns um is that this will become like the the governing interface and we go through and be like,  
+   
+ 
+
+### 00:14:53
+
+   
+George Westbrook: yeah.  
+Edwin: Okay,  
+Max Kingaby: "Okay, guys, we've got the following changes out. Please review." Or,  
+Edwin: perfect.  
+Max Kingaby: "We've got all these review comments. Are we all happy with it?" Because what we want to do is keep those touchdowns to a 15-minute call. Just everyone's just saying, "Yes, no, no, yes, yes, go, go, go, go." And we're just turning it that evening, boom, you see a release land. We'll let you know that the new release has been landed. it'll pop up in the section below latest release or that component. You can go in and double check it. And so the idea here is that at any time whenever you have time gaps so you're not reliant on a meeting, you just hop onto the system, you have a look, you've got a spare five minutes, you're on a train somewhere or whatever flying, you can go add a whole lot of comments. And so we're trying to create this really flexible environment for all of you guys to do reviews.  
+Edwin: That's great. And then just on a side note related to this, you know, we'll have comments on how it looks and functions to a degree, but how are you thinking for like a complete uh debugging before like a production  
+   
+ 
+
+### 00:16:08
+
+   
+Max Kingaby: Do you want to talk a bit about the self-healing and bug uh no uh  
+George Westbrook: Yeah.  
+Edwin: Release.  
+Max Kingaby: bug what do we call it? Bugs auto fix here.  
+George Westbrook: Auto fix. Yeah. So, this this is something that's only really been possible in the last three to six months. But effectively what we do anything that is deployed anywhere be it backend, front end or any other microservices will set up the error tracking. So as soon as there is an error it fires it to our kind of internal backlog. Um and then what we'll have is agents that we've configured it will go look through the codebase. It will identify where the error is give it to us and then we will work through and fix it. So it's not one of those where two there's been an error that's been happening consistently for three days. We go in and look and suddenly it's there. We're being notified as if we've got a teammate who's constantly looking over looking over  
+Edwin: Right.  
+   
+ 
+
+### 00:17:02
+
+   
+Edwin: That's incredible. So like unrelated to play in and and your company.  
+George Westbrook: it.  
+Edwin: I mean that that this is such a radical shift in productivity. Um I mean you guys have to be in like uh it's like the invention of  
+Max Kingaby: Let's  
+Edwin: uh the car or or the internet, right? I mean there's a massive change in how coders function.  
+Max Kingaby: jump.  
+George Westbrook: I without going down a rabbit hole,  
+Edwin: Yeah.  
+George Westbrook: I think it just completely changes the way businesses operate. Um, you've got your human workforce which is say maybe the top 10% and then everything underneath is this kind of digital workforce of AI agents each taking on these different job roles and the humans become the the orchestrators, the validators and the  
+Edwin: Yeah,  
+George Westbrook: verifiers.  
+Edwin: I mean it's pretty awesome. Wow, that's cool. Fun stuff.  
+George Westbrook: Um,  
+Edwin: Sounds  
+Max Kingaby: So,  
+George Westbrook: one one other quick thing which I mean if you want to look through it feel free.  
+Edwin: great.  
+George Westbrook: Um, but what what we've all been doing over the weekend is really trying to map out like the the technical architecture.  
+   
+ 
+
+### 00:18:06
+
+   
+George Westbrook: How we going to deploy it? How are we going to make sure that when a user clicks trade within milliseconds everything is all done? Um, but while also making sure that we've not got 10 massive VMs constantly running um that the capacity is only going to be needed on say the Super Bowl or things like that. Um, so we've m mapped a lot of it out here. Feel free to look through it if if you want. It's not necessary. Um but it's just just there so there's complete  
+Edwin: Yeah. Yeah. And do you feel that um you know with the structure using the  
+George Westbrook: visibility.  
+Edwin: agents for like so let's say managing the load or or throughput that the app takes on uh is that something in terms of space that that we're going to be able to dynamically manage or is that something that we have to essentially say hey here's we need this for the whole season or something that scales as users come  
+George Westbrook: Yeah. So one of one of the on the kind of more architecture side is one of the things we were  
+   
+ 
+
+### 00:19:07
+
+   
+Edwin: Good.  
+George Westbrook: thinking is well it's not thinking it's a it's a fact is where in certain periods um be it game days um or certain periods on a game day the the load on the system is going to be a lot higher. So what we will do is we'll have like an automated function that an hour or an hour and a half before the first game on a game day we will spin up more infrastructure so that the load is able to take more load. It means even if we get a big burst as well it's still going to scale up. It just means that that initial load will be able to cater for and then maybe a couple of hours after the game day finishes we'll scale it back down.  
+Edwin: Wow,  
+George Westbrook: So I if there if there is a random event,  
+Edwin: that's cool.  
+George Westbrook: let's just say there's a random event that happens, we haven't accounted for it, it's still going to scale up. Um it's still going to be able to account for it. Um it's just when we know in certain situations that like on a game day there's going to there's going to be more people using it, we're going to scale it up.  
+   
+ 
+
+### 00:20:12
+
+   
+George Westbrook: So it's kind of like um yeah, the reserve then the reserves are not reserves, they're kind of active participants, but when they're not needed, they go back down to reserves. They're still there. um it's just they're not they've got to check they've got to take their take their tracks suit off and go onto the field whereas we'll in certain situations will be having 20 25 players ready to go on the side of the  
+Edwin: Wow, that's really cool, too. Good  
+George Westbrook: pitch.  
+Max Kingaby: just you've got two types of hardware infrastructure kind of architecture  
+Edwin: stuff.  
+Max Kingaby: that we're going to run. So George is talking primarily on your trade that's going to require they call virtual machines. So virtual machines like having your own hardware, but for the rest of it, we're not going to run it on virtual machines. We're going to run it on something called Kubernetes, which are very, very, very small machines that spawn up and down. And the reason why we're doing that, it's far more effective than having to lift a virtual machine up every time.  
+   
+ 
+
+### 00:21:13
+
+   
+Max Kingaby: Um, so just so you're aware, when we talk the trade part, it's a lot heavier machinery. And then you've got these small little things that just spawn up and down.  
+Edwin: Yeah,  
+Max Kingaby: And that technology is called Kubernetes.  
+Edwin: cool. So  
+Max Kingaby: But the idea is to have a really really really low cost as much you know optimized cost and  
+Edwin: yeah,  
+Max Kingaby: we call it optimized  
+Edwin: as you can imagine the you know the latency that people are going to um experience  
+Max Kingaby: right.  
+Edwin: when trading on the the mobile app or or even desktop but trading through our platform. you know there's there's an you know for the ultra low latency stuff you know with the collocation you know the market can go sub microcond today so incredibly  
+George Westbrook: Huh?  
+Edwin: incredibly fast a human being blinks at 300 milliseconds okay and um you know so reacting to something on a screen you know we used to test people's reflexes at my old companies how quickly they could respond visually And you know, some people would guess when it's going to turn green or or red and and they would click and and they would respond.  
+   
+ 
+
+### 00:22:26
+
+   
+Edwin: But generally speaking, like even our fastest fast clickers were were probably around 320. An Olympic athlete, you know,  
+Max Kingaby: Yeah.  
+Edwin: has a little bit better. I think they can get it in a 180s. Uh, you know, that are trained to like whatever.  
+Max Kingaby: Okay.  
+Edwin: But um you know ultimately we need to make sure that this thing is robust  
+Max Kingaby: Hold  
+Edwin: enough to manage you know a million people clicking or two million people clicking  
+Max Kingaby: on.  
+Edwin: and they're not going to have any kind of like substantive delay and how that  
+George Westbrook: Yeah.  
+Edwin: works.  
+George Westbrook: So the one one of the ways we're approaching that is say a lot of the split them into microservices that scale independently and then certain services will be written and the infrastructure will be in a certain way that say for example the trading service that needs to be as quick as possible regardless of how many users there are. That's a different challenge entirely.  
+Edwin: Right.  
+George Westbrook: Every well I say challenge it is a challenge but obviously a solved  
+Edwin: No, I understand.  
+   
+ 
+
+### 00:23:27
+
+   
+Edwin: I  
+George Westbrook: um whereas some of the other ones like they click um and it gets the data for sports radar.  
+Edwin: understand.  
+George Westbrook: If that takes 500 milliseconds okay that's that's acceptable. The trading though that takes 500 milliseconds. Price might have changed 5 10 20 times in that time.  
+Edwin: That's  
+George Westbrook: Um, so yeah,  
+Edwin: right.  
+George Westbrook: we're we're aware and we're we're close to having it solved  
+Edwin: Yeah. Yeah. No, I I just you wanted to reiterate and reinforce,  
+George Westbrook: conceptually.  
+Edwin: you know, one of our bugaboos that we've got to be concerned about.  
+George Westbrook: Yeah.  
+Max Kingaby: just Edwin,  
+George Westbrook: Um,  
+Max Kingaby: how most um of your competitors are most likely running, not most likely are running their infrastructure because they need that that low latency environment. Um they'll all run these virtual machines and then they just extend that virtual machine to be able to run their mobile apps. And so the problem with a virtual machine, I'll give you an indication on costwise. If you're running say a thousand users concurrently on a VM, it could cost $15,000 a month versus if you're running them on containers, these little ones that fire up, you're talking a couple of hundred per month.  
+   
+ 
+
+### 00:24:34
+
+   
+Edwin: Sure.  
+Max Kingaby: That's the difference in a VM architecture versus a containerized. But the containerized doesn't manage low latency very well. So you have to have a portion. So I think you'll have this competitive edge where everyone's loading everything on a VM because when you build infrastructure, you just build infrastructure. That's how most CIOS operate. But we're looking at going you have to split the two out and you're going to have two concurrent infrastructures and you got a really eloquent way of managing it where the agents will look and manage and scale your VMs a bit like they scale uh Kubernetes stack. So you're going to have a a real differentiator just on your cost compared to a lot of your competitors with the infrastructure  
+Edwin: and and yeah,  
+Max Kingaby: side.  
+Edwin: so it just to remind the group, I don't know if my pictures on the screen,  
+Max Kingaby: Yeah.  
+Edwin: you understand,  
+Max Kingaby: Yeah.  
+Edwin: I need money. I don't have the looks of uh Max or Hassan or George. So save me as much money as you can, please.  
+   
+ 
+
+### 00:25:38
+
+   
+Edwin: You know, my my glory days are way gone.  
+Max Kingaby: We're obsessed. Your the biggest risk area on you bleeding money is infrastructure. And so we come this deep embedded belief on it's called PHOPS. Bring that infrastructure right down. Ignore what the hyperscalers are going bleeting on about increase your spend.  
+Edwin: Yeah.  
+Max Kingaby: No, it's about every month getting on top of it and working it down. Working it down. Working it down.  
+Edwin: Great.  
+Max Kingaby: I think Edwin forgot to mention your good looks as well.  
+Edwin: Oh, get this.  
+Max Kingaby: Oh,  
+Edwin: By the way, get get Max some glasses so this guy can't see s***.  
+Max Kingaby: sunglasses. Okay. Should we get cracking on the um trading module? Um I don't have the kick off.  
+Edwin: I'm I'm going to have to go off video for just a minute or  
+Max Kingaby: Yeah, that's no problem.  
+Edwin: two.  
+Max Kingaby: That's no problem. Max, I don't have it in front of me. Do you want to kick it off while I just have a play around trying to find it quickly?  
+   
+ 
+
+### 00:26:49
+
+   
+Max Kingaby: I assume you build stuff.  
+George Westbrook: Check check check slack.  
+Max Kingaby: Oh, Slack. Do you want to pull Slack here? So, I'm on Max's machine here digging around.  
+George Westbrook: Yeah. Have you got  
+Max Kingaby: Uh yeah,  
+George Westbrook: it?  
+Max Kingaby: great. Thank you. Let everyone know we have all these prep documents. Oh, I didn't have to share. No, no, we're just going to walk through otherwise we're all going to talk to the actual section. So let's start. I'm just going to take control here. Okay. Okay. So we are going to talk about the ability to trade. So let's start off with uh the entry points to the trader clicking into trade. And I think we start with a bit of a journey. So they're going to be multiple entry points. Let's talk about what they could be. Then from there, let's talk about how are they going to be trading? I.e., how do we envisionage it lands on a screen?  
+   
+ 
+
+### 00:28:07
+
+   
+Max Kingaby: Great. They've selected a team. They've uh watching the price point. They're whatever it is. They decide to trade. Do they swipe up? Do they swipe left? Do we click? We decide on all that kind of stuff. Do we test those kind of components? And uh then from there once the trade's been done what do we want the trade the the feedback mechanism to be? How do we want to present those feedback mechanisms? What do we then update on the kind of fan the the fans page? What kind of information is going to be important to them? Do we log um some of the badge information on how much they've been trading? Do we log the leaderboards and all that kind of stuff? So, we're really going to be thinking about end to end how that trade happens. Is everyone okay with that? Okay, perfect. So,  
+Edwin: right?  
+Max Kingaby: I'm going to kick off with the the first uh kind of guidance piece.  
+   
+ 
+
+### 00:29:05
+
+   
+Max Kingaby: I'm going to start on one of the information pages. Um, you've found a particular site. You're looking through the historic information. From there, we have to have a trade button. Are we all happy with that? So, what I want some ideas from you guys is where else would the user go to trade? Are we going to have this on every single page? Allow them to trade as quickly as possible. Is it only certain circumstances? It's definitely not going to be on the onboarding, but maybe it is on the on boarding right at the end. Prompt them for a trade. Any ideas how you guys are seeing this pan out?  
+Edwin: Troy, what do you what are your initial thoughts? You're mute, Troy. You're  
+Skye Capazorio: You're on mute.  
+Troy McDonald Kane: Damn mute button.  
+Edwin: muted.  
+Troy McDonald Kane: I was saying I wish we could whiteboard it out because it would I think it'd be a lot easier to visualize it. It's hard to kind of think through it verbally a little bit.  
+   
+ 
+
+### 00:30:08
+
+   
+Troy McDonald Kane: I don't know if that's a possible function on Google Meets where we can actually just draw it out.  
+Skye Capazorio: This is break going. There's a tool for that. It'll bring up a page.  
+George Westbrook: Yeah.  
+Troy McDonald Kane: Yeah,  
+Max Kingaby: Yeah, let me  
+Troy McDonald Kane: because it is I mean it's I think every it' be easier just to start literally writing you know  
+Max Kingaby: bring  
+Troy McDonald Kane: drawing it out so that we can see kind of what it looks and feels like.  
+Max Kingaby: Do you want merit to draw that?  
+Troy McDonald Kane: That's  
+George Westbrook: Yeah.  
+Max Kingaby: Should we try?  
+George Westbrook: Do you want me to bring up  
+Max Kingaby: Um, I can do it. Yeah.  
+George Westbrook: mirror?  
+Troy McDonald Kane: worse is we can just put it on a piece of paper and hold it up. Old school.  
+Max Kingaby: Okay.  
+Edwin: So, initially my thoughts are the trading should be on one page initially. Okay. And I also believe that the um navigation on the bottom should have a button called trade.  
+   
+ 
+
+### 00:31:08
+
+   
+Edwin: that if you're in another area of the app,  
+Max Kingaby: Let's  
+Edwin: all you have to do is click on trade and it takes you to the execution page and away you go. That's my initial  
+Max Kingaby: go.  
+Edwin: gut.  
+Troy McDonald Kane: Yeah, I almost wonder I want like we talked about this a little bit in the last session about how many functional buttons we want towards the bottom or versus maybe the side or the top just because you don't want to interfere with other phone function swipes or commands. I wonder if it'd be better if we had the buttons more on the top or along the side maybe, Edwin, versus the bottom.  
+Edwin: I don't know. It seems to be pretty standard that it's on the bottom.  
+Troy McDonald Kane: Okay.  
+George Westbrook: One of the things I was thinking there is say when somebody's holding their phone but I know some if I've got to click something at the top of the screen sometimes I might like fumble it whereas if it's just Right. Right by the bottom. It's quick scroll.  
+   
+ 
+
+### 00:32:06
+
+   
+George Westbrook: Bam.  
+Troy McDonald Kane: Yeah.  
+George Westbrook: It's there. But we the we can we can test out different versions, I suppose, and see what see what works or if it's action  
+Troy McDonald Kane: Is it hard to make it a a configurable setting?  
+George Westbrook: based.  
+Max Kingaby: That's  
+Troy McDonald Kane: Because that seems to be more common too because you see like at least on the new um  
+Edwin: Okay.  
+Max Kingaby: in  
+Troy McDonald Kane: Apple releases like you can either choose bottom or top for a lot of command functions. I don't know if we want to because of how people change their gestures on their on their phone. I know I have mine on top, not  
+George Westbrook: it what what we need to do is it's possible um it's just looking at  
+Troy McDonald Kane: bottom.  
+George Westbrook: the for the MVP the the complexity of adding that in um because every time they set it obviously we got to store the store the settings and then dynamically change the page um based on each user. So it's it it is possible.  
+   
+ 
+
+### 00:33:06
+
+   
+Edwin: It's not one.  
+George Westbrook: It's just a matter of  
+Troy McDonald Kane: No, I was just I would only want it if it was an easy thing to in integrate.  
+George Westbrook: just  
+Edwin: Yeah.  
+Troy McDonald Kane: I wouldn't want it if it was going to overengineer it. Yeah.  
+George Westbrook: But yeah, what we can do is build two versions and then see which one all of us think is the most intuitive, blah blah blah.  
+Edwin: Cool.  
+George Westbrook: Um, have you got mirror up, Brett?  
+Max Kingaby: Can you guys see it? What I'm doing?  
+Edwin: No,  
+George Westbrook: No,  
+Edwin: we can see you though.  
+Max Kingaby: You can't see the shared screen.  
+Edwin: No.  
+Troy McDonald Kane: No.  
+Max Kingaby: Freaking's going on.  
+George Westbrook: no.  
+Max Kingaby: Who's the visiting artist?  
+Hasan Mohammed Ahmed: Um, I think if you're in access, you need to click into it on the top right of the screen and there's like a small  
+Max Kingaby: There.  
+Hasan Mohammed Ahmed: icon.  
+Max Kingaby: Okay. Yeah, I can.  
+Hasan Mohammed Ahmed: Yeah.  
+Max Kingaby: Yeah, there we  
+George Westbrook: Oh, okay.  
+   
+ 
+
+### 00:34:00
+
+   
+George Westbrook: Yeah.  
+Max Kingaby: go.  
+George Westbrook: Yes. I think if every if everyone goes top right.  
+Edwin: There you  
+George Westbrook: Yeah.  
+Edwin: go.  
+Cody Haugen: Yeah, it says the app is blocked from our side. I don't know if that's  
+George Westbrook: Um one  
+Cody Haugen: the  
+George Westbrook: second. What is the board called that you're doing it on? Brett, you're on  
+Max Kingaby: So the board's called wireframe.  
+George Westbrook: mute.  
+Max Kingaby: So if you do want to kind of click anything, click on the little plus button at the bottom on the left hand side and you type wireframe.  
+George Westbrook: No, no, no. Could you could you send me the the board so I can change the sharing settings,  
+Max Kingaby: Oh, I see. Okay, hold on.  
+George Westbrook: please?  
+Max Kingaby: Um, it's not that obvious because I just created it from Google. Well, let me see if I can  
+Edwin: I'm glad you got the hell out of there, George.  
+Max Kingaby: change.  
+Edwin: I'm glad you got the hell out of there,  
+George Westbrook: Okay.  
+   
+ 
+
+### 00:35:18
+
+   
+Edwin: Brett.  
+Max Kingaby: Uh, so it's not allowing you to edit. Okay, I think it's cuz I'm not signed in. Hold on. Let me do a sign in quickly. Oh god, I'm on Max's machine. That's the problem. Uh, bear with me. Here we go. So, it's quickly logging him  
+George Westbrook: I think if if people try now it should work I  
+Max Kingaby: in.  
+George Westbrook: think.  
+Max Kingaby: What? The edit settings. Did you fix that?  
+George Westbrook: Uh I think  
+Max Kingaby: So,  
+George Westbrook: so.  
+Max Kingaby: if you click next to all the icons right at the top, you'll see a mirror yellow button. If you click that, you should be able to jump in. Anyone having any luck? Can you edit, George?  
+George Westbrook: Yeah. Yeah, I can.  
+Max Kingaby: Um, I'm struggling here as well. Okay, good. You can. So, you can help me build at the same time.  
+Edwin: Yeah, I think if we just have one person building and we could just shout out that you Hey,  
+   
+ 
+
+### 00:37:00
+
+   
+Max Kingaby: Yeah.  
+Edwin: put it  
+George Westbrook: Yeah, just  
+Edwin: here.  
+Max Kingaby: Okay. So,  
+George Westbrook: Yeah.  
+Max Kingaby: home screen is the screen that we are going to essentially land on, right? Which will have all the different details. So the question here is we scroll down at any one time you should be able to trade right. So we don't want to limit the button to be hovering over um say when you get to a particular point of the screen you can then trade rather it hovering over so that while you're scrolling down on the screen you can still trade. So it's it's about  
+George Westbrook: Sorry.  
+Edwin: Can Can you Can you move that up just a little bit because I can't I can barely see the There you go. Yeah,  
+Max Kingaby: your  
+Edwin: I couldn't see the the the buttons. I'm sorry. Let's just assume There we go. Much better. And we'd always go buy first and then sell. That's a convention, George. Just FYI. Buy is always on the left. Sell's always on the right.  
+   
+ 
+
+### 00:38:13
+
+   
+Troy McDonald Kane: And Edwin, were you thinking you wanted the colors to change when you hover over it, or do you want the colors to be permanently uh red and green?  
+Edwin: Yeah. So, so I wouldn't put those towards the bottom either.  
+Troy McDonald Kane: Yeah.  
+Edwin: Those would be like above a chart somewhere, you know, towards the top third, your buy sells. And yeah, I think like something if we can get done where it's like, you know, they're they're a color, you know, maybe there's like a a green for buy or you know what PT have, blue for buy and red for sell, Troy,  
+Troy McDonald Kane: Yeah,  
+Edwin: for all the years.  
+Troy McDonald Kane: it was blue and blue and red.  
+Edwin: Yeah. Yeah.  
+Max Kingaby: Here  
+Edwin: Um so basically you know red always means sell somewhere uh to whatever and then you know blue  
+Troy McDonald Kane: Yeah.  
+Edwin: or green means buy and um so my thought would be they'd be a certain  
+Max Kingaby: you  
+Edwin: color until your finger you know if you hover over it it it you know maybe  
+Max Kingaby: go.  
+   
+ 
+
+### 00:39:07
+
+   
+Edwin: has a glow behind it or something so that visually you know you're getting ready to buy or sell. And if not, by the way, that can be version two. We too like we we we just need to make sure we get that minimum uh or MVPL.  
+George Westbrook: And would you say you you uh like the navbar along the bottom?  
+Edwin: Yeah. So the navbar is like basically you know you have your education, your leaderboard, your trade,  
+Max Kingaby: Good.  
+Edwin: you know, basically a trade page and then at the top you'd be able to type in like you know the the the symbol for the the share you want to play or the team name that you'd want to trade and you type in the team name um Chicago Bears with we need auto correct on that because everyone's a d****** with spelling today. So you basically have like type in Chicago and then it would be like you know Cubs,  
+Max Kingaby: and  
+Edwin: Bulls, Bears, White Socks, whatever.  
+Max Kingaby: this  
+Edwin: You click and then you know let's say you want the Bears then you go to the Bears then the chart of the Bears pops up.  
+   
+ 
+
+### 00:40:14
+
+   
+Edwin: Um go  
+Max Kingaby: pops.  
+Edwin: ahead.  
+George Westbrook: I think it was just back background. Um I think I think Brett I can't remember if Brett mentioned this but was the  
+Edwin: Okay.  
+George Westbrook: so with this buy and sell buttons because whenever somebody's on the page um assuming obviously the main action they're going to want to say is be buy or sell no matter where they are. They could be looking at the chart. They could be looking at the the past performance potentially having these two. They're down here near their thumb but they're persistent. So even when a user scrolls down or scrolls up, these stay here. Um so it always be the navbar and the buy and  
+Edwin: So there's a convention that I would say is there there's an  
+George Westbrook: sell.  
+Edwin: attractiveness to it and then there's um annoyance to it because like what happens sometimes is if you you get a fat finger we call it where you misclick and now you're buying s*** you don't want to buy or you're selling you don't want to buy sell right and so they need to have their own kind of like private space that's very distinct from every other button on there because we don't want them to be like you click buy, you know?  
+   
+ 
+
+### 00:41:26
+
+   
+Edwin: So, there needs to be like basically a place to put in the quantity you want to buy, the price you want to buy at. Okay? So, these aren't all market orders. You can put limit orders in. And so, let's say the price is trading five bid at six and you want to put a bid in at three. You know, you got to be able to type the price three, how many you want to buy, and then you click the button buy. And we what we don't want to do is have it be like,  
+George Westbrook: Yeah.  
+Edwin: are you sure you want to buy these? You know, fella,  
+George Westbrook: Yeah.  
+Edwin: you know, we don't want that. We we want to be able to just click and go.  
+George Westbrook: So maybe maybe potentially with let's say these are persistent just and then when they click buy or when they click sell it takes them to a new page where they put in the quantity they put in the price they put in all of that but maybe also having an option here where there's a little button where it can collapse it can open it or is that just too  
+   
+ 
+
+### 00:42:30
+
+   
+Edwin: No, I actually think that's pretty cool, George. Like  
+Troy McDonald Kane: What about in the middle of the buy sell button?  
+Edwin: if  
+George Westbrook: confusing?  
+Troy McDonald Kane: So that it so you you set the quantity and then you can hit buy or sell off  
+Edwin: but what he's saying is if you want to buy you you it takes you to a like a a separate  
+Troy McDonald Kane: that.  
+Edwin: execution page where then you you call out what your quantity are you know your price so it doesn't all have to be loaded in on the trade page.  
+Troy McDonald Kane: Oh, I see.  
+George Westbrook: So potentially it' be you click you click buy and maybe it's not even a new page it's a they call it like a modal so it's kind of like a page within a page. So, you click buy, something pops up, overlays on the screen, you put in the quantity, um you put in the price, um and then and then there'll be like the execute trade button, um or whatever we're going to call it. This this button here, so what I was thinking is let's imagine this is persistent.  
+   
+ 
+
+### 00:43:26
+
+   
+George Westbrook: You're scrolling up and down the screen. These are staying there, but it's annoying you that they're there. So you click you'd click that button and  
+Edwin: and they they  
+George Westbrook: they they'd minimize.  
+Edwin: minimize.  
+George Westbrook: Um they click it again and it comes  
+Edwin: I I I'm not saying I don't love that.  
+George Westbrook: back.  
+Edwin: I kind of I kind of like that. Uh especially if you're like navigating on let's say hypothetically your thought is the buy and sell are persistent whatever screen you're on. So, even if you're on a leaderboard screen and you you're like, you know, you see, oh, I'm down 10 spots from cashing and that's going to motivate you to start getting back into the market. So, you're on the leaderboard screen, you click the buy pops up, that that uh page within a page, and then you're able to start transacting right from there.  
+George Westbrook: H maybe.  
+Edwin: Is that what you're saying, George?  
+George Westbrook: So maybe there two different versions to it. So on certain pages, let's say you're viewing a a team page or if there's a specific page for trading which they've navigated to, we'd assume that because they're on that page, a trade is an action that they are most likely going to want to take.  
+   
+ 
+
+### 00:44:35
+
+   
+Edwin: likely. Yeah.  
+George Westbrook: So that would automatically pop up.  
+Edwin: Yeah.  
+George Westbrook: Maybe for other pages like the leaderboard page or the game day page, what we can have is a button that they have to click. Maybe it's in the maybe imagine this is like the I want to trade page. On another page, maybe we have this button in the top right. It pops out. They can select the team based on the information that's on the page. So, let's imagine it's the the Packers versus the Giants.  
+Edwin: Yeah,  
+George Westbrook: I got two got two teams, right?  
+Edwin: I'm proud of you.  
+George Westbrook: Um yeah,  
+Edwin: Proud of  
+George Westbrook: that's what I'm going to need to spend my weekend doing, studying uh football.  
+Edwin: you.  
+George Westbrook: Um so, yeah, they're on the page looking at the game day page. they click trade. We'd assume that because they're looking on the game day page for this game that when they pop out, they're either going to want to buy or sell one of those teams.  
+Edwin: Yeah.  
+   
+ 
+
+### 00:45:26
+
+   
+George Westbrook: They click takes them blah blah blah.  
+Edwin: Yay.  
+George Westbrook: Because one of the things is obviously we want to minimize the friction for a user being able to trade without overloading them on pages where they're most likely not going to  
+Edwin: Absolutely.  
+George Westbrook: want to trade. So maybe they just do want to collect the information they don't want to trade. We don't want to be polluting the user experience on that page. But also, we don't want them to have to, like you said, click onto one page, then click into the team, then click trade, because that's three steps they didn't need to take. we know where the user is. Um, given that information, we can make some  
+Edwin: I love this, George. I think this is going to be incredible because they um you know,  
+George Westbrook: inferences.  
+Edwin: with with what Cody's vision is for a lot of these sport radar integrations, you know, the idea is to generate trade ideas while you're reviewing the the the app, right? So, if if it does get to be annoying when you have to click because like when I want to trade on Poly Market, I got to click three times before I can actually even start inputting the amount that I'm going to to to  
+   
+ 
+
+### 00:46:26
+
+   
+George Westbrook: I  
+Edwin: trade with. It's it's really irritating.  
+George Westbrook: mean,  
+Edwin: So, if I if I had the ability to have that persistent on every page throughout my experience on Inplay that I could hit buy or sell, I actually think that's really really powerful. Troy, what do you think?  
+Troy McDonald Kane: I agree. So are we going to embed like a setup page where they can preset parameters around you know how much quantity they want like we want to make this as obviously point or um one click as possible. So on the back end if they can put in, you know, cuz I assume if you buy or sell, you're doing it as a market order. Is that right,  
+Edwin: Well, there'll be an order type that you can select,  
+Troy McDonald Kane: Edwin?  
+Edwin: right? So, if if you're going to just hit buy or sell, you type in your quantity, you can place a limit order. So, if you're going to dictate the price, uh that's, you know, it's a limit, right? Unless it's a market price, right?  
+   
+ 
+
+### 00:47:27
+
+   
+Troy McDonald Kane: Yeah,  
+Edwin: So,  
+Troy McDonald Kane: I'm just trying to think how we can speed up the entry points of that  
+Edwin: we well,  
+Troy McDonald Kane: information.  
+Edwin: so you can have a um a persistent order type that you select, which is a market order or a limit order. Um,  
+Troy McDonald Kane: Yeah.  
+Edwin: I strongly uh advise against market orders for all those traders out there as much as possible. Um, so I I would say if we could figure out a way to have the p uh an order type be persistent and then you're people are going to  
+Troy McDonald Kane: Oh, by the way, oh, wait. So, first of all, there actually aren't market orders on T0.  
+Edwin: have  
+Troy McDonald Kane: So, we actually need them to all be limit orders or we need to figure out a backend functionality for market orders.  
+Edwin: Oh, they don't have market orbs.  
+Troy McDonald Kane: No, it's not a common order type in a lot of these platforms anymore.  
+Edwin: really interesting.  
+Troy McDonald Kane: Yeah,  
+Edwin: Yeah. So,  
+Troy McDonald Kane: probably for the reason you just described.  
+   
+ 
+
+### 00:48:16
+
+   
+Edwin: I would say just, you know,  
+Troy McDonald Kane: So,  
+Edwin: Yeah.  
+Troy McDonald Kane: yeah.  
+Edwin: So, there you go. We got a limit order. So, people place some. Um,  
+Cody Haugen: George, can you hear me?  
+Edwin: do you think that's going to be problematic,  
+Cody Haugen: Oh, sorry. Go  
+Troy McDonald Kane: We were going to have the same issue with with MEX.  
+Cody Haugen: ahead.  
+Edwin: Troy?  
+Troy McDonald Kane: They don't do market orders. Market orders are not a common order type on an exchange in equities world. They're order types that the brokers create on their platforms through their UIs. And it's usually just Yeah,  
+Edwin: Really?  
+Troy McDonald Kane: it's usually just you click it and it populates whatever the best bid and offer is. So, if you're selling, it's going to pop in the best bid. If you're if you're buying, it's going to pop in the best offer price. And then you confirm and  
+Edwin: You follow what he's saying, George?  
+Troy McDonald Kane: submit.  
+Edwin: Yeah.  
+   
+ 
+
+### 00:49:04
+
+   
+Edwin: Well, let's we're going to make it 100 zero.  
+George Westbrook: 50/50.  
+Edwin: So, basically these exchanges are when you type an order in Troy  
+Troy McDonald Kane: Yeah.  
+Edwin: saying that well, I guess it's always been that way, Troy. Maybe CME is different, but you know, a limit order is where you specify the price that you want to buy or sell at. A market order is an order that says just buy, I don't care what the price is, or sell, I don't care what the price is. So the the the the interface, the broker interface basically makes it synthetic order type by populating the the the the best say offer. And so if you want to buy, it just automatically plops in. If the market's eight bit at nine, you don't have to type in nine. It the the interface does it for you. So the broker will have a a nine there for you to the the market order will hit the nine. Now what happens is there can be like fast market conditions where um market makers have a different quoting requirement and you can get really f***** hard if you um place a market order at the wrong time.  
+   
+ 
+
+### 00:50:16
+
+   
+Edwin: So um you know that that would be something. Let me think on that a day on on order type. But essentially it just prepopulates what the best bidder offer is if you're going to go with a market order.  
+George Westbrook: Okay. And then just to the one that we know T0 can do is the  
+Edwin: limit order.  
+Troy McDonald Kane: Limit  
+George Westbrook: the limit order.  
+Edwin: Limit order is just uh the exact price specified by the  
+George Westbrook: Okay.  
+Troy McDonald Kane: order.  
+George Westbrook: Mhm.  
+Edwin: user.  
+George Westbrook: Okay.  
+Edwin: Xer actually had market orders. By the  
+Max Kingaby: George, can you share the board with me again? We've grabbed some screen grabs that we just want to drop in,  
+Edwin: way,  
+Max Kingaby: but we're struggling to drop it in since the thing crashed. And I'm going to drop them in so everyone can have a look at how certain platforms use the trade.  
+Cody Haugen: George, while you do that, let me share my screen here for a second.  
+George Westbrook: Yeah.  
+Cody Haugen: So, this was something we mocked up.  
+   
+ 
+
+### 00:51:16
+
+   
+Cody Haugen: I put this in the info dump, but I think we're talking trading on if you search an individual team and and what you were just walking through and discussing there. This would be something of a game day page. So, you have two teams, right? And and there's a lot going on in this page, right? You guys can refine and we can take out some of the stuff. This is an older wireframe that we did, but like think, you know, if you had Green Bay here versus the Vikings here, the score sticker for all the games are still going on here. You could have a buy and sell button under each team and and you're trading that that game, that matchup, right? So, I there's a there's a trade functionality.  
+George Westbrook: H.  
+Cody Haugen: If I just want to search a singular team, it pops up has this pricing chart and everything you guys just discussed there. But this is like a game specific page that you want to trade either one of those teams in that specific  
+   
+ 
+
+### 00:52:10
+
+   
+George Westbrook: Yeah.  
+Cody Haugen: matchup. So this would also have that live match tracker fun fun function on it, you know, something like that. The interactive chart for for a team if you select it. So just another avenue or a different page into trading potentially two teams at the same  
+Edwin: Yeah. Which which has got me thinking here too.  
+Cody Haugen: time.  
+Edwin: Interestingly, George, you might have come up with something pretty brilliant here today. Um, when we have this this persistent buy and sell it, we want the user to be around the app a lot so that Sky has a lot more ability to say, "Hey, the navigation isn't going to be static just on the trade page. It's going to be everywhere. Um, because they can trade from any single page." Now the question um that I have is let's say um you you click uh a buy and you're going to place an order and the market's five bid at six. That means the price is five bid and the sell is six and you place a bid uh at a price of three to buy.  
+   
+ 
+
+### 00:53:19
+
+   
+Edwin: Okay. So you you're you're looking at the leaderboard page and you're like I'm going to buy them at three. If they trade down to three I'm going to get them. Uh we need something within the app that says you got filled. Okay. That basically is um so if you're not looking at your position, we're going to need something that's like a push notification or something that's like, hey, you just bought those threes that you were bidding on. And then as I'm looking around the app and and helping the advertisers get more eyeballs, then now I've got the the buy completed at three, I'm going to want to place a sell order at 7. and uh you know I want to be able to do it the moment that I know that I got to fill at three. So that way we can keep people you know banging on the sides all all all game long. The whole idea is as much trading as possible um as quickly as possible is how we're really going to engage the user and make the the experience not frustrating. at the same time with this persistent buy sell on every single page potentially if you want it.  
+   
+ 
+
+### 00:54:25
+
+   
+Edwin: uh that is going to be incredibly dynamic because as I'm researching s*** and let's say I'm on Poly Market or something I got to scroll I then I find oh I want to buy this then I got to check the I got to check the injury report. I got to do this. I got to do that. It's so cumbersome. It's so annoying. Uh so that that would be absolutely fantastic if it's  
+George Westbrook: Yeah. So, yes. So,  
+Edwin: possible.  
+George Westbrook: what we need to work out is so like like we saying Cody on a on a game day page, we'd assume if a user clicks buy or sell, they're going to want to buy or sell one of those teams in there. That is a big assumption and we might want to provide the flexibility that like let's say they're on a game day page. It's the the Packers are playing on one page, the Giants are playing on another page. Given the outcome on the Packers game, they might want to trade the Giants. So what we we've got to make the assumption in order of priority.  
+   
+ 
+
+### 00:55:19
+
+   
+George Westbrook: So in my head I think right if they're on the Packers page, they click buy, they're going to want to buy or sell one of the two teams on that page. That might be correct, it might not be. If it's not correct, we have a search capability. Search capability. They go in search for the team. Okay. It's not the it's not one of those two teams. They search, they click on it, takes them to the page, then they've got the buy and sell for for that team. So, it's kind of  
+Edwin: Well, yeah. Let me interrupt real quick. That's even you're right on spot on here,  
+George Westbrook: like  
+Edwin: George, because let's say you're on the Packers homepage and let's say Cody, we've got the Packers news feed that's coming in there and there's something on that news feed that says, "Oh, Packers are playing the Giants." Because remember, every team's going to have a bid ask. So it's not just one versus the other. And if I look at the Giants versus the Packers, I may see a beneficial to buy the Giants rather than sell the Packers from from a from a pricing standpoint at the market at that instant.  
+   
+ 
+
+### 00:56:18
+
+   
+Edwin: So the news on the Giants may compel me, I'm sorry, the news on the Packers may compel me to buy the Giants as a result in lie of selling the Packers. You follow what I mean? Does anyone not follow what I mean by  
+Skye Capazorio: It's almost it's No, no, no. I And I So I think of it in just in the way like ecommerce essentially prompts  
+Edwin: that?  
+Skye Capazorio: you below to purchase like other things you might be interested in. And I'm wondering if there's not lessons that can be taken from that.  
+George Westbrook: Yeah.  
+Skye Capazorio: I I don't know how that works.  
+George Westbrook: So we could  
+Edwin: I don't I'm not sure on the e-commerce. I'm pretty sure on the trading. Um so you you know essentially let let's say the Green Bay Packers are playing the New York  
+George Westbrook: have  
+Edwin: Giants. So we we know that's a fact. Okay. The other fact is each of them have their own market price. So the game is just a function of how that is going to affect each team's market price.  
+   
+ 
+
+### 00:57:21
+
+   
+Edwin: It doesn't mean that they're going to be absolute pricing like a you know 50/50 now 7525. Not even close because it's a full season. One stock's priced one way, one stock's priced the other. They're both trying to earn revenue that gain from say five bucks a share. Okay. But, you know, like we've said a million times, you know, Green Bay Packers win the game, but the our quarterback gets hurt. They're not going to earn the they're going to earn five bucks from us, but the market's not going to price them at a $5 win, especially if it's early in the season. They may price it as a loss, even though they won. Okay. So, the idea of the the team page long-winded way, George, you're you're spot on. Just because you're reviewing the Green Bay Packers doesn't mean you want to trade the Green Bay Packers. You may want to trade other teams that are gonna are playing Packers today or playing the Packers next week or even in two weeks. So, the information that we're going to be pulling from Sport Radar specific to the Green Bay Packers, those headlines, they're not going to um you know, conflate immediately to to reconcile the price discovery between the current game.  
+   
+ 
+
+### 00:58:30
+
+   
+Edwin: Okay? So you you know if you're if you're on your phone and you're looking you're researching looking for different um ideas for strategy uh you're right we we need to be able to trade any team even though you're looking at the Green Bay Packers. So be to be able to do the query for the symbology you know so if I'm like Green Bay Packers you know whatever the we're going to come up with symbols we'll call it uh inplay Green Bay Packers Inc. So IGBI uh versus inplay New York uh Giants we we call that uh INGI something like this. We we'll come up with a convention. I think we've tried that already, right, Kevin?  
+Cody Haugen: Yeah, I've got it all done  
+Edwin: Cool. So, we can come up with a convention so people can just type in and search that query.  
+Cody Haugen: already.  
+Edwin: What stock am I looking for? You know, just because I'm reading this news doesn't mean I want to trade  
+George Westbrook: One quick thought that I had which might be related,  
+Edwin: that  
+George Westbrook: not related. If we've only got if we've only got limit orders and we'd potentially like to have the opportunity to do market orders, could we have the user when they are clicking execute the trade, we make orders?  
+   
+ 
+
+### 00:59:46
+
+   
+George Westbrook: No,  
+Edwin: Go ahead. Let's sound it out.  
+George Westbrook: I it so  
+Edwin: I think you might be on some. Go ahead. Go ahead.  
+George Westbrook: so they make a buy. they make a buy with a certain percentage above the current price when  
+Edwin: Yep.  
+George Westbrook: they click that so that we set the limit order above and below and then we only execute one  
+Edwin: That's correct.  
+George Westbrook: of them if it touches that and cancel the other one. I'm thinking in real time so it's  
+Edwin: Yeah. Know, I mean, that's exactly how Troy's trying to describe it or  
+George Westbrook: not  
+Troy McDonald Kane: Yeah, that's and that's that's how that's how that's why in the equities world market orders don't really exist is  
+Edwin: has  
+Troy McDonald Kane: because the front end the the UIs the front ends design that functionality very similar where you can set an upper lower threshold of what percent of the best bid or best offer you want to you're willing to eat through because that's the that's the risk of a market order is that you're not going to just hit the first price you're going to potentially hit.  
+   
+ 
+
+### 01:00:38
+
+   
+George Westbrook: Yeah.  
+Troy McDonald Kane: And and there are and and now I I was going back through my notes of why market orders aren't um enabled is because you know if there's low liquidity they don't want a market order to to rip through the book. Now actually Edwin kind of fun fact is that CE actually doesn't have legit market orders. It's a it's a it's a order with with bounds.  
+Edwin: Huh?  
+Troy McDonald Kane: So when you submit a market order onto Globex, it adds a collar and a and a you know lower bound to it.  
+Edwin: Four.  
+Troy McDonald Kane: So you can't eat through the book.  
+Edwin: I got you. I mean,  
+Troy McDonald Kane: Yeah,  
+Edwin: I've gotten screwed on some pretty he the the bands must be pretty wild because the one thing we don't want to do  
+Troy McDonald Kane: they are pretty w they are very big.  
+Edwin: is Yeah.  
+Troy McDonald Kane: They're they're the the no price ranges or the no bus ranges is what they they put in for the bands.  
+Edwin: Right.  
+Troy McDonald Kane: Yeah.  
+Edwin: And a bus trade is when the exchange says it wasn't a a reasonable or economic I forget the language, but the exchange can say that trade is outside the bounds of reasonleness.  
+   
+ 
+
+### 01:01:36
+
+   
+Edwin: We're going to make it not happen. And you know there's been times where they've done that. And so you know the other thing is we want to make sure that the market is orderly uh so that we don't have people saying well I didn't mean to click a market order. I paid you know all this other. So I think for for the simulation I think we just stick with limit orders. And if you want to try to buy the if you want to be get long you got to you got to buy the ass. And perhaps what we can do, Kevin, um, as we discussed earlier, you're going to go right in charge of education. Uh, right now you've got the financial background. Um, you're going to be able to to have a module where you describe the order types and how to ensure that if you want to buy them, you know, and the price is 8 bit at 9, then bid for twelves or or something higher so that you can get as many as you want. Cool. All right,  
+Cody Haugen: Yeah,  
+   
+ 
+
+### 01:02:32
+
+   
+Max Kingaby: George, do you want to  
+Edwin: we'll figure that out. Good stuff today, George. Man,  
+Max Kingaby: sh  
+Cody Haugen: perfect.  
+Edwin: I I love where your mind's  
+George Westbrook: Yeah. So that's with the with the trading aspect.  
+Edwin: at.  
+George Westbrook: That's why I'm kind of working it from first principles. So there will be some stupid  
+Max Kingaby: Thank  
+George Westbrook: questions.  
+Troy McDonald Kane: No, but but these are not stupid questions.  
+Max Kingaby: you.  
+Troy McDonald Kane: These are questions that we that are great to ask because we're going after uh a target investment class that needs to be educated on this functionality. So, these are actually really good questions because it helps us frame this app in a way that makes it very intuitive and easy for anyone to trade with, including you. Hopefully, you'll be doing the trading  
+George Westbrook: Yeah. Yeah. Yeah.  
+Edwin: I don't think George can as a vendor,  
+George Westbrook: Yeah.  
+Troy McDonald Kane: challenge.  
+Edwin: but we we're certain certainly um maybe George's uh you know love interest or  
+   
+ 
+
+### 01:03:25
+
+   
+George Westbrook: Yeah,  
+Edwin: family.  
+George Westbrook: in bit of insider trading. Just do this, do that. Um Brett. So yeah,  
+Max Kingaby: So George,  
+George Westbrook: you wanted me  
+Max Kingaby: what I quite liked about the inplay button, it gives us more options.  
+George Westbrook: to  
+Max Kingaby: So just the way they're using it, rather than having two buttons, buy and sell, and and what's it 212? Hey, yeah. Is only a buy button. So like we're going in there thinking buy and sell. And is there a rational that these guys have been doing it for a while that they're rather just trying to trigger a habit? They're not saying at any time you should be selling, but they're also saying trade instead of buy and sell. So you click on trade. It then allows you to buy, sell, do a whole lot of different options. So it's kind of making a better use of the real estate for when you're ready to do the trade, which I thought was quite an interesting UX rather than just having two buttons there the whole time.  
+   
+ 
+
+### 01:04:21
+
+   
+Max Kingaby: I'm just wondering if you play with that a bit.  
+Edwin: I mean, I don't hate it either. It's it's one more layer, but if that if it gets me to that layer, um, you know, I mean, that persistent buy and sell for someone who's a very active trader is very attractive to me.  
+Max Kingaby: Is that okay?  
+Edwin: I mean,  
+George Westbrook: I  
+Edwin: I'll take feedback. Anybody else have a thought on it?  
+Cody Haugen: My feedback is minimalistic clicks. I mean under so adding a tra trade button that then goes to buy or sell. That's just another click that I I don't necessarily like. Now, has anyone had a look at the MetaTrades 5? Like,  
+Edwin: Kevin  
+Cody Haugen: I've used it a couple of times for trading FX and that seems to be quite it's very, very easy. When you're looking at the chart, you can literally swipe up and then has tabs across the bottom with either buy now or buy limit, sell limit, and then you can literally click on that and then you're you're in the market straight away.  
+   
+ 
+
+### 01:05:25
+
+   
+Max Kingaby: Kev, do you want to share a screen grab? Possibly we can have a look at that. We can bang it in  
+George Westbrook: I'm just looking for one  
+Max Kingaby: here.  
+George Westbrook: now.  
+Cody Haugen: Or I can send it if  
+Max Kingaby: Ideally,  
+Cody Haugen: you you message  
+Max Kingaby: do we want the people using the app to have their money  
+Cody Haugen: it to  
+Max Kingaby: invested long for as long as possible because surely with the  
+Cody Haugen: me.  
+Max Kingaby: the buy button only to not pull their money depends  
+Cody Haugen: Yeah,  
+Max Kingaby: volatility,  
+Cody Haugen: George,  
+Max Kingaby: right?  
+Cody Haugen: I got the screen grabs in my teams. If uh I can share again quick.  
+Max Kingaby: Yeah. So,  
+Cody Haugen: Thought that might be easier to down here at the bottom. What you're saying? Yeah. So, this is one that's like I pulled up the chart and then at the bottom then that can swipe up and then you can literally go across where it says um you know the buy limit, sell limit, buy stop, sell stop.  
+   
+ 
+
+### 01:06:21
+
+   
+Cody Haugen: You can literally click on any of those buttons, type in what you want, and then literally hit the trade button at the bottom and that's and then that's where it basically then comes  
+George Westbrook: Yeah.  
+Cody Haugen: up that you can sort of set your limit uh of what you want to trade and then you can obviously do a stop loss, take profit, but it's literally click the button and it it doesn't go it literally soon as you hit that button, you buy it or you sell it straight away. Again, just some options or to throw out done a few  
+George Westbrook: Yes.  
+Edwin: Are you trading on this game? No.  
+Cody Haugen: bits and pieces. Yeah.  
+Edwin: That boy. Good for  
+Cody Haugen: Yeah. Another another idea that Kevin pointed out to me is this the the number of  
+Edwin: you.  
+Max Kingaby: symbols.  
+Cody Haugen: shares is sliding up here at the top. I don't know that does maybe a fat finger or welcoming a fat finger. You're just tapping them. So it's like it'll just increase it by one or by multiple lots.  
+   
+ 
+
+### 01:07:12
+
+   
+Cody Haugen: Oh, got it. Okay. So you could I don't know. Another idea.  
+Edwin: How quick is this?  
+Cody Haugen: It was very quick. He just He just did it while we were sitting here.  
+Edwin: How long did it take you to get in the market and execute a trade?  
+Cody Haugen: Five seconds. Five seconds if that.  
+Edwin: And that's opening the app, too, right? How about once the app's open?  
+Cody Haugen: Yeah.  
+Edwin: How quick?  
+Cody Haugen: Couple of seconds.  
+Edwin: See, look at all that advertising space on Go back up.  
+Cody Haugen: Don't  
+Troy McDonald Kane: I know on the bottom.  
+Edwin: Look at all that real estate.  
+Troy McDonald Kane: Yeah,  
+Edwin: Just like why are you not  
+Cody Haugen: know.  
+Edwin: advertising?  
+Troy McDonald Kane: but I like I like the um the prices above the buttons tracking where the best bid and offer is. I think that's that's Yeah,  
+Edwin: Very rich. Yeah. Yeah.  
+Troy McDonald Kane: exactly.  
+Edwin: Nice.  
+Troy McDonald Kane: That that's our version of a market order because then you can just buy sell buy sell as you see the price is fluctuating.  
+   
+ 
+
+### 01:08:09
+
+   
+Edwin: Just hit it. So, um, George, does this help you visualize at  
+Troy McDonald Kane: Yeah.  
+George Westbrook: Yeah. Yeah,  
+Edwin: all?  
+George Westbrook: it's like I said, I think that's I'm trying to think on different where the user initiates this action, there will be a different amount of clicks. So, I think if they're let's if they're on a team page, it could be as simple as one or two clicks. If they're on maybe a game day page, it might be a minimum of three clicks. So, if they So, if they're on a team page, we'd assume they'd want to trade that team. So, it' be click. We know it's the team. Buy or sell. Um, two clicks. If it's a game day page, it might be click, choose the team. Click. They've chosen the team. Click buy or sell. Potentially could have on the game day page, both of them. So, it would be click, buy, sell for one team, buy, sell for another team, and then that minimizes the clicks.  
+   
+ 
+
+### 01:09:08
+
+   
+George Westbrook: But then there's the issue with the search as well. So, we just need to think about that. Um, let me see if I can map it out  
+Cody Haugen: Well, yeah, you can default on that game day page. You default to the two teams that are playing,  
+George Westbrook: quickly.  
+Cody Haugen: but you still have the search function. So, in most instances, because I think let's solve for the majority, of course, right? If you're on a team page, I understand your your assumptions, George. you're not wrong there. But I think the majority of people if you're on a team page are going to be trading one of those two teams. So I think then it's still two clicks. Click the team, click buy or sell. And then if you have to search, then at maximum it's three  
+George Westbrook: Yeah,  
+Cody Haugen: clicks.  
+Edwin: Yeah.  
+George Westbrook: let me I'm just mapping this out  
+Edwin: I mean, three clicks is pretty juicy.  
+George Westbrook: quickly.  
+Cody Haugen: I mean it's it's it's the maximum of what I want to go.  
+   
+ 
+
+### 01:09:57
+
+   
+Edwin: I mean I mean,  
+Cody Haugen: Yes.  
+Edwin: but that's pretty quick, Cody.  
+Cody Haugen: Yeah. No,  
+Edwin: That's like I mean,  
+Cody Haugen: I agree. Yeah. Yeah. Yeah. It's still very  
+Edwin: if it was like five clicks and typing and b*******,  
+Cody Haugen: fast.  
+Edwin: like it's tough.  
+Cody Haugen: Yeah. If we can keep it to three or less, I think we're killing it. Uh I'll I'll drop those uh screen shares in the uh Google Drive dump after this call, George. So, you have those?  
+George Westbrook: I've I think I've got them on the actually know they'd be more high fidelity on if if you could drop them. Um I've just taken a screenshot of a screenshot.  
+Cody Haugen: Yeah. Yeah. Yeah. Exactly.  
+George Westbrook: So  
+Cody Haugen: We're We're uh six degrees from Kevin Bacon already. I'll just drop you go  
+George Westbrook: yeah,  
+Cody Haugen: drive.  
+George Westbrook: let me share this again.  
+Cody Haugen: Yeah.  
+George Westbrook: Um uh  
+Cody Haugen: Sorry. I think that's the last thing I want to share.  
+   
+ 
+
+### 01:10:47
+
+   
+George Westbrook: what this so yeah what I was saying is the get this here. So like what could be if it's if they're on the team page it defaults to this something like this obviously where we have this space maybe it's maybe space at the bottom maybe a space at the top but it's the just put that's team  
+Edwin: I mean, ironically, the way you have this set up now, it very much looks like um the thing that Kevin brought up, right, in terms of like location.  
+George Westbrook: Yeah, it's because in my head in my head out of preference, I'd think I want I'd want the this to be as close to the bottom as possible. So, if we if we're optimizing for speed, it's click on the page, their thumb's going to be there already. It's just a short very short movement. Whereas, if it's up if it's up the top, they've got to reach up a bit. Um, but then I suppose then we got to think, right, well, ad placement, where are they going to where are they going to first put their eyes?  
+   
+ 
+
+### 01:11:55
+
+   
+George Westbrook: Maybe they start at the top, maybe they start at the bottom. Maybe that's something that we iterate on over time. Um but yeah, so if it's a team page,  
+Edwin: Where?  
+George Westbrook: they click trade, it goes to here, shows the team. On that team page, there's the search functionality if they want to go to another team. Um on the game day page for a specific game, maybe it's more something like this. Um where sorry, this one here where it's got both the teams that are playing in that game um from where they clicked it from. Maybe it wants to be the Giants instead of the Packers and the another NFL team. Um, and then they click search search for it, it comes up and and then they can get it there. But I think what we've got to do is just make assumptions about given the page that they're on, what teams are they most likely going to want to trade and then maybe incorporate Skye's idea which I think would definitely something we need to do where it's the kind of related related options.  
+   
+ 
+
+### 01:12:58
+
+   
+George Westbrook: So  
+Cody Haugen: Yeah,  
+George Westbrook: if  
+Cody Haugen: we're not designing the game day page right now. That's not the purpose of this call, right, George?  
+George Westbrook: No, no, it's the it's the for the trading mechanism.  
+Cody Haugen: Yeah. Yeah.  
+George Westbrook: So with with so potentially having along  
+Cody Haugen: Yep.  
+George Westbrook: here maybe smaller team boxes. So let's say there's a scrolling option where we have maybe users can scroll across for all of the teams that are currently playing at that time. Um, the only issue there is obviously this is a lot of real estate eaten up with no room for  
+Cody Haugen: That's why I think it's got to be that's why I was asking about the design function because in that in that  
+George Westbrook: ads.  
+Cody Haugen: game day page once again I I would say look at the wireframe that we did.  
+George Westbrook: Yeah.  
+Cody Haugen: I think it's it's less of a team chart on the game day page unless once again you click the team and that can take you to a team page. Get the chart.  
+   
+ 
+
+### 01:13:59
+
+   
+Cody Haugen: It's more just prices. So just just numerical values on the game day page and and the the two prices are side by side, not on top of each other to save on space there because then below that you're going to have the live match tracker. You're going to have historical stats for that matchup. You're going to have other statistical categories that are going to inform you on that game or that matchup to make a trade on either one of those two  
+George Westbrook: I I think with desktop I'd 100% agree.  
+Cody Haugen: teams.  
+George Westbrook: with mobile. That's where it could be a bit difficult. Like if we had them So if it if it was mobile and they were side by side, it'd be four buttons. Um might be might be doable. It could be. Um it's just then we probably need to take them to another page in order to maybe put in the quantity and things like that. But I suppose yeah, we can have  
+Edwin: I wouldn't worry too much about like both a page with both teams on um you know being a side by side will not work on a mobile.  
+   
+ 
+
+### 01:15:03
+
+   
+Edwin: It'll be way too scrunched. You won't be able to see it top and bottom like this potentially, but um you know I think later maybe we could have this like multi-game trading page after the MVP, but I don't I don't think we need it right out of the box. Anybody tell me why I'm wrong,  
+Troy McDonald Kane: Well,  
+Edwin: please?  
+Troy McDonald Kane: what about this idea? I think that I think it's the idea is intended to try to get as much activity on multiple securities as once. But what if um what if it was a slide left slide right with your thumb where you can go to two different order tickets? So you can configure it where you slide right if you want to trade the Packers, you slide left if you want to trade another  
+Edwin: by the way.  
+Troy McDonald Kane: team.  
+Edwin: It sounds like you spent some time on dating sites that  
+George Westbrook: But no,  
+Troy McDonald Kane: Guilty.  
+George Westbrook: but I I think it's I think it's a mechanism that people are actually used to.  
+   
+ 
+
+### 01:15:55
+
+   
+Troy McDonald Kane: But yes,  
+Edwin: that  
+Troy McDonald Kane: but but they're used to, right?  
+George Westbrook: Um,  
+Troy McDonald Kane: But but it's quick. You can hold your phone, you go like, "Oh, the Packers just scored buy." Or,  
+George Westbrook: yeah.  
+Troy McDonald Kane: "The Packers just turned over, sell." But then, you know, let's say they're playing the Bears left. You go, you know, you can just because I mean, the way I think about trading this, even though I can, is that I want to trade both of the teams playing in that matchup back and forth throughout the whole game, not just that one team.  
+Edwin: Yeah, I mean you could do a V strategy too,  
+Troy McDonald Kane: Yeah.  
+Edwin: trading both teams at once.  
+George Westbrook: So,  
+Edwin: So you could get long both, you know, both teams or short both teams or long and short both teams. And um yeah,  
+George Westbrook: yes. So maybe what we could have is when they go on to the the trade page there's if it's game if if they've navigated to it from the game day page not maybe necessarily on the game day page they click it goes to that swiping view swipe swipe right to go to the next team swipe right again if they want to do the search functionality.  
+   
+ 
+
+### 01:16:56
+
+   
+George Westbrook: So then they can go swipe swipe they know that that's what they can do to to do the search. We can still populate that page with maybe we've got the search bar. We've got maybe the active games for today. So then they can go swipe swipe, right? I want to trade another active game. Click goes to the team. Done. I want to trade a team that's not playing today. They're playing in two days. Search. But the it's Yeah. Click, swipe, swipe.  
+Cody Haugen: George.  
+George Westbrook: Done.  
+Cody Haugen: I like that. Yep. I like that.  
+George Westbrook: the benefits of using Tinder and Hinge all the time,  
+Troy McDonald Kane: Yeah.  
+George Westbrook: isn't it?  
+Edwin: Well, I wish I knew what that meant, but I'm a married  
+Troy McDonald Kane: Okay.  
+Edwin: man.  
+George Westbrook: Um, okay. That's Yeah, that's I'm getting some I think we're all getting a bit of more clarity on that now. It's so there's going to be sure there's going to be certain pages where the trading is the main aim that they are having on this page.  
+   
+ 
+
+### 01:18:03
+
+   
+George Westbrook: So maybe a team page just for sake of it. There's going to be other pages where the trading might be the secondary experience, but we want to minimize the friction them getting to that secondary experience. And then we've got in that trading page, we will make some assumptions about who they will want to trade, but give them the flexibility so that if those assumptions are wrong, they can quickly take the action with the team that they want to do. Um, okay. The data side, one, this is kind of a side note, but kind of related. One of the things we we probably need to do is have a conversation with T0 um just because when we've been when uh we've been doing a bit of research or sand found that they've got a rest API um and the fix 4.2 protocol. So fix 4.2 to that's going to be for the trading. Um but certain aspects like maybe the um fetching data um rest might be a better protocol for that. So what we might need to do is work out are they storing data?  
+   
+ 
+
+### 01:19:18
+
+   
+George Westbrook: Obviously yes they are um what data are they storing? How can we access different bits of data because then that's going to inform a bit more in the architecture as well. Um we think we're 80% there. It's just some of maybe the this is what this table looks like, this is what that table looks like. Um, which we just need a bit more clarity on because obviously we don't want to be storing data that T0 already have.  
+Troy McDonald Kane: Yeah, George, let me know when you want to set that up. They're happy to do whatever collaboration sessions you want, as many as you want.  
+George Westbrook: Perfect.  
+Troy McDonald Kane: They're very engaged and ready to to set those up. So, you let me if you want to come back to me on what works for you. I can get that set up if you you're probably going to need a couple sessions with them.  
+George Westbrook: Yeah. Yeah. I think because I think what we'll we'll spend the next day or two doing some more research f not finalizing but getting the the picture sorted in terms of the architecture then then there's going to be loads and loads of questions and there might be a bit more back and forth.  
+   
+ 
+
+### 01:20:15
+
+   
+George Westbrook: So that' be that' be really really handy. Um just looking through the thing. So the data that's something that we we need speak to T0 about access obviously the only people that can access the trading mechanism are people who are on boarded um I mean  
+Cody Haugen: Yep. On boarded and signed up.  
+George Westbrook: yeah  
+Cody Haugen: Yep.  
+George Westbrook: the priority I suppose one thing worth talking about um obviously the mechanism to trade is is needed um but then we can say obviously limit limit orders that's that's what we've got at the moment conceptually we know we can get something to work for a market order but that that might be quite a heavy lift lift in order to get that that going for the MVP. Um, so I think what what other priorities are there in in in terms of the the trading mechanism that we we either have discussed or haven't discussed that are either must haves or we can wait until later versions.  
+Cody Haugen: Troy Edwin, any other pieces to the trading?  
+Edwin: I'm I'm sorry.  
+   
+ 
+
+### 01:21:53
+
+   
+Edwin: Was that a question?  
+Cody Haugen: Yeah,  
+Edwin: I'm sorry.  
+Cody Haugen: it  
+Edwin: Can you repeat it, George? My  
+Cody Haugen: was  
+George Westbrook: Uh so in in terms of like priorities um obviously the ability to trade is one  
+Edwin: apologies.  
+George Westbrook: of the highest priorities. Um it's and then obviously the limit order market order we've got one at the moment limit order. The market order I think conceptually we can get that to work. It's just is that viable for the MVP? Most likely not. Um if it's a high high priority we can push other stuff down. Um but it's kind of what what are the priorities in this module? Um ones that we have discussed or haven't  
+Edwin: Okay.  
+George Westbrook: discussed.  
+Edwin: I mean obviously you know the the trading is number one, right? So like and trading's number one, the advertising is number two, the user experience is number three. You know h how you a lot of what we cover today are are amazing potential use cases. Um, but I do think like whatever gets us to three clicks or less to trade is is where we need to start and you know version whatever can add much more of these components.  
+   
+ 
+
+### 01:23:06
+
+   
+Edwin: Uh Troy's idea of the swipe left and right to get to different teams. I think that's a very good idea too.  
+George Westbrook: I suppose that's one thing we've got to balance as well is I suppose from a users's perspective the minimum amount of clicks  
+Cody Haugen: Yeah.  
+George Westbrook: that's the best but from an advertiser's perspective the the more pages they are seeing. I suppose that's more real estate and  
+Edwin: I I wouldn't say I I wouldn't say that because what we're what we're really trying to push here is not so  
+George Westbrook: more.  
+Edwin: much the like static banner ad of like oh there's intel down there. Most people are going to stop seeing that after a little bit of time and it's going to be hard to command high dollars. It's more about how we embed the advertiser with those impact moments to where prices change. So, you know, now, you know, BMW isn't just placing an ad, uh, you know, but they're becoming part of that story for that user because, you know, the user just made, you know, 300 bucks and, you know, BMW sponsored the the moment that the 300 bucks happened.  
+   
+ 
+
+### 01:24:11
+
+   
+Edwin: So, I think that, you know, kind of like how that Doritos bag that we had on those draft ones, you know, that that explosion of the chips or whatever it was, the idea of having those are going to be to me the most compelling sales. Now, I'm not a marketing guy, but my gut says like, you know, the ads on the pages have to have some meaning in order for them to be valuable uh to the marketers.  
+Max Kingaby: I  
+Edwin: I would think less is more provided the less has some impact and  
+Max Kingaby: think  
+Edwin: embeds itself into the user experience and the  
+Max Kingaby: also think when you're trading let the trade flow happen.  
+Edwin: game.  
+Max Kingaby: Don't worry about your advertising and the trade flow because also as an advertiser when you know when you actually purchasing you don't want to be interrupting you don't want to be detrimenting your audience everything around it say pops up all kind of stuff correct  
+Edwin: No, you want to you want to complement it. So, when I first came up with this trading advertising, you know, when I've been staring at screens for as long as I have, and there's a lot of dead space on those screens, and I like I was hungry.  
+   
+ 
+
+### 01:25:22
+
+   
+Edwin: I'm like, why isn't anyone advertising me a hamburger or whatever right now? I'm starving because I want to click it and buy it because I can't leave my screens because I I'm going to potentially lose money. So, I'm basically a prisoner to this. So, you know, I mentioned in the last call that one of my tools is I have this thing that essentially uh I created that blinks red or green for me that says, "Hey, you know, the the the five-year node versus 10-year node spread is is a buy uh here signal based on, you know, all the factors I use." But I I can't stare at that. I can only look at the price markets that I'm looking at and then out of the corner of my eye, that green is the trigger for me to start looking differently at these markets. But I don't stare at that. I stare at the markets. Similarly, I envision people are going to be staring at the charts of the game and they're going to be looking at the gamecast and they're going to be looking at news.  
+   
+ 
+
+### 01:26:17
+
+   
+Edwin: But if there's something um you know embedded into whether it be the chart like we talked for the volatility moments that say, "Oh, it's time to act or something happened that you need to be aware about that's not dominating the screen, but it it basically complements the screen." It's like, hey, you know, look here because it's important. And that's where I think the advertisers are going to get the most bang for buck. Sky or Cody, am I wrong in  
+Skye Capazorio: No, not at all. I also think so I mean I had a call earlier on today where one of them was talking we  
+Edwin: that?  
+Skye Capazorio: were just talking about various different options within that space but I think that different advertisers will see different value and I think how it relates to their brand. So, for example, a an energy drink, for example, like owning those volatility moments would be a a really high moment for them because it seamlessly ties into them bringing attention and alertness to a moment. So, it's the meeting of the two activities together. It's not just some like come and have a I don't know a massage when you're reaching that point if it's a brand like that.  
+   
+ 
+
+### 01:27:27
+
+   
+Skye Capazorio: So, do do you see what I'm saying in terms of those links? Whereas other brands will find other places that make sense. So for example, like the conversation that I had earlier today was around crypto and owning the leaderboard um that the payout of the leaderboard is paid. They have to open up a crypto wallet in order to be paid out their winnings. So like I think that that we will find all brands will be different but definitely embedding in a way that feels non nondistraction to to the activity of why people are here in trading. So not counterproductive to that but exactly as Edwin said embedded in what feels like a natural a natural fit or ownership of a moment when something happens. So yes, like when you're pushing a button to say buy or sell, you don't want an advert to then pop up to interfere with you at that point in time. But maybe when you've completed the sale, something else happens. Then that can be potentially owned by a brand within that space too, not just the inflection  
+   
+ 
+
+### 01:28:33
+
+   
+Edwin: Yeah. And and so for when I say the user experience,  
+Skye Capazorio: moment.  
+Edwin: I don't just mean like hey the trade you you know not just on the volatility moments but think of it like this at least is how I'm thinking about it and it's more this is not written in gospel. I'll take any thoughts on it. You know, let's say hypothetically Cody is 10 spots away from cashing and, you know, the game's got, you know, five minutes left. So Cody's like, I'm gonna start trading a little bit more because I want to try to cash. So now he's trying to trade for the money. And let's say, you know, he's successful and he does it. You know, we we want some type of like push notification to Cody that says, "Hey, you cashed. You made 380 bucks. You know, congratulations by Bank of America or or whatever." So now, you know, he's it's it's the entire experience is this embedded like interaction with the marketer. It's not just a a dead logo somewhere, you know. Not that those aren't important, but because this is so personal on the phone, uh we really want to try to capture that that unique experience that doesn't exist out there anywhere today as at least with, you know, sports and football, you know, particular, right?  
+   
+ 
+
+### 01:29:48
+
+   
+Edwin: So, the only way that these folks can advertise today, you know, is is mass media basically. And it's so expensive they can't really do it. So, you know, being able to like narrow down the focus to just focus on Cody, I I think that's, you know, that's where we need to live. But again, that's my vision. I don't know that that's the way it's going to roll out or can roll  
+George Westbrook: What?  
+Edwin: out.  
+Max Kingaby: Hold on, guys. 4:00. I mean 4:00. What time is it your guys side?  
+Edwin: 10:00  
+Cody Haugen: Got  
+Max Kingaby: 10:00. Um,  
+Cody Haugen: it.  
+Max Kingaby: any last things that we want to add to this?  
+Edwin: I don't think  
+Max Kingaby: I think really really good cover and a good good place for us to start  
+Edwin: so.  
+Max Kingaby: from.  
+Cody Haugen: Yeah. So, so Brett, when you say modulars or modules two and three in the invite, did that encompass two and three? I mean, it seems like we kind of talked generally about trading  
+Max Kingaby: Yeah, that's okay because we've got time on our modules.  
+   
+ 
+
+### 01:30:47
+
+   
+Cody Haugen: and  
+Max Kingaby: There's some modules that are really short. So, like I'm not too bothered, especially on these really, really important modules um that we bet it down on the ones where we can squeeze a whole lot of in. We can just add an extra half an hour. or just bang out all of them so it won't impact us. This I kind of let it run just we've got to get this part. I know it seems like it's only a small kind of user experience but it's crucial  
+Cody Haugen: Oh,  
+Edwin: No,  
+Cody Haugen: it's  
+Edwin: no.  
+Max Kingaby: right.  
+Edwin: This is more than, you know, this is it.  
+Cody Haugen: terrible.  
+Edwin: This is where where we need to to make sure it's it's really humming.  
+Max Kingaby: So it's got to land here. So we'll schedule in the others and we'll make sure that we land it on time. Um, the next one, uh, is going to include on boarding. So, I'll do a little bit of a shuffle. Um, and if we can do three, then we'll make a push. But I'm not going to do three on the key ones. I'll keep that to three kind of small ones.  
+Edwin: Okay, great. Thank you all for your time today. I thought another great productive uh session.  
+Cody Haugen: Great.  
+Edwin: Great ideas, George. Great ideas everyone else.  
+Max Kingaby: Sure.  
+Edwin: Thanks for the support,  
+Max Kingaby: Yeah.  
+Edwin: Max and Hassan and uh Brett, the rest of the team.  
+Max Kingaby: I make  
+Edwin: We'll talk to you guys in an hour, I think. Right.  
+Cody Haugen: Yeah.  
+Troy McDonald Kane: Yep.  
+Cody Haugen: Yeah,  
+Skye Capazorio: Yeah.  
+Cody Haugen: good.  
+Max Kingaby: sure.  
+Edwin: Bye.  
+Skye Capazorio: Thanks a little bit.  
+Troy McDonald Kane: Thank you.  
+Edwin: Thank you all.  
+Gary Anderson: Thank you.  
+Edwin: Bye now.  
+Gary Anderson: Byebye.  
+George Westbrook: Perfect. Speak to you soon.  
+Max Kingaby: Cheers, guys. Cheers, guys.  
+   
+ 
+
+### Transcription ended after 01:32:27
+
+  
+
+This editable transcript was computer generated and might contain errors. People can also change the text after it was created.
+
+**
