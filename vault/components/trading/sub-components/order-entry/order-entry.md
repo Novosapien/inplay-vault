@@ -271,7 +271,7 @@ graph TD
 
 The modal should feel like a trading ticket -- compact, focused, no distractions. When it appears, the background dims and the user's attention narrows to one thing: this trade. Everything they need is on one screen -- team, bid/offer, quantity, price, execute.
 
-The modal sits at the bottom of the screen (bottom sheet pattern) -- close to where the persistent buy/sell buttons live, close to the user's thumb. It slides up, not down from the top. Dismissable by swiping down or tapping outside.
+The modal sits at the bottom of the screen -- close to where the persistent buy/sell buttons live, close to the user's thumb. George described it as a "modal... page within a page." _(Bottom sheet pattern, slide-up animation, and dismiss mechanics are proposed UX — not specified in the call.)_
 
 Two distinct states for the persistent buttons:
 - **Primary pages** (team page, game day page, trade page): buy and sell buttons visible, expanded
@@ -293,9 +293,9 @@ Inside the modal:
 **UX principles specific to this sub-component:**
 
 - The modal is a dead end by design -- you do one thing here (submit an order) and you leave. No navigation, no links, no rabbit holes
-- Quantity and price fields should support smart defaults where possible -- e.g., pre-populate price with best offer (for buys) or best bid (for sells) so the user can just adjust if needed
-- Swipe between teams should feel like flipping cards, not navigating pages -- lightweight, instant, no loading state
-- Search suggestions (live games, related teams, recent trades) are secondary to the search bar -- visible but not competing for attention
+- Quantity and price fields should support smart defaults where possible -- e.g., pre-populate price with best offer (for buys) or best bid (for sells) so the user can just adjust if needed. _(Proposed — not discussed in call. Cody noted MT5 has a sliding quantity selector but flagged it as a potential fat-finger risk: "maybe a fat finger or welcoming a fat finger")_
+- Swipe between teams should feel like flipping cards, not navigating pages -- lightweight, instant, no loading state. Troy framed the swipe as enabling V-strategies: trading both teams in a matchup back and forth throughout the game
+- Search suggestions (live games, related teams) are secondary to the search bar -- visible but not competing for attention. Related-team suggestions inspired by Skye's e-commerce "other things you might be interested in" idea, endorsed by George. _(Note: "recently traded teams" as a specific suggestion category is proposed, not from the call)_
 
 ---
 
@@ -354,8 +354,8 @@ Inside the modal:
 - Team name displayed prominently in the modal -- user should always clearly see which team they're about to trade before hitting execute
 - Live bid/offer must show a freshness indicator -- if data is delayed, surface a "delayed" label
 - Pre-populate price field with best offer (for buys) or best bid (for sells) as a sensible default -- reduces the chance of users entering nonsensical prices
-- Inline link to Education component for users who may not understand limit orders -- unobtrusive but discoverable
-- Wallet balance shown in the modal -- user can see available funds before entering quantity, reducing rejected submissions
+- Inline link to Education component for users who may not understand limit orders -- unobtrusive but discoverable. _(Proposed — Edwin discussed a separate education module on order types, not an inline link in the modal)_
+- Wallet balance shown in the modal -- user can see available funds before entering quantity, reducing rejected submissions. _(Proposed — not discussed in call)_
 
 ---
 

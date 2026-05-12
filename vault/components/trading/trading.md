@@ -37,7 +37,8 @@ _Order Entry:_
 - User can place limit orders (buy or sell) for any team stock
 - User can specify quantity and price on every order
 - No confirmation dialog ("are you sure?") -- click and execute (Edwin: "we don't want that... we want to be able to just click and go")
-- Buy button always on left, sell button always on right (industry convention, Edwin/Troy confirmed)
+- Buy button always on left, sell button always on right (industry convention, Edwin confirmed)
+- Bottom navigation bar should include a dedicated "Trade" button alongside education and leaderboard (Edwin: "the navigation on the bottom should have a button called trade... takes you to the execution page")
 - Order entry via modal/overlay that appears on top of the current page, not a separate page navigation
 
 _Trade Access (persistent across app):_
@@ -59,7 +60,7 @@ _Team Search:_
 
 - User can search for any team by name or symbol from within the trade modal
 - Autocomplete/autocorrect on search (Edwin: "everyone's a d****** with spelling today")
-- Symbol convention exists -- Cody/Kevin have created this (e.g., IGBI for InPlay Green Bay Inc.)
+- Symbol convention exists -- Cody confirmed: "I've got it all done already" (e.g., Edwin suggested IGBI for InPlay Green Bay Inc., INGI for InPlay New York Giants). Edwin described the autocomplete flow: type "Chicago" → Cubs, Bulls, Bears, White Sox appear
 
 _Portfolio & Position Management (from vision -- not discussed in detail this session):_
 
@@ -73,10 +74,11 @@ _Portfolio & Position Management (from vision -- not discussed in detail this se
 **Business rules and constraints:**
 
 - Only limit orders for MVP -- tZERO does not support native market orders (Troy confirmed)
-- Synthetic market order (auto-populate best bid/offer with tolerance band) is a post-MVP feature -- George proposed the mechanism, Troy confirmed this is how equities brokers do it, but George flagged it as a heavy lift for MVP
-- Only onboarded users (completed signup + KYC) can trade (Cody confirmed: "onboarded and signed up")
-- All language must use "earn" not "win" throughout -- regulatory requirement to position as skill-based competition, not chance-based
-- Buy always left, sell always right -- non-negotiable convention
+- Synthetic market order is a post-MVP feature -- George proposed setting a limit order at a percentage above/below current price, executing one side and cancelling the other. Troy confirmed this is standard broker practice (brokers populate best bid/offer in the UI). George flagged it as a heavy lift for MVP. Troy also noted CME Globex adds collars/"no bust ranges" to market orders, useful precedent for any tolerance-band implementation
+- Only onboarded users can trade (Cody confirmed: "onboarded and signed up"). KYC requirement from vision session
+- All language must use "earn" not "win" throughout -- regulatory requirement to position as skill-based competition, not chance-based (from vision session)
+- Buy always left, sell always right -- industry convention (Edwin confirmed)
+- V strategy is supported -- users can go long both teams, short both teams, or long one and short the other simultaneously (Edwin: "you could do a V strategy too, trading both teams at once")
 
 **Edge cases and error states:**
 
@@ -96,17 +98,17 @@ Speed and simplicity. The trading UX must feel instant -- no friction, no unnece
 
 Buy/sell buttons need clear visual separation from all other UI elements to prevent fat-finger errors. They should have "their own private space" (Edwin) -- distinct enough that accidental taps are unlikely, but accessible enough that intentional taps are effortless.
 
-Bottom of screen is preferred placement for trade buttons -- optimised for thumb reach when holding a phone (George: "if I've got to click something at the top of the screen sometimes I might fumble it, whereas if it's just right by the bottom, it's quick... bam"). Configurable top/bottom placement discussed but deferred -- adds complexity (storing per-user settings, dynamically changing layout) and not viable for MVP.
+Button placement is bottom of screen, optimised for thumb reach when holding a phone (George: "if I've got to click something at the top of the screen sometimes I might fumble it, whereas if it's just right by the bottom, it's quick... bam"). Note: Edwin suggested buy/sell should sit "above a chart somewhere, towards the top third" — the bottom placement prioritises thumb accessibility over Edwin's preference, and may need revisiting during wireframing. Troy raised configurable top/bottom (citing Apple's approach) — deferred for MVP due to complexity. George suggested building two versions and testing.
 
 **Colour conventions:**
 
-- Blue for buy, red for sell (Troy/Edwin confirmed -- same as PT convention)
+- Blue for buy, red for sell (proposed -- Troy confirmed PT used blue/red; Edwin mused "green for buy or blue for buy and red for sell." Not a final decision, can be revisited)
 - Hover/touch glow effect on buttons to signal "you're about to act" -- Edwin suggested, but flagged as potentially v2
 
 **Reference products discussed in this session:**
 
 - **MetaTrader 5** (Cody demonstrated live) -- swipe up from chart to reveal trade interface. Tabs across bottom: buy now, buy limit, sell limit, buy stop, sell stop. Click, type quantity, hit trade. "Five seconds if that" to execute. Sliding quantity selector at top. Best bid/offer prices displayed above the buy/sell buttons. Troy: "that's our version of a market order because then you can just buy sell buy sell as you see the prices fluctuating"
-- **Trading 212** (Max/Brett raised) -- single "Trade" button instead of separate buy/sell. Click trade, then options expand. Reduces persistent screen clutter to one button. Edwin: "I don't hate it... it's one more layer." Cody pushed back: "that's just another click that I don't necessarily like"
+- **Trading 212** (Max/Brett raised) -- single "Trade" button instead of separate buy/sell. Click trade, then options expand. Reduces persistent screen clutter to one button. Edwin: "I don't hate it... it's one more layer." Cody pushed back: "that's just another click that I don't necessarily like." Brett also raised a retention argument: a single buy/trade button (without visible sell) might keep users invested longer — not just a UX consideration but a behavioural one
 - **Poly Market** (Edwin, negative reference for trade flow) -- "I got to click three times before I can actually even start inputting the amount... it's really irritating"
 
 **Key UX principles (from this session):**
@@ -114,8 +116,11 @@ Bottom of screen is preferred placement for trade buttons -- optimised for thumb
 - 3 clicks or fewer from any page to a submitted order -- hard target
 - Context-aware defaults reduce clicks: if the system knows which team is relevant, don't make the user tell it
 - No "are you sure?" confirmation dialogs -- trade executes on click
-- Don't interrupt the trade flow with advertising (Max: "when you're trading, let the trade flow happen")
-- Persistent trade buttons should be collapsible for users who find them intrusive while browsing
+- Don't interrupt the trade flow with advertising (Max: "when you're trading, let the trade flow happen"). Ads belong after the trade completes, not during — Skye: "when you've completed the sale, something else happens. Then that can be potentially owned by a brand"
+- Persistent trade buttons should be collapsible for users who find them intrusive while browsing (George: specifically for when users are "annoyed they're there" while scrolling)
+- Cross-team trading is a key use case: reading Packers news may compel a user to buy the Giants, because each team has independent market pricing (Edwin: "just because you're reviewing the Green Bay Packers doesn't mean you want to trade the Green Bay Packers"). Search within the trade modal and related-team suggestions (Skye's e-commerce-style "other things you might be interested in" idea, endorsed by George) serve this
+- George framed pages as primary (team page, trade page — trading is the main action) vs secondary (leaderboard, education — trading is available but not the focus). UX should reflect this distinction
+- Edwin noted significant ad real estate above the buy/sell buttons on MetaTrader: "look at all that real estate... why are you not advertising?" — connects trade UI directly to ad inventory value
 
 ---
 
@@ -126,14 +131,14 @@ Bottom of screen is preferred placement for trade buttons -- optimised for thumb
 | Order execution (limit orders) | Access | tZERO ATS via FIX 4.2 protocol | tZERO is the exchange. All orders routed through their Order Entry FIX session. They handle matching, fills, and execution reports |
 | Market data for trade modal (best bid/offer) | Access | tZERO ATS via FIX Market Data feed | Live bid/ask displayed above buy/sell buttons so users can see the current price before committing. Troy: displaying best bid/offer above buttons is "our version of a market order" |
 | Synthetic market orders (post-MVP) | Build | InPlay internal | Auto-populate limit price at best bid/offer with a tolerance band. George proposed, Troy confirmed this is standard broker practice. tZERO doesn't have native market orders -- brokers build this in their UI layer |
-| Order management (cancel/replace) | Access | tZERO ATS via FIX 4.2 | Cancel via OrderCancelRequest (MsgType=F), replace via OrderCancelReplace (MsgType=G). tZERO handles atomically |
-| Fill notifications (push) | Build | InPlay internal | Real-time push notification when a limit order fills. Delivered via WebSocket (Centrifugo) while user is in-app. Push notification if user is outside app (mechanism TBD) |
+| Order management (cancel/replace) | Access | tZERO ATS via FIX 4.2 | Cancel via OrderCancelRequest (MsgType=F), replace via OrderCancelReplace (MsgType=G). tZERO handles atomically. _From architecture docs_ |
+| Fill notifications (push) | Build | InPlay internal | Real-time push notification when a limit order fills. Delivered via WebSocket (Centrifugo) while user is in-app. Push notification if user is outside app (mechanism TBD). _Architecture: Centrifugo from architecture docs_ |
 | Trade modal / overlay UI | Build | InPlay internal | Context-aware modal with team defaulting, search, quantity/price input, execute button. Core UX of the component |
 | Persistent buy/sell buttons | Build | InPlay internal | Floating UI element across all pages with collapse/expand. Determines which teams to default based on page context |
 | Wallet management | Build | InPlay internal | Trading wallet (100K cap), referral wallet reload (below 25K trigger). Balance checks before order submission |
-| Position & P&L tracking | Build + Access | InPlay internal + tZERO | tZERO provides position fields on execution reports (PosSIZ, PosCOST, PosRpnl, PosUpnl). InPlay stores and displays |
+| Position & P&L tracking | Build + Access | InPlay internal + tZERO | tZERO provides position fields on execution reports (PosSIZ, PosCOST, PosRpnl, PosUpnl). InPlay stores and displays. _FIX field tags from architecture docs_ |
 | Team symbology / search | Build | InPlay internal | Symbol convention created by Cody/Kevin. Search with autocomplete across all teams |
-| FIX Gateway (fan-out layer) | Build | InPlay internal | Single FIX session multiplexed across all users. Translates between FIX protocol and internal message bus (NATS). Handles session management, dedup, recovery |
+| FIX Gateway (fan-out layer) | Build | InPlay internal | Single FIX session multiplexed across all users. Translates between FIX protocol and internal message bus (NATS). Handles session management, dedup, recovery. _From architecture docs_ |
 
 ---
 
@@ -188,7 +193,7 @@ George flagged the need to understand what data tZERO stores vs what InPlay need
 
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
-| tZERO ATS | Order execution via FIX 4.2 Order Entry session, market data (best bid/offer) via FIX Market Data feed, REST API for non-streaming data (account info, historical queries). FIX version discrepancy (PDFs say 4.2, online docs say 4.4) needs resolving | Yes -- no tZERO, no trading |
+| tZERO ATS | Order execution via FIX 4.2 Order Entry session (George confirmed in this call), market data (best bid/offer) via FIX Market Data feed, REST API for non-streaming data (account info, historical queries). FIX version discrepancy (PDFs say 4.2, online docs say 4.4) needs resolving _(discrepancy identified in architecture research, not this call)_ | Yes -- no tZERO, no trading |
 | tZERO collaboration sessions | Clarity on: what data tZERO stores vs what InPlay stores, table structures, REST API endpoints, FIX session limits, FIX version confirmation. Troy offered to set up -- George to come back with questions after more architecture research | Yes -- blocking final architecture decisions |
 | Information Layer component | Page context: which team/game the user is viewing, so trading can set context-aware defaults | No -- can default to search-only without context |
 | Customer Onboarding | Authenticated, KYC'd user identity and funded trading wallet (100K InPlay dollars) | Yes -- must be onboarded before trading |
@@ -201,7 +206,7 @@ George flagged the need to understand what data tZERO stores vs what InPlay need
 - **Leaderboard** (within Information Layer) needs trading P&L to calculate rankings across three verticals and four time horizons
 - **Referral component** needs trading wallet balance to trigger the reload mechanism (below 25K)
 - **Advertising (cross-cutting)** needs fill events and trading moments to trigger brand-sponsored notifications (e.g., "You cashed -- congratulations by Bank of America")
-- **Education component** needs to link to order type explanations -- Edwin assigned Kevin to build education content covering how limit orders work
+- **Education component** needs to link to order type explanations -- Edwin assigned Kevin (who has the financial background) to build education content specifically covering how limit orders work when there are no market orders (Edwin's example: "if price is 8 bid at 9, bid for 12s to get as many as you want")
 
 ---
 
@@ -228,6 +233,8 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 - Configurable button placement top/bottom (Troy raised, George flagged complexity)
 - Swipe left/right team switching (needs UX exploration before committing)
 - Hover/touch glow effects on buy/sell buttons (Edwin: "can be version two")
+- Stop loss / take profit order types (Cody noted these on MetaTrader 5)
+- Multi-game trading page with side-by-side teams (Edwin: "will not work on a mobile" — deferred post-MVP)
 
 ---
 
@@ -235,10 +242,10 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 
 **Technical risks:**
 
-- tZERO FIX version discrepancy -- PDFs specify FIX 4.2, online docs reference FIX 4.4. Must confirm before implementation. Wrong version means the gateway won't connect
+- tZERO FIX version discrepancy -- PDFs specify FIX 4.2, online docs reference FIX 4.4. Must confirm before implementation. Wrong version means the gateway won't connect. _(From architecture research, not this call)_
 - tZERO data model unknown -- George: "we think we're 80% there... it's just some of maybe this is what this table looks like, this is what that table looks like." Until resolved, we don't know what InPlay needs to store independently vs what we can query from tZERO
-- VM requirement for trading infrastructure -- low-latency trading needs VMs, not containers. Max: VMs at ~$15K/month for 1000 concurrent users vs couple hundred on containers. Cost management is critical
-- Single FIX session multiplexed across all users -- if the FIX gateway goes down, all trading stops. Architecture needs resilience here
+- VM requirement for trading infrastructure -- low-latency trading needs VMs, not containers. Max: VMs at ~$15K/month for 1000 concurrent users vs couple hundred on containers. Max framed the dual-infra split (VMs for trading, Kubernetes for everything else) as a competitive edge and cost differentiator vs competitors who load everything on VMs
+- Single FIX session multiplexed across all users -- if the FIX gateway goes down, all trading stops. Architecture needs resilience here. _(From architecture docs)_
 
 **UX risks:**
 
@@ -250,7 +257,7 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 **Infrastructure risks:**
 
 - Peak load at game moments (touchdowns, turnovers) -- architecture estimates ~250K orders in 2 seconds at spike. tZERO is the throughput bottleneck, not InPlay infrastructure. Users experience this as latency between "acknowledged" and "filled"
-- Auto-scaling timing -- George described spinning up VMs 1-1.5 hours before game day and scaling down after. If a game starts unexpectedly early or there's an unanticipated event, there could be a capacity gap before auto-scaling catches up
+- Auto-scaling timing -- George described spinning up VMs 1 to 1.5 hours before the first game on a game day and scaling down a couple of hours after the last game finishes. If a game starts unexpectedly early or there's an unanticipated event, the system will still auto-scale but the pre-warmed capacity may not be ready
 
 **Business risks:**
 
@@ -259,7 +266,7 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 **Controls needed:**
 
 - Wallet balance check before every order submission (prevent orders exceeding available funds)
-- ClOrdID format validation (max 20 chars, no leading zeroes -- tZERO will reject otherwise)
+- ClOrdID format validation (max 20 chars, no leading zeroes -- tZERO will reject otherwise). _(From architecture docs)_
 - Rate limiting on order submission to prevent bot-driven trading
 - Graceful degradation if tZERO connection drops -- show "trading unavailable" with last known state rather than allowing users to submit orders into a void
 
@@ -272,9 +279,9 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 | Order Entry | Buy/sell modal -- context-aware team defaults, quantity/price input, limit order execution. Persistent access across all pages. 3 clicks or fewer target | Collecting | [[sub-components/order-entry/order-entry]] |
 | Order Status | View pending/open orders and their current state (pending, partial fill, etc.). Cancel and modify actions. Where users check "what's happening with my orders?" | Collecting | [[sub-components/order-status/order-status]] |
 | Fill Confirmation | Notification when a fill happens (in-app + push) plus trade receipt/detail view. The moment the user learns their order executed. Potential high-value ad placement moment (post-MVP) | Collecting | [[sub-components/fill-confirmation/fill-confirmation]] |
-| Portfolio View | Current positions across all teams, unrealised P&L, total portfolio value | Proposed | |
-| Trade History | Past trades -- what was bought/sold, when, at what price, realised P&L | Proposed | |
-| Wallet Management | Trading wallet (100K cap), referral wallet, reload mechanism (below 25K trigger), balance display | Proposed | |
+| Portfolio View | Current positions across all teams, unrealised P&L, total portfolio value | Collecting | [[sub-components/portfolio-view/portfolio-view]] |
+| Trade History | Past trades -- what was bought/sold, when, at what price, realised P&L | Collecting | [[sub-components/trade-history/trade-history]] |
+| Wallet Management | Trading wallet (100K cap), referral wallet, reload mechanism (below 25K trigger), balance display | Collecting | [[sub-components/wallet-management/wallet-management]] |
 
 ---
 
