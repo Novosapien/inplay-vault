@@ -87,6 +87,14 @@ After extraction:
     6. Generate questions for next call
 ```
 
+## Linking Conventions
+
+**Sub-component links in the backfill table:** Use the full path from the component directory: `[[sub-components/name/name]]` (e.g., `[[sub-components/order-entry/order-entry]]`). The file structure is `sub-components/{name}/{name}.md` — a folder per sub-component containing a same-named markdown file.
+
+**Component backlink to vision:** Use shortest-path wikilink: `[[vision]]`.
+
+**Sub-components listed at creation time are forward references** — the pages won't exist until `/product-sub-component` is run. This is expected; Obsidian shows them as unresolved links.
+
 ## Handling Multiple Components
 
 When a transcript covers multiple components:
