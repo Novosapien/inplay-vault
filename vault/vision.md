@@ -194,158 +194,20 @@
 
 ## 2. Who Are You Building It For?
 
-Edwin's overall target: "an 18 to 55 year old who loves sports and wants to try to make some money engaging with it." He explicitly resisted narrow segmentation: "I don't think it's just students. I don't think it's just graduates. I don't think it's people just with a college education." The three personas below are inferred groupings based on the different motivations and behaviours discussed not hard segments from the transcript.
+> **Canonical audience definitions:** [[audiences]]
 
-### Persona 1: The Young Aspiring Trader (18–25, inferred)
+Edwin's overall target: "an 18 to 55 year old who loves sports and wants to try to make some money engaging with it." He explicitly resisted narrow segmentation. The audiences below are useful archetypes, not hard segments.
 
-- **Demographics:**
-  - College-aged students and recent graduates
-  - Includes international students (Taiwan, Vietnam, China, India seen at Ivy League campus tours)
-  - US-based primarily, potentially global (pending regulatory confirmation)
+Four audiences (full descriptions in [[audiences]]):
 
-- **Psychographic profile:**
-  - Wants a career in finance or believes they can build wealth through trading
-  - Sees trading as a skill to develop, not just a gamble
-  - Familiar with meme stocks, Robinhood, phone-based risk-taking
-  - Part of the generation that's comfortable with mobile-first financial products
+| # | Audience | One-liner |
+|---|----------|-----------|
+| 1 | **Crypto-Savvy Sports Trader** (Early Adopter) | Crypto-fluent, prediction-market-frustrated, hunting for true price discovery in sports |
+| 2 | **Analytical Fan / Armchair GM** (Broad Target) | Deep sports knowledge with no way to monetise it beyond fantasy or basic parlays |
+| 3 | **Finance-Curious Student** (Campus Buzz) | Ambitious, social, treats trading like a skill to build — not a gamble |
+| 4 | **Veteran Trader-Bettor** (Hands-On Operator) | Decades of cross-market experience. Edwin's profile. The power user. |
 
-- **Current behaviour:**
-  - May sports bet casually
-  - Follows sports closely
-  - Doesn't have the capital to trade real markets
-  - Edwin's own experience: "one guy told me if I had 50 grand, he'd let me trade with him. I didn't have 50 grand"
-
-- **Motivations:**
-  - Financial upside matters most to this group
-  - Building real financial literacy learning how equity markets work through sports they understand
-  - Edwin: "the benefits over time to a younger person probably are a little bit greater than an older person"
-  - Potential career pathway into finance
-
-- **Needs:**
-  - Zero cost to enter
-  - Real emotional stakes without real financial risk
-  - Basic education on trading mechanics (buy, sell, momentum, volatility)
-  - Mobile-first experience available during evenings and weekends
-
-- **Wants:**
-  - Leaderboard recognition
-  - Cash prizes
-  - Transferable trading skills applicable to traditional markets
-  - Community to learn from peers
-
-- **Pain points with current alternatives:**
-  - Can't access real markets without significant capital
-  - Prediction markets and sports betting are structurally losing propositions (85% of retail lose money)
-  - No risk-free way to develop trading skills with real emotional stakes
-  - Traditional market simulators have no skin in the game "you were completely disassociated"
-
-- **Switching trigger:**
-  - Free entry with real cash prize potential
-  - Genuine skill development that transfers to traditional equity markets
-  - An asset class they already understand (sports) with familiar trading infrastructure
-
----
-
-### Persona 2: The Sports-Passionate Casual (25–45, inferred)
-
-- **Demographics:**
-  - Broad income and education range truck drivers to office workers
-  - Not necessarily finance-educated
-  - Knows football deeply
-  - Edwin: "I want to reach truck drivers who really know football and don't have a way to express that other than gambling"
-
-- **Psychographic profile:**
-  - Sports is identity watches every game, has strong opinions on matchups and players
-  - Currently channels sports knowledge into betting
-  - May see themselves as sharp or "in the know" relative to casual fans
-  - Wants a way to profit from what they know without feeling like they're gambling
-
-- **Current behaviour:**
-  - Sports betting (US lost $15B legally in 2025, much more illegally)
-  - Some dabble in prediction markets but find them confusing or frustrating
-  - Edwin on Polymarket: "you get liquidity at really s***** prices when you need it"
-  - Spends significant time watching and analysing games already
-
-- **Motivations:**
-  - Wants to profit from sports knowledge without predatory bookmaker mechanics
-  - Wants to feel ownership (shares vs bets)
-  - Wants to be part of the action during games evenings and weekends
-  - Competitive drive wants to prove their sports knowledge has real value
-  - Edwin: "We want people who are losing money, betting on sports to come into play and I'm not going to risk my own money on sports this fall. I'm gonna compete here and try to learn a different skill on how to profit from the things I know and love"
-
-- **Needs:**
-  - Simple enough to start without trading background
-  - Real-time engagement during live games
-  - Ability to trade based on sports knowledge (not just financial technicals)
-  - Fair playing field not stacked against them like sports betting
-
-- **Wants:**
-  - Cash prizes for their sports expertise
-  - Community validation sharing winning trades
-  - Sense of ownership and longer-term position management (buy and hold for days)
-  - A nuanced way to express views (e.g., "this team will improve over weeks") rather than binary bets
-
-- **Pain points with current alternatives:**
-  - Betting is structurally a losing game (10–40¢ lines, 5–15% house hold)
-  - Prediction markets have bad liquidity at critical moments, 6–8% round-turn cost, binary outcomes
-  - When games go against you in prediction markets, can't exit without giving up massive edge
-  - No way to express a nuanced, multi-day view on a team's trajectory
-
-- **Switching trigger:**
-  - No cost to enter, real cash prizes
-  - Sports knowledge translates directly into a tradable edge
-  - Path-dependent pricing means you don't lose everything when a game goes wrong
-  - Available during the hours they're already watching football
-
----
-
-### Persona 3: The Experienced Trader (40–55, inferred)
-
-- **Demographics:**
-  - Has traded before traditional markets, options, futures
-  - Sports fan
-  - Edwin's own profile is the closest reference for this persona
-
-- **Psychographic profile:**
-  - Edwin: "is the money as important to a person my age? Probably not as someone who's young"
-  - Drawn by novelty of a new asset class and the challenge
-  - Values discipline and risk management the risk-adjusted return vertical speaks directly to them
-
-- **Current behaviour:**
-  - Already trades traditional markets during market hours
-  - May bet on sports separately
-  - Understands risk management, order books, momentum, microstructure
-  - Evenings and weekends are currently non-trading time
-
-- **Motivations:**
-  - Novelty of trading a transparent, real-time equity where you can watch your stock play on TV
-  - Intellectual challenge of a new asset class with familiar mechanics
-  - Leaderboard competition proving skill against a large field
-  - Edwin: "a first of its kind asset class focused on something people love"
-
-- **Needs:**
-  - Sophisticated trading infrastructure (order book, bid/ask, price charts)
-  - Real-time market data and news feed
-  - Ability to deploy complex strategies (momentum, volatility, reverse momentum, microstructure)
-  - Fair market with single liquidity pool and transparent pricing
-
-- **Wants:**
-  - Recognition via risk-adjusted return leaderboard (rewards their disciplined approach)
-  - Bloomberg Terminal-style data experience
-  - Large block trade visibility
-  - Potential pathway to production trading as a new income stream
-
-- **Pain points with current alternatives:**
-  - Traditional markets aren't available during evenings and weekends
-  - Sports betting doesn't reward trading skill it's binary against the house
-  - Prediction markets lack continuous pricing model and proper market infrastructure
-  - No existing product combines their trading expertise with their sports knowledge
-
-- **Switching trigger:**
-  - A genuinely new asset class with familiar trading mechanics order books, bid/ask, continuous pricing
-  - Applied to something they're passionate about
-  - Available in hours when traditional markets are closed
-  - The most transparent equity market in the world "there's no other company that you could turn on your television and watch firsthand"
+**Note on audience 4:** Edwin built InPlay for his own profile, but the marketing dollars and campus programmes are aimed at audiences 1–3. Audience 4 is a stakeholder POV — they bring product quality (they'll catch a broken order book), credibility, press, and capital, but they're not the centre-of-gravity of the user base.
 
 ---
 
@@ -769,19 +631,20 @@ Edwin's overall target: "an 18 to 55 year old who loves sports and wants to try 
 
 > Full component map, system layout, and detailed breakdowns: [[components]]
 
-Nine components identified from vision workshop. All currently in Collecting status.
+**Ten components** (Withdrawal Flow added 2026-05-14 — surfaced as a separate component during onboarding extraction).
 
 | Component | Overview | Status |
 |-----------|----------|--------|
-| **InPlay Global Website** | Corporate website — brand presence, investor-facing, links to challenge | Collecting |
+| **[[components/inplay-global-website/inplay-global-website\|InPlay Global Website]]** | Corporate website — brand presence, multisport positioning, advertiser-facing | In Design |
 | **InPlay Challenge Website** | Landing page driving registration and app download | Collecting |
-| **Customer Onboarding** | Signup → KYC → account creation → ready to trade | Collecting |
-| **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Collecting |
+| **[[components/customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | Defined |
+| **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Defined |
 | **Trading** | Trade execution and portfolio management | Collecting |
-| **Referral** | Growth engine — viral referral mechanics and reward system | Collecting |
+| **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **Third Space** | Community and social layer — stickiness, not core product | Collecting |
 | **Education** | Trading education — basics to get users started, not in-depth training | Collecting |
+| **Withdrawal Flow** | Conversion from InPlay$ to real cash — bank info, crypto wallet linking, 1099, eligibility verdict | Stub |
 
-Cross-cutting concerns (Advertising, Push/CRM, Personal Dashboard) overlay across multiple components — see [[components]] for detail.
+Cross-cutting concerns: Advertising, Push/CRM, Personal Dashboard, **Analytics & Funnel Measurement** (new), **Cybersecurity & Data-Handling Framework** (new) — see [[components]] for detail.
 
 ---
