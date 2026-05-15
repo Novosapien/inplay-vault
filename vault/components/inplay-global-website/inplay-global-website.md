@@ -5,7 +5,7 @@
 > **Date:** 2026-05-14
 > **Status:** In Design (Max + Skye)
 > **Owner:** Skye (content + brand) + Max (design/build) + Edwin (final sign-off)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[12-05-2026-onboarding-and-renewal-and-global-component]]_
 
 ---
 

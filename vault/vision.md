@@ -636,13 +636,13 @@ Four audiences (full descriptions in [[audiences]]):
 | Component | Overview | Status |
 |-----------|----------|--------|
 | **[[components/inplay-global-website/inplay-global-website\|InPlay Global Website]]** | Corporate website — brand presence, multisport positioning, advertiser-facing | In Design |
-| **InPlay Challenge Website** | Landing page driving registration and app download | Collecting |
+| **[[components/challenge-website/challenge-website\|InPlay Challenge Website]]** | Pre-app funnel surface. Holding Page (live ~15 May) replaces legacy site, main site ships end of following week. No live data on site. | Defined |
 | **[[components/customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | Defined |
 | **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Defined |
-| **Trading** | Trade execution and portfolio management | Collecting |
+| **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
-| **Third Space** | Community and social layer — stickiness, not core product | Collecting |
-| **Education** | Trading education — basics to get users started, not in-depth training | Collecting |
+| **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
+| **[[components/education/education\|Education]]** | TikTok-style trading education, 12-15 modules, reels + quizzes, referral wallet rewards, sponsor-ownable modules | Defined |
 | **Withdrawal Flow** | Conversion from InPlay$ to real cash — bank info, crypto wallet linking, 1099, eligibility verdict | Stub |
 
 Cross-cutting concerns: Advertising, Push/CRM, Personal Dashboard, **Analytics & Funnel Measurement** (new), **Cybersecurity & Data-Handling Framework** (new) — see [[components]] for detail.

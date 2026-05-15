@@ -4,7 +4,7 @@
 > **Date:** 2026-05-11
 > **Status:** Collecting
 > **Owner:** George Westbrook
-> **Sources:** _[[meetings/11-06-2026-trading-component]]_
+> **Sources:** _[[11-05-2026-trading-component]]_
 
 ---
 

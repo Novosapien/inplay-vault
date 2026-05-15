@@ -4,7 +4,7 @@
 > **Date:** 2026-05-11
 > **Status:** Collecting
 > **Owner:** George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/08-05-2026-compoent-1]], [[meetings/11-06-2026-trading-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/08-05-2026-compoent-1]], [[11-05-2026-trading-component]]_
 
 ---
 

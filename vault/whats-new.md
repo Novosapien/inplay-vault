@@ -4,7 +4,7 @@
 
 ## 2026-05-14
 
-- **Onboarding + Referral + Global Website extracted** from [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]
+- **Onboarding + Referral + Global Website extracted** from [[12-05-2026-onboarding-and-renewal-and-global-component]]
 - **[[components/customer-onboarding/customer-onboarding|Customer Onboarding]]** — full 10-section component doc. Status `Collecting` → `Defined`. 5 sub-components surfaced: Discovery & App Acquisition, Registration+KYC, Wallet Provisioning, Holding State, Returning Login
   - Key decisions: registration and KYC happen as one step; T0 owns auth credentials (SSO parked); cash wallet on T0 chain (sidesteps store-of-value licensing); pre-funded wallet pool agreed in principle (pending T0 cost); holding state UX is "gray out, never hide"
 - **[[components/referral/referral|Referral]]** — full 10-section component doc merging vision content with new transcript. Status `Collecting` → `Defined`. 7 sub-components surfaced: Code Lifecycle, Share Surfaces, Bonus Campaigns, Cash Eligibility Tracking, Social Engagement Credits, Sponsor Redemption, Donor/Group Accounts (exploratory)

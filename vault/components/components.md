@@ -4,7 +4,7 @@
 
 ## Overview
 
-**Ten components.** Customer Onboarding, Referral, and Information Layer are now `Defined` (full component docs). InPlay Global Website is `In Design` (active design work). Withdrawal Flow was surfaced in the 12-06-2026 call as a separate component — currently `Stub`. Others remain `Collecting`.
+**Ten components.** Customer Onboarding, Referral, Information Layer, Education, Third Space, and Challenge Website are now `Defined` (full component docs). InPlay Global Website is `In Design` (active design work). Withdrawal Flow was surfaced in the 12-06-2026 call as a separate component — currently `Stub`. Trading remains `Collecting` despite having a fleshed-out doc (open data + UX questions outstanding).
 
 ## Component Map
 
@@ -91,13 +91,13 @@ graph LR
 | Component | Overview | Key Elements | Status |
 |-----------|----------|-------------|--------|
 | **[[inplay-global-website/inplay-global-website\|InPlay Global Website]]** | Corporate website — brand presence, multisport positioning, advertiser-facing | Home, About, Advertising (live); Newsroom, Markets (hidden). Hero: animated price chart + multisport visuals. Hype video pending. Skye content lead, Max design | **In Design** |
-| **InPlay Challenge Website** | Landing page driving registration and app download | Hero, value prop, app store links, social proof, challenge countdown, must feel cohesive with Global site and app. Detail of app-install handoff lives here. | Collecting |
+| **[[challenge-website/challenge-website\|InPlay Challenge Website]]** | Pre-app funnel surface. Edwin: _"support page more than destination page"_ — push everything to the app | 7 sub-components: Holding Page (live ~15 May, replaces legacy green/black site), Homepage (marquee partner ticker), How It Works, Prizes, FAQ, Education Excerpts (curated subset, progressive disclosure), Form Capture+CRM (Airtable→HubSpot/Vtigger). **No live leaderboard or live match tracker on site** — too high value to leak. Separate URL from Global Website, cross-linked via tabs (SEO focus). Must feel cohesive with Global site and app. | **Defined** |
 | **[[customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | 5 sub-components: Discovery & App Acquisition, Registration+KYC, Wallet Provisioning (T0, pre-funded pool proposed), Holding State (gray out, never hide), Returning Login (T0 auth + device biometric). No SSO at launch. Email-only manual field. | **Defined** |
 | **[[information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- the main stage of the app. Covers "Discover -> See -> Understand -> Decide" user journey | Six sub-components: Discovery/Home, Game Day Overview, Single Game Page, Team Page, Research Tab (undefined), Leaderboard. Consumes SR (sports data, match tracker, news) + T0 (prices, order book). Owns the cross-correlated volatility dataset (SR events x T0 prices). News feed, block trade alerts, leaderboards (3 verticals x 4 time horizons), proximity alerts | Defined |
 | **Trading** | Trade execution and portfolio management | Buy/sell/long/short execution, order management, portfolio view, P&L tracking (daily/weekly/monthly), trading wallet (100K cap), referral wallet reload (below 25K trigger), position management (seconds to weeks), real-time during live games. Captures trade-with-location event for Referral eligibility rule. | Collecting |
 | **[[referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | 7 sub-components: Code Lifecycle (lifetime-stable), Share Surfaces (link/QR/dot card/t-shirt/embedded-post), Bonus Campaigns (multipliers + cross-product), Cash Eligibility Tracking (transparent checklist), Social Engagement Credits (agent-detected), Sponsor Redemption (future), Donor/Group Accounts (exploratory). Owns cash-payout eligibility rules. | **Defined** |
-| **Third Space** | Community and social layer — stickiness, not core product | Share executed trades (long/short), strategy discussion, fandom chat, social proofing, organic peer learning, meme-stock-style dynamics possible. Follow-individual mechanic surfaced (eToro / Polymarket / Kalshi pattern — Skye to share screenshots). InPlay does NOT curate or summarise sentiment | Collecting |
-| **Education** | Trading education — basics to get users started, not in-depth training | Trading fundamentals (buy, sell, long, short), momentum trading, volatility, risk management basics. Edwin: "at a 40,000 foot level." Scope driven by market feedback — "let the market tell us what we're supposed to create." Financial literacy transfer to traditional markets. Potential college syllabus integration. Kevin now owns. Hosting decision pending (Global vs Challenge vs in-app) | Collecting |
+| **[[third-space/third-space\|Third Space]]** | Community and social layer — stickiness, not core product | 7 sub-components: Game Day Chat (ephemeral, matchup-page, banter), Team/Favorites Chat (persistent, Reddit-style), Research AI Chat (NLP on Sport Radar stats, lives on research tab, Statmuse-style), Moderation System (user-appeals + AI layer, no active InPlay mod, "Zar" community moderators), Chat Admin Backend, plus future-state Sentiment/Data Packaging and Influencer Broadcast Channels. Open-source headless chat platform. InPlay owns all chat data. InPlay does NOT curate or summarise sentiment | **Defined** |
+| **[[education/education\|Education]]** | Trading education — basics to get users started, TikTok-native format | 7 sub-components: Modules/Reels Viewer (TikTok-style scroll, 15-sec reels, captions), Quiz/Poll Layer (2-3 multi-choice questions gate reward), Reward Integration (referral wallet credit on completion), Progress Tracking (resume state), AI Chatbot Support (handles 75-85% L1 support — needs its own session per Cody), Education-on-Website (curated subset), Sponsor Ownership Layer (single advertiser owns module per period, embedded content, not programmatic). 12-15 modules total. YouTube Shorts API for video pipeline. Kevin owns content scope. Financial literacy transfer to traditional markets. Potential college syllabus integration | **Defined** |
 | **Withdrawal Flow** _(new — surfaced 12-06-2026)_ | Conversion from InPlay$ to real cash — bank info capture, crypto wallet linking, 1099, eligibility verdict surfacing | Captured at first withdrawal request (not signup). Crypto wallet option via Coinbase (Iris conversation referenced). T0 cash wallet hosting. Receives eligibility verdict from Referral. Will be large. | Stub |
 
 ## Cross-Cutting Concerns
@@ -105,11 +105,18 @@ graph LR
 These are not standalone components — they overlay across multiple components:
 
 - **Advertising / Ad Serving:**
-  - Touches: websites, information, trading, referral, third space
+  - Touches: websites, information, trading, referral, third space, education
   - Moment-based (touchdowns, interceptions), geo-targeted (within 3 miles), demographic-targeted (age ranges), time-targeted (post-game)
   - Sponsors own specific games, volatility moments, pages
-  - Inventory management, sponsor packaging, reporting
-  - Inventory model and packaging still undefined — Skye: "right now it's not defined"
+  - **Packaging model (from 14-05-2026):** sold game-by-game in tier-block bundles. Three tiers (1/2/3) with minimum buys per tier — Edwin's framing: ~minimum 200 of ~2,100 games for top tier, 15+ for lower tiers (Cody). Brands purchase to be _adjacent to_ specific games + the moments-that-matter within those games. Tier 1 / Tier 2 / Tier 3 game classification plus Tier 1 / Tier 2 day classification (Thanksgiving > Sunday > Thursday Night Football). Special-event days (Thanksgiving 3 games, Christmas Netflix-streamed game) command premium
+  - **Billing model:** minutes of engagement, not clicks/impressions. Engagement = time spent in interfaces brand is adjacent to (matchup view, team page click-through, etc.)
+  - **Replay-persistent ads (George's idea):** ads stay on past-game pages so a user replaying a 6-week-old game still sees the ad — drives perceived value vs transient impressions
+  - **Layer above games:** ownership of trading-challenge spaces (P&L, education modules, specific pages) sold separately from game-adjacent inventory
+  - **Sponsor-owned education modules** — single advertiser owns a module for a fixed period (monthly+, not programmatic), content co-created. See Education component
+  - **Education-on-tokenization angle (Edwin):** T0 partnership creates a valuable educational ad inventory around tokenization/blockchain literacy
+  - **Mini-challenge-within-challenge** — premium event days may have own prize pools (Thanksgiving floated at $1M/game)
+  - Sky's team selling, sales deck in progress, inventory map due end of week following 14-05-2026
+  - Cody / Sky framing on counterintuitive game selection: 1-and-6 vs 1-and-6 games may have more volatility / trading activity than two Super Bowl contenders with strong defenses — flips conventional ad-sales narrative, helps NFL push eyeballs to "bad" games
 
 - **Push Notifications / CRM:**
   - Touches: all components

@@ -256,7 +256,7 @@ Brett identified this as the right component to build first: "We can figure out 
 | Game Day Overview | Today's full slate of games -- all live/upcoming, scores, price movements, mini P&L for active positions | Collecting | [[sub-components/game-day-overview]] |
 | Single Game Page | Deep view of one matchup -- match tracker, annotated chart, real-time stats, market data (bid/offer, order book), embedded trading widget, leaderboard widget | Collecting | [[sub-components/single-game-page]] |
 | Team Page | Persistent team view -- historical data (10-15 years), season stats, head-to-head matchups, stock price history. Enriched with live game data when applicable | Collecting | [[sub-components/team-page]] |
-| Research Tab | Historical analysis and volatility research tools. Free in simulation, paywalled in production. **Undefined -- needs dedicated session** | Collecting | [[sub-components/research-tab]] |
+| Research Tab | Historical analysis and volatility research tools. Free in simulation, paywalled in production. Hosts the **Research AI Chat** sub-component of [[components/third-space/third-space\|Third Space]] (NLP queries on Sport Radar stats, Statmuse-style). **Otherwise still undefined -- needs dedicated session** | Collecting | [[sub-components/research-tab]] |
 | Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard]] |
 
 ---
@@ -265,7 +265,8 @@ Brett identified this as the right component to build first: "We can figure out 
 
 ### Gaps
 
-- **Research Tab:** No definition beyond "historical analysis, free in sim, paid in production." Needs a dedicated session to scope what's actually in it
+- **Research Tab:** No definition beyond "historical analysis, free in sim, paid in production" plus confirmation that the Research AI Chat (from [[components/third-space/third-space\|Third Space]]) lives here. Otherwise needs a dedicated session to scope what's actually in it
+- **Game-page naming:** the matchup / game-day landing page (two teams playing) lacks a settled name. Used variously as "game day page", "matchup page", "single game page", "game information page". Cody: _"I didn't to be honest, I didn't know we named it anything specific up to this point. I would vote, you know, matchup page, game day page, game information page. I think we can still dial that in."_ Decision needed before terminology bleeds further across documentation
 - **News feed placement:** Vision doc specifies AP-style newswire from SR but nobody discussed where it appears in the UI or how prominent it is
 - **Large block trade alerts:** Vision doc calls these out but the call didn't discuss format, frequency, or placement
 - **Market data display (order book depth, bid/offer):** Not discussed on the call at all -- how much Bloomberg-style depth do we show on mobile?

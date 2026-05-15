@@ -4,7 +4,7 @@
 > **Audiences:** [[audiences]]
 > **Date:** 2026-05-14
 > **Status:** Stub
-> **Sources:** _[[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]_
+> **Sources:** _[[12-05-2026-onboarding-and-renewal-and-global-component]]_
 
 ---
 
