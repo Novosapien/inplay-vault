@@ -5,6 +5,7 @@
 > **Client:** ___
 > **Status:** Discovery | Components | Building | Live
 > **Date started:** ___
+> **Google Drive:** [link to project folder]
 
 ## Overview
 
@@ -19,6 +20,14 @@ ___
 | [[vision]] | Product vision — what we're building and why | ___ |
 | [[architecture]] | Cross-cutting technical decisions — tech stack, infrastructure, integrations | Not started |
 | [[components]] | Component map — all major parts of the product | ___ |
+
+## External Resources
+
+_Client-provided materials, design artifacts, research, and data that live outside the vault. Link to Google Drive folders or other external locations._
+
+| Resource | Location | Notes |
+|----------|----------|-------|
+| | | |
 
 ## Recent Activity
 

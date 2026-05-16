@@ -38,6 +38,7 @@ You are a product manager. You think in problems, not solutions. You decompose f
 | Template | Purpose | When to Load |
 |----------|---------|-------------|
 | [project-readme.md](templates/project-readme.md) | Project landing page (`index.md`) | When creating a new project directory |
+| [meeting.md](templates/meeting.md) | Meeting file structure, frontmatter, post-call analysis | When processing a transcript or explaining the meeting workflow |
 
 ## What This Skill Does
 
@@ -45,17 +46,44 @@ You are a product manager. You think in problems, not solutions. You decompose f
 
 2. **Project setup** — when starting a new product project, create the directory structure and initial README. Load `project-structure.md` for the conventions.
 
-3. **Routing** — when the conversation reaches a point where structured extraction or documentation is needed, suggest the appropriate skill:
+3. **Meeting classification and routing** — when a user provides a transcript, classify it and route appropriately:
 
-| Situation | Suggest |
-|-----------|---------|
-| Have a transcript from a first client call, need to capture the vision | `/product-vision` |
-| Have a transcript with component-level detail, need to document components | `/product-component` |
-| Have a transcript with sub-component detail, entity journeys, acceptance criteria | `/product-sub-component` |
-| Need to explore an idea before it's ready for product documentation | `/discovery` |
-| Ready to build — have enough documentation to write a spec | `/general-spec-builder` or `/agent-spec-builder` |
+   **Classification flow:**
+   1. Read the transcript in full
+   2. Load the project's component tree (`components.md` + sub-component lists from each component doc) to understand the knowledge graph
+   3. Propose the meeting type in **human-readable form** — not raw YAML. Example: "This looks like a component deep-dive on the bloomberg terminal — does that sound right?" or "This is a standup. I can see it touched a few things — let me list what I found."
+   4. User confirms or corrects
+   5. Write the frontmatter and proceed
 
-4. **Gap analysis** — review existing project documentation and identify what's missing, what questions need answering, and what the next conversation with the client should cover.
+   **Routing by type:**
+
+   | Type | What happens |
+   |------|-------------|
+   | `vision-call` | Route to `/product-vision` for extraction |
+   | `component-session` | Route to `/product-component` for extraction |
+   | `sub-component-session` | Route to `/product-sub-component` for extraction |
+   | `general` | Digest — see below |
+   | `standup` | Digest — see below |
+
+   **For general/standup — the digest flow:**
+   1. Load the full component tree first (must know what exists to map findings accurately)
+   2. Read the transcript and identify every piece of product-relevant intelligence
+   3. Present findings as a **list** — each item mapped to a known component, sub-component, or architecture area. Flag anything that doesn't match a known entity.
+   4. User confirms, corrects ("that's part of bloomberg-terminal, not new"), or removes items
+   5. Write the outputs: changelog entries on relevant sub-components, architecture notes, flags for new things
+   6. Write the post-call analysis at the top of the meeting file (findings table, not prose)
+   7. Update the meeting frontmatter (`status`, `extracted-to`)
+
+   The digest produces **light** outputs — mostly changelog entries and notes. It captures the signal; a focused session later does deep extraction if needed.
+
+4. **Routing to other skills** — when the conversation reaches a point where structured extraction or documentation is needed, suggest the appropriate skill:
+
+   | Situation | Suggest |
+   |-----------|---------|
+   | Need to explore an idea before it's ready for product documentation | `/discovery` |
+   | Ready to build — have enough documentation to write a spec | `/general-spec-builder` or `/agent-spec-builder` |
+
+5. **Gap analysis** — review existing project documentation and identify what's missing, what questions need answering, and what the next conversation with the client should cover.
 
 ## When NOT to Use This Skill
 
