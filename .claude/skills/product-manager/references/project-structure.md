@@ -47,7 +47,7 @@ Every project follows this structure. Create directories and files as needed —
 
 ## Meetings
 
-Raw meeting transcripts are stored in the project's `meetings/` directory. They are the source material that feeds extraction.
+Meeting transcripts are stored in the project's `meetings/` directory. They are the raw source material that feeds extraction and changelog updates.
 
 **Naming convention:** `YYYY-MM-DD-<slug>.md` — date of the meeting + a short descriptive title.
 
@@ -55,7 +55,68 @@ Raw meeting transcripts are stored in the project's `meetings/` directory. They 
 - User pastes transcript directly into the chat → offer to save it to `meetings/` before extraction
 - User provides a file path → read from that location, copy to `meetings/` if not already there
 
-**Source linking:** Extracted documents (vision, components, sub-components) link back to their source transcripts via a `Sources` field in the document header. This provides traceability — any content can be traced back to the specific conversation it came from.
+### Meeting Frontmatter
+
+Every meeting file has frontmatter written by the agent after reading the transcript. The agent proposes the classification in human-readable form ("This looks like a component deep-dive on the bloomberg terminal") — the user confirms or corrects before the agent writes it.
+
+```yaml
+---
+date: YYYY-MM-DD
+type: vision-call | component-session | sub-component-session | general | standup
+scope:                              # What this meeting focused on (if focused)
+  - "[[component-or-sub-component]]"
+status: raw | extracted | partially-extracted
+extracted-to:                       # Filled after processing
+  - "[[destination-doc-or-changelog]]"
+---
+```
+
+### Meeting Types
+
+| Type | What it is | Duration | Next step |
+|------|-----------|----------|-----------|
+| `vision-call` | Focused vision conversation | ~2 hours | Route to `/product-vision` |
+| `component-session` | Focused component deep-dive | ~1 hour | Route to `/product-component` |
+| `sub-component-session` | Focused sub-component / entity journey session | ~1 hour | Route to `/product-sub-component` |
+| `general` | Review session, longer discussion | ~1 hour | Digest process |
+| `standup` | Status update with discussion | ~30 min | Digest process |
+
+### Post-Call Analysis
+
+After processing, the agent writes a post-call analysis between the frontmatter and the raw transcript. This is the traceability artifact — it shows what the meeting produced and where each finding went.
+
+For **focused meetings**, the analysis is light — confirming what was extracted and linking to the output document.
+
+For **general/standup meetings**, the analysis is the main output — mapping every piece of product-relevant intelligence to its destination in the knowledge graph. Format is a findings table, not prose:
+
+```markdown
+## Post-Call Analysis
+
+| Finding | Destination | Action |
+|---------|-------------|--------|
+| Filter UX confusion | [[match-browser]] changelog | Entry added |
+| Auth provider — leaning Clerk | [[architecture]] | Note added |
+| Watchlist feature mentioned | [[bloomberg-terminal]] | Flagged — potential new sub-component |
+| Timeline discussion | — | No action (status update only) |
+```
+
+### Digest Process (General and Standup Meetings)
+
+General and standup meetings can touch any part of the knowledge graph. Before processing, the agent must load the project's component tree (`components.md` + sub-component lists from each component doc) so it can map findings to known entities.
+
+1. Load the full component tree
+2. Read the transcript and identify product-relevant intelligence
+3. Present findings as a list — each item mapped to a known entity. Flag anything unmatched.
+4. User confirms, corrects, or removes items
+5. Write changelog entries, architecture notes, and flags
+6. Write the post-call analysis at the top of the meeting file
+7. Update meeting frontmatter (`status`, `extracted-to`)
+
+Digest outputs are **light** — mostly changelog entries and notes. Deep extraction happens in focused sessions.
+
+### Source Linking
+
+Extracted documents (vision, components, sub-components) link back to their source transcripts via a `Sources` field in the document header:
 
 ```markdown
 > **Sources:** [[meetings/2026-05-05-initial-vision-call]], [[meetings/2026-05-08-component-deep-dive]]
