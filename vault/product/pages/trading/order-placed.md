@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Success confirmation after submitting an order.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -23,8 +24,8 @@ Confirmation that their trade was successfully submitted. Provides closure and c
 
 ## Where Users Go From Here
 
-- Tap "View Portfolio" → Portfolio
-- Tap "Back to Game" → Single Game Page
+- Tap "View Portfolio" → [[product/pages/trading/portfolio|Portfolio]]
+- Tap "Back to Game" → [[product/pages/discover/single-game-page|Single Game Page]]
 - Can also use tab bar to navigate anywhere
 
 ---

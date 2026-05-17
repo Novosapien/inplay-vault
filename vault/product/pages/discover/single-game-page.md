@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** The core screen — where sports data, market data, and trading converge. This is where most trading happens.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -42,11 +43,11 @@ This is the screen users spend the most time on during live games.
 
 ## Where Users Go From Here
 
-- Tap team name → Team Page
-- Tap a player name (in stats) → Player Profile
+- Tap team name → [[product/pages/discover/team-page|Team Page]]
+- Tap a player name (in stats) → [[product/pages/discover/player-profile|Player Profile]]
 - Tap Buy/Sell → Order entry panel (stays on page)
-- After confirming trade → Trade Confirmation → Order Placed
-- Tap leaderboard widget → Leaderboard
+- After confirming trade → [[product/pages/trading/confirmation|Trade Confirmation]] → [[product/pages/trading/order-placed|Order Placed]]
+- Tap leaderboard widget → [[product/pages/leaderboard/leaderboard|Leaderboard]]
 - Tap news item → News detail modal
 
 ---

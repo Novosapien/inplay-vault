@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Breakdown of wallet balances and transaction history.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -33,7 +34,7 @@ Full detail on where the user's InPlay dollars came from and how they've been sp
 
 ## Where Users Go From Here
 
-- Back → Portfolio
+- Back → [[product/pages/trading/portfolio|Portfolio]]
 
 ---
 

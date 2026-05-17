@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** All pending orders that haven't been filled yet.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -25,8 +26,8 @@ Limit orders the user has placed that are waiting to be matched. These are order
 
 ## Where Users Go From Here
 
-- Tap Cancel on an order → Cancel Order confirmation
-- Back → Portfolio
+- Tap Cancel on an order → [[product/pages/trading/cancel-order|Cancel Order]] confirmation
+- Back → [[product/pages/trading/portfolio|Portfolio]]
 
 ---
 

@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Deep view of a single position in one team.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -23,9 +24,9 @@ Everything about the user's investment in one specific team — how much they ho
 
 ## Where Users Go From Here
 
-- Tap Sell → Trade Confirmation
+- Tap Sell → [[product/pages/trading/confirmation|Trade Confirmation]]
 - Tap Buy More → Order entry
-- Back → Portfolio
+- Back → [[product/pages/trading/portfolio|Portfolio]]
 
 ---
 

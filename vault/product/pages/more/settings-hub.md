@@ -2,6 +2,7 @@
 
 > **Tab:** More
 > **Purpose:** Main menu for account management, referral program, education, and app settings.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -24,6 +25,6 @@ The "everything else" menu. Not part of the core trading loop, but important for
 
 ## Where Users Go From Here
 
-- Tap Referral → Referral Program
-- Tap Education → Education Hub
-- Tap Settings → Settings
+- Tap Referral → [[product/pages/more/referral|Referral Program]]
+- Tap Education → [[product/pages/more/education|Education Hub]]
+- Tap Settings → [[product/pages/more/settings|Settings]]

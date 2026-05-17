@@ -2,6 +2,7 @@
 
 > **Tab:** Ranks
 > **Purpose:** Public profile of another trader on the leaderboard.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -28,7 +29,7 @@ When a user taps on another trader in the leaderboard, they see that person's pu
 
 ## Where Users Go From Here
 
-- Back → Leaderboard
+- Back → [[product/pages/leaderboard/leaderboard|Leaderboard]]
 
 ---
 

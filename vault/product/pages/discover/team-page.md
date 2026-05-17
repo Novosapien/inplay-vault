@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** Research dashboard for a single team — everything you need to know before trading.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -44,12 +45,12 @@ A comprehensive view of one team's performance, stats, and market data. This pag
 ## Where Users Go From Here
 
 - Tap "Trade this team" → Order entry
-- Tap a past result → Single Game Page for that game
-- Tap "View all results" → Full Results page
-- Tap a player in spotlight → Player Profile
-- Tap an upcoming game → Single Game Page (pre-game)
-- Tap live game banner → Single Game Page (live)
-- Tap "Your Position" → Position Detail (Trade tab)
+- Tap a past result → [[product/pages/discover/single-game-page|Single Game Page]] for that game
+- Tap "View all results" → [[product/pages/discover/full-results|Full Results]] page
+- Tap a player in spotlight → [[product/pages/discover/player-profile|Player Profile]]
+- Tap an upcoming game → [[product/pages/discover/single-game-page|Single Game Page]] (pre-game)
+- Tap live game banner → [[product/pages/discover/single-game-page|Single Game Page]] (live)
+- Tap "Your Position" → [[product/pages/trading/position-detail|Position Detail]] (Trade tab)
 
 ---
 

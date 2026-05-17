@@ -2,6 +2,7 @@
 
 > **Tab:** More
 > **Purpose:** Learn how the InPlay trading challenge works.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -26,7 +27,7 @@ Educational content for users who want to understand the mechanics of trading be
 ## Where Users Go From Here
 
 - Tap a topic → educational content (future: dedicated detail pages per topic)
-- Back → Settings Hub
+- Back → [[product/pages/more/settings-hub|Settings Hub]]
 
 ---
 

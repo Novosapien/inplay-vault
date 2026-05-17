@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Confirmation before cancelling a pending order.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -21,8 +22,8 @@ A confirmation step before removing a pending limit order from the book. Prevent
 
 ## Where Users Go From Here
 
-- Tap "Confirm Cancel" → order removed, returns to Open Orders
-- Tap "Keep Order" → returns to Open Orders (order unchanged)
+- Tap "Confirm Cancel" → order removed, returns to [[product/pages/trading/open-orders|Open Orders]]
+- Tap "Keep Order" → returns to [[product/pages/trading/open-orders|Open Orders]] (order unchanged)
 
 ---
 

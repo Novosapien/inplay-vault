@@ -48,7 +48,7 @@ The InPlay Trading Challenge mobile app now has all 20 screens built with full m
 - Portfolio with multiple open positions and P&L
 
 ### Product Documentation
-- **[[product/app-pages]]** — complete screen map with descriptions and navigation flows (new)
+- **[[product/pages/PAGES|App Pages]]** — complete screen map with descriptions and navigation flows (new)
 - **Design system rules** added to CLAUDE.md — "change globally, not locally" principle
 - **Sportradar data mapping** — confirmed all sub-component data requirements can be fulfilled by NFL/NCAA Player Profile, Team Roster, Game Summary, and Weekly Injuries endpoints
 

@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** Browse today's games and find trading opportunities.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -33,10 +34,10 @@ The front door to the app's trading activity. Users scan today's games, spot int
 
 ## Where Users Go From Here
 
-- Tap a game card → Single Game Page
-- Tap a team name on a card → Team Page
-- Tap a search result → Team Page
-- Tap the game ticker chip → Single Game Page
+- Tap a game card → [[product/pages/discover/single-game-page|Single Game Page]]
+- Tap a team name on a card → [[product/pages/discover/team-page|Team Page]]
+- Tap a search result → [[product/pages/discover/team-page|Team Page]]
+- Tap the game ticker chip → [[product/pages/discover/single-game-page|Single Game Page]]
 
 ---
 

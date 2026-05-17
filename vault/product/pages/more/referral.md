@@ -2,6 +2,7 @@
 
 > **Tab:** More
 > **Purpose:** Invite friends and earn InPlay dollars.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -34,7 +35,7 @@ The referral program is a core growth mechanism. Users share their personal code
 ## Where Users Go From Here
 
 - Share actions → system share sheet / clipboard
-- Back → Settings Hub
+- Back → [[product/pages/more/settings-hub|Settings Hub]]
 
 ---
 

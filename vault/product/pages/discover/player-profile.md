@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** Individual player research — bio, stats, and injury status.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -45,8 +46,8 @@ A focused view of one player's biographical information and season statistics. P
 
 ## Where Users Go From Here
 
-- Tap team name → Team Page
-- Back button → previous screen (usually Team Page or Single Game Page)
+- Tap team name → [[product/pages/discover/team-page|Team Page]]
+- Back button → previous screen (usually [[product/pages/discover/team-page|Team Page]] or [[product/pages/discover/single-game-page|Single Game Page]])
 
 ---
 

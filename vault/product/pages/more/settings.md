@@ -2,6 +2,7 @@
 
 > **Tab:** More
 > **Purpose:** Account preferences and app configuration.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -31,7 +32,7 @@ Standard settings page for controlling notifications, appearance, and account de
 
 ## Where Users Go From Here
 
-- Back → Settings Hub
+- Back → [[product/pages/more/settings-hub|Settings Hub]]
 - Sign Out → login screen
 
 ---

@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** Complete season game history for a team.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -24,8 +25,8 @@ A scrollable list of every game a team has played this season. Accessed from the
 
 ## Where Users Go From Here
 
-- Tap any game → Single Game Page (post-game view for that matchup)
-- Back → Team Page
+- Tap any game → [[product/pages/discover/single-game-page|Single Game Page]] (post-game view for that matchup)
+- Back → [[product/pages/discover/team-page|Team Page]]
 
 ---
 

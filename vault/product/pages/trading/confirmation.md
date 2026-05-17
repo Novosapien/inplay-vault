@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Review screen before submitting an order — last chance to check details.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -27,8 +28,8 @@ A summary of the order they're about to place. Everything laid out clearly so th
 
 ## Where Users Go From Here
 
-- Tap Confirm → Order Placed (success screen)
-- Tap Cancel → back to previous screen (Game Page, Team Page, or Portfolio)
+- Tap Confirm → [[product/pages/trading/order-placed|Order Placed]] (success screen)
+- Tap Cancel → back to previous screen ([[product/pages/discover/single-game-page|Single Game Page]], [[product/pages/discover/team-page|Team Page]], or [[product/pages/trading/portfolio|Portfolio]])
 
 ---
 

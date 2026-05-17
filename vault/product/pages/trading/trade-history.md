@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Complete record of all executed trades.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -25,7 +26,7 @@ A chronological log of every trade the user has completed — both buys and sell
 
 ## Where Users Go From Here
 
-- Back → Portfolio
+- Back → [[product/pages/trading/portfolio|Portfolio]]
 
 ---
 

@@ -2,6 +2,7 @@
 
 > **Tab:** Ranks
 > **Purpose:** The competitive spine — shows users where they stand and what they need to do to earn prizes.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -45,9 +46,9 @@ The central competition view. InPlay isn't just about making good trades — it'
 
 ## Where Users Go From Here
 
-- Tap any trader → Trader Profile
+- Tap any trader → [[product/pages/leaderboard/trader-profile|Trader Profile]]
 - Tap "Me" → scrolls to user's position
-- Mentally: see gap-to-earn → go to Discovery to find a trade opportunity
+- Mentally: see gap-to-earn → go to [[product/pages/discover/discovery-feed|Discovery Feed]] to find a trade opportunity
 
 ---
 

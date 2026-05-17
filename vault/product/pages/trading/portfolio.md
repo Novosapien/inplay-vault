@@ -2,6 +2,7 @@
 
 > **Tab:** Trade
 > **Purpose:** Overview of all current positions and trading activity.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -30,10 +31,10 @@ The user's trading headquarters. Everything they own, how it's performing, and q
 
 ## Where Users Go From Here
 
-- Tap a position → Position Detail
-- Tap "Orders" → Open Orders
-- Tap "History" → Trade History
-- Tap wallet area → Wallet Details
+- Tap a position → [[product/pages/trading/position-detail|Position Detail]]
+- Tap "Orders" → [[product/pages/trading/open-orders|Open Orders]]
+- Tap "History" → [[product/pages/trading/trade-history|Trade History]]
+- Tap wallet area → [[product/pages/trading/wallet|Wallet Details]]
 
 ---
 

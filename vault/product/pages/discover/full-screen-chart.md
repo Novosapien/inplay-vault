@@ -2,6 +2,7 @@
 
 > **Tab:** Discover
 > **Purpose:** Expanded price chart for detailed analysis.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -23,7 +24,7 @@ A full-width, full-height candlestick chart that slides up as a modal overlay. F
 
 ## Where Users Go From Here
 
-- Swipe down or tap close → returns to previous screen (Game Page or Team Page)
+- Swipe down or tap close → returns to previous screen ([[product/pages/discover/single-game-page|Single Game Page]] or [[product/pages/discover/team-page|Team Page]])
 
 ---
 

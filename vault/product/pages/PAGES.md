@@ -13,46 +13,46 @@ The app has 5 main tabs accessible from the bottom navigation bar:
 
 | Tab | Label | Purpose |
 |-----|-------|---------|
-| [[home/dashboard\|Home]] | Home | Personal overview — wallets, rankings, upcoming games |
-| [[discover/discovery-feed\|Discover]] | Discover | Find games and research teams |
-| [[trading/portfolio\|Trade]] | Trade | Manage positions and execute trades |
-| [[leaderboard/leaderboard\|Ranks]] | Ranks | Competition standings and gap-to-earn |
-| [[more/settings-hub\|More]] | More | Referral, education, settings |
+| [[product/pages/home/dashboard\|Home]] | Home | Personal overview — wallets, rankings, upcoming games |
+| [[product/pages/discover/discovery-feed\|Discover]] | Discover | Find games and research teams |
+| [[product/pages/trading/portfolio\|Trade]] | Trade | Manage positions and execute trades |
+| [[product/pages/leaderboard/leaderboard\|Ranks]] | Ranks | Competition standings and gap-to-earn |
+| [[product/pages/more/settings-hub\|More]] | More | Referral, education, settings |
 
 ---
 
 ## Pages by Area
 
 ### Home (1 screen)
-- [[home/dashboard|Dashboard]]
+- [[product/pages/home/dashboard|Dashboard]]
 
 ### Discover (6 screens)
-- [[discover/discovery-feed|Discovery Feed]] — browse today's games
-- [[discover/single-game-page|Single Game Page]] — the core trading screen
-- [[discover/team-page|Team Page]] — research a single team
-- [[discover/player-profile|Player Profile]] — individual player stats and bio
-- [[discover/full-results|Full Results]] — complete season results for a team
-- [[discover/full-screen-chart|Full-Screen Chart]] — expanded price chart
+- [[product/pages/discover/discovery-feed|Discovery Feed]] — browse today's games
+- [[product/pages/discover/single-game-page|Single Game Page]] — the core trading screen
+- [[product/pages/discover/team-page|Team Page]] — research a single team
+- [[product/pages/discover/player-profile|Player Profile]] — individual player stats and bio
+- [[product/pages/discover/full-results|Full Results]] — complete season results for a team
+- [[product/pages/discover/full-screen-chart|Full-Screen Chart]] — expanded price chart
 
 ### Trading (8 screens)
-- [[trading/portfolio|Portfolio]] — all open positions and balances
-- [[trading/position-detail|Position Detail]] — deep view of one position
-- [[trading/open-orders|Open Orders]] — pending unfilled orders
-- [[trading/trade-history|Trade History]] — record of all executed trades
-- [[trading/wallet|Wallet Details]] — balance breakdown
-- [[trading/confirmation|Trade Confirmation]] — review before submitting
-- [[trading/order-placed|Order Placed]] — success confirmation
-- [[trading/cancel-order|Cancel Order]] — cancel a pending order
+- [[product/pages/trading/portfolio|Portfolio]] — all open positions and balances
+- [[product/pages/trading/position-detail|Position Detail]] — deep view of one position
+- [[product/pages/trading/open-orders|Open Orders]] — pending unfilled orders
+- [[product/pages/trading/trade-history|Trade History]] — record of all executed trades
+- [[product/pages/trading/wallet|Wallet Details]] — balance breakdown
+- [[product/pages/trading/confirmation|Trade Confirmation]] — review before submitting
+- [[product/pages/trading/order-placed|Order Placed]] — success confirmation
+- [[product/pages/trading/cancel-order|Cancel Order]] — cancel a pending order
 
 ### Leaderboard (2 screens)
-- [[leaderboard/leaderboard|Leaderboard]] — competition rankings
-- [[leaderboard/trader-profile|Trader Profile]] — another trader's public stats
+- [[product/pages/leaderboard/leaderboard|Leaderboard]] — competition rankings
+- [[product/pages/leaderboard/trader-profile|Trader Profile]] — another trader's public stats
 
 ### More (4 screens)
-- [[more/settings-hub|Settings Hub]] — main menu
-- [[more/referral|Referral Program]] — invite friends, earn InPlay dollars
-- [[more/education|Education Hub]] — learn how trading works
-- [[more/settings|Settings]] — preferences and account
+- [[product/pages/more/settings-hub|Settings Hub]] — main menu
+- [[product/pages/more/referral|Referral Program]] — invite friends, earn InPlay dollars
+- [[product/pages/more/education|Education Hub]] — learn how trading works
+- [[product/pages/more/settings|Settings]] — preferences and account
 
 ---
 

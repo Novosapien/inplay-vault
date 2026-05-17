@@ -2,6 +2,7 @@
 
 > **Tab:** Home
 > **Purpose:** Personal overview — the first thing users see after opening the app.
+> **Map:** [[product/pages/PAGES|App Pages]]
 
 ---
 
@@ -30,9 +31,9 @@ The Dashboard answers three questions at a glance:
 
 ## Where Users Go From Here
 
-- Tap a game → goes to Single Game Page (Discover tab)
-- Tap a position → goes to Position Detail (Trade tab)
-- Tap ranking card → goes to Leaderboard (Ranks tab)
+- Tap a game → goes to [[product/pages/discover/single-game-page|Single Game Page]] (Discover tab)
+- Tap a position → goes to [[product/pages/trading/position-detail|Position Detail]] (Trade tab)
+- Tap ranking card → goes to [[product/pages/leaderboard/leaderboard|Leaderboard]] (Ranks tab)
 
 ---
 
