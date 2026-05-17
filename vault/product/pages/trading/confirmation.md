@@ -1,0 +1,39 @@
+# Trade Confirmation
+
+> **Tab:** Trade
+> **Purpose:** Review screen before submitting an order — last chance to check details.
+
+---
+
+## What Users See
+
+A summary of the order they're about to place. Everything laid out clearly so they can confirm or back out.
+
+---
+
+## Key Elements
+
+- **Order Summary:**
+  - Team name
+  - Direction (Buy or Sell)
+  - Quantity (number of shares)
+  - Price (market price or limit price)
+  - Total cost or proceeds
+- **Wallet Impact** — balance before and after the trade
+- **Confirm Button** — submit the order
+- **Cancel / Back** — abandon the trade, return to previous screen
+
+---
+
+## Where Users Go From Here
+
+- Tap Confirm → Order Placed (success screen)
+- Tap Cancel → back to previous screen (Game Page, Team Page, or Portfolio)
+
+---
+
+## States
+
+- **Market order:** Shows current market price, notes it may vary slightly at execution
+- **Limit order:** Shows the exact price specified by the user
+- **Insufficient balance:** Confirm button disabled, warning shown
