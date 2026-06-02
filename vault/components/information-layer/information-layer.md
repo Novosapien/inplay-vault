@@ -252,12 +252,12 @@ Brett identified this as the right component to build first: "We can figure out 
 
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
-| Discovery / Home | Entry point -- game ticker, search, featured games, per-game cards with minimal info (3 items: game time, win probability, price direction) | Collecting | [[sub-components/discovery-home]] |
-| Game Day Overview | Today's full slate of games -- all live/upcoming, scores, price movements, mini P&L for active positions | Collecting | [[sub-components/game-day-overview]] |
-| Single Game Page | Deep view of one matchup -- match tracker, annotated chart, real-time stats, market data (bid/offer, order book), embedded trading widget, leaderboard widget | Collecting | [[sub-components/single-game-page]] |
-| Team Page | Persistent team view -- historical data (10-15 years), season stats, head-to-head matchups, stock price history. Enriched with live game data when applicable | Collecting | [[sub-components/team-page]] |
-| Research Tab | Historical analysis and volatility research tools. Free in simulation, paywalled in production. Hosts the **Research AI Chat** sub-component of [[components/third-space/third-space\|Third Space]] (NLP queries on Sport Radar stats, Statmuse-style). **Otherwise still undefined -- needs dedicated session** | Collecting | [[sub-components/research-tab]] |
-| Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard]] |
+| Discovery / Home | Entry point -- game ticker, search, featured games, per-game cards with minimal info (3 items: game time, win probability, price direction) | Collecting | [[sub-components/discovery-home/discovery-home]] |
+| Game Day Overview | Today's full slate of games -- all live/upcoming, scores, price movements, mini P&L for active positions | Collecting | [[sub-components/game-day-overview/game-day-overview]] |
+| Single Game Page | Deep view of one matchup -- match tracker, annotated chart, real-time stats, market data (bid/offer, order book), embedded trading widget, leaderboard widget | Collecting | [[sub-components/single-game-page/single-game-page]] |
+| Team Page | Persistent team view -- historical data (10-15 years), season stats, head-to-head matchups, stock price history. Enriched with live game data when applicable | Collecting | [[sub-components/team-page/team-page]] |
+| Research Tab | Historical analysis and volatility research tools. Free in simulation, paywalled in production. Hosts the **Research AI Chat** sub-component of [[components/third-space/third-space\|Third Space]] (NLP queries on Sport Radar stats, Statmuse-style). **Otherwise still undefined -- needs dedicated session** | Collecting | [[sub-components/research-tab/research-tab]] |
+| Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard/leaderboard]] |
 
 ---
 

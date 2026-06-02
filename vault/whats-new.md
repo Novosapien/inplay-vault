@@ -2,6 +2,69 @@
 
 > **Project:** [[index]]
 
+## 2026-05-17 — App Build Complete (Mock Data Phase)
+
+The InPlay Trading Challenge mobile app now has all 20 screens built with full mock data. Every screen described in the vault sub-component specs is implemented, navigable, and styled to production standard. The app is ready for stakeholder review and user testing on-device via Expo Go or EAS builds.
+
+### What's been built (May 12–17)
+
+**Core Trading Screens**
+- **Single Game Page** — the heart of the app. Head-to-head matchup, live match tracker (pre-game/live/post-game states), annotated price chart with time ranges, order book depth, embedded buy/sell, news feed, mini leaderboard widget
+- **Portfolio** — all open positions with unrealised P&L, wallet balances, quick links to orders and history
+- **Trade Confirmation Flow** — order entry → confirmation → placed screen → cancel order
+- **Position Detail** — per-team position view with entry price, P&L, trade history
+
+**Discovery & Research**
+- **Discovery Feed** — horizontal game ticker, game cards with sparklines, NFL/NCAA filter, search with type-ahead across 163 teams
+- **Team Page** — season price chart (candlestick), expandable season stats, division standings, schedule with results, injury report, player spotlight, team news, user's position P&L
+- **Player Profile** — biographical data, position-specific stat tables, injury status, headline stats grid. Navigable from Team Page and Single Game Page
+- **Full Results** — complete season game history per team
+- **Full-Screen Chart** — expanded candlestick view (modal slide-up)
+
+**Competition**
+- **Leaderboard** — 3 verticals (Best P&L, Risk-Adjusted, Comeback) × 4 time horizons (Daily, Weekly, Monthly, Full Event). Gap-to-earn as the hero metric. Brand glow header (green = earning, red = not). Auto-scroll to user's position
+- **Trader Profile** — public profile of other traders with performance stats
+
+**Supporting Screens**
+- **Dashboard (Home)** — wallet balances, ranking summary, proximity indicator, upcoming games
+- **More tab** — Referral program (Get 1,000 / Give 500), Education hub, Settings
+- **Wallet Details** — balance breakdown and transaction history
+
+### Design System
+- Dark mode default with full theme token system (colors, spacing, typography)
+- Reusable component library: Card, FilterChips, SearchBar, StatusBadge, PriceIndicator, SectionHeader, ScreenGlow, GridBackground
+- App-wide grid background at root layout level
+- Standardised back gesture across all tab stacks
+- Mobile-first — optimised for phone, consumer fintech aesthetic (not terminal UI)
+
+### Mock Data Coverage
+- 32 NFL teams + sample NCAA teams with realistic pricing
+- 109 player profiles with position-appropriate stats
+- 59 news items across team, game, and league categories
+- Season candlestick data for historical charts
+- Fake leaderboard with distinct data per vertical
+- 8 trader profiles for leaderboard drill-down
+- Order book depth data
+- Portfolio with multiple open positions and P&L
+
+### Product Documentation
+- **[[product/pages/PAGES|App Pages]]** — complete screen map with descriptions and navigation flows (new)
+- **Design system rules** added to CLAUDE.md — "change globally, not locally" principle
+- **Sportradar data mapping** — confirmed all sub-component data requirements can be fulfilled by NFL/NCAA Player Profile, Team Roster, Game Summary, and Weekly Injuries endpoints
+
+### Key Decisions
+- No player images in app (requires separate NFLPA licensing) — jersey number badges used instead
+- Player IDs are slug-based (`kc-patrick-mahomes`) for mock phase; will use Sportradar UUIDs in production
+- Gap-to-earn is more prominent than rank number on leaderboard (per spec)
+- 3 data points max per game card on Discovery (per spec)
+- Bottom padding pattern (180px) on screens with floating trade button to clear tab bar
+
+### What's Next
+- Stakeholder review / on-device testing
+- Backend integration planning (WebSocket for real-time prices, REST for user actions)
+- State management library selection
+- Authentication and KYC flow implementation
+
 ## 2026-05-14
 
 - **Onboarding + Referral + Global Website extracted** from [[12-05-2026-onboarding-and-renewal-and-global-component]]

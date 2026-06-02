@@ -17,6 +17,7 @@ A simulated sports equity trading platform where users trade team stocks during 
 | [[architecture]] | Cross-cutting technical decisions -- tech stack, infrastructure, integrations | Not started |
 | [[components]] | Component map -- all major parts of the product | In progress |
 | [[whats-new]] | Latest updates and changes | Rolling |
+| [[product/pages/PAGES\|App Pages]] | All 21 screens — what users see, navigation flows | Living |
 | [[todos]] | Open items and checklist | Rolling |
 
 ## Recent Activity
