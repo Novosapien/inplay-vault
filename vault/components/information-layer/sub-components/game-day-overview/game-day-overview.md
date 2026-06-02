@@ -4,7 +4,7 @@
 > **Date:** 2026-05-09
 > **Status:** Collecting
 > **Owner:** George Westbrook
-> **Sources:** _[[meetings/08-05-2026-compoent-1]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]]_
 
 ---
 
