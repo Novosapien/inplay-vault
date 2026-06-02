@@ -282,8 +282,11 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 | Portfolio View | Current positions across all teams, unrealised P&L, total portfolio value | Collecting | [[sub-components/portfolio-view/portfolio-view]] |
 | Trade History | Past trades -- what was bought/sold, when, at what price, realised P&L | Collecting | [[sub-components/trade-history/trade-history]] |
 | Wallet Management | Trading wallet (100K cap), referral wallet, reload mechanism (below 25K trigger), balance display | Collecting | [[sub-components/wallet-management/wallet-management]] |
+| Trading-Engine Simulation / Admin Panel _(internal tooling)_ | **Internal, not user-facing.** Simulation harness with example traders ("Contrarian Carol", "Panic Pete") to stress-test order fulfilment, per-trade speed, latency, and bid-ask spread under bursts (~100k users) before T0 integration. Intended to grow into an admin/monitoring panel. _Confirmed internal tooling (29-05/19-05)_ | Collecting | [[sub-components/trading-engine-sim/trading-engine-sim]] |
 
 ---
+
+> **Architecture note (from May touchdowns):** **T0 (tZERO) confirmed as the ATS/settlement partner** — FINRA-approved, first US ATS for tokenized assets; scale validated (~1M trades/sec, 3M wallets, no queueing). Backend uses a **FIX gateway** (built) + messaging bus + websocket connections; whitelisted IP sent to T0 for parallel testing, pursuing GCP-to-GCP direct connect. Weekly Friday T0 sync. _Sources: [[15-05-2026-touchdown]], [[18-05-2026-touchdown]], [[28-05-2026-touchdown]]._
 
 ## Gaps and Questions for Next Call
 

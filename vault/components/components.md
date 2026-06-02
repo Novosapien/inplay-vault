@@ -132,7 +132,8 @@ These are not standalone components — they overlay across multiple components:
   - Touches: all components
   - Trading alerts, referral prompts, game reminders, leaderboard updates
   - Potential for sponsor-branded communications
-  - Timing, content, and branding all still undefined
+  - **CRM = HubSpot** (selected 18-05-2026; final contract stages, ~3-month evaluation; likely a 1:1 HubSpot onboarding partner providing API endpoints + tag manager/pixels). Lead-form data also held in an **Airtable mini-CRM** (dashboard + client access) and emailed to info@inplayglobal.com as a stopgap
+  - Timing, content, and branding still being defined
 
 - **Personal Dashboard:**
   - Integration point — pulls from trading (money, P&L), information (schedule, rankings), referral (wallet balance + eligibility checklist), third space (activity)

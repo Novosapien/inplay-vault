@@ -71,26 +71,25 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 
 ---
 
-## New items to triage (not yet in the component model)
+## New items — triaged (decisions made 2026-06-02)
 
-| Item | Source | What it is | Suggested home / decision |
-|------|--------|-----------|--------------------------|
-| **AI Research Agent** (3 modes, premium ~$99.99/mo) | 18-05 | Manual chat + scheduled reports + event-triggered proactive research over Sport Radar data | Likely **defines the Information Layer → Research Tab** (currently undefined) and overlaps **Third Space → Research AI Chat**. Decide ownership before documenting |
-| **Trading-engine simulation / admin panel** (internal) | 19-05 | Internal stress-test + monitoring tool; example-trader simulation; pre-T0 load testing | Internal tooling — likely a **Trading** sub-component or a separate internal-ops doc. Not user-facing |
-| **Multi-sport expansion** (baseball, soccer by July, view-only) | 28-05 | Non-tradable sports data as funnel/lead-magnet | Scope decision (focus vs lead-magnet) — affects Information Layer + vision scope boundary. **Undecided** |
+| Item | Source | What it is | Decision |
+|------|--------|-----------|----------|
+| **AI Research Agent** (3 modes, premium ~$99.99/mo) | 18-05 | Manual chat + scheduled reports + event-triggered proactive research over Sport Radar data | ✅ **Part of the Research Tab** ([[information-layer]] sub-component). Documented; manual-chat mode = Third Space's Research AI Chat (reconcile ownership) |
+| **Trading-engine simulation / admin panel** (internal) | 19-05 | Internal stress-test + monitoring tool; example-trader simulation; pre-T0 load testing | ✅ **Internal tooling.** Added as a Trading sub-component, marked internal/not-user-facing |
+| **Multi-sport expansion** (baseball, soccer by July, view-only) | 28-05 | Non-tradable sports data as funnel/lead-magnet | ❌ **NOT doing this.** Was an exploratory ask only — decided against. Stays out of scope |
 | **T0 white-label** (InPlay app as T0's primary app for all products) | 28-05 | Exploratory: license InPlay app to T0 for equities/futures/options/tokenized | Exploratory business deal — note in vision/commercial, not a build component yet |
 | **B2B hype video / white papers / live metrics ticker** | 29-05 | Marketing/credibility assets on the Global Website | Belong to **InPlay Global Website** scope |
 
 ---
 
-## Recommended doc updates (for approval)
+## Doc updates applied (2026-06-02)
 
-Low-risk **confirmations** (resolve pending/undefined items):
-1. **Push/CRM** cross-cutting bullet → record **HubSpot + Airtable** (resolves "undefined").
-2. **Trading** → record **T0 confirmed as ATS partner** + scale validated + FIX-gateway architecture + the internal sim/admin tool.
-3. **Customer Onboarding** → lead-form fields, Face ID research, PWA fallback.
+1. ✅ **Information Layer → Research Tab** — defined via the AI Research Agent (3 modes, ~$99.99/mo production). Updated sub-component doc, changelog, and parent entries.
+2. ✅ **Trading** — added the internal Trading-Engine Simulation / Admin Panel sub-component + a T0/architecture note (T0 confirmed ATS, FIX gateway, scale validated).
+3. ✅ **Push/CRM** cross-cutting bullet — recorded **HubSpot + Airtable** (resolves "undefined").
+4. ✅ **Customer Onboarding** — added the PWA-first delivery note; confirmed **Persona** as the identity-verification vendor (already documented); clarified lead-form fields live on the website, not app registration.
 
-Definitional (need a decision first — flagged above):
-4. **Information Layer → Research Tab** ← the AI Research Agent (decide vs Third Space's Research AI Chat first).
-5. **Multi-sport expansion** ← scope decision (focus vs lead-magnet).
-6. **Advertising** cross-cutting → per-tab sponsors + native-integration mandate + GAM-rejected (extends the existing enriched bullet).
+Not applied (no change needed / out of scope):
+- **Multi-sport expansion** — decided against (see above).
+- **Advertising** per-tab sponsors / native-integration mandate / GAM-rejected — already captured in the enriched cross-cutting Advertising bullet from the May ad-sessions commit.
