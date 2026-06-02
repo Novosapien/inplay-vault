@@ -631,7 +631,7 @@ Four audiences (full descriptions in [[audiences]]):
 
 > Full component map, system layout, and detailed breakdowns: [[components]]
 
-**Ten components** (Withdrawal Flow added 2026-05-14 — surfaced as a separate component during onboarding extraction).
+**Eleven components** (Withdrawal Flow added 2026-05-14 during onboarding extraction; IPO Module added 2026-05-26 from a dedicated deep-dive — the gating event that issues every tradeable asset).
 
 | Component | Overview | Status |
 |-----------|----------|--------|
@@ -639,6 +639,7 @@ Four audiences (full descriptions in [[audiences]]):
 | **[[components/challenge-website/challenge-website\|InPlay Challenge Website]]** | Pre-app funnel surface. Holding Page (live ~15 May) replaces legacy site, main site ships end of following week. No live data on site. | Defined |
 | **[[components/customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | Defined |
 | **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Defined |
+| **[[components/ipo-module/ipo-module\|IPO Module]]** | "Trading Challenge Draft" — issues every tradeable asset (5M float, static-ask buy-only, 72h window) before secondary trading; owns season-end liquidation. 6 sub-components decomposed | Defined |
 | **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
