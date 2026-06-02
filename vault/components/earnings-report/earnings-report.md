@@ -3,7 +3,7 @@
 > **Vision:** [[vision]]
 > **Audiences:** [[audiences]]
 > **Date:** 2026-05-27
-> **Status:** Collecting
+> **Status:** Defined
 > **Owner:** Edwin (client-facing — mechanics owner) + George (engineering) + Cody (trading/UX)
 > **Sources:** _[[meetings/27-05-2026-Earnings-report]], [[06-05-2026-vision-workshop]]_
 
@@ -243,11 +243,11 @@ graph LR
 
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
-| Earnings Feed / Release Page | Batched Bloomberg-style live feed; pop-to-top; favourites pinned, search, conference filters, alphabetical default | Collecting | [[sub-components/earnings-feed/earnings-feed]] |
-| Earnings Report Card | Individual team report: EST vs ACT, graphical presentation, embedded trade button | Collecting | [[sub-components/earnings-report-card/earnings-report-card]] |
-| Off-Field Earnings Engine | Computes EST (week prior) + ACT (release day); ½ on-field winner, $250/game volume-allocated | Collecting | [[sub-components/off-field-earnings-engine/off-field-earnings-engine]] |
-| Historical Earnings & Chart Annotation | Per-team-company earnings archive + coloured earnings dot on the price chart | Collecting | [[sub-components/historical-earnings/historical-earnings]] |
-| Earnings Alerts & Countdown | Push notification on release + countdown to the release moment | Collecting | [[sub-components/earnings-alerts/earnings-alerts]] |
+| Earnings Feed / Release Page | Batched Bloomberg-style live feed; pop-to-top; favourites pinned, search, conference filters, alphabetical default | Defined | [[sub-components/earnings-feed/earnings-feed]] |
+| Earnings Report Card | Individual team report: EST vs ACT, graphical presentation, embedded trade button | Defined | [[sub-components/earnings-report-card/earnings-report-card]] |
+| Off-Field Earnings Engine | Computes EST (week prior) + ACT (release day); ½ on-field winner, $250/game volume-allocated | Defined | [[sub-components/off-field-earnings-engine/off-field-earnings-engine]] |
+| Historical Earnings & Chart Annotation | Per-team-company earnings archive + coloured earnings dot on the price chart | Defined | [[sub-components/historical-earnings/historical-earnings]] |
+| Earnings Alerts & Countdown | Push notification on release + countdown to the release moment | Defined | [[sub-components/earnings-alerts/earnings-alerts]] |
 
 ---
 

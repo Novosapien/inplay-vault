@@ -640,7 +640,7 @@ Four audiences (full descriptions in [[audiences]]):
 | **[[components/customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | Defined |
 | **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Defined |
 | **[[components/ipo-module/ipo-module\|IPO Module]]** | "Trading Challenge Draft" — issues every tradeable asset (5M float, static-ask buy-only, 72h window) before secondary trading; owns season-end liquidation. 6 sub-components decomposed | Defined |
-| **[[components/earnings-report/earnings-report\|Earnings Report]]** | Recurring tradable event — weekly off-field earnings (EST vs ACT) re-price each team's stock; built on the IPO off-field mechanic | Collecting |
+| **[[components/earnings-report/earnings-report\|Earnings Report]]** | Recurring tradable event — weekly off-field earnings (EST vs ACT) re-price each team's stock; built on the IPO off-field mechanic. 5 sub-components decomposed | Defined |
 | **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
