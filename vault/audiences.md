@@ -3,7 +3,7 @@
 > **Vision:** [[vision]]
 > **Status:** Defined
 > **Date:** 2026-05-13
-> **Sources:** Brand entity work (Q2 2026) + [[meetings/06-05-2026-vision-workshop]] + [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]
+> **Sources:** Brand entity work (Q2 2026) + [[meetings/06-05-2026-vision-workshop]] + [[12-05-2026-onboarding-and-renewal-and-global-component]]
 
 ---
 
@@ -122,4 +122,4 @@ Edwin's overall target: _"an 18 to 55 year old who loves sports and wants to try
 
 - Gender split — relevant or deliberately not segmented?
 - Global vs US-only — pending Marlin's regulatory guidance (open at vision-doc level)
-- Audience 1 (Crypto-Savvy) crypto-payout demand — confirm via Iris conversation (referenced in [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]])
+- Audience 1 (Crypto-Savvy) crypto-payout demand — confirm via Iris conversation (referenced in [[12-05-2026-onboarding-and-renewal-and-global-component]])

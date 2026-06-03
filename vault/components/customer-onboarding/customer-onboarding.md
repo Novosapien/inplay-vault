@@ -5,7 +5,7 @@
 > **Date:** 2026-05-13
 > **Status:** Defined
 > **Owner:** Brett (client-facing) + George (engineering)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[12-05-2026-onboarding-and-renewal-and-global-component]]_
 
 ---
 
@@ -40,6 +40,8 @@ The flow is identical for all four audiences. The differences are **acquisition 
 | Analytical Fan / Armchair GM | Friend referrals, social shares, gorilla marketing (t-shirt QR, viewing parties), Reddit, podcasts | No-friction signup. Consumer-recognisable KYC (gov ID + face scan). Clear "what's in it for me" framing on the referral popup. |
 | Finance-Curious Student | Campus ambassadors, dot cards, alumni networks, university curriculum, TikTok / Instagram | Mobile-first, fast, fun. Familiar KYC mechanic. Referral incentive ("Get 1,000, Give 500") visible and unmissable. |
 | Veteran Trader-Bettor | Press, podcasts, industry network, word of mouth | Speed. Won't be deterred by extra fields, but appreciates the lack of them. Mostly: don't waste their time. |
+
+> **Delivery note (May touchdowns):** **Login + KYC + referral is the first-version priority** — captured early so users are onboarded ahead of the summer referral programme. If app-store approval isn't ready in time (the first 3× referral event is 21 June), the fallback is a **PWA** (same React Native codebase, possibly re-rendered as server-side NextJS; **Persona** KYC wired in, identical branding) so onboarding/referral can run without Apple/Android approval. _Identity verification is handled by **Persona** (already the documented KYC vendor) — it manages all gov-doc + biometric verification._ The pre-app **lead-capture form** fields (last name, phone, "university or company" open text) live on the **Challenge/Global website**, not the app's registration (which stays email-only + Persona). _Sources: [[15-05-2026-touchdown]], [[18-05-2026-touchdown]], [[28-05-2026-touchdown]]._
 
 ---
 
@@ -204,6 +206,17 @@ A broader measurement need surfaced in conversation: a single end-to-end CTA fun
 
 This is a **cross-cutting concern** that does not belong solely to Onboarding — it overlaps Advertising, Push/CRM, Referral, Trading, and Personal Dashboard. ⚠️ **Recommend a dedicated cross-cutting Analytics & Funnel Measurement document.** Onboarding owns the segment of that funnel from app-install-event → wallet-ready event.
 
+### Pre-Onboarding Funnel: Form Capture → CRM → App Install
+
+A pre-app warm-lead funnel was scoped in 14-05-2026:
+
+- The [[components/challenge-website/challenge-website\|Challenge Website]] (and its precursor Holding Page, live ~15 May) captures early-interest signups via a single form: first name, last name, optional mobile, email, business / college, advertiser-or-student type flag.
+- Form data lands in **Airtable** initially (Brett's interim store), then pipes into **HubSpot or Vtigger** (Cody's team is choosing).
+- Once CRM is live: automated welcome email on signup, promotional email drips, app-install prompts.
+- Brett: _"We're just going to bang it into Airtable, store it there for you and then push that through to HubSpot once you guys are ready."_
+- This pre-onboarding stage is upstream of the app-install event — these leads convert to Onboarding when they download the app and start the signup flow.
+- The bridge between this CRM-tracked lead and the in-app onboarding event needs an identity-stitch (email match? UTM tracking? Other?) ⚠️ **Gap** — feeds the Analytics & Funnel Measurement cross-cutting concern.
+
 ---
 
 ## 8. Dependencies
@@ -214,7 +227,7 @@ This is a **cross-cutting concern** that does not belong solely to Onboarding �
 |---|---|---|
 | **Persona** | KYC SDK + webhook for pass/fail status + retry semantics | **Yes** — core path |
 | **T0** | Wallet provisioning API, auth credentials API, pre-funded wallet pool support | **Yes** — core path |
-| **Challenge Website** | Hands users into app install (deep linking, app-store handoff) | No — app-side can build first |
+| **[[components/challenge-website/challenge-website\|Challenge Website]]** | Hands users into app install (deep linking, app-store handoff). Also runs the pre-onboarding form-capture funnel that feeds CRM warm-leads. | No — app-side can build first |
 | **Referral component** | Lifetime-stable code generation; referral code lookup/validation on signup | No — can mock for early dev |
 | **App store presence (iOS + Android)** | Approved listings | **Yes** — for end-to-end test |
 | **Marlin's regulatory ruling** | US-only vs global jurisdiction confirmation | Partial — affects Persona config |
