@@ -287,6 +287,8 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 ---
 
 > **Architecture note (from May touchdowns):** **T0 (tZERO) confirmed as the ATS/settlement partner** — FINRA-approved, first US ATS for tokenized assets; scale validated (~1M trades/sec, 3M wallets, no queueing). Backend uses a **FIX gateway** (built) + messaging bus + websocket connections; whitelisted IP sent to T0 for parallel testing, pursuing GCP-to-GCP direct connect. Weekly Friday T0 sync. _Sources: [[15-05-2026-touchdown]], [[18-05-2026-touchdown]], [[28-05-2026-touchdown]]._
+>
+> **Update (1–8 June touchdowns):** **VPC stood up** — locked down, secure, and connected to T0. The **FIX gateway was rebuilt** to handle very high concurrent request volume; **load testing (Hassan) is fast** ("room for improvement, but a really good starting point"). The **T0 integration is working** with backend dashboards and a scale-test harness ready to push the integration. The good T0 call (05-06) moved into edge cases / test scenarios. **Open homework (→ [[architecture/open-questions]]):** define how **buying power and the referral wallet** operate and look/feel, and **which parts NOVO builds vs T0** — refines the still-blocking "what does tZERO manage?" question. _Sources: [[03-06-2026-touchdown]], [[05-06-2026-touchdown]]._
 
 ## Gaps and Questions for Next Call
 

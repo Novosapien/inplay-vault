@@ -2,9 +2,10 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-05-09
+> **Updated:** 2026-06-08 — SR data live in prototype; replay-simulation model, ~18 moments/game validated, SR entity-ID join model (see touchdown note below)
 > **Status:** Collecting
 > **Owner:** George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[meetings/06-05-2026-vision-workshop]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[meetings/06-05-2026-vision-workshop]], [[05-06-2026-touchdown]], [[08-06-2026-touchdown]]_
 
 ---
 
@@ -260,6 +261,8 @@ Brett identified this as the right component to build first: "We can figure out 
 | Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard/leaderboard]] |
 
 ---
+
+> **Touchdown-sweep note (1–8 June 2026):** **Sport Radar data is live in the prototype** — real SR data streaming into the PWA; placeholder data is explicitly labelled "demo data". **Replay-simulation model:** the SR feed is pinned to a **past point in time** (week 10 of 2024 in the 05-06 demo; 2025 season in 08-06) so completed games replay with **real** standings, results, injury reports, and key-player stats, with **every moment per game** linked to a popup; pricing/market data not yet wired; live moments will run off the **SR provider simulation endpoint**. **Moments-per-game validated at ~18** (granularity up to ~170) — confirms the "15–20 highlight moments per game" premise; UX decision to **group moments by quarter** (Cody's play-by-play-widget pattern) rather than show all. **SR entity-ID join model:** one SR ID ties together **play-by-play, AP editorial newswire, headshots, and win-probability** — so AP **injury-article context** can be pulled onto player cards (injuries are a major trade driver); **win-probability lives under the global American-football API**, not the NFL API (IDs interoperate — resolves a 403 George hit); headshots not yet licensed. **Team page** now carries all season stats, conferences, and full results — decision to show **current + previous season only**. **Demo strategy:** advertiser demos run on the **mock-data branch** (looks/acts like production — in-game data, price updates, updated ad units, no "demo" labels), not the live-SR branch which looks incomplete out of season. _Sources: [[05-06-2026-touchdown]], [[08-06-2026-touchdown]]._
 
 ## Gaps and Questions for Next Call
 
