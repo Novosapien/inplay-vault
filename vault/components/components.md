@@ -150,5 +150,6 @@ These are not standalone components — they overlay across multiple components:
 - **Cybersecurity & Data-Handling Framework** _(new — surfaced 12-06-2026):_
   - Troy flagged: _"the more data we collect, the more sensitive it gets and the more susceptible we are to cyber attacks."_
   - Specifically applies to: PII from Persona, biometric data, location data (Referral), bank info (Withdrawal Flow), wallet ledgers (T0)
+  - **Pre-deploy content/compliance control (10-06-2026):** an **agent team reviews all copy before any publish** — scanning sensitive/regulated terms (prize-money **guarantees**, securities-offer language) and blocking deploy until cleared. Triggered by an incident where a site-generation agent invented a "guaranteed prize money up to $25M" policy in the Global Website legal footer (the rule is always **"up to $25M", never "guaranteed"**). Legal disclaimers reviewed by external counsel (Marlin) for now-vs-launch scope; standard financial disclaimers required (no profit guarantee, past-performance, not-an-offer-to-sell-securities). See [[inplay-global-website/inplay-global-website]].
   - Needs a dedicated architecture session
   - Status: undefined

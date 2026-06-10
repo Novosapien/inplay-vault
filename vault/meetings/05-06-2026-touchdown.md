@@ -3,7 +3,7 @@ date: 2026-06-05
 type: standup
 status: extracted
 extracted-to:
-  - "[[digests/touchdowns-01-08-jun-2026]]"
+  - "[[digests/touchdowns-01-10-jun-2026]]"
   - "[[referral/referral]]"
   - "[[information-layer/information-layer]]"
   - "[[inplay-global-website/inplay-global-website]]"
@@ -13,7 +13,7 @@ extracted-to:
 
 ## Post-Call Analysis
 
-> Processed as part of the **[[digests/touchdowns-01-08-jun-2026|1–8 June touchdown sweep]]**.
+> Processed as part of the **[[digests/touchdowns-01-10-jun-2026|1–10 June touchdown sweep]]**.
 
 | Finding | Destination | Action |
 |---------|-------------|--------|

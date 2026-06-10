@@ -3,16 +3,16 @@ date: 2026-06-01
 type: standup
 status: extracted
 extracted-to:
-  - "[[digests/touchdowns-01-08-jun-2026]]"
+  - "[[digests/touchdowns-01-10-jun-2026]]"
 ---
 
 ## Post-Call Analysis
 
-> Processed as part of the **[[digests/touchdowns-01-08-jun-2026|1–8 June touchdown sweep]]**.
+> Processed as part of the **[[digests/touchdowns-01-10-jun-2026|1–10 June touchdown sweep]]**.
 
 | Finding | Destination | Action |
 |---------|-------------|--------|
-| Helmet realism — AI-generate realistic helmets for 163 teams with exact hex codes (Kevin supplying) | [[digests/touchdowns-01-08-jun-2026]] | Logged (build asset, no doc change) |
+| Helmet realism — AI-generate realistic helmets for 163 teams with exact hex codes (Kevin supplying) | [[digests/touchdowns-01-10-jun-2026]] | Logged (build asset, no doc change) |
 | Header lock vs scroll — leave scrolling for now; trader UX > advertiser > rest; sponsorships sold on exposure-minutes | Advertising (cross-cutting) via digest | Noted |
 | "Territories" / page-ownership naming (gamecast, info centre, referral bank); Amex "owns the space" reference | Advertising (cross-cutting) via digest | Noted |
 | Homepage takeovers (hue-of-red Coke background) idea | — | No action (exploratory) |
