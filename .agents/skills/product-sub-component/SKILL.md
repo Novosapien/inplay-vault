@@ -1,11 +1,9 @@
 ---
 name: product-sub-component
 description: Extract and structure sub-component documents with entity journeys from client call transcripts. Conversational — extracts journeys, acceptance criteria, and data requirements at the granular buildable level.
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
-argument-hint: "[transcript file path]"
 ---
 
-> **Invoke with:** `/product-sub-component` | **Keywords:** sub-component, entity journey, user journey, acceptance criteria, detailed extraction
+> **Invoke with:** `$product-sub-component` | **Keywords:** sub-component, entity journey, user journey, acceptance criteria, detailed extraction
 
 Extract sub-component detail from client call transcripts — entity journeys, acceptance criteria, data requirements, and granular functional requirements. This is the most concrete level: output feeds directly into the development workflow.
 
@@ -45,7 +43,7 @@ A component document must exist for the parent component. Sub-components are ide
 ## Flow
 
 ```
-User invokes /product-sub-component with a transcript path
+User invokes $product-sub-component with a transcript path
     │
     ▼
 Load sub-component-extraction.md + sub-component template
@@ -90,14 +88,6 @@ After extraction:
     5. Questions for next call
 ```
 
-## Linking Conventions
-
-**Backlink to parent component:** Use shortest-path wikilink: `[[component-name]]` (e.g., `[[trading]]`, `[[information-layer]]`). The sub-component file lives at `vault/components/{component}/sub-components/{sub}/{sub}.md` — two directories below the parent component file — but Obsidian resolves by file name.
-
-**File placement:** Each sub-component gets its own folder: `sub-components/{name}/{name}.md`. Additional files (changelog, assets) live alongside it in the same folder.
-
-**Backfill the parent:** After writing the sub-component document, update the parent component's Sub-Components table. The link column format is `[[sub-components/name/name]]` (relative from the component directory).
-
 ## Entity Journey Extraction
 
 When extracting journeys from transcripts:
@@ -129,6 +119,6 @@ For each journey:
 
 ## Related Skills
 
-- `/product-manager` — General PM thinking partner
-- `/product-component` — Component extraction (prerequisite for this skill)
-- `/product-vision` — Vision extraction (establishes overall context)
+- `$product-manager` — General PM thinking partner
+- `$product-component` — Component extraction (prerequisite for this skill)
+- `$product-vision` — Vision extraction (establishes overall context)

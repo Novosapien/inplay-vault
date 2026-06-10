@@ -1,11 +1,9 @@
 ---
 name: product-component
 description: Extract and structure component documents from client call transcripts. Conversational — proposes extractions, identifies sub-components, debates with user. Produces component-level documentation in the directory-brain pattern.
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
-argument-hint: "[transcript file path]"
 ---
 
-> **Invoke with:** `/product-component` | **Keywords:** component, deep-dive, component extraction, functional parts
+> **Invoke with:** `$product-component` | **Keywords:** component, deep-dive, component extraction, functional parts
 
 Extract component-level content from client call transcripts and structure it into component documents. Works conversationally — proposes what was extracted, surfaces sub-components, debates ambiguity.
 
@@ -34,7 +32,7 @@ A vision document must exist for the project. Components are identified by decom
 
 2. **Product components, not technical components.** Think about what the user or agent interacts with — the product experience. Frontend/backend splits are resolved in the development workflow.
 
-3. **Surface sub-components but don't document them.** As detail emerges, propose sub-component bucketing. List them in the backfill table with "Collecting" status — detailed documentation happens via `/product-sub-component`.
+3. **Surface sub-components but don't document them.** As detail emerges, propose sub-component bucketing. List them in the backfill table with "Collecting" status — detailed documentation happens via `$product-sub-component`.
 
 4. **Persona mapping from vision doc.** Section 1 requires identifying which personas (from the vision) use this component and how. Always consult the vision document's persona list.
 
@@ -43,7 +41,7 @@ A vision document must exist for the project. Components are identified by decom
 ## Flow
 
 ```
-User invokes /product-component with a transcript path
+User invokes $product-component with a transcript path
     │
     ▼
 Load component-extraction.md + component template
@@ -87,14 +85,6 @@ After extraction:
     6. Generate questions for next call
 ```
 
-## Linking Conventions
-
-**Sub-component links in the backfill table:** Use the full path from the component directory: `[[sub-components/name/name]]` (e.g., `[[sub-components/order-entry/order-entry]]`). The file structure is `sub-components/{name}/{name}.md` — a folder per sub-component containing a same-named markdown file.
-
-**Component backlink to vision:** Use shortest-path wikilink: `[[vision]]`.
-
-**Sub-components listed at creation time are forward references** — the pages won't exist until `/product-sub-component` is run. This is expected; Obsidian shows them as unresolved links.
-
 ## Handling Multiple Components
 
 When a transcript covers multiple components:
@@ -119,6 +109,6 @@ When a transcript covers multiple components:
 
 ## Related Skills
 
-- `/product-manager` — General PM thinking partner, project setup
-- `/product-vision` — Vision extraction (prerequisite for this skill)
-- `/product-sub-component` — Sub-component extraction (next step after this)
+- `$product-manager` — General PM thinking partner, project setup
+- `$product-vision` — Vision extraction (prerequisite for this skill)
+- `$product-sub-component` — Sub-component extraction (next step after this)

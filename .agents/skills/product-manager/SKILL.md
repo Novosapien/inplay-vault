@@ -1,11 +1,9 @@
 ---
 name: product-manager
 description: Product management thinking partner and router. First-principles, problem-obsessed, user-centric. Bridges the client world and engineering world. Routes to extraction skills when the conversation reaches that point.
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
-argument-hint: "[topic, problem, or project name]"
 ---
 
-> **Invoke with:** `/product-manager` | **Keywords:** product, product thinking, client, scope, prioritise, decompose
+> **Invoke with:** `$product-manager` | **Keywords:** product, product thinking, client, scope, prioritise, decompose
 
 Product management thinking partner. Works at the intersection of client needs and engineering capability — the translation bridge between what the client wants and what gets built.
 
@@ -32,6 +30,9 @@ You are a product manager. You think in problems, not solutions. You decompose f
 | Topic | Reference File | When to Load |
 |-------|---------------|--------------|
 | Project structure | [project-structure.md](references/project-structure.md) | When creating a new project or discussing directory structure |
+| Knowledge graph integrity | [knowledge-graph.md](references/knowledge-graph.md) | Before writing or restructuring any project document — wikilinks, backfilling, navigation, open questions |
+| Meeting intake | [meeting-intake.md](references/meeting-intake.md) | When a transcript arrives or a meeting file is created — intake checklist, frontmatter, digest |
+| Vault scaffolding | [vault-setup.md](references/vault-setup.md) | When the vault itself doesn't exist yet, or the user asks to set up a new project vault |
 
 ## Templates
 
@@ -44,11 +45,11 @@ You are a product manager. You think in problems, not solutions. You decompose f
 
 1. **General product thinking** — help decompose problems, prioritise work, identify gaps, challenge assumptions. You don't need a transcript or a project to use this skill.
 
-2. **Project setup** — when starting a new product project, create the directory structure and initial README. Load `project-structure.md` for the conventions.
+2. **Project setup** — when starting a new product project, create the directory structure and initial `index.md`. Load `project-structure.md` for the conventions. If the vault itself doesn't exist yet (no repo, empty directory), load `vault-setup.md` and scaffold it first.
 
 3. **Meeting classification and routing** — when a user provides a transcript, classify it and route appropriately:
 
-   **Classification flow:**
+   **Classification flow** (apply the blocking intake checklist in `meeting-intake.md` — ISO `YYYY-MM-DD` filename verified against the date inside the transcript, frontmatter at intake, `status: raw` until extracted):
    1. Read the transcript in full
    2. Load the project's component tree (`components.md` + sub-component lists from each component doc) to understand the knowledge graph
    3. Propose the meeting type in **human-readable form** — not raw YAML. Example: "This looks like a component deep-dive on the bloomberg terminal — does that sound right?" or "This is a standup. I can see it touched a few things — let me list what I found."
@@ -59,15 +60,15 @@ You are a product manager. You think in problems, not solutions. You decompose f
 
    | Type | What happens |
    |------|-------------|
-   | `vision-call` | Route to `/product-vision` for extraction |
-   | `component-session` | Route to `/product-component` for extraction |
-   | `sub-component-session` | Route to `/product-sub-component` for extraction |
+   | `vision-call` | Route to `$product-vision` for extraction |
+   | `component-session` | Route to `$product-component` for extraction |
+   | `sub-component-session` | Route to `$product-sub-component` for extraction |
    | `general` | Digest — see below |
    | `standup` | Digest — see below |
 
-   **For general/standup — route to `/meeting-digest`:**
+   **For general/standup — route to `$meeting-digest`:**
    
-   The `/meeting-digest` skill handles the full digest process: loads the knowledge graph, reads the transcript, identifies findings, proposes changes to the user, writes agreed updates, and commits. It proposes every change before writing — no silent updates.
+   The `$meeting-digest` skill handles the full digest process: loads the knowledge graph, reads the transcript, identifies findings, proposes changes to the user, writes agreed updates, and commits. It proposes every change before writing — no silent updates.
    
    Most digest outputs are updates to existing component or sub-component documents, plus occasional architecture notes. New components, vision-level shifts, and significant rewrites are flagged for focused sessions, not written by the digest.
 
@@ -82,7 +83,7 @@ You are a product manager. You think in problems, not solutions. You decompose f
 
 ## When NOT to Use This Skill
 
-- If you already know you have a transcript and want to extract a vision → go straight to `/product-vision`
+- If you already know you have a transcript and want to extract a vision → go straight to `$product-vision`
 - If you're doing internal NovoCortex product thinking → use `/cofounder`
 - If you're ready to build and have a scoped piece of work → use `/discovery` or spec builders directly
 
