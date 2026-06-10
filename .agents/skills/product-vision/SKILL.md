@@ -1,11 +1,9 @@
 ---
 name: product-vision
 description: Extract and structure vision documents from client call transcripts. Conversational — proposes extractions, flags unknowns, debates ambiguity. Produces the top-level product vision following the directory-brain pattern.
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
-argument-hint: "[transcript file path]"
 ---
 
-> **Invoke with:** `/product-vision` | **Keywords:** vision, transcript, product vision, first call, what are we building
+> **Invoke with:** `$product-vision` | **Keywords:** vision, transcript, product vision, first call, what are we building
 
 Extract vision-level content from client call transcripts and structure it into a vision document. Works conversationally — proposes what was extracted, asks about gaps, debates ambiguity with the user who was in the room.
 
@@ -39,7 +37,7 @@ Extract vision-level content from client call transcripts and structure it into 
 ## Flow
 
 ```
-User invokes /product-vision with a transcript path
+User invokes $product-vision with a transcript path
     │
     ▼
 Load vision-extraction.md + vision template
@@ -47,7 +45,7 @@ Load vision-extraction.md + vision template
     ▼
 Check: does a project directory exist?
     │
-    ├── No → Suggest invoking /product-manager first to set up the project structure
+    ├── No → Suggest invoking $product-manager first to set up the project structure
     │
     └── Yes → Read existing vision document (if any)
               Understand what's already captured
@@ -99,6 +97,6 @@ If the vision narrative is detailed enough, attempt to identify high-level compo
 
 ## Related Skills
 
-- `/product-manager` — General PM thinking partner, project setup, routing
-- `/product-component` — Component-level extraction (use after vision is established)
-- `/product-sub-component` — Sub-component extraction with entity journeys
+- `$product-manager` — General PM thinking partner, project setup, routing
+- `$product-component` — Component-level extraction (use after vision is established)
+- `$product-sub-component` — Sub-component extraction with entity journeys

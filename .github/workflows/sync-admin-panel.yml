@@ -1,0 +1,31 @@
+name: Sync docs to InPlay Admin Panel
+
+# The admin panel ingests this vault at panel build time (its Docker build
+# runs scripts/sync-vault.ts, which clones this repo and POSTs docs to the
+# admin API). Triggering the panel's deploy workflow here makes every vault
+# content change flow to production automatically.
+#
+# Requires the PANEL_DISPATCH_TOKEN repo secret: a fine-grained PAT with
+# Actions read+write on Novosapien/inplay-admin-panel.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vault/**"
+  workflow_dispatch:
+
+jobs:
+  trigger-panel-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch inplay-admin-panel deploy (runs the vault docs sync)
+        env:
+          GH_TOKEN: ${{ secrets.PANEL_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::PANEL_DISPATCH_TOKEN secret is not set — cannot dispatch the panel deploy."
+            exit 1
+          fi
+          gh workflow run deploy.yml --repo Novosapien/inplay-admin-panel --ref main
+          echo "Dispatched deploy.yml on Novosapien/inplay-admin-panel."

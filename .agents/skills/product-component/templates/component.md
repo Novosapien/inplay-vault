@@ -214,7 +214,7 @@ _This section is **backfilled** as sub-components are identified and documented.
 
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
-| _Sub-component name_ | _One-line description of what this sub-component does_ | _Collecting / Defined / Ready for build / In build / Complete_ | _[[sub-components/name/name]]_ |
+| _Sub-component name_ | _One-line description of what this sub-component does_ | _Collecting / Defined / Ready for build / In build / Complete_ | _[[sub-components/name]]_ |
 | | | | |
 | | | | |
 
@@ -383,5 +383,5 @@ built before or after other components]
 
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
-| [Name] | [One-line description] | [Status] | [[sub-components/name/name]] |
+| [Name] | [One-line description] | [Status] | [[sub-components/name]] |
 ```
