@@ -389,6 +389,8 @@ The marquee partner ticker is a hero element (Skye's proposal) -- communicates l
 
 ---
 
+> **Update (12–17 June touchdowns):** **Rebuilt on a new template (12-06)** to enable **Google Analytics**, with a fresh deployment link issued; **Microsoft Clarity** heat-mapping is to be added across the sites. **Build priority (12-06):** "how to enter" first, then the **referral program**; the **prize-pool page is deferred** pending the numbers. Funnel principle: "two clicks away from trading", download CTAs that do not bombard. **Prize pool finalised (17-06):** **$21M base + $4M flex** (the flex is ad-revenue-dependent), giving the **"up to $25M"** messaging target the team wants to lead with. This reinforces the standing compliance rule, it is always "up to $25M", **never "guaranteed"** (see [[components/components#Cross-Cutting Concerns|Cybersecurity & Data-Handling]]). _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+
 ## Diagrams
 
 _Funnel diagram appears in Section 2. Sub-component tree appears in Section 1._

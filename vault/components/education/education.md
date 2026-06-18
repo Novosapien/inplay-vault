@@ -322,6 +322,8 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 ---
 
+> **Update (12–17 June touchdowns):** **Delivery method still open (12-06):** the team needs to align on how the first iteration is executed. Options on the table: **TikTok-style 30–40 second highlight videos** plus detailed text, **AI-generated voice narration**, **code-generated animation slides**, and a **podcast format** (10–20 min) for accessibility. **Brand-owned modules (12-06):** an alternative to InPlay producing content is a **brand taking full ownership** of a module (visual design, ambassadors, voice talent, spoken ad breaks within the content); a podcast variant could carry **programmatic AI-voice ad reads** sprinkled through (cross-references the Sponsor Ownership Layer and [[advertising/advertising]]). **Beta + session (12-06, 17-06):** Kevin and Troy to finalise a first module for a beta test; a dedicated brainstorm session was scheduled (the **18 June education session**). The **"What is an IPO draft?"** explainer link from [[ipo-module/ipo-module]] routes here. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+
 ## Diagrams
 
 _Sub-component tree appears in Section 1. Functional flow appears in Section 2._

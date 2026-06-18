@@ -127,6 +127,11 @@ These are not standalone components — they overlay across multiple components:
   - **Sales motion pivot (27-05-2026):** the agency route (Omnicom) stalled — agencies won't risk an unproven, not-yet-built product for 20% commission. Strategy is now **go-direct to lower-hanging-fruit brands** that can't access premium NFL/NCAA inventory and sign off fast (AI startups e.g. 11 Labs / Whisper Flow, crypto, content creators, challenger brands e.g. BYD, founder-led). Premium brands + agencies are a later phase. ⚠️ **Credibility risk:** the model assumes ~1M users from day one but a first season starts at zero — the audience claim must survive media-buyer scrutiny
   - **Sponsor rewards & affiliate (26-05-2026, exploratory):** an in-app "sponsor rewards" repository where each sponsor posts media; engaging to completion was floated to grant referral$ — but Brett warned this is an "influenced impression" advertisers distrust, so it pivoted toward a no-reward / **affiliate rev-share** model (more a production-level revenue stream)
   - **Influence on app design:** until trading is live the navbar "trade" slot doubles as the IPO experience (advertising-relevant surface); ads should **animate in and persist** (not flash), and feel integrated/non-spammy ("less is more" — Edwin)
+  - **⚠️ Stack reframed to SSP-first on AppLovin MAX (17-06-2026 — see [[advertising/advertising]] and the [[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook|Programmatic Media Playbook]]):** Brett's playbook sets the programmatic / generalised-inventory model. Start with **AppLovin MAX as both ad server and mediator**, plug **8–12 SSPs** in as adapters (day-one anchors: AppLovin MAX, AdMob, Liftoff, PubMatic), and **defer Kevel to phase 2** for moment-based sponsorships only. **There is still no Google Ad Manager.** This recasts the earlier "Kevel + Booster" framing: the **specialist sponsorship territories are the direct-sold motion** (house ads now, Kevel later), while the **SSP portfolio fills the generalised inventory**. The two need reconciling into one inventory map
+  - **AI-agent ad-ops (17-06-2026):** run **one human campaign manager + an agentic AI workforce** (1-human + 9-agent model in the playbook) instead of a ~4.5-FTE team; cost target is to fit inside a **~20% margin** on ad revenue (open question in [[architecture/open-questions]])
+  - **Impression model revised (17-06-2026):** ~**5 impressions/minute** for the core "degenerate trader" cohort (down from ~20/min), giving **~25B+ impressions** over a four-month season at ~10k concurrent active traders; **video** the priority unit (~$3.58 baseline eCPM). Tightens the earlier 18bn-impression debate
+  - **AI brand-preview tool (15-06-2026):** Max demoed a tool where an advertiser pastes a URL/logo and AI previews their brand across ~10 in-app units; the link goes in outreach emails so advertisers self-serve a preview before a sales conversation
+  - **Title-sponsor splash screen (15-06-2026):** a 2–3 second branded welcome screen on app open, dissolving into the main interface (see [[information-layer/information-layer]])
 
 - **Push Notifications / CRM:**
   - Touches: all components
@@ -145,7 +150,9 @@ These are not standalone components — they overlay across multiple components:
   - Touches: every customer-facing component plus advertising and push/CRM
   - Each component owns its segment of the funnel; this cross-cutting concern defines the joins
   - Needs a dedicated doc — flagged in [[customer-onboarding/customer-onboarding]] and [[referral/referral]]
-  - Status: undefined — no decisions on tooling, event schema, or ownership yet
+  - **First tooling signal (12-06-2026):** **Google Analytics** on the rebuilt Challenge Website + **Microsoft Clarity** heat-mapping (session recording, scroll/click heat maps, dwell time) across the websites
+  - **Advertiser-KPI question (15-06-2026):** buyers care about **cost-per-acquisition and impressions/CPM** far more than engagement-minutes ("they don't care about your minutes"); InPlay must prove out against standard IAB currency. Kevel and the SSP stack offer flexible tracking + API access for client-facing reporting. Open question in [[architecture/open-questions]]
+  - Status: undefined — no decisions on event schema or ownership yet
 
 - **Cybersecurity & Data-Handling Framework** _(new — surfaced 12-06-2026):_
   - Troy flagged: _"the more data we collect, the more sensitive it gets and the more susceptible we are to cyber attacks."_
