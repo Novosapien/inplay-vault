@@ -251,6 +251,8 @@ graph LR
 
 ---
 
+> **Update (12–17 June touchdowns):** **Placement finalised (15-06):** the earnings report gets its **own page** (reached from the more / discover area) **plus an embedded earnings box** on each team page, with the **trade button kept accessible**. A **push notification fires ~15 minutes before** the release, consistent with the existing batched-release feed design. Note: the **synthetic off-field** number used for pre-launch IPO pricing (ad-spend-based, see [[ipo-module/ipo-module]]) is a preview input only; the live off-field earnings engine ($250/game pool, ½ on-field winner) is unchanged. _Sources: [[15-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+
 ## Gaps and Questions for Next Call
 
 ### Gaps

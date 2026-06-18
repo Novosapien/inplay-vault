@@ -274,6 +274,8 @@ graph LR
 
 ---
 
+> **Update (12–17 June touchdowns):** **Named the "IPO draft" (17-06):** chosen over "draft board" (too close to fantasy sports) and bare "IPO" (unfamiliar to users). A **"What is an IPO draft?"** link sits to the right of the title and routes into [[education/education]] to explain the mechanic, why to buy IPOs, and what a position means. **Inventory visibility (17-06):** Edwin wants to **hide shares-remaining** until the offering is near close (for example only surface it under ~500k shares left); a percentage display was rejected (reads 0% at the start and looks weak). This implies a **straw buyer / market maker** to fill unsold inventory so an offering never looks like it had zero sales (see [[trading/trading]] and [[architecture/open-questions]]). **Launch dates firm up:** College Football IPO **~22 Aug**, NFL **~2 Sept**, refining the IPO Scheduling window (was NCAA ~Aug 20 / NFL ~7 days pre-Sept 9). **Synthetic off-field pricing for the pre-launch preview (15-06):** preview IPO pricing combines a **synthetic on-field** number (betting lines / futures) with a **synthetic off-field** number from a per-game ad-spend model (a game's ad spend distributed by each team's share of trade volume; ad spend is not published until the earnings reports). This is a preview/simulation input, not a live-trading decision. _Sources: [[15-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+
 ## Gaps and Questions for Next Call
 
 ### Gaps
