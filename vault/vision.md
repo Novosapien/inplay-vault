@@ -644,7 +644,7 @@ Four audiences (full descriptions in [[audiences]]):
 | **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
-| **[[components/education/education\|Education]]** | TikTok-style trading education, 12-15 modules, reels + quizzes, referral wallet rewards, sponsor-ownable modules | Defined |
+| **[[components/education/education\|Education]]** | Card-based trading education (slideshow/whiteboard video + text + quiz), 36 modules across 3 tiers, 100-coin referral rewards, tier certifications, slide-group sponsorship. AI chatbot is Phase 2 | Defined |
 | **Withdrawal Flow** | Conversion from InPlay$ to real cash — bank info, crypto wallet linking, 1099, eligibility verdict | Stub |
 
 Cross-cutting concerns: Advertising, Push/CRM, Personal Dashboard, **Analytics & Funnel Measurement** (new), **Cybersecurity & Data-Handling Framework** (new) — see [[components]] for detail.
