@@ -343,6 +343,18 @@ Education is **free** in the trading challenge (the premium / paid surfaces disc
 
 ---
 
+## Source Content (Written Guides)
+
+> Raw written content drafted by Kevin (the "Module written content" referenced in §4 / §5). Stored as reference, not yet processed into sub-component docs. Converted from .docx on 2026-06-22.
+
+| Guide | Tier | Status | Doc |
+|-------|------|--------|-----|
+| Beginner Trading Guide | Beginner (16 modules) | Raw, unprocessed | [[beginner-trading-guide]] |
+| Intermediate Trading Guide | Intermediate (10 modules) | Raw, unprocessed | [[intermediate-trading-guide]] |
+| Expert Trading Guide | Expert (10 modules) | Raw, unprocessed | [[expert-trading-guide]] |
+
+---
+
 > **Update (22 June, Education component deep-dive):** This session **reset the launch design** and the body above has been rewritten accordingly. Headlines: launch format moved from **TikTok 15-sec reels to a card-based course library** with **slideshow / whiteboard videos + voiceover + text + quiz** (reels parked as possible v2), catalogue set at **36 modules across Beginner (16) / Intermediate (10) / Expert (10)**, **non-sequential** access, completed modules **grayed-but-visible**, reward fixed at **100 InPlay coins (referral credits) per module, earn-once**, an **in-module glossary** (swipe right), a new **Certification & Badges** sub-component (profile "Certs"), the **AI chatbot deferred to Phase 2**, sponsorship reframed to the **slide-group level** with skippable pre-video CPM, and a production approach of **AI-generated slideshow video, pilot 1-2 modules then replicate**, hosted on the YouTube channel. Premium Sport Radar data resale + paid AI companion were ruled **out of Education scope** and flagged for a **Research Tab** session. _Source: [[meetings/22-06-2026-education-component]]. See also the prior touchdown context in [[digests/touchdowns-12-17-jun-2026]]._
 >
 > **Update (12-17 June touchdowns, superseded by 22-06):** The delivery format was still open across these touchdowns (TikTok video + AI voice + code-gen animation + podcast, brand-owned modules). The 22 June deep-dive resolved it (see above). Kept for traceability. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]._
