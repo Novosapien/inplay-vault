@@ -1,10 +1,10 @@
 # InPlay Trading Challenge -- Education
 
 > **Vision:** [[vision]]
-> **Date:** 2026-05-14
-> **Status:** Defined
-> **Owner:** Kevin (content + scope) / George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]]_
+> **Date:** 2026-06-22
+> **Status:** Defined _(updated 22-06-2026: launch format reset from TikTok reels to a card-based course experience)_
+> **Owner:** Kevin (content + scope) / George Westbrook (engineering + UI) / Brett StClair (client-facing) / Edwin (commercial + depth)
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]], [[meetings/22-06-2026-education-component]]_
 
 ---
 
@@ -12,23 +12,26 @@
 
 **Functional purpose:**
 
-The Education component is the on-ramp for non-traders. It teaches the basics of trading — how to click buy, how to click sell, what long and short mean, what an IPO is, how price discovery works on the InPlay exchange — using a TikTok-style scroll experience that feels native to how the target audience already consumes content. Edwin set the depth: _"at a 40,000 foot level. Not narrowed into any of the more granular detail."_ Skye set the format: _"It should feel like you are consuming information like TikTok."_ Cody added the gating mechanic: short quizzes at the end of each module to verify retention before crediting the reward.
+The Education component is the on-ramp for non-traders: anyone who has never traded stocks before. It teaches the basics, how to buy, how to sell, what long and short mean, what an IPO draft is, how price discovery works on the InPlay exchange, so the Analytical Fan and Finance-Curious Student can reach the trading screen and understand what they are looking at. Edwin set the depth for the entry tier: _"at a 40,000 foot level. Not narrowed into any of the more granular detail."_
 
-The journey begins when a user taps "Start Education Journey" from a dedicated icon in the app. They land in module one. They scroll vertically through 15-second reels, each captioned in the native scroll-with-sound-off style. At the end of each module, 2-3 multiple-choice questions appear. On passing, a celebration animation fires, referral dollars credit to the user's referral wallet, and the next module unlocks. Progress is tracked server-side -- if the user leaves halfway through module four, they return to module four.
+The 22 June deep-dive **reset the launch format**. The original TikTok-style 15-second vertical-reel design was judged too much to build for launch (George: the reel direction is _"too much for for launch... whereas more of like a traditional education aspect where there's some text, there's some videos, there's a quiz"_). The launch experience is now a **card-based course library**. The user opens Education from the navigation bar and sees **cards grouped into sections (tiers)**. They click a card, the course opens, they watch a short **slideshow / whiteboard video with voiceover** (or read the written version of the same content), then take a short quiz. On passing, **100 InPlay coins credit to the referral wallet** and they are offered the next course. The TikTok-reel format is parked as a possible future / v2 direction, not the launch spec.
 
-The total catalogue is intentionally curbed -- Edwin called for _"the top 12 modules or something, right? Maybe 15."_ Content covers the gamut: buy/sell mechanics, long/short language, IPO basics, the 100K starting balance, risk management, momentum, volatility. The repository also powers a separate **AI Chatbot Support** layer that handles L1 support questions (Cody's target: 75-85%) -- same content, different surface, conversational rather than scroll-based.
+The catalogue is **36 modules across three tiers**: **Beginner (16), Intermediate (10), Expert (10)**. Beginner is the 40,000-foot on-ramp; Intermediate and Expert go deeper for users who want to upskill. Content spans a securities glossary, buy/sell, long/short, the IPO draft, earnings, volatility, risk, and momentum. Modules are **not gated in sequence**, a user can jump to any module at any time (Edwin: _"you want anyone to be able to go wherever they want... no limit"_), the only thing that is sequenced is reward accrual and tier certification.
 
-A subset of the education content (high-level explainer videos) is exposed on the **Challenge Website** for users who want a taste before downloading the app. The website does not host the full repository -- the goal is always to push users into the app, where the rest of the education and the trading itself lives.
+Completing every module in a tier earns a **certification badge**, surfaced in a "Certs" section on the user's profile. The content repository also backs a future **AI chatbot** for L1 support, which the session **deferred to Phase 2** (the launch app ships no in-app chatbot). A curated subset of high-level content, plus a separate FAQ / disclaimers layer, is exposed on the **Challenge Website** for the curious public, always funnelling toward the app.
+
+> **Scope boundary (22-06):** the session drifted into reselling premium Sport Radar data and a paid AI companion with tiered pricing. That belongs to **Research Tab** (Information Layer), not Education, and is flagged for its own session _[⚠ open, see [[open-questions]]]_. Education's only AI surface is the deferred L1-support chatbot below.
 
 ```
 Education
-├── Modules / Reels Viewer       (TikTok-style scroll, 15-sec reels, captions)
-├── Quiz / Poll Layer            (2-3 multi-choice questions, gates reward)
-├── Reward Integration           (referral wallet credit on quiz pass)
-├── Progress Tracking            (resume state, status badge)
-├── AI Chatbot Support           (L1 support, references education repo)
-├── Education-on-Website         (high-level explainer subset)
-└── Sponsor Ownership Layer      (single advertiser owns module per period)
+├── Modules / Course Viewer        (card library by tier; slideshow/whiteboard video + text; landscape video, portrait quiz)
+├── Quiz / Poll Layer              (2-3 multi-choice questions, gates reward; non-sequential; glossary swipe)
+├── Reward Integration             (100 InPlay coins to referral wallet on quiz pass, earn-once)
+├── Progress Tracking              (completed modules grayed-but-visible, current highlighted, resume-to-point)
+├── Certification & Badges         (tier certs, profile "Certs" section, clickable badge entry points)
+├── AI Chatbot Support             (L1 support over the education repo — PHASE 2, deferred)
+├── Education-on-Website           (curated subset + separate FAQ/disclaimers, legal-reviewed)
+└── Sponsor Ownership Layer        (slide-group-level sponsorship, skippable pre-video CPM, co-created content)
 ```
 
 **Personas:**
@@ -37,10 +40,10 @@ Education
 
 | Audience | How they use this component | What they need from it |
 |---------|---------------------------|----------------------|
-| **Crypto-Savvy Sports Trader** | Skips most of it. May dip into IPO mechanics or order-book modules if InPlay's specifics differ from what they're used to on Polymarket / Kalshi | A way to skip ahead. Don't gate trading on completing tutorials they don't need |
-| **Analytical Fan / Armchair GM** | Primary audience. Knows sports cold, doesn't know trading. Will scroll the whole catalogue if the content is genuinely TikTok-native | Snackable. Native to how they already consume content. Earns them referral dollars so it feels rewarding, not homework |
-| **Finance-Curious Student** | Primary audience. Treats education as a credibility builder -- "I learned how to trade, here's what I know." May share completion on social. Likely to engage with sponsor-owned modules from brands they recognise (Coca-Cola, Red Bull) | Polished native-feeling content. Visible progress (status badge). Social proof for sharing completion |
-| **Veteran Trader-Bettor** | Will not engage. May glance at the AI chatbot for InPlay-specific questions but otherwise bypasses the entire surface | The AI chatbot needs to handle their tactical questions without making them watch a reel |
+| **Crypto-Savvy Sports Trader** | Skips most of it. May dip into the IPO-draft or order-book modules if InPlay's specifics differ from Polymarket / Kalshi | Freedom to jump straight to any module (non-sequential) and not be gated on tutorials they don't need |
+| **Analytical Fan / Armchair GM** | Primary audience. Knows sports cold, doesn't know trading. Will work the Beginner tier if the content is short and clean | Snackable courses, a clear path through the tier, referral dollars so it feels rewarding, not homework |
+| **Finance-Curious Student** | Primary audience. Treats education as a credibility builder and may share a completion / certification on social. Likely to engage with sponsor-owned content from brands they recognise | Polished, native-feeling slideshow content, visible progress, a **certification badge** to show off |
+| **Veteran Trader-Bettor** | Will not engage with modules. Was the candidate user for the deferred AI chatbot | Phase 1: nothing. Phase 2: an AI chatbot that answers InPlay-specific questions without making them watch a course |
 
 ---
 
@@ -48,85 +51,91 @@ Education
 
 **Functional requirements:**
 
-_Modules and reels:_
+_Course library and viewer:_
 
-- User can launch Education from a dedicated icon/page in the app
-- User taps "Start Education Journey" to begin module one
-- User scrolls vertically through reels within a module (TikTok-style)
-- Each reel is 15 seconds maximum (Skye: _"15 seconds max"_)
-- Each reel has captions/subtitles in native scroll-with-sound-off style
-- Modules are sequential -- module one before module two, and so on
-- Total catalogue is 12-15 modules at launch (Edwin: _"maybe the top 12 modules or something, right? Maybe 15"_)
-- Content covers: buy/sell, long/short language, IPO mechanics, 100K starting balance, risk management, momentum, volatility
+- User launches Education from a dedicated icon in the navigation bar
+- Education presents **cards grouped into sections / tiers** (Beginner, Intermediate, Expert)
+- User clicks a card, the course opens
+- Each course has a short **slideshow / whiteboard video with voiceover** and a **written version of the same content** (two consumption modes: watch the video then take the quiz, or read through everything then take the quiz)
+- Video plays in **landscape** (user turns the phone), the quiz returns to **portrait**
+- Catalogue is **36 modules across three tiers**: Beginner 16, Intermediate 10, Expert 10
+- Content covers: securities glossary, buy/sell, long/short, the IPO draft, earnings, 100K starting balance, risk, momentum, volatility
+- Modules are **non-sequential**, the user can open any module at any time
 
 _Quiz / poll gate:_
 
-- At the end of each module, user sees 2-3 multiple-choice questions
-- Questions are styled like a TikTok poll -- swipe-to-vote feel (Skye: _"maybe it's like a multiple choice scroll that happens... like a poll that you vote on and then it moves to the next video"_)
-- On passing the quiz, user receives a celebration animation
-- On passing, referral dollars credit to the user's referral wallet
-- After celebration, next module is queued -- "Move on to part two"
+- At the end of a course, the user takes a short quiz (2-3 multiple-choice questions)
+- Passing the quiz is what unlocks the reward (a view alone does not credit, Cody's verification logic carries over)
+- On passing, a brief celebration fires and the user is prompted "go to your next course?"
+- A **glossary of terms** is reachable by swiping right at the end of a module
+
+_Reward:_
+
+- On quiz pass, **100 InPlay coins credit to the user's referral wallet** (referral credits, not trading dollars)
+- Reward is **earn-once per module** (retaking a passed module for review does not pay again, Kevin: _"once they earn it they earn it back"_)
 
 _Progress and resume:_
 
-- User progress is stored server-side
-- User can leave at any reel and return to that exact reel later
-- A status/badge surface shows: modules completed, current module, last reel viewed
-- The status surfaces on the user's profile / personal dashboard
+- Progress is stored server-side, account-pinned
+- Completed modules are **grayed but still visible** (not hidden), so a user on module 8 can go back and re-read "what is a security?" from module 2 (Kevin: _"you never want to close out the education piece"_)
+- The current module is highlighted, the user resumes at the point they left a course
 
-_AI chatbot support:_
+_Certification and badges:_
 
-- A separate AI chatbot is accessible across the app (entry points TBD)
-- The chatbot answers natural-language questions by drawing on the same education content repository
-- Target: chatbot handles 75-85% of L1 support questions (Cody)
-- Chatbot references Sport Radar stats where queries are stats-driven (Statmuse-style model)
-- Note: chatbot architecture needs its own module discussion (Cody flagged this as a follow-up)
+- Completing every module in a tier awards a **certification** for that tier
+- Certifications surface in a **"Certs" section on the profile**, all badges visible (grayed when unearned, filled when earned) so the roadmap is clear
+- A badge is **clickable**, acting as a second entry point into that tier's courses
+
+_AI chatbot support (Phase 2, deferred):_
+
+- A conversational L1-support layer over the education repository (plus Sport Radar stats for stats-driven questions, Statmuse-style)
+- Target: handle 75-85% of L1 questions without escalation (Cody)
+- **Not in the launch app**, scoped for Phase 2 with its own design pass (guardrails, token-burn controls, escalation)
 
 _Education on the Challenge Website:_
 
-- A subset of education content (high-level explainer videos) is exposed on the Challenge Website
-- The website subset is for the curious public -- enough to validate the product, not enough to substitute for the in-app experience
-- Cody: _"high level, you know, some explainer videos, some educational content or the hype video"_
-- George's progressive-disclosure idea: show all 12 modules, click into module one, halfway through it says "if you want to carry on with this go to the app"
+- A curated subset of high-level content is exposed on the Challenge Website (taste, not substitute for the app)
+- A **separate FAQ / disclaimers layer** (what is a security, how InPlay is regulated, standard disclaimers) sits outside the education modules and is **legal-reviewed before publish** (Brian, Kevin owns the follow-up)
+- Web content needs **OG / social-card metadata** for sharing
 
 _Sponsor ownership:_
 
-- A single advertiser can own a module (or set of modules) for a fixed period (monthly+, not programmatic)
-- The sponsor's brand is embedded in the content (not swapped per impression)
-- Content is co-created with the sponsor -- they may use their own content creators
-- Multiple advertisers cannot share the same module within the same period
-- Example given: Coca-Cola owns "How to read the order book" for a month
+- Sponsorship operates at the **slide-group level**, a sponsor brands a section of content rather than owning a whole module exclusively (Edwin: _"each particular slide group sponsored by somebody"_)
+- **Skippable** pre-video ads only (no forced 30-second pre-roll), as a video-CPM surface (Kevin)
+- Content co-created with the sponsor, branding embedded, FTC disclosure required
+- A **rotating sponsor splash screen** on app open (equal exposure across sponsors) was floated and sits on the backlog
 
 **Business rules and constraints:**
 
-- Content stays at "40,000 feet" -- basics only, no advanced strategy, no recommendations, no advice
-- Language must use "earn" not "win" (project-wide regulatory rule)
-- Reward credits only on quiz pass, not just video view (Cody's verification logic)
+- Content stays at "40,000 feet" for Beginner, basics only, no advice, no recommendations
+- Language uses "earn" not "win" (project-wide regulatory rule)
+- Reward credits only on quiz pass, not on view, and only once per module
 - Education is free in the trading challenge
-- Sponsor branding is fully embedded, not programmatically rotated (Skye was explicit on this)
-- AI chatbot stays inside its lane -- references the education repository, does not give trading advice
-- Sponsor-owned modules must be co-created with the sponsor; InPlay collaborates on the educational scripting
+- Sponsor branding is embedded and co-created, not programmatically rotated inside a module
+- The deferred AI chatbot stays inside the education scope, references the repo, gives no trading advice
+- FAQ / disclaimer copy on the website is legal-reviewed before publish
 
 **Edge cases and error states:**
 
-- User fails the quiz -- can they retry immediately, after a cooldown, or only by re-watching the module? ⚠️ **Gap**
-- User watches half a reel and swipes away -- does that count as "viewed" for progress? ⚠️ **Gap**
-- User clears app data -- progress survives because it's server-side, but the question of pinned-to-account vs pinned-to-device is open
-- Video fails to load (low bandwidth) -- graceful fallback to text or static frame? ⚠️ **Gap**
-- Sponsor pulls out mid-period -- what backfills the module? ⚠️ **Gap**
-- AI chatbot answers a question it shouldn't (gives trading advice) -- moderation / guardrails undefined ⚠️ **Gap**
+- User fails the quiz, retry immediately, cooldown, or re-watch required? _[⚠ open, see [[open-questions]]]_
+- KYC-pending (holding-state) user completes a quiz, does the reward accrue or hold until KYC clears? _[⚠ open, see [[open-questions]]]_
+- Video fails to load on low bandwidth, fallback to the written version (the two-mode design helps here, but the trigger is unspecified)
+- Sponsor pulls out mid-period, what backfills the slide group? _[⚠ open, see [[open-questions]]]_
+- Production quality of AI-generated video is below bar, the pilot-then-replicate plan is the mitigation (see §4)
 
 ```mermaid
 graph TD
-    Start[Tap 'Start Education Journey'] --> M1[Module 1: Reels Scroll]
-    M1 --> Q1[Quiz: 2-3 MCQs]
-    Q1 -->|Pass| C1[Celebration + Reward Credit]
-    Q1 -->|Fail| R1[Retry?]
-    R1 --> M1
-    C1 --> M2[Module 2: Reels Scroll]
-    M2 --> Q2[Quiz]
-    Q2 --> C2[Celebration + Reward]
-    C2 --> Mn[...up to Module 12-15]
+    Nav[Open Education from nav bar] --> Lib[Card library by tier]
+    Lib --> Card[Open a course card]
+    Card --> V[Watch slideshow/whiteboard video -- landscape]
+    Card --> R[or read the written version]
+    V --> Q[Quiz: 2-3 MCQs -- portrait]
+    R --> Q
+    Q -->|Pass| Reward[+100 InPlay coins to referral wallet]
+    Reward --> Next[Prompt: go to next course?]
+    Q -->|Fail| Retry[Retry? -- open]
+    Next --> Lib
+    Tier[All modules in a tier complete] --> Cert[Tier certification badge -- profile Certs]
 ```
 
 ---
@@ -135,32 +144,33 @@ graph TD
 
 **Design direction:**
 
-Native TikTok / Instagram Reels aesthetic. Skye: _"It should feel like you are consuming information like TikTok."_ Vertical scroll, captions on every video, snackable, infotainment hybrid. Sky's framing: _"infotainment element... that's what we're trying to hybridize here."_
+Clean and low-distraction. Edwin's framing: _"almost like a PowerPoint slideshow... where the words are on the background... there isn't much more to it. No distraction."_ Kevin's alternative visual is a **whiteboard** style, _"whiteboarded out with the concepts as if you were watching a live class."_ Either way the launch aesthetic is a **slideshow / whiteboard video with voiceover and on-screen text**, browsed through a **card library**, not a TikTok feed.
 
-Brett's anti-pattern: not Udemy. _"Keep it lightweight so it's not one of those Udemy style kill me forces."_ No long-form lectures, no polished corporate training video aesthetic, no quiz banks with 20 questions.
+The TikTok-reel format (15-second vertical reels, swipe-scroll) is **parked as a possible future / v2 direction**, it was explicitly judged too heavy to build for launch.
 
-Celebration moments on quiz completion are punchy and emotional -- a brief animation, not a "great job!" screen.
+Brett's anti-pattern still holds: not Udemy. _"Keep it lightweight so it's not one of those Udemy style kill me forces."_ No long-form lectures, no 20-question banks.
+
+Certification and badges lean into a simple reward instinct (Kevin: _"people love badges for whatever reason"_), all badges visible, grayed until earned, clickable into the course.
 
 **Reference products:**
 
-- **TikTok / Instagram Reels** -- primary aesthetic reference, vertical scroll, captioned, snackable
-- **Investopedia** -- content packaging and educational structure reference (Cody, sent to Kevin)
-- **CBOE Institute** -- educational content packaging for options retail (Cody)
-- **Kaplan University** -- potential sponsor + content model (Edwin: _"their whole business is selling educational materials"_)
-- **Tasty Live (16-hour broadcast)** -- production-level extension partner candidate (Cody)
-- **Statmuse** -- NLP / short-form answer model for the AI chatbot (Cody: _"they built an entire business off short form answers that run off NLP"_)
-- **AI-overlay video format** -- creator-in-corner with AI-generated voice and overlay (Skye, referenced existing TikTok content creators)
-- **Anti-pattern: Udemy** -- too long, too polished, too formal for this audience
+- **Slideshow / whiteboard explainer** -- primary launch aesthetic (Edwin / Kevin)
+- **Investopedia** -- content packaging and structure reference (Cody, sent to Kevin)
+- **CBOE Institute** -- educational packaging for options retail (Cody)
+- **Kaplan / STC / CFA Institute** -- securities-education content and potential partnership / certification model (Kevin reaching out, no responses yet)
+- **Statmuse** -- NLP short-answer model for the Phase 2 AI chatbot (Cody)
+- **TikTok / Instagram Reels** -- the parked v2 aesthetic, not the launch format
+- **Anti-pattern: Udemy** -- too long, too formal for this audience
 
 **Key UX principles:**
 
-- 15 seconds maximum per reel -- non-negotiable
-- Every video has captions (native scroll-with-sound-off behaviour)
-- One thumb-swipe between reels, no menus or modals mid-module
-- Celebration on quiz completion is a moment, not a screen
-- "Start Education Journey" is the primary entry point -- single, unambiguous funnel
-- Brand-owned content (sponsor modules) feels like it belongs to the sponsor's social channel, not like a banner ad next to neutral content
-- Progress is visible but not nagging -- status badge, not a notification
+- Card library grouped by tier, click a card to open a course
+- Short video, landscape playback, portrait quiz
+- Two ways through a course: watch the video or read the text
+- Completed modules grayed but never hidden, current module highlighted
+- Certification badge is a moment and a flex, surfaced on the profile
+- Brand-owned content feels like the sponsor's own channel, not a banner next to neutral content
+- Progress is visible but not nagging
 
 ---
 
@@ -168,16 +178,18 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 | Capability | Build / Buy / Access | Provider / Approach | Rationale |
 |-----------|---------------------|-------------------|-----------|
-| Video hosting and distribution | Access | **YouTube Shorts** (primary) -- via YouTube API and pre-built libraries | Brett's proposal, George validated _"it's not as complex as I thought it was."_ Leverages YouTube's serving infrastructure, removes build/scale burden, and lets InPlay also distribute on YouTube as a channel. Branding hidden via custom UI overlay |
-| Alternative video pipeline | Investigate | Embed private Instagram / TikTok feed via social-feed widget | Skye's suggestion -- pulls content from a private brand channel into the app. Deferred for research; YouTube path is primary |
-| Video creation | Build (AI-assisted) | AI scripting + AI voice generation + AI overlay (creator-in-corner style) | Lets InPlay produce content fast and lets sponsors swap branding on existing scripts. Brett has prior experience with the toolchain |
-| Captions / subtitles | Build | Generated as part of video production pipeline | Native to the TikTok aesthetic, not optional |
-| Quiz / poll engine | Build | InPlay internal | 2-3 multi-choice questions per module, swipe-to-vote UX, pass/fail logic, reward trigger |
-| Progress tracking | Build | InPlay internal (PostgreSQL) | Per-user state: modules complete, current module, last reel viewed. Server-side, account-pinned |
-| Reward credit on completion | Build (integration) | InPlay internal -> Referral component | Module-complete event fires, Referral component credits referral wallet |
-| AI chatbot support | Build | InPlay internal -- needs its own module discussion (Cody flagged) | References the education repository plus Sport Radar stats. Statmuse-style NLP for sports-specific questions |
-| Sponsor content management | Build | InPlay internal (CMS) | Per-module sponsor metadata, branding overlay assets, content swap-out workflow |
-| Website explainer subset | Build | Static export of selected high-level reels to Challenge Website | Picks which modules / reels go to the public funnel |
+| Video creation | Build (AI-assisted) | AI-generated **slideshow / whiteboard video + AI voiceover + on-screen text** | Fast to produce and easy for sponsors to swap branding on. George: feasible with AI, _"it's just a matter of how long... and what's the quality going to come out like?"_ |
+| Video production approach | Build (phased) | **Pilot 1-2 modules fully, validate, then replicate across all 36** | De-risks quality and timeline before committing weeks. George: _"get all 16 modules on the beginner... in their condensed format but not validated content... see what it might look like in one or two with videos and the quiz"_ |
+| Video hosting | Access | **YouTube channel** (videos live on the InPlay YouTube channel, embedded in-app) | Reuses YouTube serving and doubles as a distribution / SEO channel |
+| Course library UI | Build | InPlay internal | Card library grouped by tier, course view, landscape video + portrait quiz. ~1 to 1.5 weeks for the Phase 1 UI (George) |
+| Written content | Build | Kevin (content) | Condensed text version of every module, mobile-formatted, two-mode consumption. Beginner/Intermediate/Expert documents in progress |
+| Quiz / poll engine | Build | InPlay internal | 2-3 MCQs per module, pass/fail, reward trigger, glossary swipe |
+| Progress tracking | Build | InPlay internal (PostgreSQL) | Server-side, account-pinned, completed grayed-but-visible, resume-to-point |
+| Reward credit | Build (integration) | InPlay internal -> Referral component | Module-complete event credits 100 InPlay coins to the referral wallet, earn-once |
+| Certification & badges | Build | InPlay internal | Tier certs, profile "Certs" surface, clickable badge entry points |
+| AI chatbot support | **Defer to Phase 2** | InPlay internal -- dedicated design pass | References the education repo + Sport Radar; guardrails and token-burn controls scoped in Phase 2 |
+| Website subset + FAQ | Build | Static export of selected content + a legal-reviewed FAQ/disclaimers layer | Public funnel taster; FAQ/disclaimers reviewed (Brian) before publish; OG/social-card metadata |
+| Sponsor content management | Build | InPlay internal (CMS) | Slide-group sponsor metadata, branding overlay, skippable pre-video unit, co-created content workflow |
 
 ---
 
@@ -185,16 +197,17 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 | Data | Direction | Source / Destination | Notes |
 |------|-----------|---------------------|-------|
-| Module videos (reels) | In | YouTube Shorts (or alternative host) | Streamed via API. 15-sec max. Captioned |
-| Module metadata | Stored | InPlay internal | Module ID, order, title, sponsor (if any), associated quiz ID |
-| Quiz questions and answers | Stored | InPlay internal | Per module: 2-3 multi-choice questions, correct answer index |
-| User progress | Stored | InPlay internal (server-side, account-pinned) | Modules complete, current module, last reel viewed, timestamps |
+| Module videos | In | YouTube (InPlay channel) | Slideshow/whiteboard + voiceover, embedded in-app |
+| Module written content | Stored | InPlay internal | Text version of each module, mobile-formatted |
+| Module metadata | Stored | InPlay internal | Module ID, tier, order, title, sponsor (if any), associated quiz ID, glossary |
+| Quiz questions and answers | Stored | InPlay internal | Per module: 2-3 multi-choice questions, correct answer |
+| User progress | Stored | InPlay internal (server-side, account-pinned) | Modules complete, current module, resume point, timestamps |
 | Quiz attempt log | Stored | InPlay internal | Question, chosen answer, pass/fail, timestamp |
-| Module completion event | Out | Referral component | Fires reward credit to the user's referral wallet |
-| Sponsor metadata | Stored | InPlay internal | Sponsor name, logo, period, modules owned, branding asset URLs |
-| AI chatbot query log | Stored | InPlay internal | User question, chatbot answer, references used. Powers retraining and quality measurement |
-| Sport Radar stats (for chatbot) | In | Sport Radar API | Used when the chatbot answers stats-driven questions (Statmuse-style) |
-| Website explainer subset | Out | Challenge Website | Curated set of reels published to the public funnel |
+| Module completion event | Out | Referral component | Credits 100 InPlay coins to the referral wallet, earn-once |
+| Certification state | Stored | InPlay internal | Per-tier completion, badges earned, surfaced on profile |
+| Sponsor metadata | Stored | InPlay internal | Sponsor, period, slide groups owned, branding assets, skippable pre-video asset |
+| Website subset + FAQ | Out | Challenge Website | Curated content + legal-reviewed FAQ/disclaimers + OG metadata |
+| Sport Radar stats (Phase 2 chatbot) | In | Sport Radar API | Only for the deferred AI chatbot, not launch Education |
 
 ---
 
@@ -202,24 +215,25 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 | Persona / Role | Access level | Notes |
 |---------------|-------------|-------|
-| Fully onboarded users | Full | All modules, quizzes, rewards, AI chatbot |
-| KYC-pending (holding state) users | Browse-only | Can watch reels but quiz rewards do not credit until KYC completes ⚠️ **needs confirmation** |
-| Pre-onboarded users (web only) | High-level subset | Explainer videos on Challenge Website, no in-app access |
-| Unauthenticated public | Subset (web only) | Same as above |
-| Sponsor admin users | Manage own modules | Through a sponsor portal -- post-MVP (no decision in this session) |
+| Fully onboarded users | Full | All tiers, quizzes, rewards, certifications |
+| KYC-pending (holding state) users | Browse | Can open courses, reward accrual vs hold until KYC clears is open _[⚠ see [[open-questions]]]_ |
+| Pre-onboarded / public (web only) | Subset | Curated content + FAQ/disclaimers on the Challenge Website, no in-app access |
+| Sponsor admin users | Manage own slide groups | Through a sponsor portal -- post-MVP, no decision this session |
+
+Education is **free** in the trading challenge (the premium / paid surfaces discussed belong to Research Tab, not here).
 
 ---
 
 ## 7. How Do We Know It's Working?
 
-- [ ] At least 60% of newly onboarded users start the education journey within their first session
-- [ ] At least 40% of users who start the journey complete at least one module
+- [ ] At least 60% of newly onboarded users open Education within their first session
+- [ ] At least 40% of users who open Education complete at least one module
 - [ ] Average modules completed per user reaches 4+ within the first week of active use
-- [ ] At least 20% of users complete all modules during the challenge
-- [ ] Quiz pass rate per module sits in the 70-90% band -- below 70% means the module needs rework, above 95% means the quiz is too easy
-- [ ] AI Chatbot resolves 75-85% of L1 support questions without escalation (Cody's target)
-- [ ] Sponsor recall lift -- A/B test on sponsored vs. non-sponsored modules to measure brand recall
-- [ ] Drop-off curve per reel within a module is identifiable -- weak reels surface for rework
+- [ ] At least 20% of users earn the **Beginner-tier certification** during the challenge
+- [ ] Quiz pass rate per module sits in the 70-90% band (below 70% the module needs rework, above 95% the quiz is too easy)
+- [ ] Drop-off per slide / per course is identifiable so weak content surfaces for rework
+- [ ] (Phase 2) AI chatbot resolves 75-85% of L1 support questions without escalation (Cody's target)
+- [ ] Sponsor recall lift, A/B on sponsored vs non-sponsored slide groups
 
 ---
 
@@ -229,47 +243,48 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
-| YouTube Shorts API + libraries | Video serving infrastructure, scroll mechanic compatibility | Yes for primary path; alternative pipelines exist |
-| Customer Onboarding | Authenticated user identity for progress tracking | Yes |
-| Referral component | Referral wallet write API for crediting rewards on module completion | No -- can stub during build |
-| Sport Radar API | Stats data referenced by AI chatbot | No -- chatbot can launch without stats integration |
-| Sponsor agreements (Sky / Cody sales work) | Brand sign-off, content collaboration, scheduling | No -- can launch with InPlay-produced content and add sponsors progressively |
-| AI Chatbot architecture decision | Dedicated discussion needed (Cody flagged) | No for MVP modules; Yes for chatbot |
-| Content production schedule | Who scripts, films, captions, and reviews -- responsibility chain undefined | ⚠️ **Gap** |
+| YouTube (hosting) | Video serving + in-app embed | No, alternative hosts exist |
+| Customer Onboarding | Authenticated identity for progress + certs | Yes |
+| Referral component | Referral wallet write API to credit 100 coins on completion | No, can stub during build |
+| Video production pipeline (AI) | Validated quality + timeline from the 1-2 module pilot | ⚠️ Gating risk for "videos at launch" _[see [[open-questions]]]_ |
+| Content (Kevin) | Condensed written content for 36 modules across 3 tiers | Yes for the written/UI path |
+| Legal review (Brian) | Sign-off on website FAQ / disclaimers before publish | No for in-app modules, Yes for website FAQ |
+| Information Layer / IPO Module | "What is an IPO draft?" routes into the IPO-draft module | No |
+| Research Tab (Information Layer) | Owns the premium-data / paid AI-companion thread that surfaced here | Out of scope, separate session |
+| Sport Radar API | Stats for the Phase 2 chatbot only | No for launch |
 
 **What other components need from this one:**
 
-- **Referral component** listens for module-complete events to credit referral wallet
-- **AI Chatbot Support** must be accessible from anywhere in the app (Information Layer, Trading flows, Customer Onboarding, Third Space all reference it)
-- **Challenge Website** subscribes to the curated explainer subset
-- **Trading** component links to education modules when users encounter unfamiliar terms (e.g., a long/short tooltip links to that module)
-- **Customer Onboarding** may surface education in the holding state (when users wait for KYC to clear) -- decision pending
+- **Referral component** listens for module-complete events to credit the referral wallet
+- **Challenge Website** subscribes to the curated subset (and hosts the separate FAQ/disclaimers)
+- **Trading** and **Information Layer** link into specific modules from unfamiliar terms (e.g. a long/short tooltip, the "What is an IPO draft?" link from [[ipo-module]])
+- **Customer Onboarding** may surface Education in the holding state while users wait for KYC, decision pending
 
 ---
 
 ## 9. Priority
 
-**Must-have at launch?** Yes -- partially. Education modules themselves are a launch requirement for two reasons:
+**Must-have at launch? Yes, partially.** Education is a launch requirement for two reasons:
 
-1. **App-store gating.** Cody: _"the app stores will decline it if it's because they see it as a scam"_ if the app launches without substantive content. Education modules are part of the substantive content requirement.
-2. **User activation.** The Analytical Fan and Finance-Curious Student audiences are not traders. Without education, they hit the trading screen, do not understand long/short, and bounce.
+1. **App-store gating.** Cody: the stores _"will decline it... they see it as a scam"_ without substantive content, and education modules are part of that substance.
+2. **User activation.** The Analytical Fan and Finance-Curious Student are not traders, without education they hit the trading screen, do not understand long/short, and bounce.
 
-**Sequencing rationale:**
+**Sequencing rationale (Phase 1 / launch):**
 
-- A subset of modules (the 4-6 covering the absolute basics) must be live for app launch
-- Quiz layer can launch with module set (it's the gating mechanic for rewards)
-- AI Chatbot is post-MVP -- Cody explicitly flagged this needs its own module discussion before scoping
-- Sponsor-owned modules layer in as Sky / Cody close sales -- not a launch blocker
-- Website explainer subset can launch alongside Challenge Website
-- Progress tracking is launch-required (otherwise the resume experience breaks immediately)
+- The **Beginner tier** card library, written content, and quizzes are the launch core, with **1-2 modules fully video-produced** to validate the pipeline before replicating
+- Quiz layer launches with the modules (it gates the reward)
+- Reward integration and progress tracking are launch-required
+- **Certification & badges** ship with the tier structure (the certification is the payoff of completing a tier)
+- Website curated subset launches alongside the Challenge Website, the FAQ/disclaimers layer is a parallel legal-reviewed track
 
-**Post-MVP (explicitly deferred or open):**
+**Phase 2 / deferred:**
 
-- AI Chatbot support (needs dedicated session)
-- Cody's _"meeting the trader where they're at in their knowledge base"_ -- personalised education journey based on user behaviour (future state)
-- Production partnerships -- Tasty Live broadcasts, Investopedia content licensing, Kaplan / CBOE Institute relationships
-- Sponsor portal (admin self-service for sponsors managing their modules)
-- Discord-style "education channels" owned by sponsors -- Skye floated this, deferred
+- **AI chatbot support** (dedicated design pass: guardrails, token-burn controls, escalation)
+- **Premium data / paid AI companion / tiered pricing**, owned by **Research Tab**, scoped in its own session _[⚠ see [[open-questions]]]_
+- Full video production across all 36 modules (after the pilot validates quality and timeline)
+- Sponsor portal (self-service for sponsors), sponsor slide-group sales layer in as they close
+- Personalised education journey ("meeting the trader where they're at"), future state
+- Kaplan / STC / CFA content or certification partnerships, exploratory
 
 ---
 
@@ -277,52 +292,72 @@ Celebration moments on quiz completion are punchy and emotional -- a brief anima
 
 **Abuse vectors:**
 
-- Users gaming quizzes to farm referral wallet credit (mitigation: KYC gate on referral wallet payout; per-module reward cap; quiz attempt throttling)
-- Bots scripting through reels to collect rewards (mitigation: anti-bot via Persona KYC, behavioural detection)
-- Sponsor-owned content drifting from neutral education into pure advertising (regulatory risk -- looks like advertising disguised as education)
+- Users gaming quizzes to farm referral credit (mitigation: KYC gate on payout, earn-once per module, quiz throttling)
+- Bots scripting through courses for rewards (mitigation: Persona KYC, behavioural detection)
+- Sponsor content drifting from neutral education into pure advertising (regulatory and credibility risk)
+
+**Delivery risks:**
+
+- **AI-generated video quality / timeline unproven**, the 1-2 module pilot is the gate, if it slips, launch ships the written/quiz path first and adds video after (George flagged video as lower priority than other pre-launch work if it runs long)
+- Content not yet validated, the condensed modules are drafted but unreviewed for accuracy
+- (Phase 2) premium-data / chatbot **LLM token-burn** if users issue rogue queries, guardrails needed, scoped to the Research session
 
 **Data risks:**
 
-- Sport Radar stats stale in AI chatbot answers -- _"the Packers' last 300-yard game"_ is only accurate if the chatbot has current data
-- Video content drift -- sponsor leaves mid-period, content needs swap-out, what backfills?
-- User progress data loss → frustrating UX (re-watching completed modules)
-- AI chatbot hallucinations on edge-case sports questions -- could fabricate stats
+- User progress data loss leads to re-doing completed modules (mitigation: server-side, account-pinned)
+- Sport Radar stats stale in the Phase 2 chatbot
 
 **Compliance:**
 
-- **NOT financial advice** -- strict line between basics (long/short mechanics) and recommendations ("you should go long on the Packers"). Edwin's vision-level rule applies: _"I want users to make their own journey"_
-- **Sponsor disclosure** -- FTC requires clear disclosure that sponsored modules are sponsored content (e.g., "Sponsored by Coca-Cola" label, not subtle)
-- **Quiz-rewards as promotion** -- crediting referral dollars for completing a quiz may trigger state-by-state promotion / sweepstakes regulations. Needs legal review
-- **Educational content disclaimer** -- "Educational content, not financial advice" must appear consistently
-- **AI chatbot guardrails** -- the chatbot must refuse trading advice requests, refuse stock-tip questions, stay inside the educational scope
+- **NOT financial advice**, strict line between basics and recommendations. Edwin's rule: _"I want users to make their own journey"_
+- **Sponsor disclosure**, FTC-clear "Sponsored by [Brand]" on sponsored slide groups
+- **Quiz-rewards as promotion**, crediting referral dollars for completing a quiz may trigger state-by-state promotion / sweepstakes rules, needs legal review
+- **Website FAQ / disclaimers** legal-reviewed before publish (Brian)
+- **(Phase 2) AI chatbot guardrails**, refuses advice and tips, references the education repo only
 
 **Controls needed:**
 
 - "Educational content, not financial advice" disclaimer on every module
-- "Sponsored by [Brand]" disclosure on every sponsored module
-- Quiz attempt throttling (rate limit + cooldown after failure)
-- Per-module reward cap (e.g., reward can only credit once per user per module)
-- AI chatbot guardrails -- refuses advice, refuses tips, references education repo only
-- Content review process before publishing a module (legal + product review)
-- Sponsor content review before publishing a sponsor-owned module (legal + brand alignment review)
+- "Sponsored by [Brand]" disclosure on every sponsored slide group
+- Quiz attempt throttling and earn-once-per-module reward cap
+- Content review (legal + product) before publishing a module
+- Sponsor content review before publishing a sponsored slide group
+- Phase 2 chatbot guardrails + token-burn controls
 
 ---
 
 ## Sub-Components
 
-| Sub-Component | Overview | Status | Link |
-|--------------|----------|--------|------|
-| Modules / Reels Viewer | TikTok-style scroll, 15-sec reels with captions, vertical swipe between reels within a module | Collecting | [[sub-components/modules-reels-viewer/modules-reels-viewer]] |
-| Quiz / Poll Layer | 2-3 multi-choice questions at end of each module, swipe-to-vote UX, gates reward credit | Collecting | [[sub-components/quiz-poll-layer/quiz-poll-layer]] |
-| Reward Integration | On quiz pass: celebration animation + referral wallet credit via Referral component | Collecting | [[sub-components/reward-integration/reward-integration]] |
-| Progress Tracking | Server-side per-user state: modules complete, current module, last reel viewed. Status badge surface | Collecting | [[sub-components/progress-tracking/progress-tracking]] |
-| AI Chatbot Support | Conversational L1 support layer drawing on the education repo + Sport Radar. Target 75-85% of L1 questions. Needs its own architecture discussion (Cody flagged) | Stub | [[sub-components/ai-chatbot-support/ai-chatbot-support]] |
-| Education-on-Website | Curated high-level subset published to Challenge Website -- the public-facing taster | Collecting | [[sub-components/education-on-website/education-on-website]] |
-| Sponsor Ownership Layer | Single-advertiser ownership of a module for a fixed period. Embedded branding, co-created content, FTC disclosure | Collecting | [[sub-components/sponsor-ownership-layer/sponsor-ownership-layer]] |
+> Sub-component docs are not written yet, they are extracted via `/product-sub-component`. Listed here as the agreed bucketing (Link column shows status until each doc exists).
+
+| Sub-Component | Overview | Status | Doc |
+|--------------|----------|--------|-----|
+| Modules / Course Viewer | Card library grouped by tier, slideshow/whiteboard video + voiceover with a written version, landscape video / portrait quiz, two consumption modes | Collecting | _pending /product-sub-component_ |
+| Quiz / Poll Layer | 2-3 multi-choice questions at the end of a course, gates the reward, non-sequential access, glossary on swipe-right | Collecting | _pending /product-sub-component_ |
+| Reward Integration | On quiz pass: celebration + **100 InPlay coins to the referral wallet**, earn-once per module, via the Referral component | Collecting | _pending /product-sub-component_ |
+| Progress Tracking | Server-side, account-pinned. Completed modules grayed-but-visible, current highlighted, resume-to-point | Collecting | _pending /product-sub-component_ |
+| Certification & Badges | Tier certifications, profile "Certs" section, badges visible (grayed/earned), clickable as a course entry point | Collecting | _pending /product-sub-component_ |
+| AI Chatbot Support | Conversational L1 support over the education repo + Sport Radar (Statmuse-style). **Phase 2 / deferred**, own design pass | Deferred (Phase 2) | _pending /product-sub-component_ |
+| Education-on-Website | Curated high-level subset on the Challenge Website + a separate legal-reviewed FAQ/disclaimers layer + OG metadata | Collecting | _pending /product-sub-component_ |
+| Sponsor Ownership Layer | Slide-group-level sponsorship, skippable pre-video CPM unit, co-created embedded branding, FTC disclosure, rotating splash on the backlog | Collecting | _pending /product-sub-component_ |
 
 ---
 
-> **Update (12–17 June touchdowns):** **Delivery method still open (12-06):** the team needs to align on how the first iteration is executed. Options on the table: **TikTok-style 30–40 second highlight videos** plus detailed text, **AI-generated voice narration**, **code-generated animation slides**, and a **podcast format** (10–20 min) for accessibility. **Brand-owned modules (12-06):** an alternative to InPlay producing content is a **brand taking full ownership** of a module (visual design, ambassadors, voice talent, spoken ad breaks within the content); a podcast variant could carry **programmatic AI-voice ad reads** sprinkled through (cross-references the Sponsor Ownership Layer and [[advertising/advertising]]). **Beta + session (12-06, 17-06):** Kevin and Troy to finalise a first module for a beta test; a dedicated brainstorm session was scheduled (the **18 June education session**). The **"What is an IPO draft?"** explainer link from [[ipo-module/ipo-module]] routes here. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+## Source Content (Written Guides)
+
+> Raw written content drafted by Kevin (the "Module written content" referenced in §4 / §5). Stored as reference, not yet processed into sub-component docs. Converted from .docx on 2026-06-22.
+
+| Guide | Tier | Status | Doc |
+|-------|------|--------|-----|
+| Beginner Trading Guide | Beginner (16 modules) | Raw, unprocessed | [[beginner-trading-guide]] |
+| Intermediate Trading Guide | Intermediate (10 modules) | Raw, unprocessed | [[intermediate-trading-guide]] |
+| Expert Trading Guide | Expert (10 modules) | Raw, unprocessed | [[expert-trading-guide]] |
+
+---
+
+> **Update (22 June, Education component deep-dive):** This session **reset the launch design** and the body above has been rewritten accordingly. Headlines: launch format moved from **TikTok 15-sec reels to a card-based course library** with **slideshow / whiteboard videos + voiceover + text + quiz** (reels parked as possible v2), catalogue set at **36 modules across Beginner (16) / Intermediate (10) / Expert (10)**, **non-sequential** access, completed modules **grayed-but-visible**, reward fixed at **100 InPlay coins (referral credits) per module, earn-once**, an **in-module glossary** (swipe right), a new **Certification & Badges** sub-component (profile "Certs"), the **AI chatbot deferred to Phase 2**, sponsorship reframed to the **slide-group level** with skippable pre-video CPM, and a production approach of **AI-generated slideshow video, pilot 1-2 modules then replicate**, hosted on the YouTube channel. Premium Sport Radar data resale + paid AI companion were ruled **out of Education scope** and flagged for a **Research Tab** session. _Source: [[meetings/22-06-2026-education-component]]. See also the prior touchdown context in [[digests/touchdowns-12-17-jun-2026]]._
+>
+> **Update (12-17 June touchdowns, superseded by 22-06):** The delivery format was still open across these touchdowns (TikTok video + AI voice + code-gen animation + podcast, brand-owned modules). The 22 June deep-dive resolved it (see above). Kept for traceability. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]._
 
 ## Diagrams
 
@@ -331,11 +366,12 @@ _Sub-component tree appears in Section 1. Functional flow appears in Section 2._
 ```mermaid
 graph LR
     Education -- module-complete event --> Referral[Referral component]
-    YouTube[YouTube Shorts API] -- video stream --> Education
-    SportRadar[Sport Radar API] -- stats --> Chatbot[AI Chatbot Support]
-    Education -- chatbot surface --> AcrossApp[Information Layer / Trading / Third Space / Onboarding]
-    Education -- explainer subset --> ChallengeWeb[Challenge Website]
-    Sponsor[Sponsor Brand] -. content collaboration .-> Education
+    YouTube[YouTube channel] -- video embed --> Education
+    Education -- certifications --> Profile[Profile / Personal Dashboard]
+    Education -- curated subset + FAQ --> ChallengeWeb[Challenge Website]
+    IPO[IPO Module] -- 'What is an IPO draft?' --> Education
+    Sponsor[Sponsor Brand] -. slide-group branding .-> Education
+    Research[Research Tab] -. premium data + Phase 2 AI companion .-> Research
 ```
 
 ---
@@ -344,23 +380,20 @@ graph LR
 
 ### Gaps
 
-- **Quiz failure UX:** retry immediately? Cooldown? Re-watch required? Not discussed
-- **Reel-viewed accounting:** what fraction of a reel counts as viewed? Not discussed
-- **Video fallback:** low-bandwidth / video-load-fail behaviour not discussed
-- **Sponsor mid-period exit:** backfill content workflow not discussed
-- **AI chatbot scope and architecture:** Cody explicitly flagged a separate module discussion needed
-- **Content production responsibilities:** who scripts, films, captions, reviews? Pipeline not nailed down
-- **Holding-state reward credit:** does KYC-pending user accrue rewards or are they gated until KYC clears?
-- **Education-as-onboarding-touchpoint:** does the holding state surface education modules while users wait for KYC? Skye / Brett hinted at this in earlier sessions
-- **Personalisation (future):** Cody's _"meeting the trader where they're at"_ idea -- deferred but no follow-up scheduled
-- **Sponsor portal:** if Coca-Cola owns a module, who uploads their assets, schedules the period, and signs off on the script? Manual for v1, but no agreed-upon process
+- **Quiz failure UX:** retry immediately, cooldown, or re-watch required? Still not decided
+- **Holding-state reward:** does a KYC-pending user accrue the 100 coins or are they held until KYC clears?
+- **Video production validation:** quality and timeline from the 1-2 module pilot (the gate on shipping video at launch)
+- **Reward amount confirmation:** 100 coins flat, or vary by tier / difficulty?
+- **Sponsor mid-period exit:** backfill workflow for a sponsored slide group
+- **Sponsor portal:** who uploads assets, schedules the period, and signs off the script (manual for v1, no agreed process)
+- **Content accuracy review:** who validates the drafted module content (legal + product) before publish
 
 ### Questions for Edwin / Cody / Kevin
 
-1. What's the reward dollar amount per module completion? Does it vary by module difficulty?
-2. Who is the right tester for these modules? Edwin self-flagged: _"I'm not the right person to ask because I've been doing it so long... we actually need to talk to someone who's really probably not a trader."_ Who's the proxy?
-3. For sponsor-owned modules: who signs off on the educational content from the InPlay side (legal? Edwin? Cody?)?
-4. Is the chatbot a launch feature or a post-MVP feature? Cody's flagging suggests post-MVP but a launch decision would be useful
-5. Confirm "12-15 modules" as the cap, or revisit?
-6. What's Kevin's content production timeline -- when does the first module ship to test?
-7. Do sponsored modules pay InPlay differently than standard ad inventory? (i.e., are these sold by Skye's team as part of the ad packaging or as a separate motion?)
+1. Confirm the **36 / 16-10-10** tier split as the launch catalogue, or is Beginner-only the launch scope?
+2. What is the **reward amount** rule, flat 100 coins per module or scaled?
+3. Who is the right **non-trader tester** for the modules? Edwin self-flagged he is too expert to test
+4. For sponsored slide groups, who signs off the educational content on the InPlay side (legal? Edwin? Cody?)?
+5. **Kevin's production timeline**, when does the first validated module ship to test?
+6. Confirm **AI chatbot is Phase 2** (launch decision) and book the **Research Tab** session that owns premium data + the paid companion
+7. Do sponsored slide groups sell through Skye's ad packaging or as a separate motion?
