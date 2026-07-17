@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTS-001 · The Simulated Designated Market Maker — Comprehensive Guide</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --bid:#0e6a4c; --bid-deep:#0a4f39; --bid-soft:#e0eee5; --bid-ghost:#eef5ef;
+    --offer:#a83a2c; --offer-deep:#7f2b20; --offer-soft:#f5e4df; --offer-ghost:#f9efec;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{
+    background:var(--ink); color:var(--paper); font-family:var(--mono);
+    font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+    text-align:center; padding:.5rem 1rem;
+  }
+  .stripe b{color:#e8b7ad;font-weight:600}
+  /* ---------- top navigation ---------- */
+  .topnav{
+    position:sticky;top:0;z-index:10;background:var(--paper-deep);
+    border-bottom:1px solid var(--rule-strong);
+    padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;
+    box-shadow:0 2px 8px rgba(60,50,25,.08);
+  }
+  .topnav a{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;
+    color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);
+    padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s;
+  }
+  .topnav a:hover{border-color:var(--bid);color:var(--bid-deep);background:var(--bid-ghost)}
+  .topnav a.home{border-color:var(--ink);color:var(--ink);font-weight:700}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+  /* ---------- page switching (CSS-only, :target) ---------- */
+  .page{display:none}
+  .page:target{display:block}
+  #cover{display:block}                 /* default page when no hash */
+  .page:target ~ #cover{display:none}   /* hide cover when a page is open */
+  /* ---------- masthead / cover ---------- */
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--bid);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3.1rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--offer);color:var(--offer)}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.5rem;list-style:none;margin-top:1.6rem}
+  .toc-grid a{
+    display:flex;gap:.6rem;align-items:baseline;text-decoration:none;color:var(--ink);
+    padding:.6rem .75rem;border:1px solid var(--rule);background:rgba(255,255,255,.35);
+    font-size:.87rem;line-height:1.3;transition:border-color .15s,background .15s;
+  }
+  .toc-grid a:hover{border-color:var(--bid);background:var(--bid-ghost)}
+  .toc-grid .n{font-family:var(--mono);font-size:.64rem;color:var(--bid);flex:none;padding-top:.1rem}
+  .covernote{margin-top:2rem;font-size:.9rem;font-style:italic;color:var(--ink-soft)}
+  /* ---------- page headers & content ---------- */
+  .pagehead{padding:2.8rem 0 1.2rem;border-bottom:3px double var(--rule-strong);margin-bottom:.6rem}
+  .pagehead h2{font-size:clamp(1.6rem,4.2vw,2.3rem);line-height:1.12;font-weight:700;letter-spacing:-.012em;border:none;padding:0}
+  h3{font-size:1.16rem;font-weight:700;margin-top:2.2rem}
+  h3 .ref{font-family:var(--mono);font-size:.6rem;font-weight:400;color:var(--ink-soft);letter-spacing:.06em;margin-left:.5rem;vertical-align:middle}
+  p{margin-top:.95rem}
+  p.lede{font-size:1.06rem}
+  a{color:var(--bid-deep)}
+  ul,ol{margin:.9rem 0 0 1.35rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--bid);font-family:var(--mono);font-size:.85em}
+  blockquote{
+    margin:1.4rem 0 0;padding:.9rem 1.3rem;border-left:3px solid var(--bid);
+    background:var(--bid-ghost);font-style:italic;font-size:1.04rem;
+  }
+  code{font-family:var(--mono);font-size:.84em;background:var(--paper-deep);padding:.1em .35em;border-radius:3px}
+  /* ---------- typeset math ---------- */
+  .math{
+    margin:1.4rem 0 0;background:rgba(255,255,255,.6);
+    border:1px solid var(--rule-strong);border-left:4px solid var(--bid);
+    padding:1.15rem 1.5rem;overflow-x:auto;
+  }
+  .math .eq{
+    font-family:var(--serif);font-size:1.18rem;line-height:1.9;white-space:nowrap;
+    text-align:center;letter-spacing:.01em;
+  }
+  .math .eq + .eq{margin-top:.35rem}
+  .math .eq .note{font-size:.82rem;font-style:italic;color:var(--ink-soft);margin-left:1.1rem;letter-spacing:0}
+  var{font-style:italic;font-weight:500}
+  .math sub,.where sub{font-size:.66em;font-style:normal}
+  .math .fn{font-style:normal}
+  .math .sum{font-size:1.35em;font-style:normal;vertical-align:-.08em;padding-right:.06em}
+  .where{
+    display:grid;grid-template-columns:auto 1fr;gap:.2rem 1.1rem;
+    margin-top:.95rem;padding-top:.8rem;border-top:1px dashed var(--rule-strong);
+    font-size:.88rem;
+  }
+  .where dt{font-family:var(--serif);white-space:nowrap;text-align:right}
+  .where dt var{font-weight:600}
+  .where dd{color:var(--ink-soft);margin:0}
+  /* ---------- steps grid (decision sequence) ---------- */
+  ol.steps{
+    list-style:none;margin:1.4rem 0 0;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.45rem;counter-reset:s;
+  }
+  ol.steps li{
+    counter-increment:s;margin:0;display:flex;gap:.65rem;align-items:baseline;
+    border:1px solid var(--rule);background:rgba(255,255,255,.45);
+    padding:.5rem .7rem;font-size:.88rem;
+  }
+  ol.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.78rem;color:var(--bid);flex:none}
+  ol.steps li.gate{border-color:var(--offer);background:var(--offer-ghost)}
+  ol.steps li.gate::before{color:var(--offer)}
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:.9rem}
+  th{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    text-align:left;color:var(--ink-soft);padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong);
+  }
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .num{font-family:var(--mono);font-size:.82rem;text-align:right}
+  /* ---------- callouts ---------- */
+  .callout{margin:1.4rem 0 0;padding:1rem 1.25rem;border:1px solid;border-left-width:4px;font-size:.94rem;background:rgba(255,255,255,.4)}
+  .callout .tag{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.45rem}
+  .callout.note{border-color:var(--bid)}         .callout.note .tag{color:var(--bid)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)} .callout.warn .tag{color:var(--amber)}
+  .callout.danger{border-color:var(--offer);background:var(--offer-ghost)} .callout.danger .tag{color:var(--offer)}
+  .rulebanner{
+    margin:1.6rem 0 0;text-align:center;padding:1.3rem 1.2rem;
+    border-top:3px double var(--rule-strong);border-bottom:3px double var(--rule-strong);
+    font-size:1.12rem;font-style:italic;
+  }
+  .rulebanner b{color:var(--bid-deep);font-style:normal}
+  /* ---------- flow diagram ---------- */
+  .flow{list-style:none;margin:1.5rem 0 0;padding:0}
+  .flow li{margin:0;position:relative;padding:0 0 1.3rem 0}
+  .flow li:not(:last-child)::after{content:"";position:absolute;left:50%;bottom:.26rem;width:2px;height:.76rem;background:var(--rule-strong)}
+  .flow li:not(:last-child)::before{content:"";position:absolute;left:50%;bottom:.1rem;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--rule-strong)}
+  .flow .box{border:1px solid var(--rule-strong);background:rgba(255,255,255,.5);padding:.62rem 1rem;text-align:center}
+  .flow .box .t{font-weight:700;font-size:.95rem}
+  .flow .box .t .chref{font-family:var(--mono);font-weight:400;font-size:.6rem;color:var(--bid);margin-left:.45rem;letter-spacing:.08em}
+  .flow .box .d{font-size:.8rem;font-style:italic;color:var(--ink-soft);margin-top:.1rem}
+  .flow .box.const{background:var(--paper-deep);border-style:dashed}
+  .flow .box.pub{background:#1c231e;color:var(--paper);border-color:#1c231e}
+  .flow .box.pub .d{color:#a8dcb9}
+  .flow .box.loopnote{border:none;background:none;padding:.1rem}
+  .flow .box.loopnote .d{color:var(--bid)}
+  /* ---------- stack diagram ---------- */
+  .stack{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.5rem}
+  .stack .doc{border:1px solid var(--rule-strong);background:rgba(255,255,255,.5);padding:.9rem 1rem}
+  .stack .doc.full{grid-column:1/-1;border-width:2px;border-color:var(--ink)}
+  .stack .doc h4{font-size:.98rem}
+  .stack .doc .q{font-style:italic;color:var(--ink-soft);font-size:.84rem;margin-top:.15rem}
+  .stack .doc .out{font-family:var(--mono);font-size:.68rem;margin-top:.5rem;color:var(--bid-deep);line-height:1.6}
+  .stack .arrows{grid-column:1/-1;text-align:center;color:var(--rule-strong);font-size:1.15rem;line-height:.6}
+  /* ---------- svg diagrams ---------- */
+  .numline svg,.statesvg svg{width:100%;height:auto;display:block;margin-top:1.5rem}
+  /* ---------- ladder ---------- */
+  .ladder{margin-top:1.5rem;border:1px solid var(--rule-strong);background:rgba(255,255,255,.45)}
+  .ladder .lhead,.ladder .lrow{display:grid;grid-template-columns:1fr 5.2rem 5.2rem 1fr;align-items:center}
+  .ladder .lhead{border-bottom:2px solid var(--rule-strong)}
+  .ladder .lhead div{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);padding:.5rem .6rem}
+  .ladder .lrow{border-bottom:1px solid var(--rule)}
+  .ladder .lrow:last-child{border-bottom:none}
+  .ladder .cell{font-family:var(--mono);font-size:.82rem;padding:.5rem .6rem}
+  .ladder .bidp{color:var(--bid-deep);text-align:right;font-weight:600}
+  .ladder .offp{color:var(--offer-deep);font-weight:600}
+  .ladder .barwrap{height:100%;display:flex;align-items:center;padding:.35rem .4rem}
+  .ladder .barwrap.b{justify-content:flex-end}
+  .ladder .bar{height:1.15rem;display:flex;align-items:center;font-family:var(--mono);font-size:.68rem;color:#fff;white-space:nowrap}
+  .ladder .bar.bid{background:var(--bid);justify-content:flex-start;padding-left:.45rem;border-radius:2px 0 0 2px}
+  .ladder .bar.off{background:var(--offer);justify-content:flex-end;padding-right:.45rem;border-radius:0 2px 2px 0}
+  .ladder .mid{grid-column:1/-1;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);padding:.45rem;background:var(--paper-deep)}
+  /* ---------- profile chart ---------- */
+  .profchart{margin-top:1.4rem}
+  .profchart .prow{display:grid;grid-template-columns:11rem 1fr 3rem;gap:.6rem;align-items:center;margin-top:.45rem}
+  .profchart .pname{font-size:.85rem;font-weight:600;text-align:right}
+  .profchart .ptrack{background:var(--paper-deep);border-radius:2px;height:1.05rem;position:relative}
+  .profchart .pbar{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--bid),var(--offer));border-radius:2px;opacity:.85}
+  .profchart .pval{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
+  .profchart .plegend{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:.9rem;text-align:center}
+  /* ---------- priority lists ---------- */
+  ol.prio{list-style:none;margin:1.3rem 0 0;counter-reset:p}
+  ol.prio li{counter-increment:p;display:flex;gap:.9rem;align-items:baseline;padding:.5rem 0;border-bottom:1px solid var(--rule);margin:0}
+  ol.prio li::before{content:counter(p,decimal-leading-zero);font-family:var(--mono);font-size:.95rem;color:var(--bid);flex:none}
+  ol.prio li:first-child::before{color:var(--offer)}
+  /* ---------- checklist ---------- */
+  ul.check{list-style:none;margin-left:0}
+  ul.check li{padding-left:1.7rem;position:relative;font-size:.93rem}
+  ul.check li::before{content:"";position:absolute;left:0;top:.34em;width:.78em;height:.78em;border:1.5px solid var(--bid);border-radius:2px;background:rgba(255,255,255,.6)}
+  .checkgroup h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--bid-deep);margin-top:1.6rem;border-bottom:1px solid var(--rule);padding-bottom:.3rem}
+  /* ---------- prev / next ---------- */
+  .pagenav{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:3.2rem;border-top:3px double var(--rule-strong);padding-top:1.2rem}
+  .pagenav a{
+    text-decoration:none;border:1px solid var(--rule-strong);background:rgba(255,255,255,.45);
+    padding:.75rem .95rem;display:flex;flex-direction:column;gap:.15rem;transition:all .15s;
+  }
+  .pagenav a:hover{border-color:var(--bid);background:var(--bid-ghost)}
+  .pagenav a.next{text-align:right;align-items:flex-end;grid-column:2}
+  .pagenav a.prev{grid-column:1}
+  .pagenav .k{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .pagenav .t{font-size:.92rem;font-weight:700;color:var(--ink)}
+  footer{margin-top:3.5rem;padding-top:1.3rem;border-top:1px solid var(--rule-strong);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--ink-soft);text-align:center;line-height:2}
+  em{font-style:italic}
+  @media (max-width:640px){
+    .stack{grid-template-columns:1fr}
+    .profchart .prow{grid-template-columns:7rem 1fr 2.6rem}
+    .ladder .lhead,.ladder .lrow{grid-template-columns:1fr 4.2rem 4.2rem 1fr}
+    .where{grid-template-columns:auto 1fr}
+  }
+  @media print{
+    body{background:#fff;font-size:11pt}
+    .stripe,.topnav,.pagenav{display:none}
+    .page,#cover{display:block !important}
+    .pagehead{page-break-before:always}
+  }
+</style>
+</head>
+<body>
+
+<div class="stripe"><b>Trade secret — InPlay Global, Inc.</b> &nbsp;·&nbsp; derived explainer — the source standard is authoritative &nbsp;·&nbsp; internal use only</div>
+
+<nav class="topnav" aria-label="Chapters">
+  <a class="home" href="#cover">☰ Contents</a>
+  <a href="#primer">Primer</a>
+  <a href="#ch1">1 Constitution</a>
+  <a href="#ch2">2 Simulation</a>
+  <a href="#ch3">3 Exec Market</a>
+  <a href="#ch4">4 Objectives</a>
+  <a href="#ch5">5 Portfolio</a>
+  <a href="#ch6">6 Issuer</a>
+  <a href="#ch7">7 Lifecycle</a>
+  <a href="#ch8">8 Quantity</a>
+  <a href="#ch9">9 Adaptation</a>
+  <a href="#ch10">10 Construction</a>
+  <a href="#ch11">11 Cycle</a>
+  <a href="#ch12">12 Replay</a>
+  <a href="#themes">Themes</a>
+  <a href="#example">Example</a>
+  <a href="#quirks">Quirks</a>
+  <a href="#checklist">Checklist</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ==================== PRIMER ==================== -->
+<section class="page" id="primer">
+  <div class="pagehead"><div class="eyebrow">Page 01 · Foundations</div><h2>Primer: market-making from zero</h2></div>
+
+  <p class="lede">InPlay's simulation lets users trade "team stocks" — one per NFL team, one per NCAA team — with fake money. For the market to feel real, every user who wants to buy or sell must find a counterparty <em>instantly</em>, at a sensible price, at any time. Real markets solve this with <strong>market makers</strong>: firms that continuously offer to both buy and sell, earning the gap between their two prices.</p>
+
+  <p>The <strong>SDMM — Simulated Designated Market Maker</strong> — is InPlay's automated market maker. <em>Designated</em> means it is obligated to keep quoting; it can't walk away when conditions get uncomfortable. <em>Simulated</em> means it trades simulation capital and carries no real financial risk — but it must still behave exactly like a disciplined real-world market maker, because realism is the product.</p>
+
+  <h3>The exchange-booth analogy</h3>
+  <p>Think of a currency exchange booth at an airport. It shows two prices simultaneously: <em>"we buy dollars at 0.90, we sell dollars at 0.95."</em> The gap — the <strong>spread</strong> — is its margin. It doesn't predict where the dollar is going; it keeps two prices up and earns the spread on passing traffic. And if too many people sell dollars <em>to</em> the booth, its till fills up (<strong>inventory</strong> builds) — so it nudges both prices down: selling to the booth becomes less attractive, buying from it becomes more attractive, and the surplus drains away.</p>
+  <p>Every mechanism in PTS-001 is a formalized, deterministic version of something this booth does instinctively.</p>
+
+  <h3>Vocabulary</h3>
+  <table>
+    <tr><th style="width:11rem">Term</th><th>Plain meaning</th></tr>
+    <tr><td><b>Bid</b></td><td>Price the SDMM will <b style="color:var(--bid-deep)">buy</b> at. Users <em>sell</em> into the bid.</td></tr>
+    <tr><td><b>Offer</b> (ask)</td><td>Price the SDMM will <b style="color:var(--offer-deep)">sell</b> at. Users <em>buy</em> from the offer.</td></tr>
+    <tr><td><b>Spread</b></td><td>Gap between best bid and best offer.</td></tr>
+    <tr><td><b>Two-sided quote</b></td><td>A live bid <em>and</em> offer at the same time.</td></tr>
+    <tr><td><b>Quotation</b></td><td>One published price + quantity the SDMM stands behind. "Executable" = users can actually trade against it.</td></tr>
+    <tr><td><b>Order book</b></td><td>The full set of live bids and offers with quantities.</td></tr>
+    <tr><td><b>Depth / ladder</b></td><td>Price levels beyond the best one. Level k=0 is the best bid/offer; k=1 is one step worse. Big orders fill across several levels.</td></tr>
+    <tr><td><b>Displayed quantity</b></td><td>How many shares are shown at each price level.</td></tr>
+    <tr><td><b>Tick</b></td><td>Minimum price increment (e.g. $0.01). Every price must land exactly on a tick.</td></tr>
+    <tr><td><b>Inventory</b></td><td>The SDMM's net position in one stock. Bought more than sold → <b>long</b>; sold more → <b>short</b>. Expressed as % of the publicly tradable float.</td></tr>
+    <tr><td><b>Float</b></td><td>Shares available for public trading; excludes treasury shares and anything locked up.</td></tr>
+    <tr><td><b>Locked / crossed</b></td><td>Bid = offer (locked) or bid &gt; offer (crossed). Nonsense states — publishing either is banned.</td></tr>
+    <tr><td><b>Issuer / Team Company</b></td><td>One team's stock (the Chiefs, the Jets, …).</td></tr>
+    <tr><td><b>Portfolio</b></td><td>One league's Team Companies sharing a capital pool (NFL = 32, NCAA D1 football = 131).</td></tr>
+    <tr><td><b>Reference Price (RP)</b></td><td>The externally supplied "fair price" the SDMM anchors everything to.</td></tr>
+    <tr><td><b>Decision Cycle</b></td><td>One full iteration of the SDMM's think-price-publish loop.</td></tr>
+  </table>
+
+  <nav class="pagenav">
+    <a class="prev" href="#cover"><span class="k">← Contents</span><span class="t">Cover</span></a>
+    <a class="next" href="#ch1"><span class="k">Next →</span><span class="t">Ch 1 · Constitutional Principles</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 1 ==================== -->
+<section class="page" id="ch1">
+  <div class="pagehead"><div class="eyebrow">Page 02 · Source Chapter 1</div><h2>Constitutional Principles</h2></div>
+
+  <h3>The three-document stack <span class="ref">§1.1–1.2</span></h3>
+  <p>PTS-001 sits at the bottom of a strict hierarchy. The two CTS documents are "constitutional" — PTS-001 implements them and can never override them: <em>"where a conflict exists, the constitutional standards govern."</em></p>
+
+  <div class="stack">
+    <div class="doc">
+      <h4>CTS-001 · Financial Valuation Standard</h4>
+      <div class="q">What is a team worth?</div>
+      <div class="out">→ Expected Settlement Value</div>
+    </div>
+    <div class="doc">
+      <h4>CTS-002 · Market Operations Standard</h4>
+      <div class="q">How do markets run?</div>
+      <div class="out">→ Reference Price · Market Operating Condition · Market Operations Profile · owns order matching</div>
+    </div>
+    <div class="arrows">▼</div>
+    <div class="doc full">
+      <h4>PTS-001 · SDMM Standard — this document</h4>
+      <div class="q">How does the market maker behave?</div>
+      <div class="out">consumes all of the above → builds the tradable order book</div>
+    </div>
+  </div>
+
+  <p style="margin-top:1.1rem">The upstream outputs are the <strong>constitutional market objects</strong>: the <b>Expected Settlement Value</b> (what the stock should be worth at settlement), the <b>Reference Price</b> (the current fair price — the SDMM's anchor), the <b>Market Operating Condition</b> (open, halted, suspended…), and the <b>Market Operations Profile</b> (the rules of engagement in force). <em>The source contradicts itself on whether CTS-001 or CTS-002 publishes the Reference Price — see <a href="#quirks">Quirks</a>.</em></p>
+
+  <div class="rulebanner">The single most repeated rule in the whole standard:<br><b>the SDMM consumes constitutional objects — it never creates, modifies, or second-guesses them.</b></div>
+
+  <p>Explicitly, the SDMM shall never independently determine: Expected Settlement Value, Reference Price, Market Operating Condition, Market Operations Profile, or participant interaction rules. Its purpose is <em>not to predict prices</em> — it is to build a continuously tradable market <em>around</em> the price it is given <span class="ref">§1.4</span>.</p>
+
+  <h3>The seven engineering principles <span class="ref">§1.5</span></h3>
+  <ol class="prio">
+    <li><b>Continuous Liquidity</b> — executable two-sided quotes exist throughout every interval in which trading is authorized. No blank markets, ever.</li>
+    <li><b>Deterministic Operation</b> — identical inputs + config + event sequence → identical behavior, on any conforming implementation. No wall-clock, no true randomness, no hidden state.</li>
+    <li><b>Inventory Awareness</b> — continuously monitor the position, without ever pausing market-making duties to do so.</li>
+    <li><b>Continuous Market Presence</b> — inventory management is never an excuse to stop quoting. Manage by skewing prices, not by going dark.</li>
+    <li><b>Production-Consistent Behavior</b> — quotes must evolve the way the active Market Operations Profile says a real market would.</li>
+    <li><b>Replayability</b> — every quotation, execution, inventory adjustment, and protection action reproducible through deterministic replay.</li>
+    <li><b>Engineering Isolation</b> — operate exclusively from constitutional inputs + approved configuration. No external pricing feeds unless a product standard expressly authorizes one.</li>
+  </ol>
+
+  <h3>Scope <span class="ref">§1.6</span></h3>
+  <p><b>Governs:</b> Executable Market construction · Market Posture determination · Price Formation · Market Structure · Displayed Quantity · Market Adaptation · Quote Construction · Decision Cycle operation · Verification and Deterministic Replay.<br>
+  <b>Does not govern:</b> valuation, settlement, regulation, participant rights, compliance — those belong to the CTS documents or elsewhere.</p>
+
+  <h3>The engine pipeline <span class="ref">§1.7</span></h3>
+  <p>The SDMM is a chain of engines, each consuming the previous one's outputs read-only. <em>(The source's own diagram uses stale engine names — this follows the chapters; see <a href="#quirks">Quirks</a>.)</em></p>
+
+  <ul class="flow">
+    <li><div class="box const"><div class="t">Constitutional inputs</div><div class="d">Reference Price · Market Operating Condition · Market Operations Profile</div></div></li>
+    <li><div class="box"><div class="t">Executable Market<span class="chref">CH 3</span></div><div class="d">the total liquidity environment</div></div></li>
+    <li><div class="box"><div class="t">Market Objective Engine<span class="chref">CH 4</span></div><div class="d">read the room, set objectives</div></div></li>
+    <li><div class="box"><div class="t">Portfolio Allocation Engine<span class="chref">CH 5</span></div><div class="d">split the league budget across teams</div></div></li>
+    <li><div class="box"><div class="t">Issuer Market Making Engine<span class="chref">CH 6</span></div><div class="d">per team: prices, ladder, sizes, validation</div></div></li>
+    <li><div class="box"><div class="t">Market Adaptation Engine<span class="chref">CH 9</span></div><div class="d">pick the behavioral mode</div></div></li>
+    <li><div class="box"><div class="t">Quote Construction Engine<span class="chref">CH 10</span></div><div class="d">final assembly + protection enforcement</div></div></li>
+    <li><div class="box pub"><div class="t">Executable Order Book — published</div><div class="d">users trade against it · matching owned by CTS-002</div></div></li>
+    <li><div class="box"><div class="t">Quote Lifecycle Engine<span class="chref">CH 7</span></div><div class="d">age, refresh, replenish, cancel live quotes</div></div></li>
+    <li><div class="box"><div class="t">Decision Cycle Engine<span class="chref">CH 11</span></div><div class="d">coordinates the loop · commits history</div></div></li>
+    <li><div class="box"><div class="t">Verification &amp; Deterministic Replay<span class="chref">CH 12</span></div><div class="d">the black box recorder</div></div></li>
+    <li><div class="box loopnote"><div class="d">⟲ state carries into the next Decision Cycle</div></div></li>
+  </ul>
+
+  <h3>Constitutional invariants <span class="ref">§1.8</span></h3>
+  <ul>
+    <li>Expected Settlement Value, Reference Price, and Market Operations Profile are all externally determined.</li>
+    <li>The SDMM consumes but never creates constitutional objects.</li>
+    <li>Deterministic replay is mandatory.</li>
+    <li>Continuous executable markets are mandatory unless suspended under CTS-002.</li>
+  </ul>
+
+  <nav class="pagenav">
+    <a class="prev" href="#primer"><span class="k">← Previous</span><span class="t">Primer</span></a>
+    <a class="next" href="#ch2"><span class="k">Next →</span><span class="t">Ch 2 · Simulation Market Architecture</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 2 ==================== -->
+<section class="page" id="ch2">
+  <div class="pagehead"><div class="eyebrow">Page 03 · Source Chapter 2</div><h2>Simulation Market Architecture</h2></div>
+
+  <p class="lede">Fake money is not an excuse for lower standards. The controlling idea <span class="ref">§2.6</span>: simulation markets must be <strong>computationally indistinguishable from production markets</strong> except where this standard expressly says otherwise.</p>
+
+  <p>Every simulation market must exhibit <span class="ref">§2.2</span>: continuously published Reference Prices · continuous executable two-sided quotes · deterministic operation · simulated executions · simulated inventory · simulated participant portfolios · deterministic replay.</p>
+
+  <h3>Simulation capital <span class="ref">§2.3</span></h3>
+  <p>The fake money: it has <b>no monetary value</b>, <b>cannot</b> be redeemed for cash, <b>cannot</b> be transferred between participants, and exists solely for simulation trading. Competition-specific allocation (everyone starts a contest with 100k, say) is left to each Product Technical Standard.</p>
+
+  <h3>Simulation executions <span class="ref">§2.4</span></h3>
+  <p>An accepted user order executes under CTS-002's Market Interaction Framework and must: update the participant's positions · update their cash balance · update SDMM inventory · generate deterministic execution records. It creates <b>no financial obligations</b> — nobody owes anybody real money.</p>
+
+  <h3>Simulation inventory <span class="ref">§2.5</span></h3>
+  <p>The SDMM tracks a simulated inventory per Team Company, existing purely to make market-making behavior realistic: it supports continuous liquidity, inventory-aware quoting, deterministic replay, and engineering analysis. It is not real financial exposure.</p>
+
+  <h3>Integrity and objectives <span class="ref">§2.6–2.7</span></h3>
+  <p>Simulation markets preserve orderly behavior, continuous liquidity, determinism, replayability, and <b>participant fairness</b>. They serve a dual purpose: educating participants, and acting as a live testbed for evaluating trading strategies, market-making methodologies, inventory methodologies, liquidity methodologies, and market-evolution methodologies.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch1"><span class="k">← Previous</span><span class="t">Ch 1 · Constitutional Principles</span></a>
+    <a class="next" href="#ch3"><span class="k">Next →</span><span class="t">Ch 3 · Executable Market Construction</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 3 ==================== -->
+<section class="page" id="ch3">
+  <div class="pagehead"><div class="eyebrow">Page 04 · Source Chapter 3</div><h2>Executable Market Construction</h2></div>
+
+  <blockquote>"The SDMM does not construct isolated quotations. It constructs an Executable Market."</blockquote>
+
+  <p>The <strong>Executable Market (EM)</strong> is the SDMM's primary internal object: the complete description of all executable liquidity available at a moment in time. Every published quote, every depth level, every refresh behavior is <em>derived from</em> it — nothing is quoted ad hoc.</p>
+
+  <div class="math">
+    <div class="eq"><var>EM</var><sub>t</sub> &nbsp;=&nbsp; <span class="fn">f</span> (<var>RP</var><sub>t</sub>, <var>MOC</var><sub>t</sub>, <var>MOP</var><sub>t</sub>, <var>CFG</var><sub>t</sub>)</div>
+    <dl class="where">
+      <dt><var>EM</var><sub>t</sub></dt><dd>the Executable Market at time t</dd>
+      <dt><var>RP</var><sub>t</sub></dt><dd>Reference Price — the fair price anchor</dd>
+      <dt><var>MOC</var><sub>t</sub></dt><dd>Market Operating Condition — open / halted / suspended</dd>
+      <dt><var>MOP</var><sub>t</sub></dt><dd>Market Operations Profile — the rules of engagement in force</dd>
+      <dt><var>CFG</var><sub>t</sub></dt><dd>SDMM configuration (incl. execution model &amp; product standard config)</dd>
+    </dl>
+  </div>
+
+  <p>A pure function of exclusively constitutional inputs <span class="ref">§3.3–3.4</span> — nothing else may leak in. Every Executable Market defines <span class="ref">§3.5</span>: executable price structure · liquidity structure · market depth · quotation generation parameters · quotation refresh parameters · protection parameters.</p>
+
+  <p>It is <b>not itself a published quotation</b> — it's the internal blueprint the pipeline works from, and it becomes the authoritative input to the Market Objective Engine for the current cycle <span class="ref">§3.7</span>. Like every engine, it never determines ESV, Reference Price, MOC, MOP, or participant interaction <span class="ref">§3.6</span>.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch2"><span class="k">← Previous</span><span class="t">Ch 2 · Simulation Market Architecture</span></a>
+    <a class="next" href="#ch4"><span class="k">Next →</span><span class="t">Ch 4 · Market Objective Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 4 ==================== -->
+<section class="page" id="ch4">
+  <div class="pagehead"><div class="eyebrow">Page 05 · Source Chapter 4</div><h2>Market Objective Engine</h2></div>
+
+  <p class="lede">Before touching a single price, the SDMM decides <strong>what it is trying to achieve</strong> this cycle. This is "the primary decision-making component" — every downstream engine must act consistently with its outputs.</p>
+
+  <p>The system's stated character <span class="ref">§4.2</span>: <em>"a deterministic decision system whose primary purpose is to provide continuous executable two-sided liquidity while pursuing profitable long-term market-making performance within the constraints established by this standard."</em> (On why a fake-money bot chases "profit", see <a href="#themes">Cross-cutting themes</a>.)</p>
+
+  <h3>Market Assessment <span class="ref">§4.4</span></h3>
+  <p>Each cycle starts by measuring the environment. Minimum required inputs:</p>
+  <table>
+    <tr><th style="width:13rem">Assessment input</th><th>What it measures</th></tr>
+    <tr><td><b>External Market Phase</b></td><td>What phase the broader market / game context is in</td></tr>
+    <tr><td><b>Order Arrival Rate</b></td><td>How fast user orders are coming in</td></tr>
+    <tr><td><b>Order Flow Acceleration</b></td><td>Whether that rate is speeding up or slowing down</td></tr>
+    <tr><td><b>Fill Velocity</b></td><td>How quickly posted quotes are getting executed</td></tr>
+    <tr><td><b>Quote Lifetime</b></td><td>How long quotes survive before being consumed</td></tr>
+    <tr><td><b>Book Consumption Rate</b></td><td>How fast the book's depth is being eaten</td></tr>
+    <tr><td><b>Inventory Position</b></td><td>Current net position (% of float)</td></tr>
+    <tr><td><b>Inventory Velocity</b></td><td>How fast the position is growing or shrinking</td></tr>
+    <tr><td><b>Protection State</b></td><td>Whether any protection mechanisms are tripped</td></tr>
+  </table>
+  <p>The assessment decides nothing itself — it feeds the objective decisions.</p>
+
+  <h3>Six objectives, one priority order <span class="ref">§4.5–4.6</span></h3>
+  <p>The SDMM pursues all six simultaneously: (1) continuous two-sided liquidity, (2) orderly and realistic behavior, (3) inventory within the risk profile, (4) long-term expected performance, (5) rapid incorporation of constitutional changes, (6) determinism and replayability. When they conflict, precedence is fixed — a lower priority may <b>never</b> cause a higher one to be violated:</p>
+
+  <ol class="prio">
+    <li><b>Protection Requirements</b></li>
+    <li><b>Continuous Market Availability</b></li>
+    <li><b>Market Integrity</b></li>
+    <li><b>Inventory Stability</b></li>
+    <li><b>Market Quality</b></li>
+    <li><b>Long-Term Market-Making Performance</b></li>
+  </ol>
+  <p style="font-style:italic;color:var(--ink-soft)">Memorize the shape: safety first, presence second, profit last.</p>
+
+  <h3>Outputs <span class="ref">§4.7–4.9</span></h3>
+  <table>
+    <tr><th style="width:13rem">Output</th><th>Meaning</th></tr>
+    <tr><td><b>Effective Market State</b></td><td>The engine's classification of current conditions</td></tr>
+    <tr><td><b>Inventory Risk Profile</b></td><td>How much position risk is tolerable right now</td></tr>
+    <tr><td><b>Liquidity Budget</b></td><td>How much liquidity we're willing to put on the table</td></tr>
+    <tr><td><b>Pricing Profile</b></td><td>Which pricing "personality" governs this cycle (Ch 6)</td></tr>
+  </table>
+  <p>The engine explicitly does <em>not</em> set reservation prices, market structure, displayed quantities, or quotes — that's later chapters. Its outputs are read-only and authoritative for the full cycle.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch3"><span class="k">← Previous</span><span class="t">Ch 3 · Executable Market Construction</span></a>
+    <a class="next" href="#ch5"><span class="k">Next →</span><span class="t">Ch 5 · Portfolio Allocation Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 5 ==================== -->
+<section class="page" id="ch5">
+  <div class="pagehead"><div class="eyebrow">Page 06 · Source Chapter 5</div><h2>Portfolio Allocation Engine</h2></div>
+
+  <p class="lede">A <strong>Portfolio</strong> = one league's Team Companies + one dedicated capital pool + one Product Technical Standard (NFL: 32 teams; NCAA D1 football: 131). This engine is the enterprise-level brain for one Portfolio: it divides resources <em>before</em> any team-level engine builds a market, and its decisions outrank team-level preferences.</p>
+
+  <p>Each Portfolio maintains its own capital, liquidity budget, aggregate inventory, per-team budgets, risk limits, and Allocation Map. <b>Resources never cross portfolios</b> unless a product standard expressly allows it — NFL money never funds NCAA quoting <span class="ref">§5.1</span>.</p>
+
+  <h3>Allocation priority <span class="ref">§5.3</span></h3>
+  <ol class="prio">
+    <li><b>Protection Requirements</b></li>
+    <li><b>Constitutional Market Requirements</b></li>
+    <li><b>Portfolio Capital Preservation</b></li>
+    <li><b>Portfolio Liquidity Requirements</b></li>
+    <li><b>Portfolio Inventory Risk Limits</b></li>
+    <li><b>Issuer Liquidity Allocation</b></li>
+    <li><b>Issuer-Level Market Quality</b></li>
+  </ol>
+  <p>Team engines cannot override allocations mid-cycle; allocations stand until the next cycle.</p>
+
+  <h3>Inputs and Portfolio Assessment <span class="ref">§5.4–5.5</span></h3>
+  <p>Three input groups, all read-only: <b>constitutional</b> (Effective Market State, Market Objectives, Protection Requirements, product config), <b>portfolio</b> (capital, liquidity budget, inventory + limits, active teams, last cycle's Allocation Map), and <b>per-issuer</b> (each team's inventory, activity assessment, previous budget, market state, protection state).</p>
+  <p>Each cycle the engine assesses: capital utilization · liquidity utilization · inventory position and <b>concentration</b> (is risk piling into one team?) · activity distribution across teams · overall market activity · protection state · allocation stability (is the map thrashing cycle to cycle?). The assessment classifies the portfolio into an operational state that governs this cycle's allocation. Classification math is deferred to the product standard, and assessment must complete <em>before</em> any budget is set.</p>
+
+  <h3>The budget waterfall <span class="ref">§5.6–5.7.1</span></h3>
+
+  <div class="math">
+    <div class="eq"><span class="note">Step 1 — size the pot for this cycle:</span></div>
+    <div class="eq"><var>PLB</var><sub>t</sub> &nbsp;=&nbsp; <span class="fn">f</span> (<var>PC</var><sub>t</sub>, <var>PA</var><sub>t</sub>, <var>PIR</var><sub>t</sub>, <var>PR</var><sub>t</sub>, <var>CFG</var><sub>t</sub>) <span class="note">with&nbsp; <var>PLB</var><sub>t</sub> ≤ <var>PC</var><sub>t</sub></span></div>
+    <div class="eq"><span class="note">Step 2 — one budget per team:</span></div>
+    <div class="eq"><var>ILB</var><sub>i,t</sub> &nbsp;=&nbsp; <var>PLB</var><sub>t</sub> × <var>A</var><sub>i,t</sub> <span class="note">with&nbsp; <span class="sum">Σ</span><sub>i</sub> <var>A</var><sub>i,t</sub> = 1</span></div>
+    <div class="eq"><span class="note">Step 3 — split each budget by side:</span></div>
+    <div class="eq"><var>ILB</var><sub>i,t</sub> &nbsp;=&nbsp; <var>BLB</var><sub>i,t</sub> + <var>OLB</var><sub>i,t</sub> <span class="note">both ≥ 0, need not be equal</span></div>
+    <dl class="where">
+      <dt><var>PLB</var><sub>t</sub></dt><dd>Portfolio Liquidity Budget — max aggregate liquidity across all teams</dd>
+      <dt><var>PC</var><sub>t</sub></dt><dd>Portfolio Capital — the whole pot for this league</dd>
+      <dt><var>PA</var><sub>t</sub></dt><dd>Portfolio Assessment classification</dd>
+      <dt><var>PIR</var><sub>t</sub></dt><dd>Portfolio Inventory Risk</dd>
+      <dt><var>PR</var><sub>t</sub></dt><dd>Protection Requirements</dd>
+      <dt><var>ILB</var><sub>i,t</sub></dt><dd>Issuer Liquidity Budget for Team Company i</dd>
+      <dt><var>A</var><sub>i,t</sub></dt><dd>Allocation Weight for team i — weights always sum to exactly 1, so the pot is fully allocated, never over- or under-spent</dd>
+      <dt><var>BLB</var><sub>i,t</sub>, <var>OLB</var><sub>i,t</sub></dt><dd>bid-side and offer-side Liquidity Budgets for team i</dd>
+    </dl>
+  </div>
+
+  <p>Weights may be driven by portfolio assessment, market state, per-team activity, per-team inventory risk, per-team protection state, and config — hot markets weighted up, quiet ones down (the weight formula itself is deferred to the product standard). The bid/offer split is how the portfolio helps a team manage inventory: a team the bot is long in can get a bigger offer-side budget to help sell down.</p>
+
+  <h3>Reallocation <span class="ref">§5.8</span></h3>
+  <p>Re-evaluated every cycle; revised on material change (market state, assessment, capital, inventory, per-team activity or risk, protection, config). Key timing rule: revised allocations take effect <b>from the next cycle</b> — reallocation never yanks quotes already published in the current one.</p>
+
+  <h3>Constraints and invariants <span class="ref">§5.9–5.10</span></h3>
+  <p>Hard rules checked every cycle — an allocation violating <em>any</em> of them is never transmitted to the team engines:</p>
+  <table>
+    <tr><th style="width:9rem">Constraint</th><th>Rule</th></tr>
+    <tr><td><b>Capital</b></td><td>Σ issuer budgets ≤ Portfolio Liquidity Budget</td></tr>
+    <tr><td><b>Liquidity</b></td><td>Portfolio Liquidity Budget ≤ Portfolio Capital</td></tr>
+    <tr><td><b>Inventory</b></td><td>Aggregate portfolio inventory within its risk limits</td></tr>
+    <tr><td><b>Issuer cap</b></td><td>No team exceeds its individual maximum allocation</td></tr>
+    <tr><td><b>Allocation</b></td><td>Every active team gets exactly one budget; weights sum to 1</td></tr>
+    <tr><td><b>Determinism</b></td><td>Fully reproducible via replay</td></tr>
+  </table>
+  <p><b>Invariants</b> (hold throughout every cycle): capital conservation (Σ ILB = PLB — nothing lost, nothing invented) · weight conservation (Σ A = 1) · one-and-only-one budget per team · <b>budget integrity</b> (team engines consume their budget; they may not increase, decrease, or trade it) · portfolio integrity (no allocation violates capital, inventory limits, protection, or constitutional requirements) · determinism · <b>cycle integrity</b> (each allocation belongs to exactly one cycle and is immutable once transmitted).</p>
+
+  <h3>Outputs <span class="ref">§5.11</span></h3>
+  <p><b>Portfolio-level:</b> Portfolio Liquidity Budget, Capital Allocation, Risk Assessment, Allocation Map. <b>Per team:</b> Issuer Liquidity Budget, Bid-side Budget, Offer-side Budget, Allocation Weight, and an <b>Allocation Status</b> — one of <em>Fully Allocated / Partially Allocated / Allocation Limited / Allocation Suspended</em> (product standards may add more).</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch4"><span class="k">← Previous</span><span class="t">Ch 4 · Market Objective Engine</span></a>
+    <a class="next" href="#ch6"><span class="k">Next →</span><span class="t">Ch 6 · Issuer Market Making Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 6 ==================== -->
+<section class="page" id="ch6">
+  <div class="pagehead"><div class="eyebrow">Page 07 · Source Chapter 6</div><h2>Issuer Market Making Engine</h2></div>
+
+  <p class="lede">The heart of the spec: how one team's market actually gets built. Runs independently per Team Company, inside its assigned budgets — which it may never modify.</p>
+
+  <h3>Governing objective <span class="ref">§6.2</span></h3>
+  <div class="math">
+    <div class="eq"><span class="fn">maximize</span>&nbsp;&nbsp;<var>Π</var><sub>t</sub>&nbsp;&nbsp;&nbsp;<span class="fn">subject to</span>&nbsp;&nbsp;<var>C</var><sub>t</sub></div>
+    <dl class="where">
+      <dt><var>Π</var><sub>t</sub></dt><dd>expected market-making performance during this Decision Cycle</dd>
+      <dt><var>C</var><sub>t</sub></dt><dd>all applicable constraints: constitutional requirements, inventory limits, liquidity budgets, pricing limits, protection rules, deterministic replay</dd>
+    </dl>
+  </div>
+  <p>Performance-seeking may never violate a higher-priority constraint — and <b>every quote must be the deterministic result of the fixed decision sequence below</b>; no quote may enter the market any other way <span class="ref">§6.13.1</span>.</p>
+
+  <h3>Decision priority and the 11-step sequence <span class="ref">§6.3–6.3.1</span></h3>
+  <p>Priority when conditions collide: <b>Protection → Continuous Availability → Inventory Risk Limits → Liquidity Budget → Pricing Profile → Market Structure → Displayed Quantity → Controlled Randomization → Quote Publication.</b></p>
+  <p>The mandatory computational sequence, executed strictly in order — a later stage may never edit an earlier stage's output except by triggering full reconstruction of the affected component:</p>
+
+  <ol class="steps">
+    <li>Market Assessment</li>
+    <li>Effective Market State</li>
+    <li>Inventory Risk Profile</li>
+    <li>Liquidity Budget</li>
+    <li>Pricing Profile selection</li>
+    <li>Reservation Price components</li>
+    <li>Reservation Prices</li>
+    <li>Market Structure (the ladder)</li>
+    <li>Displayed Quantity allocation</li>
+    <li class="gate">Quote Validation — the gate</li>
+    <li>Quote Publication</li>
+  </ol>
+
+  <h3>The six Pricing Profiles <span class="ref">§6.5–6.6.1</span></h3>
+  <p>Each cycle runs under exactly <b>one</b> Pricing Profile — the bot's pricing personality. Each profile specifies at minimum: base spread component, inventory/activity/protection sensitivities, bid- and offer-side liquidity budgets, ladder spacing profile, displayed quantity profile, randomization bounds, and refresh parameters. Selection is driven by the Effective Market State plus inventory risk, protection state, activity, and config; if two profiles apply, the one serving the higher-priority objective wins.</p>
+  <p>Each profile scales five base parameters — defaults below, overridable per product:</p>
+
+  <table>
+    <tr><th>Profile</th><th class="num">Spread S</th><th class="num">Depth D</th><th class="num">Size Q</th><th class="num">Refresh F</th><th class="num">Inv.sens I</th><th>Personality</th></tr>
+    <tr><td><b>Stable</b></td><td class="num">1.00</td><td class="num">1.50</td><td class="num">1.50</td><td class="num">1.00</td><td class="num">0.50</td><td>Calm seas: tight, deep, generous, relaxed about inventory</td></tr>
+    <tr><td><b>Active</b></td><td class="num">1.50</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.50</td><td class="num">1.00</td><td>Busy market: a bit wider, refreshing twice as fast</td></tr>
+    <tr><td><b>Defensive</b></td><td class="num">2.50</td><td class="num">0.60</td><td class="num">0.60</td><td class="num">1.50</td><td class="num">1.75</td><td>Getting picked off: widen, shrink, slow down</td></tr>
+    <tr><td><b>Recovery</b></td><td class="num">1.75</td><td class="num">1.00</td><td class="num">0.90</td><td class="num">1.00</td><td class="num">2.50</td><td>Digesting a bad position: very inventory-sensitive</td></tr>
+    <tr><td><b>Liquidity Preservation</b></td><td class="num">3.00</td><td class="num">0.50</td><td class="num">0.50</td><td class="num">1.25</td><td class="num">3.50</td><td>Conserving ammunition: wide and thin, but present</td></tr>
+    <tr><td><b>Protective</b></td><td class="num">5.00</td><td class="num">0.25</td><td class="num">0.25</td><td class="num">restr.</td><td class="num">5.00</td><td>Alarm bells: minimal exposure; updates only as Protection Rules permit. Still two-sided.</td></tr>
+  </table>
+
+  <div class="profchart" aria-hidden="true">
+    <div class="prow"><div class="pname">Stable</div><div class="ptrack"><div class="pbar" style="width:20%"></div></div><div class="pval">1.00×</div></div>
+    <div class="prow"><div class="pname">Active</div><div class="ptrack"><div class="pbar" style="width:30%"></div></div><div class="pval">1.50×</div></div>
+    <div class="prow"><div class="pname">Recovery</div><div class="ptrack"><div class="pbar" style="width:35%"></div></div><div class="pval">1.75×</div></div>
+    <div class="prow"><div class="pname">Defensive</div><div class="ptrack"><div class="pbar" style="width:50%"></div></div><div class="pval">2.50×</div></div>
+    <div class="prow"><div class="pname">Liquidity Preservation</div><div class="ptrack"><div class="pbar" style="width:60%"></div></div><div class="pval">3.00×</div></div>
+    <div class="prow"><div class="pname">Protective</div><div class="ptrack"><div class="pbar" style="width:100%"></div></div><div class="pval">5.00×</div></div>
+    <div class="plegend">spread multiplier by profile — how far the market widens as conditions worsen</div>
+  </div>
+
+  <div class="math">
+    <div class="eq"><var>BaseSpread</var><sub>t</sub> = <var>TickSize</var> × <var>S</var><sub>t</sub> <span class="note">spread width</span></div>
+    <div class="eq"><var>DepthLevels</var><sub>t</sub> = <var>N</var><sub>base</sub> × <var>D</var><sub>t</sub> <span class="note">how many price levels</span></div>
+    <div class="eq"><var>LiquidityBudget</var><sub>t</sub> = <var>L</var><sub>base</sub> × <var>Q</var><sub>t</sub> <span class="note">how much size on the book</span></div>
+    <div class="eq"><var>RefreshTime</var><sub>t</sub> = <var>R</var><sub>base</sub> × <var>F</var><sub>t</sub> <span class="note">how often quotes update</span></div>
+    <div class="eq"><var>λ</var><sub>t</sub> = <var>λ</var><sub>base</sub> × <var>I</var><sub>t</sub> <span class="note">inventory sensitivity</span></div>
+  </div>
+
+  <p><b>Per-cycle pricing parameters <span class="ref">§6.5.1</span>:</b> beyond the profile, each cycle pins down the number of price levels, bid &amp; offer ladder spacing, bid &amp; offer budgets, depth-weighting profiles, the three sensitivity coefficients, controlled randomization bounds, and the <b>deterministic randomization seed</b>. All authoritative until the next cycle.</p>
+
+  <div class="callout danger"><span class="tag">Profile transitions are demolition orders — §6.5.2</span>
+  Triggered by a change in Effective Market State, Inventory Risk Profile, Liquidity Budget, Protection State, or config. A transition <b>invalidates everything downstream</b> of the old profile: reservation price components, reservation prices, market structure, displayed quantities, validation state, and executable quotations must all be rebuilt under the new profile. No stale objects survive.</div>
+
+  <h3>Reservation Prices <span class="ref">§6.6–6.8</span></h3>
+  <p>The <strong>reservation prices</strong> are the bot's true best bid and offer, built by pushing away from the Reference Price on each side:</p>
+
+  <div class="numline" role="img" aria-label="Number line showing reservation bid below reference price and reservation offer above">
+  <svg viewBox="0 0 760 190" xmlns="http://www.w3.org/2000/svg">
+    <line x1="40" y1="120" x2="720" y2="120" stroke="#b8ad8f" stroke-width="2"/>
+    <line x1="380" y1="95" x2="380" y2="145" stroke="#211f18" stroke-width="2.5"/>
+    <text x="380" y="86" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="15" font-weight="700" fill="#211f18">$25.00</text>
+    <text x="380" y="165" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.5" fill="#5b5749">REFERENCE PRICE</text>
+    <line x1="160" y1="100" x2="160" y2="140" stroke="#0e6a4c" stroke-width="2.5"/>
+    <text x="160" y="86" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="15" font-weight="700" fill="#0a4f39">$24.98</text>
+    <text x="160" y="165" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.5" fill="#0a4f39">RESERVATION BID</text>
+    <text x="160" y="180" text-anchor="middle" font-family="Charter,Georgia,serif" font-size="10.5" font-style="italic" fill="#5b5749">users sell to the bot here</text>
+    <line x1="600" y1="100" x2="600" y2="140" stroke="#a83a2c" stroke-width="2.5"/>
+    <text x="600" y="86" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="15" font-weight="700" fill="#7f2b20">$25.01</text>
+    <text x="600" y="165" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.5" fill="#7f2b20">RESERVATION OFFER</text>
+    <text x="600" y="180" text-anchor="middle" font-family="Charter,Georgia,serif" font-size="10.5" font-style="italic" fill="#5b5749">users buy from the bot here</text>
+    <path d="M 170 45 L 170 36 L 370 36 L 370 45" fill="none" stroke="#0e6a4c" stroke-width="1.5"/>
+    <text x="270" y="28" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#0a4f39">← BID OFFSET</text>
+    <path d="M 390 45 L 390 36 L 590 36 L 590 45" fill="none" stroke="#a83a2c" stroke-width="1.5"/>
+    <text x="490" y="28" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#7f2b20">OFFER OFFSET →</text>
+  </svg>
+  </div>
+
+  <p>Each offset is the sum of four independently computed components — bid and offer sides computed separately; asymmetry is allowed and intentional:</p>
+
+  <div class="math">
+    <div class="eq"><var>BO</var><sub>t</sub> &nbsp;=&nbsp; <var>BS</var><sub>t</sub> + <var>IS</var><sub>t</sub> + <var>AS</var><sub>t</sub> + <var>PS</var><sub>t</sub> <span class="note">bid side</span></div>
+    <div class="eq"><var>OO</var><sub>t</sub> &nbsp;=&nbsp; <var>OS</var><sub>t</sub> + <var>IS</var><sub>t</sub> + <var>AS</var><sub>t</sub> + <var>PS</var><sub>t</sub> <span class="note">offer side</span></div>
+    <dl class="where">
+      <dt><var>BO</var><sub>t</sub>, <var>OO</var><sub>t</sub></dt><dd>Bid Offset and Offer Offset — the push away from the Reference Price</dd>
+      <dt><var>BS</var>, <var>OS</var></dt><dd><b>base spread</b> — the default margin, the booth's cut; set by the Pricing Profile</dd>
+      <dt><var>IS</var></dt><dd><b>inventory skew</b> — steers inventory back toward flat (see below)</dd>
+      <dt><var>AS</var></dt><dd><b>activity adjustment</b> — widens when order flow is fast or aggressive</dd>
+      <dt><var>PS</var></dt><dd><b>protection adjustment</b> — extra width when protections are on alert</dd>
+    </dl>
+  </div>
+
+  <div class="math">
+    <div class="eq"><var>RBP</var><sub>t</sub> &nbsp;=&nbsp; <var>RP</var><sub>t</sub> − <var>BO</var><sub>t</sub> <span class="note">Reservation Bid Price</span></div>
+    <div class="eq"><var>ROP</var><sub>t</sub> &nbsp;=&nbsp; <var>RP</var><sub>t</sub> + <var>OO</var><sub>t</sub> <span class="note">Reservation Offer Price</span></div>
+    <div class="eq"><var>RS</var><sub>t</sub> &nbsp;=&nbsp; <var>ROP</var><sub>t</sub> − <var>RBP</var><sub>t</sub> <span class="note">Reservation Spread — an output, never a target</span></div>
+  </div>
+
+  <p>Sequencing rule: all components must be <b>fully computed before</b> reservation prices are calculated, then consumed read-only — no mid-calculation adjustment. The component formulas themselves are deferred to the product standard; PTS-001 fixes only the architecture.</p>
+  <p><b>Constraints <span class="ref">§6.8.1</span>:</b> RBP &lt; ROP · both within the applicable trading range · both within min/max permissible price for the security · consistent with the active Pricing Profile, Liquidity Budget, and Inventory Risk Profile. Any failure → recalculate before building the ladder.</p>
+
+  <h3>Inventory influence — the mechanism worth internalizing <span class="ref">§6.7</span></h3>
+  <div class="math">
+    <div class="eq"><var>IS</var><sub>t</sub> &nbsp;=&nbsp; <var>λ</var><sub>EMS,t</sub> × <var>INV</var><sub>t</sub></div>
+    <div class="eq"><var>IS</var><sup>bid</sup><sub>t</sub> = <span class="fn">max</span>(<var>IS</var><sub>t</sub>, 0) <span class="note">active when LONG</span></div>
+    <div class="eq"><var>IS</var><sup>offer</sup><sub>t</sub> = <span class="fn">max</span>(−<var>IS</var><sub>t</sub>, 0) <span class="note">active when SHORT</span></div>
+    <dl class="where">
+      <dt><var>INV</var><sub>t</sub></dt><dd>Inventory Position, as a % of the publicly tradable float</dd>
+      <dt><var>λ</var><sub>EMS,t</sub></dt><dd>inventory sensitivity under the current Effective Market State</dd>
+      <dt><var>IS</var><sub>t</sub></dt><dd>Inventory Influence — positive when long, negative when short</dd>
+    </dl>
+  </div>
+
+  <table>
+    <tr><th style="width:9.5rem"></th><th>Bot is LONG (bought too much)</th><th>Bot is SHORT (sold too much)</th></tr>
+    <tr><td><b>Bid Offset</b></td><td><b>increases</b> — buy price drops further below fair value; selling to the bot gets less attractive; it accumulates less</td><td>may decrease — buying interest welcomed back</td></tr>
+    <tr><td><b>Offer Offset</b></td><td>may decrease — sell price edges toward fair value; buying from the bot gets more attractive; inventory drains</td><td><b>increases</b> — offer backs away from fair value</td></tr>
+    <tr><td><b>Displayed size</b></td><td>may shrink on the bid, grow on the offer</td><td>may grow on the bid, shrink on the offer</td></tr>
+  </table>
+  <p>The exchange-booth till, exactly. Two hard limits: skew stays bounded by the active Inventory Risk Profile, and it may <b>never</b> prevent continuous two-sided quoting.</p>
+
+  <h3>Market Structure — the ladder <span class="ref">§6.9–6.9.1</span></h3>
+  <p>Around each reservation price the engine lays out <b>N</b> price levels; level k=0 is the best bid/offer, k&gt;0 progressively worse. Level prices step out by the side's ladder spacing (Δ), plus a bounded per-level randomization term (ε). Level count is a function of the Pricing Profile, Liquidity Budget, and config.</p>
+  <p><b>Ladder geometry:</b> the active profile determines the price-spacing methodology, number of levels, how liquidity concentrates across depth, and bid/offer symmetry. Product standards may define geometries: <em>uniform, front-loaded, back-loaded, convex, concave, adaptive,</em> or other approved shapes.</p>
+  <div class="callout note"><span class="tag">Randomization guardrail</span>
+  Bounded deterministic variation is fine — but it may <b>never make a quote more aggressive than its reservation price</b> (never accidentally give users a better deal than intended) unless the profile expressly authorizes it.</div>
+  <p><b>Tick conformance</b> — applied <em>after</em> all randomization: bids round <b style="color:var(--bid-deep)">down</b> to the nearest valid tick, offers round <b style="color:var(--offer-deep)">up</b>. Rounding therefore always widens, never tightens — it can never create a locked or crossed market, and it must preserve the profile's pricing intent.</p>
+
+  <h3>Displayed Quantity <span class="ref">§6.10–6.10.1</span></h3>
+  <div class="math">
+    <div class="eq"><var>Q</var><sup>bid</sup><sub>t,k</sub> &nbsp;=&nbsp; <var>L</var><sup>bid</sup><sub>t</sub> × <var>W</var><sup>bid</sup><sub>t,k</sub> × <var>R</var><sup>bid</sup><sub>t,k</sub></div>
+    <div class="eq"><var>Q</var><sup>offer</sup><sub>t,k</sub> &nbsp;=&nbsp; <var>L</var><sup>offer</sup><sub>t</sub> × <var>W</var><sup>offer</sup><sub>t,k</sub> × <var>R</var><sup>offer</sup><sub>t,k</sub></div>
+    <div class="eq"><span class="sum">Σ</span><sub>k</sub> <var>W</var><sub>t,k</sub> = 1 <span class="note">per side — the whole budget lands on the book</span></div>
+    <dl class="where">
+      <dt><var>Q</var><sub>t,k</sub></dt><dd>displayed quantity at depth level k</dd>
+      <dt><var>L</var><sub>t</sub></dt><dd>the side's Liquidity Budget</dd>
+      <dt><var>W</var><sub>t,k</sub></dt><dd>depth weight — the shape of the book (e.g. most size at the top, thinner further out)</dd>
+      <dt><var>R</var><sub>t,k</sub></dt><dd>bounded quantity-randomization factor (seeded, replayable)</dd>
+    </dl>
+  </div>
+  <p>Constraints: non-negative · within the Liquidity Budget · within Inventory Risk Limits · each level either ≥ the minimum display quantity or exactly zero under an approved suppression rule. Individual depth levels may be suppressed by protection/budget/inventory rules — but the <b>best bid and best offer must remain continuously available</b> unless CTS-002 halts trading. All checks verified before publication.</p>
+
+  <h3>Validation — the gate before publication <span class="ref">§6.12</span></h3>
+  <p>Ten mandatory checks: (1) every bid &lt; every offer; (2) no locked/crossed market; (3) all prices within valid bands; (4) quantities non-negative; (5) inventory limits respected; (6) budgets respected; (7) protection satisfied; (8) every quote internally consistent with the reservation prices, structure, quantities, profile, and budget it was built from; (9) randomization within bounds; (10) the whole market replayable.</p>
+  <div class="callout danger"><span class="tag">Fail safe, never fail dark — §6.12.1</span>
+  A market that fails validation is <b>never published</b>. The engine reconstructs the failed component, worst failure first — <b>Protection Rules → Reservation Prices → Market Structure → Displayed Quantities → Quote Consistency</b> — up to a product-configured retry cap. If reconstruction still fails, it drops into the Protective or Liquidity Preservation profile before publishing. The market gets defensive; it never disappears.</div>
+
+  <h3>Performance measurement <span class="ref">§6.12.2</span></h3>
+  <p>Product standards may score the market maker on: realized spread capture · inventory turnover · liquidity utilization · fill ratio · quotation utilization · adverse selection · inventory recovery efficiency. Performance is always subordinate to protection, availability, inventory limits, and budgets.</p>
+
+  <h3>Outputs and invariants <span class="ref">§6.13–6.13.1</span></h3>
+  <p><b>Outputs:</b> Reservation Bid/Offer Price, Reservation Spread, bid ladder, offer ladder, displayed quantities, randomized quotation attributes, validation result, and the <b>Executable Order Book</b>.</p>
+  <p><b>Invariants:</b> two-sided quotes unless CTS-002 halts trading · reservation prices derived exclusively from the current Reference Price and Pricing Profile · liquidity within budget, inventory within profile · tick-conformant · no locked/crossed markets · every published market belongs to exactly one cycle and is replayable · <b>no quote exists outside the 11-step sequence — there is no side door into the order book.</b></p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch5"><span class="k">← Previous</span><span class="t">Ch 5 · Portfolio Allocation Engine</span></a>
+    <a class="next" href="#ch7"><span class="k">Next →</span><span class="t">Ch 7 · Quote Lifecycle Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 7 ==================== -->
+<section class="page" id="ch7">
+  <div class="pagehead"><div class="eyebrow">Page 08 · Source Chapter 7</div><h2>Quote Lifecycle Engine</h2></div>
+
+  <blockquote>"A published executable quotation is a living engineering object."</blockquote>
+
+  <p>Once published, quotes aren't fire-and-forget — each is tracked from birth to removal. This engine governs creation, publication, aging, execution, refresh, replacement, replenishment, cancellation, expiration, and continuity. It makes no pricing decisions (those belong upstream); it <em>maintains</em> what was published, preserving continuous two-sided liquidity throughout.</p>
+
+  <h3>The state machine <span class="ref">§7.5</span></h3>
+  <p>Each quote is in <b>exactly one</b> state at any time — <em>Created, Published, Partially Executed, Executed, Refreshed, Replaced, Replenished, Cancelled, Expired, Suppressed</em> (product standards may add more):</p>
+
+  <div class="statesvg" role="img" aria-label="Quote lifecycle state machine">
+  <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8f8467"/></marker>
+    </defs>
+    <style>
+      .st{fill:rgba(255,255,255,.75);stroke:#b8ad8f;stroke-width:1.4}
+      .stt{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;fill:#211f18;text-anchor:middle;font-weight:600}
+      .lbl{font-family:Charter,Georgia,serif;font-style:italic;font-size:10px;fill:#5b5749;text-anchor:middle}
+      .ed{stroke:#8f8467;stroke-width:1.3;fill:none;marker-end:url(#arr)}
+      .term{stroke:#a83a2c}
+    </style>
+    <rect class="st" x="20"  y="170" width="92"  height="30" rx="5"/><text class="stt" x="66"  y="189">CREATED</text>
+    <rect class="st" x="180" y="170" width="104" height="30" rx="5" style="stroke:#0e6a4c;stroke-width:2"/><text class="stt" x="232" y="189">PUBLISHED</text>
+    <rect class="st" x="360" y="40"  width="104" height="30" rx="5"/><text class="stt" x="412" y="59">REFRESHED</text>
+    <rect class="st" x="360" y="105" width="112" height="30" rx="5"/><text class="stt" x="416" y="124">SUPPRESSED</text>
+    <rect class="st" x="360" y="170" width="140" height="30" rx="5"/><text class="stt" x="430" y="189">PARTIALLY EXEC.</text>
+    <rect class="st" x="360" y="240" width="118" height="30" rx="5"/><text class="stt" x="419" y="259">REPLENISHED</text>
+    <rect class="st" x="580" y="170" width="100" height="30" rx="5" style="stroke:#7f2b20"/><text class="stt" x="630" y="189">EXECUTED</text>
+    <rect class="st term" x="180" y="320" width="100" height="30" rx="5"/><text class="stt" x="230" y="339">REPLACED</text>
+    <rect class="st term" x="330" y="320" width="104" height="30" rx="5"/><text class="stt" x="382" y="339">CANCELLED</text>
+    <rect class="st term" x="484" y="320" width="90" height="30" rx="5"/><text class="stt" x="529" y="339">EXPIRED</text>
+    <line class="ed" x1="112" y1="185" x2="176" y2="185"/>
+    <path class="ed" d="M 284 176 C 320 130, 330 70, 356 57"/>
+    <path class="ed" d="M 464 47 C 520 40, 300 100, 286 172" opacity=".55"/>
+    <path class="ed" d="M 284 180 C 316 160, 330 130, 356 121"/>
+    <path class="ed" d="M 360 128 C 330 150, 316 168, 288 178" opacity=".55"/>
+    <line class="ed" x1="284" y1="185" x2="356" y2="185"/>
+    <path class="ed" d="M 500 185 L 576 185"/>
+    <path class="ed" d="M 430 200 L 424 236"/>
+    <path class="ed" d="M 364 248 C 300 240, 260 220, 240 204" opacity=".55"/>
+    <path class="ed" d="M 232 200 L 231 316"/>
+    <path class="ed" d="M 262 200 C 300 260, 340 300, 372 316"/>
+    <path class="ed" d="M 276 196 C 380 270, 460 300, 520 316"/>
+    <text class="lbl" x="143" y="176">publish</text>
+    <text class="lbl" x="318" y="78">refresh ⟲</text>
+    <text class="lbl" x="312" y="122">protection ⟲</text>
+    <text class="lbl" x="322" y="177">user takes part</text>
+    <text class="lbl" x="537" y="177">fully taken</text>
+    <text class="lbl" x="452" y="222">top-up</text>
+    <text class="lbl" x="200" y="266">swap out</text>
+    <text class="lbl" x="330" y="284">forced removal</text>
+    <text class="lbl" x="470" y="290">max lifetime</text>
+    <text class="lbl" x="630" y="222" style="fill:#7f2b20">terminal</text>
+    <text class="lbl" x="382" y="368" style="fill:#7f2b20">terminal states</text>
+  </svg>
+  </div>
+  <p style="font-size:.85rem;font-style:italic;color:var(--ink-soft)">The standard defines the states; the exact transition set is implementation-defined. Diagram shows the natural flow.</p>
+
+  <h3>Events and the lifecycle function <span class="ref">§7.4, §7.6</span></h3>
+  <p>Events processed deterministically: creation · publication · execution · partial execution · quantity depletion · refresh · replacement · replenishment · cancellation · expiration · Protection State change · Effective Market State change · Liquidity Budget change · Pricing Profile transition. Each event produces exactly one deterministic response:</p>
+  <div class="math">
+    <div class="eq"><var>QLF</var><sub>t</sub> = <span class="fn">f</span> (<var>EOB</var><sub>t</sub>, <var>EQ</var><sub>t</sub>, <var>EX</var><sub>t</sub>, <var>QA</var><sub>t</sub>, <var>EMS</var><sub>t</sub>, <var>IRP</var><sub>t</sub>, <var>LB</var><sub>t</sub>, <var>PS</var><sub>t</sub>, <var>CFG</var><sub>t</sub>)</div>
+    <dl class="where">
+      <dt><var>EOB</var><sub>t</sub>, <var>EQ</var><sub>t</sub></dt><dd>current Executable Order Book and Executable Quotations</dd>
+      <dt><var>EX</var><sub>t</sub></dt><dd>execution and partial execution results</dd>
+      <dt><var>QA</var><sub>t</sub></dt><dd>quote ages</dd>
+      <dt><var>EMS</var><sub>t</sub>, <var>IRP</var><sub>t</sub></dt><dd>Effective Market State, Inventory Risk Profile</dd>
+      <dt><var>LB</var><sub>t</sub>, <var>PS</var><sub>t</sub></dt><dd>Liquidity Budget, Protection State</dd>
+      <dt><var>CFG</var><sub>t</sub></dt><dd>product standard configuration</dd>
+    </dl>
+  </div>
+
+  <h3>Aging and the three maintenance verbs <span class="ref">§7.7–7.8</span></h3>
+  <p>Every quote carries a <b>Quote Age</b> — elapsed time or cycle count since it was published/refreshed/replaced/replenished. The product standard defines: minimum lifetime, maximum lifetime, refresh interval, expiration threshold, permitted aging variation.</p>
+  <table>
+    <tr><th style="width:8rem">Verb</th><th>Meaning</th></tr>
+    <tr><td><b>Refresh</b></td><td>Update a quote's attributes <em>in place</em>, preserving market continuity</td></tr>
+    <tr><td><b>Replace</b></td><td>Remove the quote, substitute a new one built from current state</td></tr>
+    <tr><td><b>Replenish</b></td><td>Top the displayed quantity back up after users ate some of it</td></tr>
+  </table>
+  <p>None of the three may violate: reservation prices, market structure, quantity constraints, the budget, the inventory profile, protection, or replay requirements.</p>
+
+  <h3>Cancellation, expiration, continuity <span class="ref">§7.9–7.10</span></h3>
+  <p>Quotes must be cancelled/expired on: execution · complete depletion · max lifetime · profile transition · market-state transition · protection · budget change · upstream-object invalidation · config. A cancelled or expired quote must <b>never remain executable</b>, and every such event is permanently recorded.</p>
+  <p>Continuity principle: prefer incremental maintenance over rebuilding the book. <b>Full reconstruction</b> is reserved for pricing-profile transitions, protection, validation failure, Reference Price change, structure/quantity reconstruction, or config — and continuity never overrides protection, validation, or constitutional requirements.</p>
+
+  <h3>Outputs and invariants <span class="ref">§7.11–7.12</span></h3>
+  <p><b>Outputs:</b> updated order book and quotations, lifecycle state, quotation status, and full audit trails — refresh, replacement, replenishment, cancellation, expiration records — feeding the Decision Cycle Engine and the replay framework.</p>
+  <p><b>Invariants:</b> one state per quote at all times · nothing cancelled or expired stays executable · no maintenance action violates budget, inventory profile, or protection · every lifecycle event belongs to exactly one cycle · every transition replayable.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch6"><span class="k">← Previous</span><span class="t">Ch 6 · Issuer Market Making Engine</span></a>
+    <a class="next" href="#ch8"><span class="k">Next →</span><span class="t">Ch 8 · Displayed Quantity Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 8 ==================== -->
+<section class="page" id="ch8">
+  <div class="pagehead"><div class="eyebrow">Page 09 · Source Chapter 8</div><h2>Displayed Quantity Engine</h2></div>
+
+  <blockquote>The Displayed Quantity Engine determines <b>how much</b> liquidity is displayed. It does not determine <b>where</b>.</blockquote>
+
+  <p><em>Where</em> (the price levels) is Market Structure; <em>how much</em> (the sizes at those levels) is this engine. The two are deliberately separate decisions so market topology and liquidity presentation can be optimized independently <span class="ref">§8.2</span>.</p>
+
+  <div class="math">
+    <div class="eq"><var>DQ</var><sub>t</sub> = <span class="fn">Q</span> (<var>MS</var><sub>t</sub>, <var>MP</var><sub>t</sub>, <var>CFG</var><sub>t</sub>)</div>
+    <dl class="where">
+      <dt><var>DQ</var><sub>t</sub></dt><dd>the Displayed Quantity Function</dd>
+      <dt><var>MS</var><sub>t</sub></dt><dd>Market Structure — the ladder built in Chapter 6</dd>
+      <dt><var>MP</var><sub>t</sub></dt><dd>Market Posture (a term with no defining chapter — see <a href="#quirks">Quirks</a>)</dd>
+      <dt><var>CFG</var><sub>t</sub></dt><dd>SDMM configuration</dd>
+    </dl>
+  </div>
+
+  <p>Consumes Market Structure, Reservation Prices, Market Posture, and config — all read-only. Determines the quantity at each bid level, each offer level, the distribution across the structure, and overall displayed liquidity density; it must preserve the Market Structure it was handed <span class="ref">§8.3–8.5</span>.</p>
+
+  <h3>Controlled randomization <span class="ref">§8.6</span></h3>
+  <p>Displayed quantities need not equal target quantities — bounded randomization varies them so the book doesn't look robotically identical every refresh. Randomization must: preserve realism · reduce predictability · preserve replayability (seeded!) · remain statistically bounded — and <b>never</b> produce chaotic or misleading behavior. Real books look organic because different humans post different sizes; a bot that always shows exactly 500 at every level looks fake and is trivially exploited.</p>
+
+  <h3>Invariants and outputs <span class="ref">§8.7–8.8</span></h3>
+  <p>Throughout every cycle, displayed quantities are: non-negative · consistent with the Liquidity Budget, Inventory Risk Profile, and Pricing Profile · deterministic and replayable · never a back-door modification of Market Structure. Outputs — bid/offer displayed quantities, allocation, status, validation state, audit records — feed the Market Adaptation Engine read-only.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch7"><span class="k">← Previous</span><span class="t">Ch 7 · Quote Lifecycle Engine</span></a>
+    <a class="next" href="#ch9"><span class="k">Next →</span><span class="t">Ch 9 · Market Adaptation Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 9 ==================== -->
+<section class="page" id="ch9">
+  <div class="pagehead"><div class="eyebrow">Page 10 · Source Chapter 9</div><h2>Market Adaptation Engine</h2></div>
+
+  <blockquote>Adaptation determines <b>how the SDMM behaves</b>. Subsequent engines determine <b>how that behavior is expressed</b> in quotes.</blockquote>
+
+  <p>The environment shifts constantly; this engine decides whether those shifts require reconstructing anything, and sets the bot's overall stance. It coordinates — it never directly sets prices, structure, quantities, or allocations <span class="ref">§9.1</span>.</p>
+
+  <div class="math">
+    <div class="eq"><var>MA</var><sub>t</sub> = <span class="fn">f</span> (<var>MP</var><sub>t</sub>, <var>IP</var><sub>t</sub>, <var>MOC</var><sub>t</sub>, <var>PS</var><sub>t</sub>, <var>CFG</var><sub>t</sub>) <span class="note">→ Behavioral Mode</span></div>
+    <dl class="where">
+      <dt><var>MP</var><sub>t</sub></dt><dd>Market Posture</dd>
+      <dt><var>IP</var><sub>t</sub></dt><dd>Inventory Position</dd>
+      <dt><var>MOC</var><sub>t</sub></dt><dd>Market Operating Condition</dd>
+      <dt><var>PS</var><sub>t</sub></dt><dd>Protection State</dd>
+      <dt><var>CFG</var><sub>t</sub></dt><dd>product standard configuration</dd>
+    </dl>
+  </div>
+
+  <h3>Behavioral Modes <span class="ref">§9.5</span></h3>
+  <p>Exactly <b>one mode</b> per cycle. The mode is the <em>stance</em>; the Pricing Profile (Ch 6) is the <em>numeric expression</em> of a stance.</p>
+  <table>
+    <tr><th style="width:13rem">Mode</th><th>Stance</th></tr>
+    <tr><td><b>Normal</b></td><td>Business as usual</td></tr>
+    <tr><td><b>Active</b></td><td>Elevated activity — keep up with fast flow</td></tr>
+    <tr><td><b>Recovery</b></td><td>Working an uncomfortable inventory position back to flat</td></tr>
+    <tr><td><b>Liquidity Preservation</b></td><td>Conserving capacity to <em>stay</em> in the market — wide/thin but present</td></tr>
+    <tr><td><b>Protective</b></td><td>Maximum defense — minimal exposure, protection rules dominate</td></tr>
+  </table>
+  <p>Even in Liquidity Preservation mode, the SDMM keeps quoting two-sided <span class="ref">§9.8</span> — the mode shapes decisions, it never suspends the obligation. Only a CTS-002 halt does that.</p>
+
+  <h3>Inventory thresholds <span class="ref">§9.6</span></h3>
+  <p>Inventory Position is tracked per team as a % of publicly tradable float (float excludes treasury shares and anything locked). The product standard defines three escalation thresholds — engineering configuration, <em>not</em> constitutional requirements:</p>
+  <ul>
+    <li><b>Target Inventory Ratio</b> — where the bot wants to live;</li>
+    <li><b>Warning Inventory Ratio</b> — start leaning harder against the position;</li>
+    <li><b>Maximum Inventory Ratio</b> — hard ceiling.</li>
+  </ul>
+
+  <h3>Transitions, invariants, outputs <span class="ref">§9.7, 9.11–9.12</span></h3>
+  <p>Mode transitions respond to inventory position, market operating condition, protection state, or product rules — each deterministic, reproducible, independently auditable, permanently recorded. Invariants: adaptation is deterministic · preserves constitutional objects · never modifies completed objects except through approved reconstruction · one cycle per event · fully replayable. Outputs: Adaptation State, <b>Reconstruction Request</b> (the "rebuild X" signal), Adaptation Status, audit record, timestamp → consumed read-only by the Decision Cycle Engine.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch8"><span class="k">← Previous</span><span class="t">Ch 8 · Displayed Quantity Engine</span></a>
+    <a class="next" href="#ch10"><span class="k">Next →</span><span class="t">Ch 10 · Quote Construction Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 10 ==================== -->
+<section class="page" id="ch10">
+  <div class="pagehead"><div class="eyebrow">Page 11 · Source Chapter 10</div><h2>Quote Construction Engine</h2></div>
+
+  <blockquote>"The Quote Construction Engine is responsible for construction, not decision-making."</blockquote>
+
+  <p>The final computational stage: take everything upstream and assemble one internally consistent <b>Executable Order Book</b>. It's the printer, not the author — it faithfully implements what the earlier engines decided, and rejects internally inconsistent states rather than "fixing" them itself <span class="ref">§10.2, 10.5</span>.</p>
+
+  <h3>What starts a new Decision Cycle <span class="ref">§10.2.1</span></h3>
+  <ul>
+    <li>A new Reference Price is published;</li>
+    <li>a user order executes (fully or partially);</li>
+    <li>the maximum permitted cycle duration expires — the heartbeat that guarantees the market never goes stale;</li>
+    <li>Effective Market State / Inventory Risk Profile / Pricing Profile transition;</li>
+    <li>Portfolio Allocation update; Protection State transition;</li>
+    <li>CTS-002 publishes a Market Operating Condition or Operations Profile transition;</li>
+    <li>any product-designated trigger.</li>
+  </ul>
+  <p><b>Batching rule:</b> triggers arriving mid-cycle are queued and processed together in the next cycle. Cycles never overlap — a new one cannot start until the current one completes or is terminated.</p>
+
+  <h3>Cycle completion <span class="ref">§10.2.2</span></h3>
+  <p>A cycle counts as complete only when <b>all five</b> hold: every engine finished · every validation satisfied · quotes published (or intentionally withheld per the standard) · all authoritative objects committed · replay records finalized.</p>
+
+  <h3>Construction and protection enforcement <span class="ref">§10.3–10.6</span></h3>
+  <div class="math">
+    <div class="eq"><var>QC</var><sub>t</sub> = <span class="fn">f</span> (<var>RBP</var><sub>t</sub>, <var>ROP</var><sub>t</sub>, <var>MS</var><sub>t</sub>, <var>DQ</var><sub>t</sub>, <var>BM</var><sub>t</sub>, <var>CFG</var><sub>t</sub>)</div>
+    <dl class="where">
+      <dt><var>RBP</var><sub>t</sub>, <var>ROP</var><sub>t</sub></dt><dd>Reservation Bid and Offer Prices</dd>
+      <dt><var>MS</var><sub>t</sub></dt><dd>Market Structure — the ladder</dd>
+      <dt><var>DQ</var><sub>t</sub></dt><dd>Displayed Quantities</dd>
+      <dt><var>BM</var><sub>t</sub></dt><dd>Behavioral Mode</dd>
+      <dt><var>CFG</var><sub>t</sub></dt><dd>product standard configuration</dd>
+    </dl>
+  </div>
+  <p>Construction objectives: bids consistent with the Reservation Bid Price · offers with the Reservation Offer Price · quantities with the Market Structure · Behavioral Mode reflected consistently throughout · protection satisfied.</p>
+  <div class="callout note"><span class="tag">Protection enforcement — the last gate</span>
+  Applied immediately before the book is built. It may: suppress individual quotations · modify quotation visibility · modify displayed quantities · restrict publication · invoke product protection rules. It may <b>never</b> touch constitutional objects or reservation prices. It is the final engineering validation before the book goes live.</div>
+
+  <h3>Outputs and authority <span class="ref">§10.7, 10.9</span></h3>
+  <p>The published market: Executable Order Book, bid/offer quotations, displayed depth and quantities, quotation status — each stamped with the <b>Decision Cycle Identifier, Timestamp, Trigger Event, and Completion Status</b>. That book is authoritative for the entire cycle: <em>every</em> participant interaction happens against it.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch9"><span class="k">← Previous</span><span class="t">Ch 9 · Market Adaptation Engine</span></a>
+    <a class="next" href="#ch11"><span class="k">Next →</span><span class="t">Ch 11 · Decision Cycle Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 11 ==================== -->
+<section class="page" id="ch11">
+  <div class="pagehead"><div class="eyebrow">Page 12 · Source Chapter 11</div><h2>Decision Cycle Engine</h2></div>
+
+  <p class="lede">The conductor. The SDMM is a continuous deterministic decision system: each cycle starts from the current constitutional objects + engineering state, ends with publishing an updated order book, and the next cycle starts from the state that users' trading left behind.</p>
+
+  <ul class="flow">
+    <li><div class="box const"><div class="t">⚡ Trigger Event</div><div class="d">new Reference Price · execution · heartbeat · state/profile/protection/allocation transition</div></div></li>
+    <li><div class="box"><div class="t">Run all engines in fixed sequence</div><div class="d">objectives → allocation → pricing → ladder → sizes → mode → construction</div></div></li>
+    <li><div class="box"><div class="t">Validate</div><div class="d">fails → reconstruct worst-first, capped retries → still failing → defensive profile. Never dark.</div></div></li>
+    <li><div class="box pub"><div class="t">Publish Executable Order Book</div><div class="d">users trade against it — matching owned by CTS-002</div></div></li>
+    <li><div class="box"><div class="t">Commit the cycle</div><div class="d">quotes authoritative · state finalized · replay + audit records sealed · immutable forever</div></div></li>
+    <li><div class="box loopnote"><div class="d">⟲ resulting state feeds the next Trigger Event</div></div></li>
+  </ul>
+
+  <p><b>Execution sequence <span class="ref">§11.4</span>:</b> per the source — Executable Market → Market Posture → Price Formation → Market Structure → Displayed Quantity → Market Adaptation → Quote Construction → Publication. <em>(These names are the stale pre-rename set, and the list omits Portfolio Allocation and Quote Lifecycle — see <a href="#quirks">Quirks</a>. The substantive chapter set is what this guide describes.)</em></p>
+
+  <p><b>Participant interaction <span class="ref">§11.5</span>:</b> after publication, orders arrive and execute, inventory changes, engineering state changes — and that updated state feeds the next cycle. Important boundary: <b>the Decision Cycle Engine does not match orders.</b> Matching is CTS-002's job. The SDMM posts the liquidity; the market operations layer executes trades against it.</p>
+
+  <p><b>Deterministic continuity <span class="ref">§11.6</span>:</b> identical constitutional objects + engineering state + participant interaction + implementation version → identical outputs. Cycles are deterministic, reproducible, independently auditable.</p>
+
+  <div class="callout note"><span class="tag">Commit — §11.8.1</span>
+  On successful publication the cycle commits, which: makes the published quotes the authoritative market · makes every engineering output the authoritative state · finalizes replay records · finalizes audit records · authorizes the next cycle. After commitment, <b>nothing from that cycle may ever be modified</b>. History is append-only — that immutability is what makes replay trustworthy. During every Open Market state, the loop never stops.</div>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch10"><span class="k">← Previous</span><span class="t">Ch 10 · Quote Construction Engine</span></a>
+    <a class="next" href="#ch12"><span class="k">Next →</span><span class="t">Ch 12 · Verification &amp; Replay</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 12 ==================== -->
+<section class="page" id="ch12">
+  <div class="pagehead"><div class="eyebrow">Page 13 · Source Chapter 12</div><h2>Verification &amp; Deterministic Replay</h2></div>
+
+  <p class="lede">The black box flight recorder, and the spec's ultimate audit mechanism.</p>
+
+  <blockquote>Given identical constitutional objects, engineering state, participant interaction, product configuration, and implementation version, every conforming implementation SHALL reconstruct <b>identical</b> engineering results.</blockquote>
+
+  <p>Replay is a <b>mandatory capability</b>, not tooling nice-to-have. It's also the answer to "why all the determinism?" — disputes ("the market glitched!"), debugging, and regulatory-grade auditability all reduce to <em>re-run the cycle and compare</em>.</p>
+
+  <h3>What must be preserved <span class="ref">§12.3–12.4</span></h3>
+  <p>Every cycle persists enough to reconstruct: the Executable Market · Market Posture · Reservation Prices · Market Structure · Displayed Quantities · Behavioral Mode · Executable Order Book · participant interaction · resulting engineering state.</p>
+  <div class="math">
+    <div class="eq"><var>DR</var><sub>t</sub> = <span class="fn">R</span> (<var>CO</var><sub>t</sub>, <var>ES</var><sub>t</sub>, <var>PI</var><sub>t</sub>, <var>VER</var><sub>t</sub>)</div>
+    <dl class="where">
+      <dt><var>CO</var><sub>t</sub></dt><dd>Constitutional Market Objects</dd>
+      <dt><var>ES</var><sub>t</sub></dt><dd>Engineering State</dd>
+      <dt><var>PI</var><sub>t</sub></dt><dd>Participant Interaction</dd>
+      <dt><var>VER</var><sub>t</sub></dt><dd>Implementation Version</dd>
+    </dl>
+  </div>
+  <div class="callout warn"><span class="tag">Version is a replay input</span>
+  Replays are only guaranteed byte-identical on the same implementation version. Version changes must be tracked as part of history.</div>
+
+  <h3>Verification <span class="ref">§12.5–12.6</span></h3>
+  <p>Verification confirms a reconstructed cycle faithfully reproduces every authoritative object from the original inputs, trigger event, and configuration — demonstrating every engine behaved per the standard. And it is <b>strictly observational</b>: it never modifies constitutional objects, engineering state, or interaction records. It never alters the history it is checking.</p>
+
+  <p><span class="ref">§12.7–12.8</span> Each cycle's completion concludes one runtime iteration; the next begins from the resulting state. Future Product Technical Standards may extend the implementation, but the engineering architecture defined here is fixed.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch11"><span class="k">← Previous</span><span class="t">Ch 11 · Decision Cycle Engine</span></a>
+    <a class="next" href="#themes"><span class="k">Next →</span><span class="t">Cross-cutting themes</span></a>
+  </nav>
+</section>
+
+<!-- ==================== THEMES ==================== -->
+<section class="page" id="themes">
+  <div class="pagehead"><div class="eyebrow">Page 14 · Synthesis</div><h2>Cross-cutting themes</h2></div>
+
+  <h3>The determinism doctrine</h3>
+  <p>The same demand appears in every chapter. For implementation, it concretely bans: wall-clock reads inside decision logic · unseeded randomness · iteration over unordered collections where order affects results · external data not in the constitutional inputs · floating-point nondeterminism across platforms (decide a numeric policy early) · any mutation of committed history.</p>
+
+  <h3>The ownership map — who may decide what</h3>
+  <table>
+    <tr><th>Decision</th><th style="width:15.5rem">Owner</th></tr>
+    <tr><td>Expected Settlement Value</td><td>CTS-001</td></tr>
+    <tr><td>Reference Price</td><td>CTS-001/002 <em>(source ambiguous — see Quirks)</em></td></tr>
+    <tr><td>Market Operating Condition / Operations Profile</td><td>CTS-002</td></tr>
+    <tr><td>Order matching, participant rules</td><td>CTS-002</td></tr>
+    <tr><td>Effective Market State, Inventory Risk Profile, Liquidity Budget, Pricing Profile</td><td>Market Objective Engine (Ch 4)</td></tr>
+    <tr><td>Portfolio &amp; issuer budgets, allocation weights/status</td><td>Portfolio Allocation Engine (Ch 5)</td></tr>
+    <tr><td>Reservation Prices, ladder, displayed quantities, validation</td><td>Issuer Market Making Engine (Ch 6)</td></tr>
+    <tr><td>Quote maintenance (refresh / replace / replenish / cancel / expire)</td><td>Quote Lifecycle Engine (Ch 7)</td></tr>
+    <tr><td>Behavioral Mode, reconstruction requests</td><td>Market Adaptation Engine (Ch 9)</td></tr>
+    <tr><td>Final book assembly, protection enforcement</td><td>Quote Construction Engine (Ch 10)</td></tr>
+    <tr><td>Cycle sequencing &amp; commit</td><td>Decision Cycle Engine (Ch 11)</td></tr>
+  </table>
+  <p>Everything not on an engine's own line is consumed read-only. Every chapter restates this.</p>
+
+  <h3>Why a fake-money bot chases "profit"</h3>
+  <p>Chapters 4–6 repeatedly demand "long-term expected market-making performance," yet Chapter 2 insists there is no real financial exposure. Not a contradiction: the SDMM plays with simulation capital, but <em>behaving like</em> a profit-seeking market maker — capturing spread, managing inventory, avoiding adverse selection — is precisely what makes its markets realistic and educational. Profit is a realism objective, always last in every priority list.</p>
+
+  <h3>The three priority lists, side by side</h3>
+  <table>
+    <tr><th style="width:2.5rem">#</th><th>Objectives · Ch 4.6</th><th>Portfolio · Ch 5.3</th><th>Issuer · Ch 6.3</th></tr>
+    <tr><td class="num">1</td><td>Protection</td><td>Protection</td><td>Protection</td></tr>
+    <tr><td class="num">2</td><td>Continuous Availability</td><td>Constitutional reqs</td><td>Continuous Availability</td></tr>
+    <tr><td class="num">3</td><td>Market Integrity</td><td>Capital Preservation</td><td>Inventory Risk Limits</td></tr>
+    <tr><td class="num">4</td><td>Inventory Stability</td><td>Portfolio Liquidity</td><td>Liquidity Budget</td></tr>
+    <tr><td class="num">5</td><td>Market Quality</td><td>Portfolio Inventory Risk</td><td>Pricing Profile</td></tr>
+    <tr><td class="num">6</td><td>Long-Term Performance</td><td>Issuer Liquidity Alloc.</td><td>Market Structure</td></tr>
+    <tr><td class="num">7</td><td></td><td>Issuer Market Quality</td><td>Displayed Quantity</td></tr>
+    <tr><td class="num">8</td><td></td><td></td><td>Controlled Randomization</td></tr>
+    <tr><td class="num">9</td><td></td><td></td><td>Quote Publication</td></tr>
+  </table>
+  <p style="font-style:italic;color:var(--ink-soft)">Same shape everywhere: protection first, presence next, profit and polish last.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch12"><span class="k">← Previous</span><span class="t">Ch 12 · Verification &amp; Replay</span></a>
+    <a class="next" href="#example"><span class="k">Next →</span><span class="t">Worked example</span></a>
+  </nav>
+</section>
+
+<!-- ==================== EXAMPLE ==================== -->
+<section class="page" id="example">
+  <div class="pagehead"><div class="eyebrow">Page 15 · Illustration</div><h2>Worked example</h2></div>
+
+  <p class="lede"><em>Illustrative numbers — not from the spec.</em> Chiefs stock. Reference Price ticks up to <b>$25.00</b>, market calm (→ Stable profile), bot slightly long, tick = $0.01.</p>
+
+  <ol>
+    <li><b>Trigger:</b> new Reference Price → new Decision Cycle.</li>
+    <li><b>Objectives (Ch 4):</b> state = stable, inventory risk = normal, generous budget, Stable profile.</li>
+    <li><b>Allocation (Ch 5):</b> Chiefs' slice of the NFL pot → bid-side $10k, offer-side $12k — offer-heavier because we're long and want to sell down.</li>
+    <li><b>Offsets (Ch 6):</b> base spread 1¢/side (Tick × S = 0.01 × 1.00); inventory skew: long → +1¢ bid side, −0.5¢ offer side; no activity or protection add-ons.<br>
+    Reservation Bid = 25.00 − 0.02 = <b style="color:var(--bid-deep)">$24.98</b> · Reservation Offer = 25.00 + 0.005 → rounds <em>up</em> to tick → <b style="color:var(--offer-deep)">$25.01</b></li>
+    <li><b>Ladder + sizes:</b> 3 levels/side, 3¢ spacing, front-loaded weights, seeded wobble:</li>
+  </ol>
+
+  <div class="ladder" role="img" aria-label="Order book ladder: three bid levels in green, three offer levels in red">
+    <div class="lhead"><div style="text-align:right">Bid depth</div><div style="text-align:right">Bid</div><div>Offer</div><div>Offer depth</div></div>
+    <div class="lrow">
+      <div class="barwrap b"><div class="bar bid" style="width:79%">480</div></div>
+      <div class="cell bidp">24.98</div><div class="cell offp">25.01</div>
+      <div class="barwrap"><div class="bar off" style="width:100%">610</div></div>
+    </div>
+    <div class="lrow">
+      <div class="barwrap b"><div class="bar bid" style="width:52%">320</div></div>
+      <div class="cell bidp">24.95</div><div class="cell offp">25.04</div>
+      <div class="barwrap"><div class="bar off" style="width:66%">400</div></div>
+    </div>
+    <div class="lrow">
+      <div class="barwrap b"><div class="bar bid" style="width:31%">190</div></div>
+      <div class="cell bidp">24.92</div><div class="cell offp">25.07</div>
+      <div class="barwrap"><div class="bar off" style="width:39%">240</div></div>
+    </div>
+    <div class="lrow"><div class="mid">REFERENCE PRICE $25.00 · SPREAD $0.03 · SDMM SLIGHTLY LONG → OFFER-HEAVY BOOK</div></div>
+  </div>
+
+  <ol start="6" style="margin-top:1.2rem">
+    <li><b>Validation:</b> bid &lt; offer ✓ · in bands ✓ · within budgets ✓ · replayable ✓ → <b>publish, commit</b>.</li>
+    <li>A user buys all 610 @ $25.01 → trigger → next cycle. Inventory is now closer to flat, so the next book skews slightly less; the lifecycle engine replenishes the consumed offer level from current state.</li>
+  </ol>
+
+  <nav class="pagenav">
+    <a class="prev" href="#themes"><span class="k">← Previous</span><span class="t">Cross-cutting themes</span></a>
+    <a class="next" href="#quirks"><span class="k">Next →</span><span class="t">Quirks &amp; open questions</span></a>
+  </nav>
+</section>
+
+<!-- ==================== QUIRKS ==================== -->
+<section class="page" id="quirks">
+  <div class="pagehead"><div class="eyebrow">Page 16 · Caveats</div><h2>Quirks &amp; open questions in the source</h2></div>
+
+  <p class="lede">The source is a master draft with genuine inconsistencies. Flagged here so nobody implements against the wrong text — raise with InPlay before build.</p>
+
+  <div class="callout warn"><span class="tag">1 · Engine naming drift (stale diagram vs chapters)</span>
+  The §1.7 architecture diagram and the §11.4 execution sequence list "Market Posture Engine / Price Formation Engine / Market Structure Engine / Displayed Quantity Engine" — but the actual chapters are Market <b>Objective</b> Engine (4), <b>Portfolio Allocation</b> Engine (5), <b>Issuer Market Making</b> Engine (6 — which absorbs price formation, structure, <em>and</em> quantities), Quote <b>Lifecycle</b> Engine (7). §11.4 also omits Portfolio Allocation and Quote Lifecycle entirely; §3.8 and §4.10 hand off to chapters under wrong names. The chapters read as the newer, substantive text. <b>Needed:</b> confirmation the chapter set is canonical.</div>
+
+  <div class="callout warn"><span class="tag">2 · "Market Posture" is consumed but never produced</span>
+  Chapters 8 and 9 take "Market Posture" as an input, but no chapter outputs it — presumably the Effective Market State / Pricing Profile from Chapter 4 under an older name. <b>Needed:</b> confirm the mapping.</div>
+
+  <div class="callout warn"><span class="tag">3 · Who publishes the Reference Price?</span>
+  §1.4 says "published by CTS-001"; the §1.7 diagram places it under CTS-002. Doesn't change the SDMM's job, but the interface contract should be pinned down.</div>
+
+  <div class="callout warn"><span class="tag">4 · Numbering and typo defects</span>
+  §5.4.1 appears inside Chapter 6 · §6.13.1 cites "Section 5.3.1" where it means 6.3.1 · Chapter 11 contains a "§111.3" · §12.8 misspells "SDDM" · duplicated bullet markers throughout.</div>
+
+  <div class="callout warn"><span class="tag">5 · Chapter 8 vs §6.10 overlap</span>
+  Displayed quantities are specified twice — in detail inside Chapter 6 (formulas, constraints) and again as standalone Chapter 8 (function form, randomization principles). Compatible but redundant; a revision should merge or clearly subordinate one.</div>
+
+  <div class="callout danger"><span class="tag">6 · Most of the actual math is deliberately absent</span>
+  The spec fixes the <em>architecture</em> and defers formulas to "the applicable Product Technical Standard": allocation-weight math, liquidity-budget functions, assessment classifications, ladder geometry, offset component formulas, inventory thresholds, quote lifetimes, retry caps. <b>PTS-001 tells you the shape of the machine, not the numbers inside it.</b> Implementation requires either a further product document from InPlay or their sign-off on parameters we choose — see the checklist.</div>
+
+  <div class="callout warn"><span class="tag">7 · Conversion artifacts</span>
+  The markdown source was extracted from a PDF; several equation images (notably §§5.6, 5.9, 6.6, 6.9, 6.10, 9.4, 10.4) came through blank or garbled. Check the original PDF before trusting any formula rendering in the converted file.</div>
+
+  <nav class="pagenav">
+    <a class="prev" href="#example"><span class="k">← Previous</span><span class="t">Worked example</span></a>
+    <a class="next" href="#checklist"><span class="k">Next →</span><span class="t">Implementation checklist</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CHECKLIST ==================== -->
+<section class="page" id="checklist">
+  <div class="pagehead"><div class="eyebrow">Page 17 · Action</div><h2>Implementation checklist</h2></div>
+
+  <p class="lede">Everything PTS-001 explicitly defers to "the applicable Product Technical Standard" — the decisions that must come from InPlay (or be proposed by us and signed off) before the SDMM can be built.</p>
+
+  <div class="checkgroup">
+    <h4>Portfolio level · Ch 5</h4>
+    <ul class="check">
+      <li>Portfolio Assessment classification methodology</li>
+      <li>Portfolio Liquidity Budget formula</li>
+      <li>Allocation Weight formula (how the pot splits across teams)</li>
+      <li>Bid-side vs offer-side split methodology</li>
+      <li>Per-team maximum allocation caps; portfolio inventory risk limits</li>
+      <li>Any additional Allocation Status values</li>
+    </ul>
+    <h4>Issuer level · Ch 6</h4>
+    <ul class="check">
+      <li>Formulas for all four offset components (base spread, inventory skew, activity, protection) per side</li>
+      <li>Liquidity Budget determination methodology</li>
+      <li>Ladder geometry profile(s) and origin of the price ladder</li>
+      <li>Depth-weighting profiles; minimum display quantity; suppression rules</li>
+      <li>Randomization bounds and seeding scheme</li>
+      <li>Pricing-profile parameter overrides (or accept the §6.6.1 defaults)</li>
+      <li>Maximum validation-reconstruction attempts per cycle</li>
+    </ul>
+    <h4>Lifecycle &amp; adaptation · Ch 7, 9</h4>
+    <ul class="check">
+      <li>Min/max quote lifetimes, refresh interval, expiration threshold, aging variation</li>
+      <li>Target / Warning / Maximum inventory ratios</li>
+      <li>Any additional quote lifecycle states or behavioral modes</li>
+    </ul>
+    <h4>Runtime · Ch 10–12</h4>
+    <ul class="check">
+      <li>Maximum Decision Cycle duration (the heartbeat)</li>
+      <li>Product-designated trigger events</li>
+      <li>Units policy — the spec never defines units for offsets, sensitivities, or activity measures; pin down a numeric policy (incl. float determinism across platforms) early</li>
+    </ul>
+    <h4>Ambiguities to resolve (Quirks page)</h4>
+    <ul class="check">
+      <li>Confirm canonical engine set (chapters vs stale diagram)</li>
+      <li>Confirm "Market Posture" ↔ Chapter 4 outputs mapping</li>
+      <li>Confirm which standard publishes the Reference Price</li>
+    </ul>
+  </div>
+
+  <nav class="pagenav">
+    <a class="prev" href="#quirks"><span class="k">← Previous</span><span class="t">Quirks &amp; open questions</span></a>
+    <a class="next" href="#cover"><span class="k">Finish →</span><span class="t">Back to Contents</span></a>
+  </nav>
+</section>
+
+<!-- ==================== COVER (must stay last in DOM: default page) ==================== -->
+<section class="page" id="cover">
+  <header class="masthead">
+    <div class="eyebrow">InPlay Core Technical Standards · Companion Guide · PTS-001 / SDMM-1</div>
+    <h1>The Simulated Designated<br>Market Maker <span class="thin">— explained</span></h1>
+    <p class="deck">Every rule, priority list, formula, and invariant of PTS-001, translated for someone who has never touched market making — and needs to build this system.</p>
+    <div class="meta">
+      <span>SOURCE v1.0 MASTER DRAFT</span>
+      <span>GUIDE 2026-07-05</span>
+      <span class="hot">SOURCE WINS ON CONFLICT</span>
+    </div>
+  </header>
+
+  <ul class="toc-grid">
+    <li><a href="#primer"><span class="n">01</span>Primer: market-making from zero</a></li>
+    <li><a href="#ch1"><span class="n">02</span>Ch 1 — Constitutional Principles</a></li>
+    <li><a href="#ch2"><span class="n">03</span>Ch 2 — Simulation Market Architecture</a></li>
+    <li><a href="#ch3"><span class="n">04</span>Ch 3 — Executable Market Construction</a></li>
+    <li><a href="#ch4"><span class="n">05</span>Ch 4 — Market Objective Engine</a></li>
+    <li><a href="#ch5"><span class="n">06</span>Ch 5 — Portfolio Allocation Engine</a></li>
+    <li><a href="#ch6"><span class="n">07</span>Ch 6 — Issuer Market Making Engine</a></li>
+    <li><a href="#ch7"><span class="n">08</span>Ch 7 — Quote Lifecycle Engine</a></li>
+    <li><a href="#ch8"><span class="n">09</span>Ch 8 — Displayed Quantity Engine</a></li>
+    <li><a href="#ch9"><span class="n">10</span>Ch 9 — Market Adaptation Engine</a></li>
+    <li><a href="#ch10"><span class="n">11</span>Ch 10 — Quote Construction Engine</a></li>
+    <li><a href="#ch11"><span class="n">12</span>Ch 11 — Decision Cycle Engine</a></li>
+    <li><a href="#ch12"><span class="n">13</span>Ch 12 — Verification &amp; Replay</a></li>
+    <li><a href="#themes"><span class="n">14</span>Cross-cutting themes</a></li>
+    <li><a href="#example"><span class="n">15</span>Worked example</a></li>
+    <li><a href="#quirks"><span class="n">16</span>Quirks &amp; open questions</a></li>
+    <li><a href="#checklist"><span class="n">17</span>Implementation checklist</a></li>
+  </ul>
+
+  <p class="covernote">Navigate with the chapter strip at the top, the cards above, or the previous / next links at the foot of each page. Printing produces the full document in one run.</p>
+</section>
+
+<footer>
+  INPLAY CORE TECHNICAL STANDARDS · PTS-001 / SDMM-1 COMPANION GUIDE<br>
+  DERIVED EXPLAINER — SOURCE STANDARD (v1.0 MASTER DRAFT, JULY 2, 2026) IS AUTHORITATIVE<br>
+  TRADE SECRET OF INPLAY GLOBAL, INC. · CONFIDENTIAL &amp; PROPRIETARY
+</footer>
+
+</div>
+</body>
+</html>
