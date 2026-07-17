@@ -23,5 +23,6 @@ There are two complementary revenue motions:
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
 | Programmatic Media Playbook | The SSP roster, the AppLovin MAX architecture, and the 1-human + AI-agent ad-ops operating model for the programmatic/generalised inventory | Reference | [[sub-components/programmatic-media-playbook/programmatic-media-playbook]] |
+| Media Plan Forecast | The advertising revenue model (audience, inventory, pricing, waterfall) under iterative review with Edwin. Every forecasting assumption carries a ruling in the assumptions register; no version is yet the business-model base case | Active | [[sub-components/media-plan-forecast/media-plan-forecast]] |
 
 > **Note (18 June 2026):** Advertising was promoted from a pure cross-cutting note into this directory so the **programmatic media playbook** (Brett, 17-06) could be captured as a buildable sub-component. The specialist-sponsorship-territory detail still lives in [[components/components#Cross-Cutting Concerns]] and is the next candidate to extract into its own sub-component here.
