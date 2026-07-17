@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--
+  InPlay deck shell: landscape 16:9, new CI (from the signed-off two-pager).
+  Placeholders use {{handlebars}}. One .slide per page. Replace sample slides
+  with real content; keep the CSS token block and print rules intact.
+  Logo: replace {{LOGO_DATA_URI}} with the base64 data URI of the chosen
+  official SVG (white/orange variant for navy surfaces, see inplay-ci.md).
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{DECK_TITLE}} | InPlay</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #06122B;
+    --navy-2: #0A1A36;
+    --orange: #FF6A1F;
+    --green: #119855;
+    --green-light: #6FE6A1;
+    --paper: #f5f5f7;
+    --line: #e0e0e5;
+    --gray: #5b6678;
+    --header-font: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --body-font: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: var(--body-font); color: var(--navy);
+         background: #d7d9de; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+
+  /* ---------- Page geometry ---------- */
+  @page { size: 13.333in 7.5in; margin: 0; }
+  .slide { width: 13.333in; height: 7.5in; position: relative; overflow: hidden;
+           background: var(--paper); display: flex; flex-direction: column;
+           page-break-after: always; break-after: page; }
+  .slide:last-child { page-break-after: auto; }
+  @media screen { .slide { margin: 16px auto; box-shadow: 0 8px 30px rgba(6,18,43,0.18); } }
+  @media print  { body { background: none; } .slide { margin: 0; box-shadow: none; } }
+
+  /* ---------- Type ---------- */
+  h1 { font-family: var(--header-font); font-weight: 700; font-size: 64px;
+       line-height: 0.98; letter-spacing: 0.4px; }
+  h2 { font-family: var(--header-font); font-weight: 600; text-transform: uppercase;
+       letter-spacing: 2px; font-size: 22px; color: var(--navy);
+       padding-bottom: 8px; border-bottom: 2px solid var(--line);
+       position: relative; margin-bottom: 24px; }
+  h2::after { content: ""; position: absolute; left: 0; bottom: -2px;
+              width: 64px; height: 2px; background: var(--orange); }
+  h3 { font-family: var(--header-font); font-weight: 600; font-size: 22px;
+       letter-spacing: 0.3px; margin-bottom: 8px; }
+  p  { font-size: 17px; }
+  .muted { color: var(--gray); }
+
+  /* ---------- Slide chrome ---------- */
+  .content { padding: 48px 72px 0; flex: 1; }
+  .footer { display: flex; align-items: center; justify-content: space-between;
+            padding: 0 72px 24px; border-top: 1px solid var(--line);
+            margin: 0 72px; padding-left: 0; padding-right: 0; padding-top: 12px;
+            font-size: 12px; color: var(--gray); }
+  .footer img { height: 20px; }
+
+  /* ---------- Navy slides (title, divider, closing) ---------- */
+  .slide.navy { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+                color: #fff; justify-content: center; }
+  .slide.navy .content { display: flex; flex-direction: column; justify-content: center; }
+  .slide.navy h1, .slide.navy h2 { color: #fff; border: none; }
+  .slide.navy h2::after { display: none; }
+  .kicker { font-family: var(--header-font); font-weight: 600; text-transform: uppercase;
+            letter-spacing: 3px; font-size: 18px; color: var(--orange); margin-bottom: 16px; }
+
+  /* ---------- Components (from the two-pager) ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+           background: var(--line); border: 1px solid var(--line);
+           border-radius: 8px; overflow: hidden; margin: 16px 0; }
+  .stat { background: #fff; padding: 24px 20px; }
+  .stat .num { font-family: var(--header-font); font-weight: 700; font-size: 48px;
+               color: var(--navy); line-height: 1; }
+  .stat .num.green { color: var(--green); }
+  .stat .num.orange { color: var(--orange); }
+  .stat .label { font-size: 13px; color: var(--gray); margin-top: 6px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .usp { background: #fff; border: 1px solid var(--line);
+         border-left: 4px solid var(--orange); border-radius: 6px; padding: 20px 24px; }
+
+  .callout { background: var(--navy); color: #fff; border-radius: 8px;
+             padding: 32px 40px; display: flex; align-items: center; gap: 32px; }
+  .insight { background: rgba(255,106,31,0.08); border-left: 4px solid var(--orange);
+             border-radius: 8px; padding: 18px 28px; margin: 16px 0; }
+  .next { background: rgba(255,106,31,0.08); border: 1px dashed var(--orange);
+          border-radius: 8px; padding: 16px 24px; }
+
+  ul.ticks { list-style: none; }
+  ul.ticks li { position: relative; padding-left: 28px; margin-bottom: 12px; font-size: 17px; }
+  ul.ticks li::before { content: ""; position: absolute; left: 0; top: 5px;
+                        width: 13px; height: 13px; border-radius: 50%;
+                        background: var(--green);
+                        box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px var(--green); }
+
+  /* ---------- Diagram style ---------- */
+  .diagram { display: flex; align-items: center; justify-content: center;
+             gap: 0; padding: 24px 0; }
+  .node { background: #fff; border: 1px solid var(--line); border-radius: 8px;
+          padding: 18px 26px; text-align: center; min-width: 180px; }
+  .node .t { font-family: var(--header-font); font-weight: 600; font-size: 19px; }
+  .node .d { font-size: 13px; color: var(--gray); margin-top: 4px; }
+  .node.hot { border: 2px solid var(--orange); }
+  .arrow { width: 70px; height: 2px; background: var(--navy); position: relative; margin: 0 4px; }
+  .arrow::after { content: ""; position: absolute; right: -1px; top: -5px;
+                  border: 6px solid transparent; border-left-color: var(--navy); }
+</style>
+</head>
+<body>
+
+<!-- 1. TITLE (navy full-bleed) -->
+<section class="slide navy">
+  <div class="content">
+    <img src="{{LOGO_DATA_URI}}" alt="InPlay" style="height:44px; align-self:flex-start; margin-bottom:56px;">
+    <div class="kicker">{{DECK_KICKER}}</div>
+    <h1>{{DECK_TITLE}}</h1>
+    <p style="font-size:22px; margin-top:20px; color:#cdd6e4;">{{DECK_SUBTITLE}}</p>
+    <p style="margin-top:48px; color:#9fb0c9; font-size:15px;">{{DATE}}</p>
+  </div>
+</section>
+
+<!-- 2. AGENDA -->
+<section class="slide">
+  <div class="content">
+    <h2>Agenda</h2>
+    <ol style="font-size:22px; line-height:2.2; padding-left:28px; font-weight:500;">
+      <li>{{SECTION_1}}</li>
+      <li>{{SECTION_2}}</li>
+      <li>{{SECTION_3}}</li>
+    </ol>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 3. SECTION DIVIDER (navy) -->
+<section class="slide navy">
+  <div class="content">
+    <div class="kicker">Section {{N}}</div>
+    <h1 style="font-size:56px;">{{SECTION_TITLE}}</h1>
+  </div>
+</section>
+
+<!-- 4. CONTENT (heading + body + ticks) -->
+<section class="slide">
+  <div class="content">
+    <h2>{{SLIDE_HEADING}}</h2>
+    <p style="max-width:9in; margin-bottom:20px;">{{BODY_TEXT}}</p>
+    <ul class="ticks">
+      <li>{{POINT_1}}</li>
+      <li>{{POINT_2}}</li>
+      <li>{{POINT_3}}</li>
+    </ul>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 5. STATS -->
+<section class="slide">
+  <div class="content">
+    <h2>{{STATS_HEADING}}</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">{{NUM_1}}</div><div class="label">{{LABEL_1}}</div></div>
+      <div class="stat"><div class="num green">{{NUM_2}}</div><div class="label">{{LABEL_2}}</div></div>
+      <div class="stat"><div class="num orange">{{NUM_3}}</div><div class="label">{{LABEL_3}}</div></div>
+      <div class="stat"><div class="num">{{NUM_4}}</div><div class="label">{{LABEL_4}}</div></div>
+    </div>
+    <div class="insight"><p><strong>{{INSIGHT}}</strong></p></div>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 6. USP CARDS -->
+<section class="slide">
+  <div class="content">
+    <h2>{{CARDS_HEADING}}</h2>
+    <div class="cards">
+      <div class="usp"><h3>{{CARD_1_TITLE}}</h3><p class="muted" style="font-size:15px;">{{CARD_1_BODY}}</p></div>
+      <div class="usp"><h3>{{CARD_2_TITLE}}</h3><p class="muted" style="font-size:15px;">{{CARD_2_BODY}}</p></div>
+      <div class="usp"><h3>{{CARD_3_TITLE}}</h3><p class="muted" style="font-size:15px;">{{CARD_3_BODY}}</p></div>
+    </div>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 7. DIAGRAM -->
+<section class="slide">
+  <div class="content">
+    <h2>{{DIAGRAM_HEADING}}</h2>
+    <div class="diagram">
+      <div class="node"><div class="t">{{NODE_1}}</div><div class="d">{{NODE_1_SUB}}</div></div>
+      <div class="arrow"></div>
+      <div class="node hot"><div class="t">{{NODE_2}}</div><div class="d">{{NODE_2_SUB}}</div></div>
+      <div class="arrow"></div>
+      <div class="node"><div class="t">{{NODE_3}}</div><div class="d">{{NODE_3_SUB}}</div></div>
+    </div>
+    <p class="muted" style="text-align:center; font-size:14px;">{{DIAGRAM_CAPTION}}</p>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 8. QUOTE / CALLOUT -->
+<section class="slide">
+  <div class="content" style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="callout">
+      <p style="font-family:var(--header-font); font-size:32px; font-weight:600; line-height:1.25;">{{QUOTE}}</p>
+    </div>
+    <p class="muted" style="margin-top:16px;">{{ATTRIBUTION}}</p>
+  </div>
+  <div class="footer"><img src="{{LOGO_DATA_URI}}" alt="InPlay"><span>{{PAGE_NO}}</span></div>
+</section>
+
+<!-- 9. CLOSING (navy full-bleed) -->
+<section class="slide navy">
+  <div class="content" style="align-items:flex-start;">
+    <img src="{{LOGO_DATA_URI}}" alt="InPlay" style="height:44px; margin-bottom:56px;">
+    <h1 style="font-size:56px;">{{CLOSING_LINE}}</h1>
+    <p style="font-size:20px; margin-top:24px; color:#cdd6e4;">{{CTA}}</p>
+    <p style="margin-top:48px; color:#9fb0c9; font-size:15px;">{{CONTACT}}</p>
+  </div>
+</section>
+
+</body>
+</html>

@@ -3,9 +3,10 @@
 > **Vision:** [[vision]]
 > **Audiences:** [[audiences]]
 > **Date:** 2026-05-14
+> **Updated:** 2026-06-24 — referral program LIVE via challenge website + KYC; prize model restructured to participation-gated payouts (see Changelog). _Prior: 2026-05-27 programme deep-dive._
 > **Status:** Defined
 > **Owner:** Cody (client-facing) + George (engineering) + Brett (strategy)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/12-06-2026-onboarding-and-renewal-and-global-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[12-05-2026-onboarding-and-renewal-and-global-component]], [[27-05-2026-referral-programme]]_
 
 ---
 
@@ -62,13 +63,31 @@ All four audiences participate in Referral, but the **channels and motivations d
 - Dot cards (Troy, ~$25/unit) carry the user's unique QR code + social links + a full data dump — suitable for campus ambassadors and frequently-networking users
 - T-shirts carry a generic QR (not unique per shirt — Edwin: _"you're not going to print a unique URL code for each t-shirt"_) — used for gorilla marketing at sporting events, viewing parties, etc.
 - Interns wearing branded clothing distribute generic codes; paid campus ambassadors carry dot cards with their own QR
+- **Trade-confirmation-page share (new, 27-05-2026):** the trade-confirmation page (shown after the two-click trade) carries **share buttons** (message, email, Instagram, TikTok, …); one click populates a share with the trade image/card. Cody wants to **incentivise** sharing this page to make it _"an ecosystem… a cultural thing within our app"_ — viral trade-flexing that also drives advertising value. Cross-references **[[trading/trading|Trading]]** (the confirmation page) and the cross-cutting **Advertising** concern (the confirmation page is also a sponsorable surface). The embedded-referral-QR mechanic should ride on this share.
+- **Post-KYC share flow (05-06-2026 demo, Cody):** the referral/QR screen is the **immediate next screen after KYC approval**. Share is **one-click and prepopulates the screen *image*** (the QR/code card), not just a text string — ideally **styled per platform** (Instagram vs X vs SMS). After a *referred* user completes their own KYC, immediately surface **their own** unique code (closes the referral feedback loop). The code is also reachable from the **profile page** for re-sharing later.
 
 ### Bonus campaigns
-- The platform must support **time-bound multipliers** on the dual-sided reward (e.g., 2x on Father's Day, July 4th)
-- Recurring weekday multipliers (e.g., Tuesday or Wednesday) used to drive **pre-game-day signup** so users are fully onboarded before Saturday/Sunday kickoff
+- The platform must support **time-bound multipliers** on the dual-sided reward
+- Recurring weekday multipliers used to drive **pre-game-day signup** so users are fully onboarded before Saturday/Sunday kickoff
 - **Cross-product behavioural campaigns**: Brett's example — _"follow 500 people on third space and for 72 hours your referral money jumps by 100%"_ — campaigns can incentivise non-wallet actions (follows, posts, third-space engagement) rather than always being direct wallet boosts
 - Bonus campaigns visible to users on the referral page and via push/CRM
 - Admin tooling required to schedule, activate, and monitor campaigns
+
+**Summer campaign calendar (from 27-05-2026 — ~9 referral events):**
+
+The base referral reward is 1,000 InPlay$; events apply a multiplier to it. Most events run on a **24-hour window** (00:00–23:59); two run multi-day.
+
+| Event | Multiplier | Reward | Window |
+|---|---|---|---|
+| Every Wednesday | **1.5×** | 1,500 | 24h (00:00–23:59) |
+| 21 June (first event / "start of summer") | **3×** | 3,000 | 24h |
+| Father's Day (June) | **3×** | 3,000 | 24h |
+| 4th of July | (event multiplier) | — | **Multi-day:** Fri 00:00 → Sun 23:59 |
+| Labor Day weekend | (event multiplier) | — | **Multi-day:** Fri 00:00 → Mon 23:59 |
+
+- **Eligibility window:** a referral counts for a given day's multiplier only if the referee completes the **full process** (signup + KYC, through to the point the referral dollar is issued) by **23:59** of that day. A referee who registers at 23:58 but hasn't completed KYC does **not** qualify for that day.
+- **Counting/automation:** the system must **automate and track when each referral's signup completed** against these event windows, maintaining an automated **ledger**. Referral dollars are not paid into a wallet at the moment of qualification — the referral bank is a tracked side-record; wallets are **topped off** from the ledger once T0 wallets are created. (Consistent with the IPO-session note that the referral wallet is "a trackable side database," not a live wallet at signup.)
+- ⚠️ **Launch dependency (delivery):** the first 3× event is **21 June** — ahead of likely app-store approval. The fallback is a **PWA** (same React Native codebase, possibly re-rendered as server-side NextJS; Persona/KYC wired in, identical branding) so the referral programme can run without Apple/Android approval. This is owned by **[[customer-onboarding/customer-onboarding|Customer Onboarding]]** / delivery, but the referral calendar's launch date depends on it.
 
 ### Cash eligibility tracking
 - A set of eligibility rules gates conversion from InPlay$ to real cash (rules owned by InPlay; final set TBD — see Open Questions)
@@ -87,9 +106,11 @@ All four audiences participate in Referral, but the **channels and motivations d
 - Referral wallet **resets to zero at end of season** (vision rule)
 - All referral balances live on T0 wallets (decision from Onboarding extraction — wallets are on T0)
 
-### Social engagement credits (from vision)
-- Engagement on InPlay's own social posts (LinkedIn, Facebook, Instagram, TikTok — follow, comment) earns InPlay$ credits into the referral wallet
-- Detail of which actions, what value, and how detection works → ⚠️ **Gap.** Agents are mentioned ("an agent will go figure out if you've got posts" — Brett) but no architecture decided
+### Social engagement credits (expanded 27-05-2026)
+- Engagement with InPlay's materials earns InPlay$ credits into the referral wallet. Actions are **open-ended and adaptive** — whatever InPlay wants to push that week/month: **following / liking / sharing posts, completing education modules, surveys**, etc. (Cody: _"it could be anything… it needs to be adaptive"_)
+- **Value per action is TBD** — Cody: _"we haven't given it an exact referral number of what that is"_ ⚠️ still open
+- **Detection mechanism (resolved this session — agentic verification):** for actions with no clean API (e.g. a follow/share), an **agent team** verifies completion. The user submits their social handle/tag; an agent monitors and checks that the user actually posted / liked / shared / tagged InPlay, reports the result to the database, and **signs off the referral or credit**. Brett: _"it's just one agent that goes off and checks that one person… comes back, tells the database, that's all done."_
+- **Scalability:** each verification is a small agent on a **container** that spawns per-user on demand (Cody's 3M-user scale concern addressed — containers "spawn to the millions per second"). Anti-gaming (bot follow rings, fake comments) still needs detection rules ⚠️
 
 ### Sponsor redemption (future-state, from vision)
 - Users with large referral banks can redeem InPlay$ for sponsor offers
@@ -319,10 +340,10 @@ Edwin is explicit on summer urgency. Cody is the owner of the campaign calendar 
 | Sub-Component | Overview | Status | Link |
 |---|---|---|---|
 | Code Lifecycle | Generation on KYC pass, lifetime stability, redemption entry at signup, code validation | Collecting | _[[sub-components/code-lifecycle]]_ |
-| Share Surfaces | Link, QR code, dot card, t-shirt strategy, embedded-post composition | Collecting | _[[sub-components/share-surfaces]]_ |
-| Bonus Campaigns | Multiplier days, themed events, cross-product behavioural campaigns, admin tooling | Collecting | _[[sub-components/bonus-campaigns]]_ |
+| Share Surfaces | Link, QR code, dot card, t-shirt strategy, embedded-post composition, **trade-confirmation-page share ("share ecosystem")** | Collecting | _[[sub-components/share-surfaces]]_ |
+| Bonus Campaigns | Multiplier days, themed events, cross-product behavioural campaigns, admin tooling. **Summer calendar defined: Wed 1.5×, 21 June & Father's Day 3×, July 4 + Labor Day multi-day; 23:59 KYC-complete eligibility; automated ledger + wallet top-off** | Collecting | _[[sub-components/bonus-campaigns]]_ |
 | Cash Eligibility Tracking | Rules engine, dashboard checklist, reminder prompts at cash-out moment | Collecting | _[[sub-components/cash-eligibility-tracking]]_ |
-| Social Engagement Credits | Follow/comment on InPlay socials → InPlay$ via agent detection | Collecting | _[[sub-components/social-engagement-credits]]_ |
+| Social Engagement Credits | Follow/like/share/education/surveys → InPlay$; **agentic per-user verification on containers** (resolves detection); adaptive campaigns; value-per-action TBD | Collecting | _[[sub-components/social-engagement-credits]]_ |
 | Sponsor Redemption | Use referral $ for sponsor offers (future-state) | Collecting | _[[sub-components/sponsor-redemption]]_ |
 | Donor / Group Accounts | Universities, alumni-funded pools (exploratory, securities review required) | Exploratory | _[[sub-components/donor-group-accounts]]_ |
 
@@ -376,3 +397,14 @@ Edwin is explicit on summer urgency. Cody is the owner of the campaign calendar 
 
 - Section 2 — referral journey (Mermaid `graph TD`)
 - Section 5 — referral engine data flow (Mermaid `graph LR`)
+
+---
+
+## Changelog
+
+| Date | Change | Source |
+|------|--------|--------|
+| 2026-05-14 | Initial component doc — code lifecycle, share surfaces, bonus campaigns, cash eligibility, wallet mechanics, 7 sub-components | [[12-05-2026-onboarding-and-renewal-and-global-component]] |
+| 2026-05-27 | Added concrete **summer campaign calendar** (Wed 1.5×, 21 June & Father's Day 3×, July 4 + Labor Day multi-day) with 23:59 KYC-complete eligibility and automated ledger / wallet top-off. **Resolved the social-engagement detection gap** — agentic per-user verification on containers; expanded earning actions (likes/shares/education/surveys). Added **trade-confirmation-page share** to Share Surfaces. Flagged **PWA fallback** as the launch dependency for the 21 June first event. | [[27-05-2026-referral-programme]] |
+| 2026-06-05 | **Referral system built & demoed** — confirms documented mechanics: lifetime-unique pre-generated codes (tested ~1B users, no collision), QR-code page, referrer↔referee tracking table, **crediting gated on KYC approval**, preset boost windows for specific dates/weekends. Cody's required share flow added to Share Surfaces / Code Lifecycle: the **referral/QR screen is the immediate post-KYC step**; **one-click social share prepopulates the screen image (not just text)** into IG/X/text, ideally per-platform styled; after a referred user completes KYC, surface **their own** unique code immediately (feedback loop); code also exposed on the **profile page**. | [[05-06-2026-touchdown]], [[08-06-2026-touchdown]] |
+| 2026-06-24 | **Referral program LIVE via the challenge website + full KYC** — launching ~July 4 week; the **600 trading-challenge signups** get emailed (B2C, consent already given). **Prize model restructured to participation-gated payouts** (the up-to-$25M is gated on a participation line): **Sat + Sun dailies + a Tue-reset weekly** (~$25k/day, ~$200k/mo), distributed **wide and small** for the network effect. **Qualification criteria kept to ~3** (minutes on app, number of trades, education completion). **Referrals are explicitly NOT a hard gate** (Troy: 50 too high a hurdle) — instead referrals get their **own leaderboard with a separate prize** (e.g. top-3 referrers ~$1k each) plus referral credits as the driver. **Multiplier model** (base payout × completed steps) and **badging** floated. Final criteria + payout schedule + multiplier mechanics flagged in [[architecture/open-questions]]. | [[24-06-2026-touchdown]] |

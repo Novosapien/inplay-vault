@@ -1,6 +1,38 @@
+---
+date: 2026-06-26
+type: sub-component-session
+scope:
+  - "[[information-layer/sub-components/research-tab/research-tab]]"
+status: extracted
+extracted-to:
+  - "[[information-layer/sub-components/research-tab/research-tab]]"
+  - "[[information-layer/sub-components/research-tab/changelog]]"
+  - "[[components/components]]"
+---
+
+## Post-Call Analysis
+
+> Focused **sub-component deep-dive on the [[information-layer/sub-components/research-tab/research-tab|Research Tab]]** (the "AI Agent Research" component). This session scoped the build and the monetisation model, so the extraction is a substantial rewrite of the research-tab doc (status Collecting → Defined Phase 1).
+
+| Finding | Destination | Action |
+|---------|-------------|--------|
+| **3-tier phased build** — pre-canned reports (built-once, scalable) → saved custom reports (data-point catalog) → AI companion (Phase 2) | [[research-tab]] §1, §8 | Rewritten |
+| **Pricing reset** — 99c first month → $14.99/mo (was $99.99 placeholder); AI tier $49.99; 99c = card-capture | [[research-tab]] §2 | Rewritten |
+| **In-app payment decided** — eat the up-to-30% fee, no PWA bounce-out at launch; split-test later | [[research-tab]] §2, §3 Journey 4 | Added |
+| **Foreground vs background AI + multi-agent** report assembly (price-impact / injury-impact agents) | [[research-tab]] §1 | Added |
+| **Data-point catalog + saved custom reports** (search, checkbox, column-limit upsell, per-user cost) | [[research-tab]] §2, §3 Journey 2 | Added |
+| **Discovery** — house-ad tips, hyper-personalised prompts, team-page entry | [[research-tab]] §3 Journey 6 | Added |
+| **Trade hand-off** — reports list 5–10 teams; trade action must carry team id; trade from research page | [[research-tab]] §2, §3 | Added |
+| Status + components.md Research-Tab line (undefined → Defined) | [[research-tab]], [[components/components]] | Updated |
+| **T0 buying-power / ledger explainer** (Troy) + George's "elegant" referral-via-API mechanism (vs FTP file) | [[trading/trading]] + 18–29 Jun sweep | Cross-ref — captured in [[trading/trading]] update + the touchdown sweep |
+| **Market-maker session** flagged again (Edwin to give parameters, build with George) | [[architecture/open-questions]] | Cross-ref — reinforces existing market-maker flag |
+| Corp-dev / commercial (Teddy Sagi family office NDA, Goldman, Kalshi $40B / perpetual-futures "InPlay as underlying source data") | — | Parked — commercial / vision-adjacent, no component change |
+
 **
 
+Jun 26, 2026
 
+## InPlay - AI Agent Research Component - Transcript
 
 ### 00:00:02
 

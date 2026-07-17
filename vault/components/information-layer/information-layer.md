@@ -2,9 +2,10 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-05-09
+> **Updated:** 2026-06-08 — SR data live in prototype; replay-simulation model, ~18 moments/game validated, SR entity-ID join model (see touchdown note below)
 > **Status:** Collecting
 > **Owner:** George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[meetings/08-05-2026-compoent-1]], [[meetings/06-05-2026-vision-workshop]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[meetings/06-05-2026-vision-workshop]], [[05-06-2026-touchdown]], [[08-06-2026-touchdown]]_
 
 ---
 
@@ -16,7 +17,7 @@ The Information Layer is the main stage of the InPlay app -- the data and intell
 
 The component spans multiple interconnected pages. Users land on a discovery homepage where they browse today's slate of games, search for specific teams, and see featured matchups. From there they can drill into a game day overview showing all live and upcoming games, or click directly into a single game page where sports data and market data converge -- a Sport Radar live match tracker, an annotated price chart mapping game events to price movements, real-time stats, and market data (bid/offer, order book depth). Team pages provide historical context: season performance, head-to-head matchup data, and stock price history over time. A leaderboard system tracks competition across three verticals (best P&L, best risk-adjusted return, comeback trader) and four time horizons (daily, weekly, monthly, full event), showing users where they rank and what they need to do to reach payout positions.
 
-The component pulls from three data sources: Sport Radar (sports events, stats, live match tracker, news), T0 ATS (prices, order book, trade events), and InPlay's own data store (leaderboard rankings, cross-correlated volatility data, user preferences). The cross-correlation layer -- game events mapped to price movements -- is InPlay's proprietary IP. A research tab is planned but not yet scoped; it will be free during the simulation challenge and paywalled in production.
+The component pulls from three data sources: Sport Radar (sports events, stats, live match tracker, news), T0 ATS (prices, order book, trade events), and InPlay's own data store (leaderboard rankings, cross-correlated volatility data, user preferences). The cross-correlation layer -- game events mapped to price movements -- is InPlay's proprietary IP. A research tab hosts the **AI Research Agent** (manual chat, scheduled reports, event-triggered proactive research over SR/T0/InPlay data); free during the simulation challenge and paywalled (~$99.99/mo) in production.
 
 The Information Layer also hosts shared elements that appear across multiple pages: a news feed (AP-style editorial from Sport Radar), large block trade alerts, leaderboard position widgets, and market data snippets. Advertising surfaces within this component as a cross-cutting concern -- volatility moment animations, sponsored pages, and game-adjacent ad placements all live here but are governed by the advertising strategy, not this component.
 
@@ -256,16 +257,21 @@ Brett identified this as the right component to build first: "We can figure out 
 | Game Day Overview | Today's full slate of games -- all live/upcoming, scores, price movements, mini P&L for active positions | Collecting | [[sub-components/game-day-overview/game-day-overview]] |
 | Single Game Page | Deep view of one matchup -- match tracker, annotated chart, real-time stats, market data (bid/offer, order book), embedded trading widget, leaderboard widget | Collecting | [[sub-components/single-game-page/single-game-page]] |
 | Team Page | Persistent team view -- historical data (10-15 years), season stats, head-to-head matchups, stock price history. Enriched with live game data when applicable | Collecting | [[sub-components/team-page/team-page]] |
-| Research Tab | Historical analysis and volatility research tools. Free in simulation, paywalled in production. **Undefined -- needs dedicated session** | Collecting | [[sub-components/research-tab/research-tab]] |
+| Research Tab | Home of the **AI Research Agent** — manual chat (= Third Space Research AI Chat), scheduled reports, and event-triggered proactive research over SR/T0/InPlay data. Plus historical/volatility research. Free in simulation, ~$99.99/mo in production | Collecting | [[sub-components/research-tab/research-tab]] |
 | Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard/leaderboard]] |
 
 ---
+
+> **Touchdown-sweep note (1–8 June 2026):** **Sport Radar data is live in the prototype** — real SR data streaming into the PWA; placeholder data is explicitly labelled "demo data". **Replay-simulation model:** the SR feed is pinned to a **past point in time** (week 10 of 2024 in the 05-06 demo; 2025 season in 08-06) so completed games replay with **real** standings, results, injury reports, and key-player stats, with **every moment per game** linked to a popup; pricing/market data not yet wired; live moments will run off the **SR provider simulation endpoint**. **Moments-per-game validated at ~18** (granularity up to ~170) — confirms the "15–20 highlight moments per game" premise; UX decision to **group moments by quarter** (Cody's play-by-play-widget pattern) rather than show all. **SR entity-ID join model:** one SR ID ties together **play-by-play, AP editorial newswire, headshots, and win-probability** — so AP **injury-article context** can be pulled onto player cards (injuries are a major trade driver); **win-probability lives under the global American-football API**, not the NFL API (IDs interoperate — resolves a 403 George hit); headshots not yet licensed. **Team page** now carries all season stats, conferences, and full results — decision to show **current + previous season only**. **Demo strategy:** advertiser demos run on the **mock-data branch** (looks/acts like production — in-game data, price updates, updated ad units, no "demo" labels), not the live-SR branch which looks incomplete out of season. _Sources: [[05-06-2026-touchdown]], [[08-06-2026-touchdown]]._
+
+> **Update (12–17 June touchdowns):** **Pre-launch data preview (15-06):** before live data exists, the app surfaces **Sport Radar historical data** (team additions/subtractions, schedule, historical win-total projections) with the **trading features grayed out** plus a **countdown** to the IPO dates (College Football ~22 Aug, NFL ~2 Sept). History depth is open: Cody wants to go back to **2013** so users can build predictive models for hours pre-launch; George prefers a **one-year-minimum** scope for simplicity. **Title-sponsor splash screen (15-06):** a **2–3 second** branded welcome screen on app open ("welcome to the InPlay Trading Challenge, brought to you by [sponsor]") that dissolves into the main interface, on Discovery / Home, a new advertising surface. _Sources: [[15-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
 
 ## Gaps and Questions for Next Call
 
 ### Gaps
 
-- **Research Tab:** No definition beyond "historical analysis, free in sim, paid in production." Needs a dedicated session to scope what's actually in it
+- **Research Tab:** No definition beyond "historical analysis, free in sim, paid in production" plus confirmation that the Research AI Chat (from [[components/third-space/third-space\|Third Space]]) lives here. Otherwise needs a dedicated session to scope what's actually in it
+- **Game-page naming:** the matchup / game-day landing page (two teams playing) lacks a settled name. Used variously as "game day page", "matchup page", "single game page", "game information page". Cody: _"I didn't to be honest, I didn't know we named it anything specific up to this point. I would vote, you know, matchup page, game day page, game information page. I think we can still dial that in."_ Decision needed before terminology bleeds further across documentation
 - **News feed placement:** Vision doc specifies AP-style newswire from SR but nobody discussed where it appears in the UI or how prominent it is
 - **Large block trade alerts:** Vision doc calls these out but the call didn't discuss format, frequency, or placement
 - **Market data display (order book depth, bid/offer):** Not discussed on the call at all -- how much Bloomberg-style depth do we show on mobile?

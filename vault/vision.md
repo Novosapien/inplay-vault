@@ -631,18 +631,20 @@ Four audiences (full descriptions in [[audiences]]):
 
 > Full component map, system layout, and detailed breakdowns: [[components]]
 
-**Ten components** (Withdrawal Flow added 2026-05-14 — surfaced as a separate component during onboarding extraction).
+**Twelve components** (Withdrawal Flow added 2026-05-14 during onboarding extraction; IPO Module added 2026-05-26 — the gating event that issues every tradeable asset; Earnings Report added 2026-05-27 — the recurring tradable event that re-prices the market weekly).
 
 | Component | Overview | Status |
 |-----------|----------|--------|
 | **[[components/inplay-global-website/inplay-global-website\|InPlay Global Website]]** | Corporate website — brand presence, multisport positioning, advertiser-facing | In Design |
-| **InPlay Challenge Website** | Landing page driving registration and app download | Collecting |
+| **[[components/challenge-website/challenge-website\|InPlay Challenge Website]]** | Pre-app funnel surface. Holding Page (live ~15 May) replaces legacy site, main site ships end of following week. No live data on site. | Defined |
 | **[[components/customer-onboarding/customer-onboarding\|Customer Onboarding]]** | Discovery → install → registration+KYC → wallet provisioning → trading | Defined |
 | **[[components/information-layer/information-layer\|Information / Bloomberg Terminal]]** | The data and intelligence layer -- everything a trader needs to make decisions. Six sub-components identified | Defined |
-| **Trading** | Trade execution and portfolio management | Collecting |
+| **[[components/ipo-module/ipo-module\|IPO Module]]** | "Trading Challenge Draft" — issues every tradeable asset (5M float, static-ask buy-only, 72h window) before secondary trading; owns season-end liquidation. 6 sub-components decomposed | Defined |
+| **[[components/earnings-report/earnings-report\|Earnings Report]]** | Recurring tradable event — weekly off-field earnings (EST vs ACT) re-price each team's stock; built on the IPO off-field mechanic. 5 sub-components decomposed | Defined |
+| **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
-| **Third Space** | Community and social layer — stickiness, not core product | Collecting |
-| **Education** | Trading education — basics to get users started, not in-depth training | Collecting |
+| **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
+| **[[components/education/education\|Education]]** | Card-based trading education (slideshow/whiteboard video + text + quiz), 36 modules across 3 tiers, 100-coin referral rewards, tier certifications, slide-group sponsorship. AI chatbot is Phase 2 | Defined |
 | **Withdrawal Flow** | Conversion from InPlay$ to real cash — bank info, crypto wallet linking, 1099, eligibility verdict | Stub |
 
 Cross-cutting concerns: Advertising, Push/CRM, Personal Dashboard, **Analytics & Funnel Measurement** (new), **Cybersecurity & Data-Handling Framework** (new) — see [[components]] for detail.
