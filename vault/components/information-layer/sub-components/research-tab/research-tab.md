@@ -3,9 +3,10 @@
 > **Component:** [[information-layer]]
 > **Date:** 2026-05-09
 > **Updated:** 2026-06-26 — AI Agent Research deep-dive: phased build (pre-canned → saved-custom → AI companion), pricing reset (99c → $14.99 → $49.99), in-app payment decision, background/foreground/multi-agent architecture. From [[26-06-2026-ai-agent-research-component]]
+> **Updated:** 2026-07-13 — v1 pre-canned reports demoed live in-app; ladder refined to four steps (LLM analysis layer inserted before the full AI agent). From [[13-07-2026-touchdown]]
 > **Status:** Defined _(Phase 1 scoped; AI companion is Phase 2, still conceptual)_
 > **Owner:** George Westbrook (engineering) + Cody Haugen (product / client-facing)
-> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[13-07-2026-touchdown]]_
 
 ---
 
@@ -25,6 +26,8 @@ Research Tab (subscription-gated)
 │                                  per-user cost (scales linearly); the valuable, sticky feature
 └── AI companion         PHASE 2   conversational "smart Excel buddy"; NL report building; unlocks $49.99 tier
 ```
+
+**Build status (13-07):** the v1 **pre-canned reports are demoed live in-app** — Sport Radar data roll-ups on a weekly cadence, sortable columns, and click-in column definitions (phone width limits how many columns display at once; users click in to see what a column means). Cody is sending over a set of pre-canned report ideas to brainstorm from. George's 13-07 articulation also refined the ladder into **four steps**: pre-canned → user custom reports ("still effectively database roll-ups") → **an LLM analysis layer over both** (outlier detection + commentary: "the AI's analysed it and said, this is an outlier… I've also noticed on this research report…") → the full **AI agent** with access to all reports and users, able to answer questions and create reports. Resourcing between the layers follows usage metrics ("given the metrics from usage, that's where we pour the resources"). The differentiator lands once T0 prices are piped in alongside SR data: cross-correlating win probabilities with price history — "this team in the fourth quarter when they're losing, this is the likelihood they win… the price usually fluctuates X amount in the last quarter… no other platform, app, or software does that on the planet." (Source: standup 2026-07-13)
 
 Underneath the three tiers, the original **AI Research Agent** modes still apply and are now mapped to "foreground" vs "background" AI (see §1 architecture note and §3):
 

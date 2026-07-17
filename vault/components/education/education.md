@@ -2,9 +2,9 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-06-22
-> **Status:** Defined _(updated 22-06-2026: launch format reset from TikTok reels to a card-based course experience)_
+> **Status:** Defined _(updated 22-06-2026: launch format reset from TikTok reels to a card-based course experience; updated 13/17-07-2026: <2-min video cap, content re-slice in flight)_
 > **Owner:** Kevin (content + scope) / George Westbrook (engineering + UI) / Brett StClair (client-facing) / Edwin (commercial + depth)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]], [[meetings/22-06-2026-education-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]], [[meetings/22-06-2026-education-component]], [[meetings/13-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]]_
 
 ---
 
@@ -58,7 +58,7 @@ _Course library and viewer:_
 - User clicks a card, the course opens
 - Each course has a short **slideshow / whiteboard video with voiceover** and a **written version of the same content** (two consumption modes: watch the video then take the quiz, or read through everything then take the quiz)
 - Video plays in **landscape** (user turns the phone), the quiz returns to **portrait**
-- Catalogue is **36 modules across three tiers**: Beginner 16, Intermediate 10, Expert 10
+- Catalogue is **36 modules across three tiers**: Beginner 16, Intermediate 10, Expert 10 _(under revision 13-07: Troy + Kevin are re-slicing the source docs into smaller subtopic modules — Troy expects **3–4× the module count**; revised documents to come before George regenerates content. 17-07: the 16 updated modules are live in the build. Source: standups 2026-07-13 / 2026-07-17)_
 - Content covers: securities glossary, buy/sell, long/short, the IPO draft, earnings, 100K starting balance, risk, momentum, volatility
 - Modules are **non-sequential**, the user can open any module at any time
 
@@ -107,6 +107,8 @@ _Sponsor ownership:_
 
 **Business rules and constraints:**
 
+- **Videos run under 2 minutes** — all launch videos regenerated to this cap (agreed 13-07; shipped 17-07). Jared's review verdict drove it: modules were too long, too much scrolling, and carried blank filler panels (e.g. module 14's three empty "trading journal" spreads — "at most it needs one of them"). Jared holds that even 2 minutes is long for this audience; Skye's counter: don't over-engineer pre-launch — let post-launch metrics (drop-off points, completion rates) drive the next cut. (Source: standup 2026-07-13)
+- **Content refinement in flight (13-07):** Troy found **5–7 areas needing refinement** after watching every module 2–3×, including a rework of the **performance-security script** and re-ordering concepts that are referenced in early modules but only explained in later ones. Troy + Kevin deliver revised source documents before George regenerates. (Source: standup 2026-07-13)
 - Content stays at "40,000 feet" for Beginner, basics only, no advice, no recommendations
 - Language uses "earn" not "win" (project-wide regulatory rule)
 - Reward credits only on quiz pass, not on view, and only once per module
@@ -147,6 +149,8 @@ graph TD
 Clean and low-distraction. Edwin's framing: _"almost like a PowerPoint slideshow... where the words are on the background... there isn't much more to it. No distraction."_ Kevin's alternative visual is a **whiteboard** style, _"whiteboarded out with the concepts as if you were watching a live class."_ Either way the launch aesthetic is a **slideshow / whiteboard video with voiceover and on-screen text**, browsed through a **card library**, not a TikTok feed.
 
 The TikTok-reel format (15-second vertical reels, swipe-scroll) is **parked as a possible future / v2 direction**, it was explicitly judged too heavy to build for launch.
+
+_Re-confirmed 13-07:_ short-form stays deferred until post-launch metrics prove appetite ("wide net first, see what the appetite's like, get the metrics — if it's doing well, maybe double down and add the short-form"). Three production routes were mapped for when it comes: (1) the existing AI-video format without a presenter, (2) content-creator collaborations, (3) **AI UGC avatars** (~$2 per 20–30s video; ~1,000 videos is enough of a library; the bottleneck is content ideas, which AI also helps with). Skye's framing: quick-tips snippets ("Tips Tuesday") double as **social-channel content** driving people back into the app — a social agency search is running in parallel (Troy/Kevin/Cody), and the Novo content-workforce tool is a candidate once video support lands. Sponsor-owned short-form (a sponsor funds/brands the content series) stays the long-term model but needs a real audience first. (Source: standup 2026-07-13)
 
 Brett's anti-pattern still holds: not Udemy. _"Keep it lightweight so it's not one of those Udemy style kill me forces."_ No long-form lectures, no 20-question banks.
 

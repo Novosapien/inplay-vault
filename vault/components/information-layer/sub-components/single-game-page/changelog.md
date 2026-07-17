@@ -3,3 +3,4 @@
 | Date | Change | Source |
 |------|--------|--------|
 | 2026-05-09 | Initial placeholder created from component 1 deep-dive extraction | [[08-05-2026-component-1-simulation-app]] |
+| 2026-07-17 | **Watch Mode (landscape) added (§9)** — conceived 13-07 (Edwin: Gamecast + win probability + share price + trade on one screen), demoed 15-07 (**custom-built 3D stadium, no SR match-tracker module → owned IP, white-label potential** per Cody/Hard Rock), iterated 17-07 (slider killed for click-through, net position + per-game P&L + global P&L added, trade sheet must swipe both teams, field-overlay + stoppage-video ad surfaces defined). **Premium monetisation debated and parked** ($4.99/mo floated; free-trial variants; Troy's premium-vs-ads tension logged in [[open-questions]]; Edwin: CPM model first). Flagged as **candidate sub-component** — needs focused session. | [[13-07-2026-touchdown]] / [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]] |

@@ -42,11 +42,13 @@ A defining property: the engine produces the *earnings number*, but the **price 
 - Allocation basis = **share of trade volume** on that matchup.
 - Two figures per report: EST (week prior) and ACT (release day).
 - Cadence: Tue NFL / Wed NCAA, batched.
+- **EST disparity is deliberate (17-07):** projected off-field revenue is built from attendance, jersey sales, viewership etc. with **enough spread to be tradable** (e.g. Dallas Cowboys ≈ $30 vs Carolina ≈ $14 projected off-field) — "we don't want to just be 50/50." The projection also feeds the market-maker reference price (see [[open-questions]]). (Source: standup 2026-07-17)
 
 **Edge cases:**
 
 - **Zero/low matchup volume** → how is the $250 pool allocated? *Open — needs a rule.*
-- **Bye week / no game** → is an EST/ACT produced at all? *Open.*
+- **Tradable vs non-tradable opponent — RESOLVED (15/17-07):** when a team with shares plays a school with no offering (FBS vs non-FBS; ~180 of ~2,100 games), **100% of the $250 pool goes to the tradable team** — no allocation is possible to a team with no shares. Factored into season reference pricing. (Source: standups 2026-07-15 / 2026-07-17)
+- **Bye week / no game — RESOLVED (15-07):** **no allocation** — Edwin: "they don't get anything, we'll just take that ad revenue." No EST/ACT produced for a bye week. (Source: standup 2026-07-15)
 - **Late on-field result or volume data** → ACT computation must handle delayed inputs without publishing a wrong number.
 - **Manipulated volume** (wash trading) → allocation could be gamed (see Risks).
 

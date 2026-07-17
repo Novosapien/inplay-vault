@@ -2,9 +2,10 @@
 
 > **Component:** [[information-layer]]
 > **Date:** 2026-05-09
+> **Updated:** 2026-07-17 — **Watch Mode (landscape)** added (§9): conceived 13-07, demoed 15-07, iterated 17-07. Candidate sub-component — needs focused session. From [[13-07-2026-touchdown]] / [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
 > **Status:** Collecting
 > **Owner:** George Westbrook
-> **Sources:** _[[08-05-2026-component-1-simulation-app]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[13-07-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]]_
 
 ---
 
@@ -275,9 +276,45 @@ Data-dense but layered. The game page is the most information-rich screen in the
 
 ---
 
+## 9. Watch Mode (landscape) — added 13–17 Jul 2026
+
+> ⚠️ **Candidate sub-component.** Watch Mode emerged and was built across three July standups. It's captured here because it lives on the Single Game Page surface, but it is substantial enough — own layout, own monetisation debate, own ad inventory — to warrant a focused session and possibly its own sub-component doc.
+
+**What it is:** a full-screen **landscape** mode (user rotates the phone) combining on one screen: the **Gamecast** (a custom-built 3D stadium visualisation — plays, gains/losses, ball position, live event pop-ups), the **win-probability chart**, the **live share-price chart** for both teams, and **trade execution**. Edwin's founding ask (13-07): _"see the win probability, the game cast, and the share price all in one look-see"_ — so that when a play moves the probability, the user immediately checks what it did to the price and trades on it. Edwin (15-07): _"90–95% of my time would be right here"_ — the working assumption is this is where users live during live games.
+
+**Timeline:**
+
+- **13-07 — conceived.** Edwin asked for the single-screen view; George proposed the landscape "watch mode": left side fixed Gamecast with an event stepper, right side probability + price chart with trade access (possibly swipeable to further graph views, each carrying an ad unit).
+- **15-07 — demoed.** The 3D stadium Gamecast is **fully custom-built — no Sport Radar match-tracker module** ("this is all completely custom"). Cody confirmed the IP consequence on the spot: **white-label / resale potential** to partners (Hard Rock explicitly in mind). Strongest reaction of any feature demo to date ("this is the only way you're going to use this app now" — Edwin; "we're charging for this, guys" — Cody).
+- **17-07 — iterated.** Feedback decisions below.
+
+**Monetisation debate (15-07, unresolved — logged in [[open-questions]]):**
+
+- Cody: gate it — "if you want the watch feature, it's another **$4.99 a month**."
+- Kevin: free window (~5 minutes) then paywall; Troy: **first day free**, then subscribe; Jared agrees free-first — "nobody's going to pay for this unless they experience it first."
+- Troy's caveat: **premium payers expect no/fewer ads** — a direct conflict with this being the top ad surface (~720 impressions/game target).
+- Edwin **parked payment for iteration 1**: prove the CPM/engagement model first — "getting five bucks a month from 50,000 people is juicy, but it doesn't validate our premise, which is we're trying to monetize engagement." Jared's pay-to-remove-ads model was also rejected for launch (the ad inventory's perceived value must build first).
+
+**Design / iteration decisions (17-07):**
+
+- **Kill the slider** for stepping through volatility moments — it sits so close to the screen edge it fights the OS close-app gesture (Cody's "fat thumb" report: 9 times out of 10 it drags the whole app); keep the one-at-a-time click-through buttons. Decided — Edwin: "I would lose the slider."
+- **Add position/P&L context on-screen:** net position for this game (long/short which team), per-game P&L, and a global/day P&L — Edwin wants all three visible while trading; unused screen real estate identified next to the trade button and above the field.
+- **Trade sheet must swipe between both teams** in the matchup — it currently locks to whichever team was selected (Cody). The portrait trade layout also renders in landscape and needs a landscape redesign.
+- **Event scrubbing:** stepping through events drives both the Gamecast and the price-chart position (candles per team, "what happened" annotations on expand). Expandable event cards (click a play to expand) have spare space earmarked as **direct-sale ad placements**; George's alternative — infinite scroll with ad units between stacked panels — was cooled on by Edwin in favour of field-overlay placement.
+- **Ad surfaces:** transparent **field-overlay logo** (Red Bull style); **30s videos inside the field outline during known stoppages only** (pre-game, quarter breaks, halftime — never during live play); presented-by lockups on the probability/price charts. See the Advertising update in [[components/components]].
+- **Known bugs:** field lettering/direction mirrored (MIA reversed — 15-07); scrub slider unreliable (now being removed).
+
+**Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **T0 price history + SR events + win probability onto the same timeline** — blocked on trading integration (T0 QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
+
+_This section answers Open Question 3 below (landscape rotation): yes — Watch Mode is the landscape experience._
+
+(Source: standups 2026-07-13 / 2026-07-15 / 2026-07-17)
+
+---
+
 ## Sub-Sub-Components
 
-Leaf node -- no further decomposition needed. The page has multiple elements (match tracker, chart, market data, trading widget, leaderboard widget) but they all share state and render on the same screen.
+Leaf node -- no further decomposition needed. The page has multiple elements (match tracker, chart, market data, trading widget, leaderboard widget) but they all share state and render on the same screen. _(13–17 Jul: **Watch Mode** (§9) strains this — flagged as a candidate sub-component pending a focused session.)_
 
 ---
 
@@ -285,6 +322,6 @@ Leaf node -- no further decomposition needed. The page has multiple elements (ma
 
 1. How much order book depth to show on mobile? Full book or just top of book (best bid/best offer)?
 2. Layout: how do match tracker, chart, stats, and trading widget coexist on a single mobile screen? Scrollable sections, tabs, or collapsible panels?
-3. Does the match tracker go full-screen on landscape rotation?
+3. Does the match tracker go full-screen on landscape rotation? — **Answered (13–17 Jul): yes — Watch Mode, see §9.**
 4. The SR data delay is 30-40 seconds from real-world events. Is that acceptable, or do we need a visible disclaimer?
 5. Should the page show a count of how many other users are viewing this game? (social proof / activity indicator)
