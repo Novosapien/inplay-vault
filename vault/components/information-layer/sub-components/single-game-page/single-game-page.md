@@ -2,7 +2,7 @@
 
 > **Component:** [[information-layer]]
 > **Date:** 2026-05-09
-> **Updated:** 2026-07-17 — **Watch Mode (landscape)** added (§9): conceived 13-07, demoed 15-07, iterated 17-07. Candidate sub-component — needs focused session. From [[13-07-2026-touchdown]] / [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
+> **Updated:** 2026-07-20 — **Watch Mode (landscape)** added (§9): conceived 13-07, demoed 15-07, iterated 17-07 + 20-07 (scrollable graph stack + interlaced ads, team-selector ordering). Candidate sub-component — needs focused session. From [[13-07-2026-touchdown]] / [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]] / [[20-07-2026-touchdown]]
 > **Status:** Collecting
 > **Owner:** George Westbrook
 > **Sources:** _[[08-05-2026-component-1-simulation-app]], [[13-07-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]]_
@@ -287,6 +287,7 @@ Data-dense but layered. The game page is the most information-rich screen in the
 - **13-07 — conceived.** Edwin asked for the single-screen view; George proposed the landscape "watch mode": left side fixed Gamecast with an event stepper, right side probability + price chart with trade access (possibly swipeable to further graph views, each carrying an ad unit).
 - **15-07 — demoed.** The 3D stadium Gamecast is **fully custom-built — no Sport Radar match-tracker module** ("this is all completely custom"). Cody confirmed the IP consequence on the spot: **white-label / resale potential** to partners (Hard Rock explicitly in mind). Strongest reaction of any feature demo to date ("this is the only way you're going to use this app now" — Edwin; "we're charging for this, guys" — Cody).
 - **17-07 — iterated.** Feedback decisions below.
+- **20-07 — iterated again.** Scrollable graph column + ad density, team-selector ordering — see the 20-07 block below.
 
 **Monetisation debate (15-07, unresolved — logged in [[open-questions]]):**
 
@@ -303,6 +304,16 @@ Data-dense but layered. The game page is the most information-rich screen in the
 - **Event scrubbing:** stepping through events drives both the Gamecast and the price-chart position (candles per team, "what happened" annotations on expand). Expandable event cards (click a play to expand) have spare space earmarked as **direct-sale ad placements**; George's alternative — infinite scroll with ad units between stacked panels — was cooled on by Edwin in favour of field-overlay placement.
 - **Ad surfaces:** transparent **field-overlay logo** (Red Bull style); **30s videos inside the field outline during known stoppages only** (pre-game, quarter breaks, halftime — never during live play); presented-by lockups on the probability/price charts. See the Advertising update in [[components/components]].
 - **Known bugs:** field lettering/direction mirrored (MIA reversed — 15-07); scrub slider unreliable (now being removed).
+
+**Iteration decisions (20-07):**
+
+- **Right-hand column is now a scrollable graph stack with interlaced ad units** — multiple graphs/components scroll vertically on the right side (thumb-reach side while holding landscape), with ads between them plus an ad unit on the left side. Ad maths: two static graphs left ~1 ad position; ~6 scrollable graphs give **6–8 ad positions**. Edwin said on the last call he did **not** want the scroll — Cody/Troy want to show him anyway ("fast enough… not overwhelming"; "gives you more positions"). Not yet decided what else goes in the stack (no open-positions/P&L widget yet — pre-trading-integration).
+- **Team-selector ordering (applies on other pages too):** the two teams **playing** first → the user's **favourite teams** → alphabetical (league-grouping considered: if an NFL game, NFL teams before NCAA). Working assumption: beyond playing+favourites, users **search** rather than swipe through ~130 teams (Cody: "four to five swipes before… I'm just gonna type it in").
+- **Trade sheet team scroll-through built** — the 17-07 "must swipe between both teams" item has landed; you can now scroll through teams in the trade sheet.
+- **Feedback loop starting:** interns from the target demographic begin structured app reviews this week (Troy).
+- **IAB conformance re-confirmed:** modern IAB standards are aspect-ratio-based, not fixed pixel dims — units scale as long as proportions hold (double-check pending); Brett sceptical mobile tower banners exist — to be tested with real ad units soon.
+
+(Source: standup 2026-07-20)
 
 **Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **T0 price history + SR events + win probability onto the same timeline** — blocked on trading integration (T0 QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
 
