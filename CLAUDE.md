@@ -1,5 +1,18 @@
 # InPlay Vault
 
+## Market Maker work — read the working guide first
+
+Before doing ANY work related to the market maker (anything under
+`vault/components/market-maker/`, the valuation engine, market state, SDMM /
+quoting engine, market supervision, or the standards in `vault/standards/`),
+you MUST read `vault/components/market-maker/working-guide.md` and follow its
+process: the mandatory reading order (hub → decisions → open-questions →
+parameters → plan → latest session note), the ground rules (decisions.md
+outranks the standards; the 22-07 platform-doc filter; every number needs a
+status), and the session loop — every working session ends with a note in
+`vault/components/market-maker/sessions/` plus updates to the working docs it
+touched.
+
 ## Git Workflow
 
 - **Never commit directly to main.** Always create a feature branch and open a pull request.

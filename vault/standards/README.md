@@ -35,15 +35,28 @@ CTS-001 and CTS-002.
 
 ## Guides
 
-Plain-English companions for the verbose source standards:
+Plain-English companions for the verbose source standards. Where a guide and
+its source disagree, the source wins — except where the 20-07-2026 touchdown
+superseded the source (noted inline in each guide).
 
-- [[standards/PTS-001-plain-english-guide]] — the 10-minute version.
-- [[standards/PTS-001-comprehensive-guide]] — full-depth explainer: every rule,
+- [[standards/CTS-001-plain-english-guide]] — the valuation system: what a team
+  is worth (ESV), value vs price, and Edwin's real formula from the 20-07 call.
+  (`CTS-001-plain-english-guide.html` — readable HTML rendering, no JavaScript.)
+- [[standards/CTS-002-plain-english-guide]] — market operations: Reference
+  Price, market state, sessions, order rules, and the build map of what's ours
+  vs tZERO's.
+  (`CTS-002-plain-english-guide.html` — readable HTML rendering, no JavaScript.)
+- [[standards/PTS-001-plain-english-guide]] — the SDMM bot, the 10-minute version.
+- [[standards/PTS-001-comprehensive-guide]] — full-depth SDMM explainer: every rule,
   priority list, formula, and invariant, with Mermaid diagrams, a worked
   example, source-document quirks, and an implementation checklist.
 - `PTS-001-comprehensive-guide.html` — self-contained HTML rendering of the
   comprehensive guide (inline CSS + SVG diagrams, no JavaScript). Open in a
   browser; markdown wikilinks don't apply to it.
+- `standards/sdmm-machine.html` — interactive clickable map of the whole
+  machine: engines, equations with a symbol glossary, reconciled with the
+  20-07-2026 touchdown (scope confirmed as Novosapien builds, portfolio
+  allocation descoped, new build items).
 
 ## Confidentiality
 

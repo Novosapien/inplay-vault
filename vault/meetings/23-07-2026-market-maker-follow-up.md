@@ -5,15 +5,20 @@ scope:
   - "[[market-maker/market-maker]]"
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[referral/referral]]"
-status: raw
-extracted-to: []
+status: extracted
+extracted-to:
+  - "[[market-maker/decisions]]"
+  - "[[market-maker/open-questions]]"
+  - "[[market-maker/parameters]]"
+  - "[[market-maker/plan]]"
+  - "[[market-maker/learnings]]"
 ---
 
 ## Post-Call Analysis
 
 46-minute multi-topic call ("Follow up with Market Maker"). App launched on the Apple App Store the night before — first ~10 minutes are launch status. Edwin arrived late; the middle ~30 minutes are a market-maker working session that materially simplified the quoting design and resolved three valuation open questions. Final segment (after George dropped): KYC objection handling. ⚠ This was **not** the planned deep-dive agenda — E11 (settlement definition) and E12 (NCAA scope) were never asked; Edwin: "we didn't get a ton done on the market making" — another MM call expected.
 
-> ⚠ **Extraction status:** findings identified and routed (tables below) but **nothing extracted yet** — the vault writes happen in a follow-up session. Open input for that session: finding #11 (v1 crossing tolerance) needs George's confirmation of the reading before it goes into [[market-maker/decisions]].
+> ✅ **Extraction complete 23-07** (same-day session, George + Claude). All MM findings written to the destinations listed below. Finding #11 (v1 crossing tolerance) confirmed by George: post-first, momentary self-cross tolerated in v1. Session note covers the working session. Other-findings rows (#18–23) NOT extracted here — they belong to app/onboarding components.
 
 ### Market Maker findings
 
