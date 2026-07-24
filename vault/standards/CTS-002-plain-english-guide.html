@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTS-002 · Market Operations — Plain English Guide</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --ops:#6b4a92; --ops-deep:#503470; --ops-soft:#e9e2f1; --ops-ghost:#f2eef6;
+    --mkt:#a83a2c; --mkt-deep:#7f2b20; --mkt-soft:#f5e4df;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --conf:#0e6a4c; --conf-soft:#e0eee5;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:.5rem 1rem}
+  .stripe b{color:#cbb8e4;font-weight:600}
+  .topnav{position:sticky;top:0;z-index:10;background:var(--paper-deep);border-bottom:1px solid var(--rule-strong);padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;box-shadow:0 2px 8px rgba(60,50,25,.08)}
+  .topnav a{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s}
+  .topnav a:hover{border-color:var(--ops);color:var(--ops-deep);background:var(--ops-ghost)}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ops);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--mkt);color:var(--mkt)}
+  .meta span.go{border-color:var(--conf);color:var(--conf)}
+
+  section{padding:2.6rem 0 0}
+  h2{font-size:1.55rem;letter-spacing:-.01em;padding-top:1rem;border-top:1px solid var(--rule);display:flex;gap:.7rem;align-items:baseline}
+  h2 .n{font-family:var(--mono);font-size:.8rem;color:var(--ops);letter-spacing:.1em}
+  h3{font-size:1.08rem;margin-top:1.6rem}
+  p{margin-top:.85rem;max-width:44rem}
+  p.lead{font-size:1.08rem}
+  ul,ol{margin:.85rem 0 0 1.3rem;max-width:42rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--ops)}
+  b{font-weight:700}
+  em{color:var(--ink-soft)}
+  code{font-family:var(--mono);font-size:.82em;background:rgba(255,255,255,.6);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+
+  .pull{margin:1.4rem 0 0;padding:1rem 1.3rem;border-left:4px solid var(--ops);background:var(--ops-ghost);font-size:1.06rem;font-style:italic}
+  .pull b{font-style:normal}
+
+  .callout{margin:1.4rem 0 0;border:1px solid var(--rule-strong);border-radius:10px;padding:1rem 1.2rem;background:rgba(255,255,255,.5)}
+  .callout .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;display:inline-block;margin-bottom:.4rem}
+  .callout.touchdown{border-color:var(--conf);background:var(--conf-soft)}
+  .callout.touchdown .tag{color:var(--conf)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.warn .tag{color:var(--amber)}
+  .callout p{margin-top:.35rem}
+
+  .formula{margin:1.3rem 0 0;background:#211e26;color:#ddd3ea;border-radius:10px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.85rem;line-height:1.9;overflow-x:auto}
+  .formula .c{color:#9384a8}
+  .formula b{color:#cbb0ec;font-weight:600}
+
+  table{width:100%;border-collapse:collapse;margin-top:1.2rem;font-size:.92rem}
+  th{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong)}
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{font-weight:700}
+  tr:nth-child(even) td{background:rgba(255,255,255,.35)}
+  td .own{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:.12rem .5rem;border-radius:99px;white-space:nowrap}
+  .own.us{background:var(--conf-soft);color:var(--conf);border:1px solid var(--conf)}
+  .own.tz{background:var(--mkt-soft);color:var(--mkt-deep);border:1px solid var(--mkt)}
+  .own.joint{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber)}
+
+  .flow{margin:1.4rem 0 0;font-family:var(--mono);font-size:.78rem;text-align:center;line-height:2.2}
+  .flow span{border:1.5px solid var(--rule-strong);background:rgba(255,255,255,.6);border-radius:8px;padding:.35rem .7rem;display:inline-block;margin:.15rem}
+  .flow span.live{border-color:var(--ops);color:var(--ops-deep);font-weight:700}
+  .flow .a{color:var(--ops);border:none;background:none;padding:0 .1rem}
+  .flow small{display:block;font-family:var(--serif);font-style:italic;color:var(--ink-soft);font-size:.85rem;line-height:1.5;margin-top:.3rem}
+
+  .rulelist{counter-reset:rule;list-style:none;margin-left:0}
+  .rulelist li{counter-increment:rule;position:relative;padding-left:2.6rem;margin-top:.9rem}
+  .rulelist li::before{content:counter(rule,decimal-leading-zero);position:absolute;left:0;top:.1rem;font-family:var(--mono);font-size:.72rem;color:var(--ops);border:1px solid var(--rule-strong);border-radius:6px;padding:.1rem .3rem;background:rgba(255,255,255,.6)}
+
+  footer{margin-top:4rem;border-top:3px double var(--rule-strong);padding-top:1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+</style>
+</head>
+<body>
+
+<div class="stripe">InPlay Core Technical Standards · derived explainer · <b>source doc wins — except where the 20-07 touchdown superseded it</b> · trade secret of InPlay Global, Inc.</div>
+<nav class="topnav">
+  <a href="#thirty">30-sec</a><a href="#basics">1 · Basics</a><a href="#stack">2 · Hard rule</a><a href="#principles">3 · Principles</a><a href="#lifecycles">4 · Lifecycles</a><a href="#price">5 · Price &amp; health</a><a href="#mif">6 · Order rules</a><a href="#liquidity">7 · Liquidity</a><a href="#touchdown">8 · 20-07</a><a href="#buildmap">9 · Build map</a><a href="#quirks">10 · Quirks</a><a href="#tldr">11 · TL;DR</a>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">CTS-002 · Market Operations Standard · in plain english</div>
+  <h1>Market Operations <span class="thin">— how the market runs</span></h1>
+  <p class="deck">CTS-001 answers <em>"what's a team worth?"</em> PTS-001 answers <em>"how does the market-maker bot behave?"</em> This is the layer between them: <b>the rulebook for running the market itself.</b></p>
+  <div class="meta">
+    <span class="go">✓ Novosapien build — confirmed 20-07</span>
+    <span class="hot">matching engine + order book = tZERO's</span>
+    <span>companion: CTS-002-market-operations-standard.md</span>
+  </div>
+</header>
+
+<section id="thirty">
+  <h2><span class="n">◎</span>The 30-second version</h2>
+  <p class="lead">CTS-002 does five jobs:</p>
+  <ol>
+    <li><b>Publish the price anchor.</b> Take the ESV from CTS-001 and republish it, unchanged, as the <b>Reference Price</b> — the number the whole market orbits.</li>
+    <li><b>Track whether the market is healthy.</b> The <b>Market Operating Condition</b>: are the feeds alive, is valuation flowing, can we operate normally right now?</li>
+    <li><b>Say what the market should look like.</b> The <b>Market Operations Profile</b>: given health and game state — how tight, deep and fast should the market be?</li>
+    <li><b>Define the rules of engagement.</b> What order types exist, how orders match (best price first, then first-come-first-served), what states an order moves through.</li>
+    <li><b>Define who provides liquidity.</b> Simulation: the SDMM. Production: real market-making firms.</li>
+  </ol>
+  <div class="pull"><b>One sentence to keep:</b> CTS-001 determines value. CTS-002 runs the market around that value. Neither may do the other's job — the operations layer is forbidden from ever calculating, adjusting or second-guessing a price.</div>
+</section>
+
+<section id="basics">
+  <h2><span class="n">§1</span>Market-operations basics <em style="font-size:.85rem">(skip if you know this)</em></h2>
+  <p>Think of an <b>airport</b> (the exchange) versus the <b>planes</b> (prices). Air-traffic control doesn't decide where planes fly — it decides whether the runway is open, in what conditions, and in what order planes land. CTS-002 is air-traffic control: it never sets prices, it operates the environment in which prices happen. When visibility drops, operations degrade — fewer landings, wider spacing. That's the Market Operating Condition driving the Market Operations Profile.</p>
+  <table>
+    <tr><th>Term</th><th>Plain meaning</th></tr>
+    <tr><td>Reference Price (RP)</td><td>The ESV, republished as the market's anchor. By law <code>RP = ESV</code>, always. Edwin confirmed: it's the mid between bid and ask.</td></tr>
+    <tr><td>Market Operating Condition (MOC)</td><td>Health classification: <em>Normal · Degraded · Protective · Recovery · Emergency</em>. Edwin's word for this whole layer: <b>"market state."</b></td></tr>
+    <tr><td>Market Operations Profile (MOP)</td><td>The target market shape for the current condition: spread, depth, refresh, protection. <em>What it should look like</em>, not <em>how quotes are made</em>.</td></tr>
+    <tr><td>Market Lifecycle</td><td>Whether this security's market may operate at all: <em>Pre-IPO → IPO → Pre-Market → Open Market → Settlement → Archived</em>.</td></tr>
+    <tr><td>Operational Lifecycle</td><td>How an open market behaves through the season: <em>Pre-Game → Live → Post-Game → Weekly Report</em>, repeating per fixture.</td></tr>
+    <tr><td>Market Interaction Framework</td><td>The participant rulebook: order types, matching priority, order lifecycle. Identical rules for everyone — including the market maker.</td></tr>
+    <tr><td>Price-time priority</td><td>Matching order: best price wins; among equal prices, earliest order wins.</td></tr>
+    <tr><td>Liquidity provider</td><td>Whoever keeps two-sided quotes alive. Simulation: the <b>SDMM</b>. Production: a <b>PLP</b> (real firm, real capital).</td></tr>
+    <tr><td>Protected Reference Price State</td><td>Failure mode: valuation stops publishing → the last valid RP stands frozen. Nobody may estimate a replacement.</td></tr>
+    <tr><td>Halt / band / quote-bust</td><td>Orderly-market tools: pause trading, reject prices outside a band (~±30%), or cancel ("bust") a trade that printed at a silly price.</td></tr>
+  </table>
+</section>
+
+<section id="stack">
+  <h2><span class="n">§2</span>Where CTS-002 sits — and its one hard rule</h2>
+  <table>
+    <tr><th>Document</th><th>Role</th></tr>
+    <tr><td>CTS-001</td><td>Determines value (ESV). Wins any conflict about valuation.</td></tr>
+    <tr><td>CTS-002 (this)</td><td>Runs the market around that value. Wins any conflict about market operation.</td></tr>
+    <tr><td>PTS-001</td><td>The simulation market maker — implements both within one bot.</td></tr>
+  </table>
+  <p>The hard rule, repeated obsessively in the source: <b>CTS-002 SHALL NOT determine, modify, reinterpret or replace the Expected Settlement Value.</b> The whole document is machinery for operating <em>around</em> a number it is never allowed to touch.</p>
+</section>
+
+<section id="principles">
+  <h2><span class="n">§3</span>The seven operating principles</h2>
+  <ol class="rulelist">
+    <li><b>Fair</b> — same rules for every participant, no preferential treatment.</li>
+    <li><b>Orderly</b> — continuous, sensible trading whenever the state permits; no chaos, no silly prints left standing.</li>
+    <li><b>Continuously liquid</b> — executable two-sided quotes whenever the product standard requires them.</li>
+    <li><b>Operationally independent</b> — running the market never changes the valuation.</li>
+    <li><b>Deterministic</b> — same inputs → same operational decisions, every implementation.</li>
+    <li><b>Resilient</b> — degraded conditions produce controlled degradation (wider, thinner, slower), not blank screens.</li>
+    <li><b>Auditable</b> — every operational decision reproducible and permanently recorded.</li>
+  </ol>
+  <p>Same DNA as the other two documents: determinism + auditability + separation of powers.</p>
+</section>
+
+<section id="lifecycles">
+  <h2><span class="n">§4</span>The two lifecycles — the product's temporal skeleton</h2>
+  <h3>Market Lifecycle — may this market operate at all?</h3>
+  <div class="flow">
+    <span>PRE-IPO</span><span class="a">→</span><span>IPO</span><span class="a">→</span><span>PRE-MARKET</span><span class="a">→</span><span class="live">OPEN MARKET</span><span class="a">→</span><span>SETTLEMENT</span><span class="a">→</span><span>ARCHIVED</span>
+    <small>Pre-IPO: nothing public · IPO: subscriptions only, no secondary trading · Pre-Market: shares issued, RP publishing, warming up · Open: everything else in the stack lives here · Settlement: rights final, ESV converges to actual payout · Archived: history kept for replay/audit</small>
+  </div>
+  <h3>Operational Lifecycle — the season rhythm, per fixture</h3>
+  <div class="flow">
+    <span>PRE-GAME</span><span class="a">→</span><span class="live">LIVE</span><span class="a">→</span><span>POST-GAME</span><span class="a">→</span><span>WEEKLY REPORT</span><span class="a">↺ ×18 weeks&nbsp;&nbsp;⇢</span><span>FINAL REPORT</span><span class="a">→</span><span>SETTLEMENT</span>
+    <small>States are per game — the Cowboys can be Live while the Packers are Post-Game. The Weekly Financial Report is what rolls the week over (open question: who produces it?).</small>
+  </div>
+  <div class="callout touchdown"><span class="tag">✓ 20-07 addition (Troy)</span>
+    <p>Three liquidity <b>sessions</b> hang off this rhythm — <b>in-game</b> (tight, fast, 5–10 quote refreshes/sec), <b>around-game</b>, and <b>overnight</b> (deliberately wide, ~$2.5–5 spreads: "let the market at least tell you where it is"). The session determines the profile.</p>
+  </div>
+</section>
+
+<section id="price">
+  <h2><span class="n">§5</span>The price and health layer <em style="font-size:.85rem">(Ch 3–5)</em></h2>
+  <h3>Reference Price (Ch 3)</h3>
+  <div class="formula">RP<b>ₜ</b> = ESV<b>ₜ</b>&nbsp;&nbsp;&nbsp;<span class="c">← an identity, not a calculation</span></div>
+  <p>Publication carries timestamps, states and version so any published price can be reconstructed. If valuation stops flowing → <b>Protected Reference Price State</b>: freeze the last valid RP; no subsystem may invent a substitute. This is the "what if Sport Radar dies mid-game" answer — the market keeps quoting around the frozen price, wide and defensive, until valuation resumes.</p>
+  <h3>Market Operating Condition (Ch 4)</h3>
+  <div class="formula">MOC<b>ₜ</b> = F(inputs)&nbsp;&nbsp;&nbsp;<span class="c">← valuation availability · feed health/latency · system health · lifecycle states</span></div>
+  <p>Classifications: <em>Normal · Degraded · Protective · Recovery · Emergency</em>. Famously, the source says <b>"Do NOT define F"</b> — a leftover generation instruction that confirms the classifier logic is deliberately ours to design. MOC measures <em>capability only</em>; behavior is the next layer's job.</p>
+  <h3>Market Operations Profile (Ch 5)</h3>
+  <div class="formula">MOP<b>ₜ</b> = G(RP, MOC, lifecycle states, config)&nbsp;&nbsp;&nbsp;<span class="c">← target spread · liquidity · depth · refresh · protection</span></div>
+  <p>Named profiles: <em>Stable · Active · Balanced · Defensive · Recovery · Emergency</em>. The mapping function G is never defined — also ours. Indicative starting proposal: Normal→Stable/Active/Balanced · Degraded→Defensive · Recovery→Recovery · Emergency→Emergency.</p>
+  <div class="callout warn"><span class="tag">⚠ profile mismatch</span>
+    <p>PTS-001's pricing profiles are a slightly different six — Stable/Active/Defensive/Recovery/<em>Liquidity-Preservation/Protective</em>. The two lists never quite reconcile. In the build there will be one merged profile set — flag for Thursday.</p>
+  </div>
+</section>
+
+<section id="mif">
+  <h2><span class="n">§6</span>The rules of engagement — the Market Interaction Framework</h2>
+  <p><b>In our stack this chapter is mostly tZERO's implementation</b> — but we must know it cold, because both the app and the SDMM live inside these rules.</p>
+  <ul>
+    <li><b>Order types (v1):</b> Market, Limit, Cancel, Cancel/Replace. Nothing else — no stops, no icebergs, no pegs, no hidden orders. <b>In practice T0 is limit-only</b> (no native market orders — see §8 on synthetic market orders).</li>
+    <li><b>Matching:</b> price priority, then time priority. Partial fills allowed; remainders keep their queue position.</li>
+    <li><b>Order lifecycle:</b> <em>New → Accepted → Working → Partially Filled → Filled / Cancelled / Replaced / Expired</em> — deterministic, recorded, auditable.</li>
+    <li><b>Validation:</b> every order checked against market state, order type, price/quantity constraints, tick size before acceptance.</li>
+    <li><b>Equal access:</b> identical interaction rules for every participant — <em>including the market maker</em>, which is legally just another participant (confirmed 20-07: same entity type as a user, plus near-limitless buying power).</li>
+    <li><b>Execution-model independence:</b> participant rules never change based on who's providing liquidity.</li>
+  </ul>
+</section>
+
+<section id="liquidity">
+  <h2><span class="n">§7</span>Liquidity provision and execution <em style="font-size:.85rem">(Ch 7–9)</em></h2>
+  <h3>Who provides liquidity (Ch 7)</h3>
+  <ul>
+    <li><b>SDMM</b> — simulation designated market maker: no real financial risk, no capital constraints, deterministic, educational. The star of PTS-001.</li>
+    <li><b>PLP</b> — production liquidity provider: real firm, real capital, real risk, regulatory obligations. Future state. Edwin, 20-07: if real market makers won't sign at acceptable terms, <em>"we'll open up another company and become the market maker"</em> — and then profit moves to the top of the priority list.</li>
+  </ul>
+  <p>The split is clean: <b>the standard defines required market behavior; the provider owns its proprietary methods.</b> CTS-002 says <em>what</em> the market must look like; it never prescribes the quoting algorithm.</p>
+  <h3>How quotes get made (Ch 8–9)</h3>
+  <p>The execution engine consumes (RP, condition, profile, config) and produces the <b>Executable Quotation</b> — which must always carry eight elements: bid, offer, bid size, offer size, depth, refresh profile, status, priority attributes. Chapter 9 formalizes the same idea (config → quotation function) and adds the constitutional constraints: deterministic construction, market objects are inputs never outputs, identical externally-observable behavior across implementations, full deterministic replay of every quote and execution.</p>
+  <p>Practically, Ch 8–9 are the <em>requirements spec</em> for what PTS-001 then designs in detail — if you've internalized the SDMM guide, you've already absorbed them.</p>
+</section>
+
+<section id="touchdown">
+  <h2><span class="n">§8</span>What the 20-07 touchdown changed</h2>
+  <div class="callout touchdown"><span class="tag">✓ superseding context</span>
+    <p>Edwin confirmed <b>we build this</b> — but the matching engine and order book are tZERO's, so CTS-002's Ch 6 machinery is consumed, not built. And the docs themselves were <em>"meant for Claude… fairly simple"</em> — architecture over ceremony.</p>
+  </div>
+  <ul>
+    <li><b>"Market state"</b> is Edwin's word for the MOC/MOP layer. Use his vocabulary on calls.</li>
+    <li><b>Trading bands + quote busting are real requirements:</b> ~30% band around the reference; fills outside it can be busted — "we have to maintain orderly markets." Policy to agree with T0 in the coming days.</li>
+    <li><b>Synthetic market orders — new build item (app-side):</b> T0 has no market orders, but users expect a "just buy it" button. Implementation: price through several levels (buy the 12s when it's 8 bid at 9) or a cancel-replace walk that chases until filled. Troy: this is exactly how real brokers fake market orders in equities; he'll help write the logic. <b>Edwin wants it before the first NFL game.</b></li>
+    <li><b>Three liquidity sessions</b> (in-game / around-game / overnight) replace any elaborate reading of the lifecycle chapters — the practical question is just: which session are we in, and what profile does it select?</li>
+    <li><b>Cadence confirmed:</b> 5–10 quote refreshes/sec intragame via cancel-replace ("wipe the book and replace it"), event-triggered recompute on game events, wide-and-slow outside games.</li>
+    <li><b>MM ops UI — new build item (desktop):</b> set algo parameters, order lookup, positions, P&amp;L. Kevin likely operates it. Deliberately last in the build order.</li>
+  </ul>
+</section>
+
+<section id="buildmap">
+  <h2><span class="n">§9</span>Who owns what — the build map</h2>
+  <table>
+    <tr><th>CTS-002 piece</th><th>Owner</th><th>Build shape</th></tr>
+    <tr><td>Reference Price publication (Ch 3)</td><td><span class="own us">NOVOSAPIEN</span></td><td>Thin pipe: valuation output → published per team (<code>RP = ESV</code>), plus the frozen-price fallback state.</td></tr>
+    <tr><td>Market Operating Condition (Ch 4)</td><td><span class="own us">NOVOSAPIEN</span></td><td>Small classifier inside/beside the SDMM service: feed health + valuation freshness + session → one enum. Mostly "Normal."</td></tr>
+    <tr><td>Market Operations Profile (Ch 5)</td><td><span class="own us">NOVOSAPIEN</span></td><td>Config lookup: (condition, session) → profile parameters. Merges with PTS-001's pricing profiles into one table.</td></tr>
+    <tr><td>Lifecycles / sessions (Ch 2)</td><td><span class="own us">NOVOSAPIEN</span></td><td>State machine driven by fixture schedule + Sport Radar event status. Drives everything else's timing.</td></tr>
+    <tr><td>Order book, matching, order lifecycle (Ch 6)</td><td><span class="own tz">TZERO</span></td><td>Consumed via FIX. We validate app-side before submission but T0 is authoritative.</td></tr>
+    <tr><td>Synthetic market orders</td><td><span class="own us">NOVOSAPIEN (APP)</span></td><td>New: price-through / cancel-replace walk. Pre-first-NFL-game.</td></tr>
+    <tr><td>Bands, halts, quote-bust</td><td><span class="own joint">JOINT W/ TZERO</span></td><td>Policy + who pulls the trigger. To agree on the Tue/Thu calls.</td></tr>
+    <tr><td>Liquidity provision (Ch 7–9)</td><td><span class="own us">NOVOSAPIEN</span></td><td>This <em>is</em> the SDMM service — see the PTS-001 guide.</td></tr>
+    <tr><td>Ops audit / replay</td><td><span class="own us">NOVOSAPIEN</span></td><td>Event-sourced records from day one; replay tooling later.</td></tr>
+  </table>
+</section>
+
+<section id="quirks">
+  <h2><span class="n">§10</span>Quirks and open questions</h2>
+  <h3>In the source document</h3>
+  <ul>
+    <li><b>"Do NOT define F"</b> (§4.4) — a generation instruction left in the text. Harmless, but hard evidence the doc is AI-drafted context, and that the classifier is deliberately unspecified.</li>
+    <li><b>Profile-name mismatch</b> with PTS-001 (<em>Balanced/Emergency</em> vs <em>Liquidity-Preservation/Protective</em>). One merged profile set needed.</li>
+    <li><b>Ch 5 vs Ch 9 overlap</b> — the Market Operations Profile and the Market Configuration describe near-identical objects at different levels of formality. Build one thing.</li>
+    <li><b>Market orders</b> are a recognized type in Ch 6 but don't exist on T0 (Troy). Synthetic market orders resolve this at the app layer.</li>
+    <li>Formatting drift: broken bullet nesting, an underlined equation, sections that trail off — same conversion artifacts as the other docs.</li>
+  </ul>
+  <h3>Genuinely open</h3>
+  <ol>
+    <li><b>Band width and bust policy</b> — 30%? Who busts, us or T0, and how fast?</li>
+    <li><b>Halt semantics</b> — what can halt a single team's market intragame, and who decides?</li>
+    <li><b>Weekly Financial Report</b> — who produces it, what's in it, when does it publish?</li>
+    <li><b>MOC classifier thresholds</b> — what feed-latency/staleness actually flips Normal → Degraded?</li>
+    <li><b>Session boundaries</b> — when exactly does in-game become around-game become overnight (esp. NCAA's 6-day weeks)?</li>
+    <li><b>Throughput</b> — 5–10 cancel-replaces/sec × 32+ books through T0's FIX session: confirm limits on the Tue/Thu calls.</li>
+  </ol>
+</section>
+
+<section id="tldr">
+  <h2><span class="n">§11</span>TL;DR mental model</h2>
+  <p class="lead">Air-traffic control for the sports stock market:</p>
+  <ul>
+    <li><b>Publishes</b> the fair price it's given (never edits it — frozen if the feed dies).</li>
+    <li><b>Watches</b> health (feeds, valuation, systems) → one condition per market: Normal → … → Emergency.</li>
+    <li><b>Dictates shape, not prices:</b> tight/deep/fast in-game, wide/thin overnight, defensive when degraded.</li>
+    <li><b>Enforces the rulebook:</b> limit orders, price-time priority, equal rules for everyone including our own bot — with bands and busts to keep prints sane.</li>
+    <li><b>In our stack:</b> matching belongs to tZERO; nearly everything else collapses into config, a couple of state machines, and policy agreements — absorbed into the valuation and SDMM services rather than standing alone.</li>
+  </ul>
+</section>
+
+<footer>
+  <span>CTS-002 · plain english guide · derived explainer</span>
+  <span>reconciled with the 20-07-2026 touchdown</span>
+</footer>
+
+</div>
+</body>
+</html>

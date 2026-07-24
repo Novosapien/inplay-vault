@@ -5,7 +5,8 @@
 > **Date:** 2026-05-26
 > **Status:** Defined
 > **Owner:** Edwin (client-facing — IPO mechanics owner) + George (engineering) + Troy (T0 / on-chain ledger)
-> **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]]_
+> **Updated:** 2026-07-17 — scope confirmed (all ~138 D1 schools), market-maker warehousing resolves unsold-share handling, timeline pinned (IPO deadline ~Aug 22, secondary trading Aug 29). From [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
+> **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]], [[meetings/15-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]]_
 
 ---
 
@@ -107,13 +108,17 @@ graph TD
 - **Issuer = team company treasury**, even in simulation — the 5M shares are issued by the treasury and must be represented on-chain as the buyers' first ownership.
 - **Scheduling:** NCAA IPOs all run together (~Aug 20, ending ~4 days before week-zero on Aug 27); NFL IPOs all run together ~7 days before the Sept 9 kickoff. NCAA secondary trading can run **before** NFL IPOs complete.
 - **Settlement is simulation-only** for the challenge: longs credited at settlement price, shorts debited the difference, then a final leaderboard.
+- **Scope confirmed (15-07): all ~138 D1 schools IPO**, not just the power conferences. Troy raised the scope cut over no-demand worries on bottom teams; Edwin overruled — "I want them all" — because the market-maker backstop (below) guarantees fill. (Source: standup 2026-07-15)
+- **Market-maker backstop (15-07):** where a team draws no bid, the **market maker buys unsold float in max clips (~50,000 shares)** and warehouses the inventory — guaranteeing **35% (Edwin may raise to 50%) of every float is consumed** (public + market maker combined) so every asset is tradable on the secondary market. (Source: standup 2026-07-15)
+- **Timeline pinned (15/17-07):** IPO deadline **~Aug 22**; **secondary trading opens Aug 29** after IPO close — tradable in the pre-season gap but with no on-field events yet (UX for that dead zone needs thought). Target **~10,000 users at IPO launch**; iteration continues into the first competition weeks. (Source: standups 2026-07-15 / 2026-07-17)
+- ⚠️ **Float sizing needs reconciling:** Edwin (15-07) cited **~1M shares available per NCAA team and 875,000 per NFL team** — vs the fixed **5M float** documented 26-05. Affects float maths, the 20% holdback, and MM warehousing volumes. Logged in [[open-questions]]. (Source: standup 2026-07-15)
 
 **Edge cases and error states:**
 
 - **Float exhausted before window closes** → listing shows sold-out; no further buys; asset waits for secondary market at window close.
 - **User tries to sell during IPO** → not possible (no sell action exists in this phase).
 - **Window straddles two leagues** → user can trade NCAA secondary while NFL is still in its IPO window; the app must handle mixed states (some assets "IPO", some "live").
-- ⚠️ **Open:** What happens to unsold shares at window close — do they roll into the secondary float, get cancelled, or stay with the treasury? Not discussed.
+- **Unsold shares at window close — RESOLVED (15-07):** the **market maker buys them** in max clips (~50k) and warehouses the inventory (35%, possibly up to 50%, of every float consumed either by the public or the MM), so no asset reaches the secondary market untradable. (Source: standup 2026-07-15)
 - ⚠️ **Open:** Concurrency on the last shares of a float — two users buying the final block simultaneously; how is the partial fill / race resolved on the T0 ledger?
 
 ---

@@ -631,7 +631,7 @@ Four audiences (full descriptions in [[audiences]]):
 
 > Full component map, system layout, and detailed breakdowns: [[components]]
 
-**Twelve components** (Withdrawal Flow added 2026-05-14 during onboarding extraction; IPO Module added 2026-05-26 — the gating event that issues every tradeable asset; Earnings Report added 2026-05-27 — the recurring tradable event that re-prices the market weekly).
+**Thirteen components** (Withdrawal Flow added 2026-05-14 during onboarding extraction; IPO Module added 2026-05-26 — the gating event that issues every tradeable asset; Earnings Report added 2026-05-27 — the recurring tradable event that re-prices the market weekly; Market Maker added 2026-07-20 — the internal liquidity provider, promoted from a candidate trading sub-component).
 
 | Component | Overview | Status |
 |-----------|----------|--------|
@@ -642,6 +642,7 @@ Four audiences (full descriptions in [[audiences]]):
 | **[[components/ipo-module/ipo-module\|IPO Module]]** | "Trading Challenge Draft" — issues every tradeable asset (5M float, static-ask buy-only, 72h window) before secondary trading; owns season-end liquidation. 6 sub-components decomposed | Defined |
 | **[[components/earnings-report/earnings-report\|Earnings Report]]** | Recurring tradable event — weekly off-field earnings (EST vs ACT) re-price each team's stock; built on the IPO off-field mechanic. 5 sub-components decomposed | Defined |
 | **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
+| **[[components/market-maker/market-maker\|Market Maker]]** | Internal liquidity provider — synthetic T0 entity posting two-sided resting liquidity, guaranteeing IPO fill, maintaining orderly markets. Not user-facing | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
 | **[[components/education/education\|Education]]** | Card-based trading education (slideshow/whiteboard video + text + quiz), 36 modules across 3 tiers, 100-coin referral rewards, tier certifications, slide-group sponsorship. AI chatbot is Phase 2 | Defined |

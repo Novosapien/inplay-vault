@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SDMM · The Machine — PTS-001 visual map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    --bg:#070b09; --panel:#0c120e; --panel2:#0f1712;
+    --line:rgba(61,255,160,.16); --line2:rgba(61,255,160,.34);
+    --grn:#3dffa0; --grn-dim:#1e7a50;
+    --amb:#ffb454; --cyn:#5ad7ff; --red:#ff5d5d;
+    --txt:#d9e9de; --dim:#7d9a88; --faint:#48604f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--txt);
+    font-family:'IBM Plex Mono', monospace; font-size:13px; line-height:1.5;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(61,255,160,.06), transparent),
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.22) 3px 4px);
+    min-height:100vh;
+  }
+  ::selection{background:rgba(61,255,160,.25);}
+  .wrap{max-width:1460px; margin:0 auto; padding:28px 28px 90px;}
+
+  /* ---------- header ---------- */
+  header{border:1px solid var(--line); background:linear-gradient(180deg, var(--panel2), var(--panel)); padding:22px 26px 18px; position:relative; overflow:hidden; animation:rise .5s both;}
+  header::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(90deg, transparent 0 80px, rgba(61,255,160,.025) 80px 81px); pointer-events:none;}
+  .kicker{color:var(--grn); font-size:11px; letter-spacing:.22em; text-transform:uppercase;}
+  h1{font-family:'Instrument Serif', serif; font-style:italic; font-weight:400; font-size:44px; line-height:1.02; margin:6px 0 4px; color:#eefaf2;}
+  h1 .mono{font-family:'IBM Plex Mono',monospace; font-style:normal; font-size:26px; color:var(--grn); vertical-align:middle;}
+  .sub{color:var(--dim); max-width:760px;}
+  .statrow{display:flex; gap:26px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px dashed var(--line);}
+  .stat b{display:block; color:var(--grn); font-size:19px; font-weight:600;}
+  .stat span{color:var(--faint); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:11px; color:var(--dim);}
+  .legend i{font-style:normal; margin-right:6px;}
+
+  /* ---------- layout ---------- */
+  .cols{display:grid; grid-template-columns:minmax(0,1fr) 470px; gap:26px; margin-top:26px; align-items:start;}
+  @media(max-width:1080px){ .cols{grid-template-columns:1fr;} .detail{position:static !important; max-height:none !important;} }
+
+  /* ---------- pipeline ---------- */
+  .cycleframe{border:1px dashed rgba(61,255,160,.3); position:relative; padding:34px 56px 28px 24px; cursor:pointer; transition:border-color .2s;}
+  .cycleframe:hover{border-color:rgba(61,255,160,.55);}
+  .cycleframe.sel{border-color:var(--grn); box-shadow:0 0 0 1px rgba(61,255,160,.25), 0 0 40px rgba(61,255,160,.06) inset;}
+  .cyclelabel{position:absolute; top:-9px; left:18px; background:var(--bg); padding:0 10px; color:var(--grn); font-size:11px; letter-spacing:.2em;}
+  .cyclelabel small{color:var(--faint); letter-spacing:.1em;}
+
+  .band{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:4px;}
+  @media(max-width:760px){.band{grid-template-columns:repeat(2,1fr);}}
+  .band.two{grid-template-columns:repeat(2,1fr);}
+  .chip{border:1px solid var(--line); background:var(--panel); padding:10px 12px; cursor:pointer; transition:.18s; position:relative; animation:rise .5s both;}
+  .chip:hover{border-color:var(--line2); transform:translateY(-2px);}
+  .chip.sel{border-color:var(--grn); box-shadow:0 0 14px rgba(61,255,160,.15);}
+  .chip .t{font-size:12px; font-weight:600; color:var(--txt);}
+  .chip .d{font-size:10.5px; color:var(--faint); margin-top:2px;}
+  .chip.up{background:linear-gradient(180deg,#101a22,var(--panel)); border-color:rgba(90,215,255,.22);}
+  .chip.up:hover{border-color:rgba(90,215,255,.45);}
+  .chip.up.sel{border-color:var(--cyn); box-shadow:0 0 14px rgba(90,215,255,.15);}
+  .bandlabel{font-size:10px; letter-spacing:.22em; color:var(--faint); text-transform:uppercase; margin:0 0 8px;}
+
+  .rhythm{margin-top:10px; margin-bottom:4px; border:1px solid var(--line); background:var(--panel); padding:9px 14px; display:flex; align-items:center; gap:9px; font-size:10px; letter-spacing:.1em; color:var(--dim); cursor:pointer; overflow-x:auto; white-space:nowrap; transition:.18s; animation:rise .5s both;}
+  .rhythm:hover{border-color:var(--line2); transform:translateY(-2px);}
+  .rhythm.sel{border-color:var(--grn); box-shadow:0 0 14px rgba(61,255,160,.15);}
+  .rhythm .rl{color:var(--faint); letter-spacing:.22em; margin-right:4px;}
+  .rhythm b{color:var(--grn); font-weight:600;}
+  .rhythm .arr{color:var(--faint);}
+  .rhythm .loop{color:var(--amb); letter-spacing:.06em;}
+
+  .node{border:1px solid var(--line); background:linear-gradient(180deg,var(--panel2),var(--panel)); padding:14px 16px; cursor:pointer; position:relative; transition:.18s; animation:rise .5s both;}
+  .node:hover{border-color:var(--line2); transform:translateX(4px);}
+  .node.sel{border-color:var(--grn); box-shadow:-4px 0 0 0 var(--grn), 0 0 24px rgba(61,255,160,.10);}
+  .node .ch{position:absolute; top:-8px; right:12px; background:var(--bg); border:1px solid var(--line); color:var(--grn); font-size:9.5px; letter-spacing:.18em; padding:1px 8px;}
+  .node h3{font-size:14px; font-weight:600; color:#eefaf2; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap;}
+  .node .role{color:var(--dim); font-size:11.5px; margin-top:3px;}
+  .node .eqp{margin-top:8px; color:var(--grn); font-size:11.5px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .node.heart{border-color:rgba(61,255,160,.4); background:linear-gradient(180deg,#101d15,var(--panel));}
+  .node.heart h3{font-size:16px;}
+  .flag{font-size:10px; padding:1px 7px; border:1px solid; letter-spacing:.06em;}
+  .flag.def{color:var(--amb); border-color:rgba(255,180,84,.4);}
+  .flag.ext{color:var(--cyn); border-color:rgba(90,215,255,.4);}
+  .flag.risk{color:var(--red); border-color:rgba(255,93,93,.4);}
+  .flag.par{color:var(--grn); border-color:rgba(61,255,160,.35);}
+  .flag.conf{color:#7ee2a8; border-color:rgba(126,226,168,.5); background:rgba(126,226,168,.06);}
+  .flag.cut{color:var(--red); border-color:rgba(255,93,93,.4);}
+  .node.descoped{opacity:.55;}
+  .node.descoped h3 .nm{text-decoration:line-through; text-decoration-color:rgba(255,93,93,.7);}
+
+  .conn{height:30px; width:100%; display:flex; justify-content:center; position:relative;}
+  .conn::before{content:""; width:1px; background:repeating-linear-gradient(180deg, var(--grn) 0 5px, transparent 5px 11px); animation:flow 1.2s linear infinite; opacity:.55;}
+  .conn::after{content:"▼"; position:absolute; bottom:-4px; color:var(--grn); font-size:8px; opacity:.7;}
+  .conn.small{height:22px;}
+  @keyframes flow{to{background-position:0 11px;}}
+
+  /* feedback rail */
+  .rail{position:absolute; top:120px; bottom:150px; right:14px; width:26px; border-top:1px dashed rgba(255,180,84,.5); border-right:1px dashed rgba(255,180,84,.5); border-bottom:1px dashed rgba(255,180,84,.5); border-radius:0 8px 8px 0; animation:railpulse 2.4s ease-in-out infinite; pointer-events:none;}
+  .rail::before{content:"◀"; position:absolute; top:-7px; left:-8px; color:var(--amb); font-size:9px;}
+  .rail::after{content:"FEEDBACK · fills → inventory → next cycle"; position:absolute; right:-14px; top:50%; transform:rotate(90deg) translateX(-50%); transform-origin:right top; color:var(--amb); font-size:9.5px; letter-spacing:.2em; white-space:nowrap; opacity:.8;}
+  @keyframes railpulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+  .venue{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media(max-width:600px){.venue{grid-template-columns:1fr;}}
+
+  .postrow{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:4px;}
+  @media(max-width:900px){.postrow{grid-template-columns:1fr;}}
+
+  /* ---------- detail panel ---------- */
+  .detail{border:1px solid var(--line); background:var(--panel); position:sticky; top:20px; max-height:calc(100vh - 40px); overflow:auto; animation:rise .6s both;}
+  .detail::-webkit-scrollbar{width:8px;} .detail::-webkit-scrollbar-thumb{background:var(--grn-dim);}
+  .dhead{padding:16px 20px 12px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,var(--panel2),transparent); position:sticky; top:0; backdrop-filter:blur(4px); z-index:2;}
+  .dhead .ch{color:var(--grn); font-size:10px; letter-spacing:.22em;}
+  .dhead h2{font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:26px; color:#eefaf2; margin-top:2px;}
+  .dbody{padding:16px 20px 26px; animation:fadein .25s both;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1;}}
+  .sec{margin-bottom:18px;}
+  .sec h4{font-size:10px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; margin-bottom:8px; border-bottom:1px dashed var(--line); padding-bottom:4px;}
+  .sec p{color:var(--dim); font-size:12px; margin-bottom:6px;}
+  .eqwrap{margin-bottom:10px;}
+  .eq{background:#0a100c; border:1px solid var(--line); border-left:2px solid var(--grn); padding:8px 12px; color:var(--grn); font-size:12.5px; overflow-x:auto;}
+  .eq small{display:block; color:var(--faint); font-size:10px; margin-top:2px; letter-spacing:.08em;}
+  .sym{cursor:pointer; border-bottom:1px dotted rgba(61,255,160,.55); transition:.12s;}
+  .sym:hover{background:rgba(61,255,160,.14);}
+  .sym.act{background:rgba(255,180,84,.18); border-bottom-color:var(--amb); color:var(--amb);}
+  .symlegend{border:1px solid var(--line); border-top:1px dashed rgba(61,255,160,.12); background:#080d0a; padding:7px 12px;}
+  .symlegend .cap{font-size:9px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; margin-bottom:3px;}
+  .symrow{display:flex; gap:10px; font-size:10.5px; color:var(--faint); padding:2.5px 4px; cursor:pointer; align-items:baseline; transition:.12s;}
+  .symrow:hover{color:var(--dim);}
+  .symrow b{color:var(--grn); min-width:48px; font-weight:500; flex-shrink:0;}
+  .symrow.act{background:rgba(255,180,84,.08);}
+  .symrow.act b{color:var(--amb);}
+  .symrow.act span{color:var(--txt);}
+  ul.plain{list-style:none;}
+  ul.plain li{padding:3px 0 3px 16px; position:relative; color:var(--dim); font-size:12px;}
+  ul.plain li::before{content:"▸"; position:absolute; left:0; color:var(--grn); font-size:10px; top:6px;}
+  ul.plain li b{color:var(--txt); font-weight:500;}
+  ul.warn li::before{content:"⚠"; color:var(--amb);}
+  ul.warn li{color:#c9a071;}
+  ul.warn li b{color:var(--amb);}
+  .io{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .io .col h5{font-size:9.5px; color:var(--faint); letter-spacing:.2em; margin-bottom:4px;}
+  .io .col div{font-size:11.5px; color:var(--dim); padding:2px 0;}
+  table{width:100%; border-collapse:collapse; font-size:11px; margin-top:4px;}
+  th,td{border:1px solid var(--line); padding:4px 8px; text-align:right; color:var(--dim);}
+  th{color:var(--faint); font-weight:500; letter-spacing:.1em; font-size:9.5px;}
+  td:first-child, th:first-child{text-align:left; color:var(--txt);}
+  .seq{counter-reset:s;}
+  .seq li{counter-increment:s; padding:4px 0 4px 30px; position:relative; color:var(--dim); font-size:12px; list-style:none;}
+  .seq li::before{content:counter(s,decimal-leading-zero); position:absolute; left:0; color:var(--grn); font-size:10px; top:6px;}
+  .hint{color:var(--faint); font-size:11px; font-style:italic;}
+
+  footer{margin-top:30px; border-top:1px dashed var(--line); padding-top:14px; color:var(--faint); font-size:11px; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  @keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+/* ═══════════════════ SYMBOL GLOSSARY ═══════════════════
+   Global definitions. Individual equations can override any
+   symbol (3rd element of the eq entry) where context differs. */
+const SYM = {
+  ESV:"Expected Settlement Value — the continuously re-estimated contractual value of one share. CTS-001's output; the number everything orbits",
+  RP:"Reference Price — ESV published as the operational price anchor. RPₜ = ESVₜ by constitutional law",
+  MOC:"Market Operating Condition — operational health class: Normal · Degraded · Protective · Recovery · Emergency",
+  MOP:"Market Operations Profile — the target market shape: spread, displayed liquidity, depth, refresh, protection level",
+  MLS:"Market Lifecycle State — Pre-IPO → IPO → Pre-Market → Open → Settlement → Archived (per security)",
+  OLS:"Operational Lifecycle State — Pre-Game → Live → Post-Game → Weekly Report (per fixture, repeats all season)",
+  PTS:"Product Technical Standard configuration — product-specific parameters layered on the constitutional rules",
+  CFG:"engineering configuration — the SDMM's parameter set (much of it currently deferred / unwritten)",
+  AOI:"Approved Operational Inputs — feed health, valuation availability, latency, system state, event status",
+  EM:"Executable Market — internal object describing the complete liquidity environment for this cycle",
+  PC:"Portfolio Capital — the finite (simulated) capital pool backing one portfolio (NFL and NCAA pools are separate)",
+  PA:"Portfolio Assessment — portfolio-wide operational classification computed each cycle",
+  PIR:"Portfolio Inventory Risk — aggregate inventory exposure measured against portfolio limits",
+  PR:"Protection Requirements — the active protective constraints (highest-priority input everywhere)",
+  PLB:"Portfolio Liquidity Budget — max aggregate liquidity deployable across all teams this cycle; never exceeds PC",
+  ILB:"Issuer Liquidity Budget — one team's slice of the portfolio budget this cycle",
+  A:"Portfolio Allocation Weight — a team's share of the pool. All weights sum to 1 (zero-sum). Formula deferred",
+  BLB:"Bid-side Liquidity Budget — portion of a team's budget spendable on bids",
+  OLB:"Offer-side Liquidity Budget — portion spendable on offers",
+  EMS:"Effective Market State — the regime the engine has decided it is operating in",
+  IRP:"Inventory Risk Profile — the active inventory limits / posture for the cycle",
+  LB:"Liquidity Budget — the executable liquidity allowance (side-specific: Lᴮ bid / Lᴼ offer)",
+  PP:"Pricing Profile — the active regime parameter set (Stable · Active · Defensive · Recovery · Liq-Preservation · Protective)",
+  BO:"Bid Offset — total amount subtracted from RP to reach the reservation bid",
+  OO:"Offer Offset — total amount added to RP to reach the reservation offer",
+  BS:"bid-side Base Spread component — the profile's default half-spread on the bid side",
+  OS:"offer-side Base Spread component — default half-spread on the offer side",
+  IS:"Inventory Skew component — λ × INV. Widens the side you're already loaded on, shading prices to shed inventory",
+  AS:"Activity Adjustment component — widens/tightens with order-flow intensity (formula deferred)",
+  PS:"Protection Spread component — extra width applied under protective conditions (formula deferred)",
+  INV:"Inventory Position — the SDMM's holdings expressed as a % of the team's publicly tradable float",
+  "λ":"inventory sensitivity coefficient — the feedback gain; set per Effective Market State by the profile's I multiplier",
+  "Δ":"ladder spacing — price gap between consecutive depth levels (Δᴮ bid side, Δᴼ offer side)",
+  "ε":"bounded, seeded price randomization term — realism jitter that stays deterministic and replayable",
+  k:"depth level index — k = 0 is the best bid/offer, higher k sits deeper in the book",
+  N:"number of executable price levels in the ladder",
+  W:"depth weight — the share of the side budget placed at level k. Weights sum to 1 per side",
+  RBP:"Reservation Bid Price — RP − BO. The highest price the SDMM is willing to bid",
+  ROP:"Reservation Offer Price — RP + OO. The lowest price it is willing to offer",
+  RS:"Reservation Spread — ROP − RBP. An output of the process, never an independent target",
+  MS:"Market Structure — the constructed bid and offer ladders (levels + spacing)",
+  MP:"Market Posture — the current operating stance consumed by quantity/adaptation engines",
+  DQ:"Displayed Quantity — the allocation of size across ladder levels",
+  MA:"Market Adaptation function — maps environment → Behavioral Mode",
+  IP:"Inventory Position — current holdings input to adaptation",
+  BM:"Behavioral Mode — Normal · Active · Recovery · Liquidity Preservation · Protective",
+  QC:"Quote Construction — final assembly of all engine outputs into one order book",
+  EOB:"Executable Order Book — the complete published market for one team",
+  EQ:"the currently published Executable Quotations",
+  EX:"execution / partial-execution results — the fills that just happened",
+  QA:"quote age — time or cycles since publication/refresh",
+  QLF:"Quote Lifecycle Function — decides refresh / replace / replenish / cancel for each live quote",
+  DR:"Deterministic Replay function — rebuilds a past cycle byte-identically from its records",
+  CO:"Constitutional Objects — the recorded RP, MOC, MOP and lifecycle states of the original cycle",
+  ES:"Engineering State — every engine output committed during the original cycle",
+  PI:"Participant Interaction — the recorded order/fill history",
+  VER:"implementation version — same code version required for identical replay",
+  f:"unspecified function — the standard names the inputs but defers the methodology to config (ours/Edwin's to write)",
+  t:"time — or equivalently, the current Decision Cycle",
+  i:"team (issuer) index within the portfolio",
+  Tick:"minimum price increment for the security",
+};
+
+/* wrap known symbols in clickable spans; only touches text between tags */
+function annotate(html, dict){
+  const keys = Object.keys(dict).sort((a,b)=>b.length-a.length);
+  if(!keys.length) return {html, used:[]};
+  const esc = s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const ascii = keys.filter(x=>/^[A-Za-z0-9]+$/.test(x)).map(esc);
+  const other = keys.filter(x=>!/^[A-Za-z0-9]+$/.test(x)).map(esc);
+  const parts=[];
+  if(ascii.length) parts.push("\\b(?:"+ascii.join("|")+")\\b");
+  if(other.length) parts.push("(?:"+other.join("|")+")");
+  const re = new RegExp(parts.join("|"),"g");
+  const used = new Set();
+  const out = html.split(/(<[^>]+>)/g).map(seg=>{
+    if(seg.startsWith("<")) return seg;
+    return seg.replace(re, m=>{ used.add(m); return '<span class="sym" data-sym="'+m+'">'+m+'</span>'; });
+  }).join("");
+  return {html:out, used:[...used].sort((a,b)=>keys.indexOf(b)-keys.indexOf(a)).reverse()};
+}
+
+/* ═══════════════════════ NODE DATA ═══════════════════════
+   eq entry = [ equationHTML, caption, optionalSymbolOverrides ] */
+const N = {
+
+/* ---- upstream · CTS-001 ---- */
+hier:{ ch:"CTS-001 · §2", name:"Financial Architecture", flags:[], up:true,
+  role:"Where value legally lives. A Team Company owns the Contractual Economic Rights for one Defined Event (the season) and issues non-voting equity — the InPlay Security. ESV derives exclusively from those rights, never from market activity.",
+  eqs:[["Team Company → Contractual Rights → InPlay Security → ESV → Secondary Market Price","the immutable hierarchy — each level derives only from the one above; no implementation may reverse or bypass it"]],
+  notes:["Rights are represented 1-to-1 as <b>Economic Components</b> — the only objects the valuation math may touch. Nothing omitted, nothing represented twice.",
+    "Four component classes: <b>Performance</b> (on-field results) · <b>Commercial</b> (deals/sponsorship) · <b>Revenue Allocation</b> (league/pool share) · <b>Expense</b> (deductions).",
+    "Structural identity is immutable; economic value re-estimates continuously — representation and valuation are deliberately split.",
+    "The IPO Initial Valuation anchors everything downstream (vision doc: projected wins × $/win + off-field revenue)."],
+  deferred:[]},
+
+ivs:{ ch:"CTS-001 · IVS", name:"InPlay Valuation System", flags:["conf","def"], up:true,
+  role:"The machine above the machine — and it's OURS. Edwin confirmed 20-07: 'We will build them.' Produces one ESV per security, continuously, re-estimated per play during live games. Edwin gave the real formula on the call.",
+  eqs:[["price = on-field + off-field","Edwin, 20-07 touchdown — the actual model, superseding the doc's ceremony"],
+    ["on-field = P(win this game) × $/win  +  E[wins, rest of season] × $/win","this game's live win probability plus expected remaining wins — Sport Radar live probabilities are the input (~20 yrs history)"],
+    ["off-field = marketing / ad-revenue component","interpretive, not guaranteed per game — deliberately uncertain; it's what makes the market tradeable"]],
+  io:{i:["Sport Radar live win probabilities","fixture schedule + game events","off-field revenue model (Edwin)"],o:["one authoritative ESV per team","published to the SDMM as Reference Price"]},
+  notes:["By law: independent of market prices, quotes, sentiment, MM inventory, liquidity conditions.",
+    "Information-driven, <b>not interval-driven</b> — per-play revaluation during live games. That cadence IS the product mechanic.",
+    "Markets are truly isolated per team — no cross-game price effects intragame (Troy, 20-07).",
+    "Edwin ran earlier simulations with a trigger script — Kevin reckons it still exists. Find it: it's the calibration starting point."],
+  deferred:["$/win value + off-field revenue model — the actual numbers (Edwin)",
+    "Sport Radar probabilities API broken: 403s / only 8 of 32 NFL win totals — Cody chasing",
+    "Edwin's old simulation trigger script — locate it",
+    "ESV → SDMM delivery mechanism and cadence (push? bus? per-play?)"]},
+
+/* ---- Layer 0 inputs ---- */
+esv:{ ch:"CTS-001 → CTS-002 §3.3", name:"ESV → Reference Price", flags:["conf"],
+  role:"The price anchor — ours to build and publish (confirmed 20-07). The valuation system continuously re-estimates each team's contractual value; it is published verbatim as the Reference Price. Edwin confirmed: RP is the mid between bid and ask.",
+  eqs:[["RP<sub>t</sub> = ESV<sub>t</sub>","constitutional identity — nothing operating under CTS-002 may estimate, modify or replace it"]],
+  notes:["Independent of market prices by law — quotes orbit it, never define it.",
+    "If ESV publication stops → <b>Protected Reference Price State</b>: the last valid RP stands; no subsystem may compute a substitute.",
+    "Publication must carry: RP, publication + valuation timestamps, both lifecycle states, version — enough to reconstruct every published price."],
+  deferred:["Delivery mechanism of the ESV feed to the SDMM (push? bus? cadence?)"]},
+
+moc:{ ch:"CTS-002 · Ch4", name:"Market Operating Condition", flags:["def"],
+  role:"Health classifier: can the market operate normally right now? Assessed per market from feed health, valuation availability and system state.",
+  eqs:[["MOC<sub>t</sub> = F(AOI<sub>t</sub>)","the doc deliberately refuses to define F — designing the classifier is part of our build",
+    {F:"the classification function — CTS-002 literally says 'Do NOT define F'. Authoring it is our job"}]],
+  notes:["Classes: Normal · Degraded · Protective · Recovery · Emergency.",
+    "Inputs: valuation availability, data completeness, feed latency/staleness, system health, lifecycle states, official event status.",
+    "Measures <b>capability</b> only — behaviour is decided downstream by the MOP.",
+    "20-07: Edwin's working term for this whole layer is simply <b>'market state'</b> — expect that vocabulary on calls."],
+  deferred:["F itself — the classification logic and thresholds"]},
+
+mop:{ ch:"CTS-002 · Ch5", name:"Market Operations Profile", flags:["def"],
+  role:"Translates the operating condition into a target market shape: how wide, how deep, how fast the market should look. Says what the market should look like — not how quotes are generated.",
+  eqs:[["MOP<sub>t</sub> = G(RP<sub>t</sub>, MOC<sub>t</sub>, MLS<sub>t</sub>, OLS<sub>t</sub>, PTS<sub>t</sub>)","defines target spread · displayed liquidity · depth · refresh · aggressiveness · inventory posture · protection level",
+    {G:"the profile-mapping function — named but never defined; ours to author"}]],
+  table:{title:"Indicative MOC → profile mapping (G is undefined — this is our starting proposal)",
+    head:["Operating condition","→ operating profile"],
+    rows:[["Normal","Stable · Active · Balanced"],["Degraded","Defensive"],["Protective","Defensive → Emergency"],["Recovery","Recovery"],["Emergency","Emergency"]],
+    hint:"CTS-002 lists both menus but never the mapping between them. Authoring G — and getting Edwin to sign it — is part of the build."},
+  notes:["Profiles: Stable · Active · Balanced · Defensive · Recovery · Emergency."],
+  deferred:["G — the condition→profile mapping table"]},
+
+life:{ ch:"CTS-002 · Ch2", name:"Lifecycle States", flags:[],
+  role:"Two state machines gating everything: whether the market may operate at all, and how it behaves as the season progresses. The temporal skeleton of the whole product.",
+  eqs:[["MLS: Pre-IPO → IPO → Pre-Market → Open Market → Settlement → Archived","market lifecycle — per security. Trading only exists inside Open Market"],
+    ["OLS: Pre-Game → Live → (Official Review) → Post-Game → Weekly Financial Report → Pre-Game …","operational lifecycle — repeats per fixture, ~18 times over the season"],
+    ["final contest: Final Post-Game → Final Financial Report → Settlement","the season endgame — ESV converges to contractual settlement value and trading terminates"]],
+  notes:["Per game: Cowboys can be LIVE while the Packers are POST-GAME — states are per fixture, not global.",
+    "20-07 (Troy): three liquidity sessions with different profiles — <b>in-game</b> (tight, 5–10 quotes/sec), <b>around-game</b>, and <b>overnight</b> (deliberately wide, ~$2.5–5 spreads: 'let the market at least tell you where it is').",
+    "Every transition must be deterministic, auditable, permanently recorded.",
+    "Practical driver: fixture schedule + Sport Radar official event status.",
+    "The <b>Weekly Financial Report</b> is itself a lifecycle transition driver — who produces it? Open question."],
+  deferred:["Who produces the Weekly Financial Reports that gate the weekly cycle?","Session boundary definitions + per-session profile parameters"]},
+
+/* ---- pipeline ---- */
+em:{ ch:"PTS-001 · Ch3", name:"Executable Market", flags:[],
+  role:"First internal object of every cycle: the complete liquidity environment (price structure, liquidity structure, depth, refresh + protection params) from which everything downstream derives.",
+  eqs:[["EM<sub>t</sub> = f(RP<sub>t</sub>, MOC<sub>t</sub>, MOP<sub>t</sub>, CFG<sub>t</sub>)","never itself published — pure engineering object"]],
+  io:{i:["RP","MOC","MOP","SDMM config"],o:["Executable Market → all engines"]},
+  notes:["The SDMM 'does not construct isolated quotations — it constructs an Executable Market.'"], deferred:[]},
+
+obj:{ ch:"PTS-001 · Ch4", name:"Market Objective Engine", flags:[],
+  role:"Decides what this cycle is trying to achieve before any price is computed. Runs the Market Assessment, then fixes the four decision inputs every later engine obeys.",
+  eqs:[["assess: arrival rate · flow acceleration · fill velocity · quote lifetime · book consumption · inventory pos + velocity · protection state","the observability vector — what the engine watches"]],
+  io:{i:["RP","MOC","MOP","Executable Market","config"],o:["Effective Market State","Inventory Risk Profile","Liquidity Budget","Pricing Profile"]},
+  notes:["Objective priority (governs every conflict): 1 Protection ≻ 2 Continuous availability ≻ 3 Market integrity ≻ 4 Inventory stability ≻ 5 Market quality ≻ 6 Long-term P&L.",
+    "Control-systems reading: this is the supervisory layer choosing the setpoint + gain schedule."], deferred:[]},
+
+port:{ ch:"PTS-001 · Ch5", name:"Portfolio Allocation Engine", flags:["cut"], cut:true,
+  role:"DESCOPED 20-07. Edwin: 'The market maker will never have a limit on what it can do on capital' — buying power just set to ~$100M–$100B. No finite pool, no zero-sum allocation. The doc's version kept below for reference.",
+  eqs:[["PLB<sub>t</sub> = f(PC, PA, PIR, PR, CFG)   ·   PLB<sub>t</sub> ≤ PC<sub>t</sub>","portfolio liquidity budget, hard-capped by portfolio capital"],
+    ["ILB<sub>i,t</sub> = PLB<sub>t</sub> × A<sub>i,t</sub>   ·   Σ<sub>i</sub> A<sub>i,t</sub> = 1","per-team budgets via normalized allocation weights — strictly zero-sum"],
+    ["ILB<sub>i,t</sub> = BLB<sub>i,t</sub> + OLB<sub>i,t</sub>   ·   both ≥ 0","bid/offer split — asymmetric when a team's inventory is skewed"]],
+  io:{i:["Portfolio capital + inventory","per-team activity, inventory, protection state","prev allocation map"],o:["Issuer Liquidity Budget (per team)","BLB / OLB per team","Allocation status: Full · Partial · Limited · Suspended"]},
+  notes:["What survives: per-team, per-side <b>display sizing</b> still needs deciding (how much to show per book) — but as config/profile, not a capital-allocation engine.",
+    "CTS-002 §7.3 always said 'no capital constraints' — the touchdown confirmed the simple reading.",
+    "tZERO is setting up the synthetic MM entity with that buying power in the QA env (T0 calls now Tue/Thu)."],
+  deferred:["Per-team displayed-size defaults (replaces the allocation-weight formula)"]},
+
+imm:{ ch:"PTS-001 · Ch6", name:"Issuer Market Making Engine", flags:["def","par"], heart:true,
+  role:"THE HEART. One independent instance per team. Turns a budget + a Reference Price into reservation prices, ladders and sizes via a strict 11-step sequence.",
+  seq:["Market Assessment","Effective Market State","Inventory Risk Profile","Liquidity Budget","Pricing Profile selection","Reservation Price Components","Reservation Prices","Market Structure (ladders)","Displayed Quantity allocation","Quote Validation","Quote Publication"],
+  eqs:[["PP<sub>t</sub> = (S, D, Q, F, I)","the regime's five multipliers — spread · depth · quantity · refresh · inventory sensitivity",
+      {S:"spread multiplier — scales quoted width",D:"depth multiplier — scales ladder depth",Q:"displayed-quantity multiplier — scales visible size",F:"refresh-timing multiplier — scales quote update speed",I:"inventory-sensitivity multiplier — scales the feedback gain λ"}],
+    ["BaseSpread = Tick × S   ·   Depth = N<sub>base</sub> × D   ·   Budget = L<sub>base</sub> × Q   ·   Refresh = R<sub>base</sub> × F   ·   λ = λ<sub>base</sub> × I","gain scheduling — the regime sets the controller gains",
+      {S:"spread multiplier (from the active profile)",D:"depth multiplier",Q:"quantity multiplier",F:"refresh multiplier",I:"inventory-sensitivity multiplier",N:"N_base — base number of depth levels (config, deferred)",L:"L_base — base liquidity budget (config, deferred)",R:"R_base — base refresh interval (config, deferred)","λ":"λ_base × I → the effective inventory feedback gain"}],
+    ["BO<sub>t</sub> = BS<sub>t</sub> + IS<sub>t</sub> + AS<sub>t</sub> + PS<sub>t</sub>     ·     OO<sub>t</sub> = OS<sub>t</sub> + IS<sub>t</sub> + AS<sub>t</sub> + PS<sub>t</sub>","the offsets: base spread + inventory skew + activity + protection. Sides need not be symmetric"],
+    ["INV<sub>t</sub> = inventory ÷ public float","position expressed as a % of the tradable float (treasury shares excluded)"],
+    ["IS<sub>t</sub> = λ<sub>EMS,t</sub> × INV<sub>t</sub>     ·     IS<sup>B</sup> = max(IS, 0)     ·     IS<sup>O</sup> = max(−IS, 0)","linear feedback: long inventory widens the bid, short widens the offer → prices mean-revert inventory to target",
+      {B:"bid side (superscript)",O:"offer side (superscript)"}],
+    ["RBP<sub>t</sub> = RP<sub>t</sub> − BO<sub>t</sub>     ·     ROP<sub>t</sub> = RP<sub>t</sub> + OO<sub>t</sub>     ·     RS = ROP − RBP","reservation bid/offer around the anchor; the spread is an output, never a target"],
+    ["level k:  RBP − k·Δ<sup>B</sup> ± ε<sub>k</sub>   /   ROP + k·Δ<sup>O</sup> ± ε<sub>k</sub>     ·     N = f(PP, LB, CFG)","ladder construction — spacing Δ per level, bounded seeded noise ε, k = 0 is the best quote",
+      {B:"bid side (superscript)",O:"offer side (superscript)"}],
+    ["ticks: bids round ↓ · offers round ↑ · never locked or crossed","tick conformance is applied after randomization and must preserve pricing intent"]],
+  table:{title:"Pricing profile multipliers — the doc's only hard numbers",
+    head:["Profile","S","D","Q","F","I"],
+    rows:[["Stable","1.00","1.50","1.50","1.00","0.50"],
+      ["Active","1.50","1.00","1.00","0.50","1.00"],
+      ["Defensive","2.50","0.60","0.60","1.50","1.75"],
+      ["Recovery","1.75","1.00","0.90","1.00","2.50"],
+      ["Liq. Preservation","3.00","0.50","0.50","1.25","3.50"],
+      ["Protective","5.00","0.25","0.25","restr.","5.00"]],
+    hint:"S spread · D depth · Q displayed qty · F refresh · I inventory sensitivity — read each row as a controller gain schedule per regime."},
+  io:{i:["RP","Issuer budget (BLB/OLB)","EMS · IRP · Pricing Profile","activity assessment"],o:["Reservation Bid/Offer","bid + offer ladders","displayed quantities","validated Executable Order Book"]},
+  notes:["Validation gate: no locked/crossed market, prices in bands, quantities ≥ 0 and within budget + inventory limits, randomization in bounds, replayable. Fail → reconstruct (Protection ≻ Prices ≻ Structure ≻ Quantities ≻ Consistency); still failing → forced Protective/Liq-Preservation profile.",
+    "A profile transition invalidates every downstream object — full reconstruction.",
+    "20-07: Edwin confirmed skewed (asymmetric) offsets when inventory is loaded — e.g. long → drop the offer to fair value to offload. Plus a randomizer on displayed sizes, and occasionally aggressive orders that deliberately move price to exit inventory (beyond the doc's passive quoting).",
+    "20-07: MM uses limit orders only — but a limit can 'price through' several levels to take liquidity aggressively (buy the 11s when it's 6 bid at 7)."],
+  deferred:["Component formulas: BS/OS, AS, PS methodology","Base params: Tick, N<sub>base</sub>, L<sub>base</sub>, R<sub>base</sub>, λ<sub>base</sub>","Ladder geometry (uniform / front-loaded / convex …)","Max reconstruction attempts per cycle"]},
+
+dq:{ ch:"PTS-001 · Ch8", name:"Displayed Quantity Engine", flags:["def"],
+  role:"Decides how much size shows at each ladder level — separate from where levels sit. Distributes the side budget by normalized depth weights, then applies bounded seeded randomization so the book never looks mechanical.",
+  eqs:[["Q<sup>B</sup><sub>t,k</sub> = L<sup>B</sup><sub>t</sub> × W<sup>B</sup><sub>t,k</sub> × R<sup>B</sup><sub>t,k</sub>","displayed size = budget × depth weight × bounded random factor (offer side symmetric)",
+      {Q:"displayed quantity at level k",B:"bid side (superscript)",O:"offer side (superscript)",L:"side liquidity budget (Lᴮ / Lᴼ)",R:"bounded, seeded quantity randomization factor"}],
+    ["Σ<sub>k</sub> W<sup>B</sup><sub>t,k</sub> = 1     ·     Σ<sub>k</sub> W<sup>O</sup><sub>t,k</sub> = 1","normalization — the full side budget is always allocated across the ladder",
+      {B:"bid side (superscript)",O:"offer side (superscript)"}]],
+  io:{i:["Market Structure","side budgets","Pricing Profile"],o:["displayed qty per level, both sides"]},
+  notes:["Constraints: ≥ 0 · ≤ budget · ≤ inventory limits · ≥ min-display or exactly 0 via approved suppression.",
+    "Best bid + best offer must ALWAYS be displayed unless CTS-002 halts trading.",
+    "Randomization: bounded, deterministic, seeded, replayable — realism without chaos."],
+  deferred:["Depth-weight profiles","randomization bounds + seed policy","min display quantity"]},
+
+adapt:{ ch:"PTS-001 · Ch9", name:"Market Adaptation Engine", flags:["def"],
+  role:"The regime switch. Watches inventory, operating condition and protection state; picks the Behavioral Mode that governs the cycle and requests reconstruction when the environment shifts.",
+  eqs:[["MA<sub>t</sub> = f(MP<sub>t</sub>, IP<sub>t</sub>, MOC<sub>t</sub>, PS<sub>t</sub>, CFG<sub>t</sub>) → Behavioral Mode","modes: Normal · Active · Recovery · Liquidity Preservation · Protective",
+      {PS:"Protection State — the active protective condition (not the pricing component here)"}]],
+  io:{i:["inventory position (% float)","MOC","protection state"],o:["Behavioral Mode","Reconstruction Request","adaptation audit record"]},
+  notes:["Inventory thresholds — Target / Warning / Maximum ratio — are engineering config, not constitutional.",
+    "Liquidity Preservation Mode still requires two-sided quotes; it shapes behaviour, never suspends the obligation."],
+  deferred:["Target / Warning / Max inventory ratios","mode transition rules"]},
+
+qc:{ ch:"PTS-001 · Ch10", name:"Quote Construction Engine", flags:[],
+  role:"Final assembly: takes every prior engine's output and builds the one internally-consistent Executable Order Book. Applies protection enforcement as the last gate before publication. Construction, not decision-making.",
+  eqs:[["QC<sub>t</sub> = build(RBP, ROP, MS<sub>t</sub>, DQ<sub>t</sub>, BM<sub>t</sub>, CFG<sub>t</sub>) → EOB<sub>t</sub>","rejects internally inconsistent engineering states outright"]],
+  io:{i:["reservation prices","market structure","displayed quantities","behavioral mode"],o:["Executable Order Book + Decision Cycle ID, timestamp, trigger, status"]},
+  notes:["Protection enforcement may suppress quotes, cut sizes, restrict publication — but never touches constitutional objects or reservation prices.",
+    "After commit, nothing in the cycle may be modified. Ever."], deferred:[]},
+
+tz:{ ch:"venue", name:"tZERO — book + matching", flags:["ext"],
+  role:"The venue. SDMM posts its ladders as limit orders over its own FIX order-entry session — the same participant path users take. tZERO's engine matches price-time and sends execution reports back.",
+  eqs:[["SDMM quotes  +  user orders  →  one book  →  price-time matching","PTS-001 §11.5: 'The Decision Cycle Engine does not perform order matching.'"],
+    ["Q<sub>t</sub> = (B, O, Q<sub>B</sub>, Q<sub>O</sub>, D, R, S, P)","CTS-002's constitutional quotation — every published quote must carry all eight elements",
+      {Q:"quotation / displayed quantity (Q_B bid size, Q_O offer size)",B:"executable bid quotation",O:"executable offer quotation",D:"displayed market depth",R:"quotation refresh profile",S:"quotation status",P:"quotation priority attributes"}]],
+  notes:["SDMM is the <b>counterparty</b> users happen to hit — never an intermediary in their order path. Edwin, 20-07: 'they post what's called resting liquidity.' Confirmed.",
+    "20-07: the MM entity is technically <b>just another participant</b> — same as a user, with near-limitless buying power. tZERO is setting up the synthetic MM entity in the QA env now (T0 calls Tue/Thu).",
+    "Limit orders only on T0 — no native market orders. Aggression = pricing through levels. Matching priority: price ≻ time.",
+    "Cancel-replace is the refresh mechanic: 'wipe the book and replace it with updated quotes' (Troy). 5–10 refreshes/sec intragame.",
+    "Fills against SDMM quotes return as execution reports → the inventory feedback signal."],
+  deferred:["★ Quote-replace throughput ceiling (5–10/sec × 32+ books) — raise on the Tue/Thu T0 calls","Trading bands (~30%) + quote-bust policy — to agree with T0"]},
+
+users:{ ch:"participants", name:"Users (1–5M)", flags:[],
+  role:"Traders on the app. Their orders flow through the existing path — Trading Service → FIX Gateway → tZERO — and match against SDMM quotes or each other. They never see the SDMM.",
+  eqs:[],
+  notes:["User limit orders rest in the same book and can cross each other with no SDMM involvement.",
+    "Veteran traders 'will catch a broken order book' — exploitability of the SDMM is the #1 integrity risk to prizes."], deferred:[]},
+
+qlife:{ ch:"PTS-001 · Ch7", name:"Quote Lifecycle Engine", flags:["def"],
+  role:"Published quotes are living objects. Manages aging, refresh, replacement, replenishment (restore size after fills), cancellation and expiry between cycles — preserving continuity instead of rebuilding the book every tick.",
+  eqs:[["QLF<sub>t</sub> = f(EOB, EQ, EX, QA, EMS, IRP, LB, PS, CFG)","states: Created · Published · Part-Executed · Executed · Refreshed · Replaced · Replenished · Cancelled · Expired · Suppressed",
+      {PS:"Protection State — the active protective condition (not the pricing component here)"}]],
+  notes:["Refresh = update attributes in place · Replace = swap for new quote · Replenish = restore size post-fill within budget/inventory/protection.",
+    "Every lifecycle event maps to exactly one Decision Cycle and is replayable."],
+  deferred:["Min/max quote lifetime","refresh interval + expiry threshold","permitted aging variation"]},
+
+verify:{ ch:"PTS-001 · Ch12", name:"Verification & Deterministic Replay", flags:[],
+  role:"The audit backbone. Every cycle must be reconstructible byte-identically from its recorded inputs. Observational only — replay never mutates history.",
+  eqs:[["DR<sub>t</sub> = R(CO<sub>t</sub>, ES<sub>t</sub>, PI<sub>t</sub>, VER<sub>t</sub>)","constitutional objects + engineering state + participant interaction + version → identical outputs",
+      {R:"the replay reconstruction function"}]],
+  notes:["Forces the whole build: seeded RNG only, no wall-clock nondeterminism, event-sourced state.",
+    "Scope question for launch: record everything (cheap) vs. build replay tooling (expensive) — negotiate v1 level."], deferred:[]},
+
+law:{ ch:"CTS-001 §1B · CTS-002 Ch1", name:"Constitutional Laws", flags:[],
+  role:"The conformance bar. Immutable laws every implementation must satisfy — violate any one and the implementation is nonconforming, full stop. Read this as the acceptance-criteria checklist for our build.",
+  eqs:[["CTS-001 ≻ CTS-002 ≻ PTS-001","the hierarchy: valuation law beats market law beats product spec — conflicts always resolve upward",
+      {PTS:"Product Technical Standard — the document class PTS-001 belongs to"}]],
+  notes:["<b>Independence</b> — valuation and price discovery never redefine each other; the SDMM consumes, never creates, constitutional objects.",
+    "<b>Determinism</b> — identical inputs + version → identical outputs, regardless of hardware, language, location or time.",
+    "<b>Continuity</b> — information-driven revaluation; continuous two-sided quotes unless CTS-002 halts trading.",
+    "<b>Lineage</b> — every value reconstructible from the initial valuation + every update; no orphan numbers.",
+    "<b>Completeness</b> — every right represented exactly once; nothing omitted, nothing doubled.",
+    "<b>Explainability</b> — no hidden weights, discretionary overrides or opaque heuristics. Ever.",
+    "<b>Equal access</b> — identical interaction rules for every participant (CTS-002 Ch6)."],
+  deferred:["Season-1 conformance level — 20-07 softened this a lot (docs were 'meant for Claude… fairly simple') but get the launch slice signed off explicitly on Thursday"]},
+
+cycle:{ ch:"PTS-001 · Ch11", name:"Decision Cycle Engine", flags:[],
+  role:"The runtime loop coordinating every engine in sequence. One trigger → one cycle → one committed, immutable market. No overlap: the next cycle cannot start until this one commits.",
+  eqs:[["triggers: new RP · fill / partial fill · state transitions (EMS, IRP, profile, protection, MOC, MOP) · portfolio realloc · max-duration timeout","multiple triggers before completion coalesce into the next cycle"]],
+  notes:["Complete = engines done + validated + published (or withheld) + engineering objects committed + replay records finalized.",
+    "20-07 CONFIRMED cadence: ~200ms baseline (5–10×/sec) + immediate recompute on game events. Troy: 'I think intragame that probably works.'",
+    "Per-team cycles are independent → 32 parallel loops (NFL), 163 with NCAA — and with Ch5 descoped there's no sync point between them at all.",
+    "Given identical inputs + version → identical outputs. Always."], deferred:[]},
+
+t20:{ ch:"20-07-2026 · touchdown", name:"Touchdown Reconciliation", flags:["conf"],
+  role:"What the 20-07 call with Edwin + Troy confirmed, simplified, and added. This layer supersedes the docs where they conflict — Edwin: the standards were 'meant for Claude to read… they're fairly simple.'",
+  notes:["<b>Scope settled</b> — George asked build-or-consume for CTS-001/002; Edwin: 'We will build them.' Full stack is ours: valuation + market ops + SDMM.",
+    "<b>Valuation formula given</b> — on-field (P(win)×$/win + expected remaining wins×$/win) + off-field. Sport Radar live probabilities are the input.",
+    "<b>Capital unlimited</b> — no portfolio allocation; buying power ~$100M–$100B. PTS-001 Ch5 descoped.",
+    "<b>MM = normal participant</b> — same entity as a user; synthetic MM entity being created in tZERO QA.",
+    "<b>Cadence</b> — 5–10 quote refreshes/sec via cancel-replace; event-triggered recompute approved.",
+    "<b>Markets isolated</b> — each game is a pairs trade; no cross-game effects intragame.",
+    "<b>Priorities flip in production</b> — sim: stability first, profit last. Production (if InPlay becomes the MM): profit first."],
+  deferred:["NEW BUILD: synthetic market order (app-side price-through / cancel-replace walk) — Edwin wants it before the first NFL game; Troy will help with the logic",
+    "NEW BUILD: MM ops desktop UI — set algo params, order lookup, positions, P&L. Kevin likely operates. Deliberately last.",
+    "Trading bands (~30%) + quote-bust policy — with T0 'over the next couple of days'",
+    "Find Edwin's previous-simulation trigger script (Kevin: 'he's probably got a full script')",
+    "Thursday deep-dive booked, 3–4pm London — bring the deferred-math list"]},
+};
+
+const PIPE = ["em","obj","port","imm","dq","adapt","qc"];
+
+/* ═══════════════════════ COMPONENTS ═══════════════════════ */
+function Flags({f}){
+  const map={def:["⚠ deferred math","def"],ext:["★ external dep","ext"],risk:["● open risk","risk"],par:["× per team","par"],conf:["✓ 20-07 confirmed","conf"],cut:["✂ descoped 20-07","cut"]};
+  return <>{(f||[]).map(k=><span key={k} className={"flag "+map[k][1]}>{map[k][0]}</span>)}</>;
+}
+
+function Eq({e}){
+  const [act,setAct]=useState(null);
+  const dict = useMemo(()=>({...SYM, ...(e[2]||{})}),[e]);
+  const ann = useMemo(()=>annotate(e[0],dict),[e,dict]);
+  let html = ann.html;
+  if(act) html = html.split('class="sym" data-sym="'+act+'"').join('class="sym act" data-sym="'+act+'"');
+  const onClick = ev=>{ const s=ev.target && ev.target.getAttribute && ev.target.getAttribute("data-sym"); if(s) setAct(a=>a===s?null:s); };
+  return (
+    <div className="eqwrap">
+      <div className="eq" onClick={onClick}>
+        <span dangerouslySetInnerHTML={{__html:html}}/>
+        <small>{e[1]}</small>
+      </div>
+      {ann.used.length>0 &&
+        <div className="symlegend">
+          <div className="cap">where — click any symbol above or below</div>
+          {ann.used.map(s=>(
+            <div key={s} className={"symrow"+(act===s?" act":"")} onClick={()=>setAct(a=>a===s?null:s)}>
+              <b>{s}</b><span>{dict[s]}</span>
+            </div>))}
+        </div>}
+    </div>);
+}
+
+function Detail({id}){
+  const n=N[id];
+  if(!n) return (
+    <div className="dbody">
+      <div className="sec"><h4>How to read this</h4>
+        <p>Left side is one full <b style={{color:"var(--txt)"}}>Decision Cycle</b> — the loop each team's market maker runs continuously: the upstream valuation machine and constitutional inputs at the top, engines in order, a published order book at the bottom, and fills feeding inventory back to the top.</p>
+        <p>Click any component for its purpose, equations, inputs/outputs and — in amber — every parameter the standard defers to config that Edwin still owes us. <b style={{color:"var(--grn)"}}>Inside every equation, click a symbol</b> to highlight it; each symbol is defined in the "where" panel underneath.</p>
+      </div>
+      <div className="sec"><h4>The one-line summary</h4>
+        <p style={{color:"var(--grn)"}}>Quote two-sided ladders around a Reference Price you don't control, sized by a finite budget you allocate across 32 teams, skewed to mean-revert inventory, validated, published to tZERO — deterministically, forever, every few hundred milliseconds.</p>
+      </div>
+      <div className="sec"><h4>Where the risk lives (updated 20-07)</h4>
+        <ul className="warn plain">
+          <li><b>Sport Radar probabilities feed broken</b> — 403s / partial win totals; it's the valuation engine's primary input</li>
+          <li><b>The actual numbers</b> — $/win, off-field model, spreads, sensitivities: Edwin owes them (Thursday session)</li>
+          <li><b>Throughput</b> — 5–10 cancel-replaces/sec × 32+ books through tZERO's FIX session</li>
+          <li><b>Timeline</b> — full stack (valuation + market ops + SDMM + synthetic market orders) ~a month before launch</li>
+        </ul>
+        <p style={{marginTop:8}}>Resolved 20-07: ownership (all three docs are ours to build), capital model (unlimited — Ch5 descoped), MM mechanics (participant posting resting liquidity), cadence (5–10/sec + event triggers). See the green ✓ Touchdown card at the bottom.</p>
+      </div>
+    </div>);
+  return (
+    <div className="dbody" key={id}>
+      <div className="sec"><h4>Purpose</h4><p>{n.role}</p></div>
+      {n.seq && <div className="sec"><h4>Decision sequence — strictly in order</h4>
+        <ol className="seq">{n.seq.map(s=><li key={s}>{s}</li>)}</ol></div>}
+      {n.eqs && n.eqs.length>0 && <div className="sec"><h4>Equations</h4>
+        {n.eqs.map((e,i)=><Eq e={e} key={i}/>)}</div>}
+      {n.table && <div className="sec"><h4>{n.table.title}</h4>
+        <table><thead><tr>{n.table.head.map(h=><th key={h}>{h}</th>)}</tr></thead>
+        <tbody>{n.table.rows.map((r,i)=><tr key={i}>{r.map((c,j)=><td key={j}>{c}</td>)}</tr>)}</tbody></table>
+        {n.table.hint && <p className="hint" style={{marginTop:6}}>{n.table.hint}</p>}</div>}
+      {n.io && <div className="sec"><h4>Inputs → Outputs</h4>
+        <div className="io">
+          <div className="col"><h5>CONSUMES</h5>{n.io.i.map(x=><div key={x}>· {x}</div>)}</div>
+          <div className="col"><h5>PRODUCES</h5>{n.io.o.map(x=><div key={x}>· {x}</div>)}</div>
+        </div></div>}
+      {n.notes && n.notes.length>0 && <div className="sec"><h4>Notes</h4>
+        <ul className="plain">{n.notes.map((x,i)=><li key={i} dangerouslySetInnerHTML={{__html:x}}/>)}</ul></div>}
+      {n.deferred && n.deferred.length>0 && <div className="sec"><h4 style={{color:"var(--amb)",borderColor:"rgba(255,180,84,.3)"}}>Deferred / unresolved — Edwin owes</h4>
+        <ul className="plain warn">{n.deferred.map((x,i)=><li key={i} dangerouslySetInnerHTML={{__html:x}}/>)}</ul></div>}
+    </div>);
+}
+
+function App(){
+  const [sel,setSel]=useState(null);
+  const pick=id=>e=>{e.stopPropagation(); setSel(s=>s===id?null:id);};
+  const d=sel?N[sel]:null;
+  const delay=i=>({animationDelay:(i*55)+"ms"});
+  const deferredCount = Object.values(N).reduce((a,n)=>a+(n.deferred?n.deferred.length:0),0);
+  const extCount = Object.values(N).filter(n=>(n.flags||[]).includes("ext")).length;
+
+  return (
+  <div className="wrap">
+    <header>
+      <div className="kicker">InPlay · CTS-001 / CTS-002 / PTS-001 · engineering map · v2 — reconciled with the 20-07 touchdown</div>
+      <h1>The SDMM Machine <span className="mono">— every engine, every equation</span></h1>
+      <div className="sub">The Simulated Designated Market Maker: a deterministic control loop that posts two-sided liquidity around a Reference Price for every team, so the challenge always has a tradable market. All three standards are now confirmed Novosapien builds. Click anything — including any symbol inside any equation.</div>
+      <div className="statrow">
+        <div className="stat"><b>3</b><span>source standards</span></div>
+        <div className="stat"><b>8+1</b><span>engines + runtime loop</span></div>
+        <div className="stat"><b>×32→163</b><span>parallel per-team instances</span></div>
+        <div className="stat"><b>{deferredCount}</b><span>deferred params owed</span></div>
+        <div className="stat"><b>{extCount}</b><span>external dependencies</span></div>
+      </div>
+      <div className="legend">
+        <span><i style={{color:"var(--grn)"}}>▪</i>specified in the doc</span>
+        <span><i style={{color:"var(--amb)"}}>⚠</i>math deferred to config (Edwin)</span>
+        <span><i style={{color:"var(--cyn)"}}>★</i>external dependency</span>
+        <span><i style={{color:"var(--red)"}}>●</i>open scope risk</span>
+        <span><i style={{color:"#7ee2a8"}}>✓</i>confirmed 20-07 touchdown</span>
+        <span><i style={{color:"var(--red)"}}>✂</i>descoped 20-07</span>
+        <span><i style={{color:"var(--amb)"}}>┄</i>amber rail = inventory feedback</span>
+      </div>
+    </header>
+
+    <div className="cols">
+      {/* ════════ PIPELINE ════════ */}
+      <div>
+        <div className="bandlabel" style={{marginTop:2}}>Upstream · CTS-001 — the machine above the machine · owner ✓ Novosapien (confirmed 20-07)</div>
+        <div className="band two">
+          {["hier","ivs"].map((id,i)=>(
+            <div key={id} className={"chip up"+(sel===id?" sel":"")} onClick={pick(id)} style={delay(i)}>
+              <div className="t">{id==="ivs"?"✓ ":""}{N[id].name}</div>
+              <div className="d">{N[id].ch}</div>
+            </div>))}
+        </div>
+
+        <div className="conn small"/>
+
+        <div className="bandlabel">Layer 0 · constitutional inputs — consumed, never modified</div>
+        <div className="band">
+          {["esv","moc","mop","life"].map((id,i)=>(
+            <div key={id} className={"chip"+(sel===id?" sel":"")} onClick={pick(id)} style={delay(i+2)}>
+              <div className="t">{id==="esv"?"✓ ":""}{N[id].name}</div>
+              <div className="d">{N[id].ch}</div>
+            </div>))}
+        </div>
+
+        <div className={"rhythm"+(sel==="life"?" sel":"")} onClick={pick("life")} style={delay(6)}>
+          <span className="rl">SEASON RHYTHM</span>
+          <span>PRE-GAME</span><span className="arr">→</span>
+          <b>LIVE</b><span className="arr">→</span>
+          <span>POST-GAME</span><span className="arr">→</span>
+          <span>WEEKLY REPORT</span>
+          <span className="loop">↺ ×18 weeks</span>
+          <span className="arr">⇢</span>
+          <span>FINAL REPORT</span><span className="arr">→</span>
+          <span>SETTLEMENT</span>
+        </div>
+
+        <div className="conn small"/>
+
+        <div className={"cycleframe"+(sel==="cycle"?" sel":"")} onClick={pick("cycle")}>
+          <div className="cyclelabel">CH11 · DECISION CYCLE ENGINE <small>— one turn per trigger · click frame for triggers</small></div>
+          <div className="rail"/>
+          {PIPE.map((id,i)=>{
+            const n=N[id];
+            return (<React.Fragment key={id}>
+              {i>0 && <div className="conn"/>}
+              <div className={"node"+(n.heart?" heart":"")+(n.cut?" descoped":"")+(sel===id?" sel":"")} onClick={pick(id)} style={delay(i+7)}>
+                <div className="ch">{n.ch}</div>
+                <h3><span className="nm">{n.name}</span> <Flags f={n.flags}/></h3>
+                <div className="role">{n.role.split(". ")[0]}.</div>
+                {n.eqs && n.eqs[0] && <div className="eqp" dangerouslySetInnerHTML={{__html:"⟨ "+n.eqs[0][0]+" ⟩"}}/>}
+              </div>
+            </React.Fragment>);})}
+        </div>
+
+        <div className="conn"/>
+        <div className="bandlabel" style={{textAlign:"center"}}>publish · Executable Order Book → posted as limit orders</div>
+
+        <div className="venue">
+          <div className={"node"+(sel==="tz"?" sel":"")} onClick={pick("tz")} style={delay(15)}>
+            <div className="ch">★ VENUE</div>
+            <h3>{N.tz.name} <Flags f={N.tz.flags}/></h3>
+            <div className="role">One book per team · price-time matching · limit orders only · execution reports back.</div>
+          </div>
+          <div className={"node"+(sel==="users"?" sel":"")} onClick={pick("users")} style={delay(16)}>
+            <div className="ch">PARTICIPANTS</div>
+            <h3>{N.users.name}</h3>
+            <div className="role">Existing app path: Trading Service → FIX GW → tZERO. Never touch the SDMM.</div>
+          </div>
+        </div>
+
+        <div className="conn small"/>
+        <div className="postrow">
+          <div className={"node"+(sel==="qlife"?" sel":"")} onClick={pick("qlife")} style={delay(17)}>
+            <div className="ch">{N.qlife.ch}</div>
+            <h3>{N.qlife.name} <Flags f={N.qlife.flags}/></h3>
+            <div className="role">Aging · refresh · replenish · cancel — quotes stay alive between cycles.</div>
+          </div>
+          <div className={"node"+(sel==="verify"?" sel":"")} onClick={pick("verify")} style={delay(18)}>
+            <div className="ch">{N.verify.ch}</div>
+            <h3>{N.verify.name}</h3>
+            <div className="role">Every cycle byte-identically reconstructible. Forces seeded RNG everywhere.</div>
+          </div>
+          <div className={"node"+(sel==="law"?" sel":"")} onClick={pick("law")} style={delay(19)}>
+            <div className="ch">CONFORMANCE</div>
+            <h3>{N.law.name}</h3>
+            <div className="role">The immutable laws = our acceptance criteria. Click for the checklist.</div>
+          </div>
+        </div>
+
+        <div className="conn small"/>
+        <div className={"node"+(sel==="t20"?" sel":"")} onClick={pick("t20")} style={{...delay(20), borderColor:"rgba(126,226,168,.4)", background:"linear-gradient(180deg,#0e1a13,var(--panel))"}}>
+          <div className="ch" style={{color:"#7ee2a8"}}>✓ 20-07 TOUCHDOWN</div>
+          <h3>{N.t20.name} <Flags f={N.t20.flags}/></h3>
+          <div className="role">Scope settled ('We will build them') · valuation formula given · capital unlimited · Ch5 descoped · new build items. Click for the full reconciliation.</div>
+        </div>
+
+        <footer>
+          <span>fills → inventory Δ → skew IS<sub>t</sub> → next cycle's prices — the loop that keeps the maker solvent</span>
+          <span>doc quirks: Ch1 diagram names ≠ chapter names · §5.4.1 sits in Ch6 · "SDDM" typo · CTS-001 vault copy ends §2.33 — Section 3 (valuation math) absent</span>
+        </footer>
+      </div>
+
+      {/* ════════ DETAIL ════════ */}
+      <div className="detail">
+        <div className="dhead">
+          <div className="ch">{d?d.ch:"CTS-001 · CTS-002 · PTS-001 — SELECT A COMPONENT"}</div>
+          <h2>{d?d.name:"Overview"}</h2>
+        </div>
+        <Detail id={sel}/>
+      </div>
+    </div>
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

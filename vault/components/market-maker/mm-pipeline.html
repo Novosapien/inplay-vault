@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MM Pipeline — chronological walk-through with open questions</title>
+<style>
+  :root{
+    --bg:#0f1219; --panel:#161b26; --card:#1c2230; --card-hi:#232b3d;
+    --ink:#e8ecf4; --ink-dim:#9aa5b8; --ink-faint:#5f6b80;
+    --line:#2a3348;
+    --amber:#e8a33d; --blue:#4d9fdc; --green:#4dbf8a; --purple:#a78bfa;
+    --red:#e06c6c; --accent:#e8a33d;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  a{color:var(--blue)}
+  header{padding:34px 28px 20px;max-width:1220px;margin:0 auto;}
+  header h1{font-size:26px;letter-spacing:.2px}
+  header .sub{color:var(--ink-dim);margin-top:6px;max-width:70ch}
+  .stance{margin-top:16px;border:1px solid var(--amber);border-left:5px solid var(--amber);
+    background:rgba(232,163,61,.08);border-radius:8px;padding:12px 16px;max-width:86ch;font-size:14px}
+  .stance b{color:var(--amber)}
+  .stance .test{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(232,163,61,.35)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12.5px;color:var(--ink-dim)}
+  .legend .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.E{background:var(--amber)} .dot.T{background:var(--blue)}
+  .dot.S{background:var(--green)} .dot.N{background:var(--purple)}
+  .dot.G{background:var(--red)}
+
+  main{display:grid;grid-template-columns:390px 1fr;gap:26px;max-width:1220px;margin:8px auto 80px;padding:0 28px}
+  @media(max-width:900px){main{grid-template-columns:1fr}}
+
+  /* ---- pipeline column ---- */
+  #pipe{position:relative}
+  .lane{margin:18px 0 6px;font-size:11.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  .lane:first-child{margin-top:0}
+  .node{position:relative;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:11px 14px 11px 16px;margin:0 0 26px;cursor:pointer;transition:border-color .12s,background .12s}
+  .node:hover{background:var(--card-hi)}
+  .node.active{border-color:var(--accent);background:var(--card-hi);
+    box-shadow:0 0 0 1px var(--accent)}
+  .node .t{font-weight:650;font-size:14.5px}
+  .node .g{color:var(--ink-dim);font-size:12.5px;margin-top:2px}
+  .node .qrow{margin-top:7px;display:flex;flex-wrap:wrap;gap:5px}
+  .qtag{font-family:var(--mono);font-size:10.5px;border-radius:5px;padding:1px 6px;
+    border:1px solid var(--line);color:var(--ink-dim)}
+  .qtag.E{border-color:var(--amber);color:var(--amber)}
+  .qtag.T{border-color:var(--blue);color:var(--blue)}
+  .qtag.S{border-color:var(--green);color:var(--green)}
+  .qtag.N{border-color:var(--purple);color:var(--purple)}
+  .qtag.G{border-color:var(--red);color:var(--red)}
+  .node:not(.last)::after{content:"";position:absolute;left:26px;bottom:-26px;width:2px;height:26px;
+    background:var(--line)}
+  .node:not(.last)::before{content:"";position:absolute;left:22px;bottom:-2px;width:0;height:0;z-index:2;
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--line)}
+  .loopnote{color:var(--ink-faint);font-size:12px;margin:-16px 0 20px 44px;font-style:italic}
+
+  /* ---- detail column ---- */
+  #detail{position:sticky;top:18px;align-self:start;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;padding:26px 28px;min-height:420px;
+    max-height:calc(100vh - 36px);overflow-y:auto}
+  @media(max-width:900px){#detail{position:static;max-height:none}}
+  #detail .lane-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  #detail h2{font-size:21px;margin:4px 0 2px}
+  #detail .one{color:var(--ink-dim);font-size:14px;margin-bottom:16px}
+  .sect{margin-top:20px}
+  .sect h3{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);
+    margin-bottom:9px;display:flex;align-items:center;gap:8px}
+  .sect h3::after{content:"";flex:1;height:1px;background:var(--line)}
+  .pts{list-style:none}
+  .pts li{margin:0 0 9px 0;padding-left:16px;position:relative;max-width:72ch}
+  .pts li::before{content:"›";position:absolute;left:0;top:0;color:var(--ink-faint)}
+  .pts li b{color:var(--ink)}
+
+  /* equations — always display blocks, never inline */
+  .eq{margin:12px 0;background:#10141d;border:1px solid var(--line);border-left:3px solid var(--blue);
+    border-radius:0 10px 10px 0;padding:12px 18px;overflow-x:auto}
+  .eq .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px}
+  .eq pre{font-family:var(--mono);font-size:14.5px;line-height:1.7;color:#cfe3f5;white-space:pre}
+  .eq.lookup{border-left-color:var(--purple)}
+  .eq.lookup pre{color:#ded3fb}
+  .eq.rule{border-left-color:var(--amber)}
+  .eq.rule pre{color:#f2ddb4}
+  .sq{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+  .io{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.io{grid-template-columns:1fr}}
+  .io .box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 13px;font-size:13.5px}
+  .io .box b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+  .io ul{list-style:none}
+  .io li{padding:2px 0;color:var(--ink-dim)}
+  .io li::before{content:"— ";color:var(--ink-faint)}
+  .def li{margin:0 0 8px 0;padding-left:14px;position:relative;list-style:none;max-width:72ch}
+  .def li::before{content:"◆";position:absolute;left:0;top:1px;font-size:9px;color:var(--red)}
+  .def li b{color:var(--ink)}
+  .impact{border-left:3px solid var(--red);padding:8px 14px;background:rgba(224,108,108,.06);
+    border-radius:0 8px 8px 0;max-width:72ch}
+  .remit{border-left:3px solid var(--amber);padding:8px 14px;background:rgba(232,163,61,.06);
+    border-radius:0 8px 8px 0;max-width:72ch;font-size:13.5px}
+  .remit b{color:var(--amber)}
+  .qlist{list-style:none}
+  .qlist li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .qlist li:last-child{border-bottom:none}
+  .qlist .qtag{margin-top:2px;flex-shrink:0}
+  .qlist .qt{font-size:13.5px;color:var(--ink-dim);max-width:68ch}
+  .qlist .qt b{color:var(--ink)}
+  .hint{color:var(--ink-faint);font-size:13px;margin-top:26px}
+  footer{max-width:1220px;margin:0 auto;padding:0 28px 50px;color:var(--ink-faint);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The Market Maker Pipeline</h1>
+  <p class="sub">The whole machine in chronological order — from Sport Radar to a resting
+  order book on tZERO and back. Click any stage: what it is, in/out,
+  <b>what the standards leave undefined</b>, whose question it is.</p>
+  <div class="stance"><b>Stance (22-07): we ask — we do not propose.</b>
+    Nothing on this page is decided. Deferred items are open questions, not proposals.
+    “Candidate thinking” notes are engineering scaffolding with no authority.
+    <div class="test"><b>The remit line:</b> <i>“if Edwin watched the book, could he tell the
+    difference?”</i> Yes → his algorithm, his question — every number, formula, threshold,
+    and visible behaviour. No → engineering mechanics, ours — topology, transport, FIX
+    plumbing, replay implementation.</div></div>
+  <div class="legend">
+    <span class="chip"><span class="dot E"></span>E — Edwin / InPlay</span>
+    <span class="chip"><span class="dot T"></span>T — tZERO</span>
+    <span class="chip"><span class="dot S"></span>S — Sport Radar</span>
+    <span class="chip"><span class="dot N"></span>N — ours (many: Edwin decides, we implement)</span>
+    <span class="chip"><span class="dot G"></span>hard gate</span>
+  </div>
+  <div class="legend">
+    <span class="chip"><span class="sq" style="background:var(--blue)"></span>real equation</span>
+    <span class="chip"><span class="sq" style="background:var(--purple)"></span>lookup / thresholds / state machine</span>
+    <span class="chip"><span class="sq" style="background:var(--amber)"></span>rule / procedure / law</span>
+  </div>
+</header>
+
+<main>
+  <nav id="pipe" aria-label="Pipeline stages"></nav>
+  <section id="detail" aria-live="polite"></section>
+</main>
+
+<footer>
+  Companion to <code>open-questions.md</code> (the register of record) and
+  <code>systems/decision-cycle-reference.md</code> (placeholder pseudocode, no authority).
+  Equation-level map: <code>standards/sdmm-machine.html</code>.
+</footer>
+
+<script>
+const STAGES = [
+{
+  id:"feeds", lane:"Data (external)", title:"1 · Sport Radar feeds",
+  glance:"Win probabilities, season win totals, play-by-play events, fixture schedule.",
+  points:[
+    `Two data sources now (23-07): <b>Sport Radar</b> — live win probability, pulled during games (~200ms calls) + the schedule/game status; and <b>the Wednesday drop</b> — InPlay delivers the updated off-field index + remaining-game win probabilities every Wednesday.`,
+    `Sport Radar's live probability is the single in-game price driver — no event weights in v1.`,
+    `<b>Parity rule:</b> our probabilities must not lag DraftKings/FanDuel, or users pick the MM off. Cody owns the feeds.`
+  ],
+  eqs:[],
+  inputs:["— (external + InPlay weekly)"],
+  outputs:["P(win) per live game (pulled)","Wednesday file: off-field index + remaining-wins","schedule + game status"],
+  deferred:[
+    `<b>Can SR serve it the way Edwin expects?</b> — probability readable ~every 200ms per live game, quota to match, + simulation games for testing (S5).`,
+    `<b>The feed is broken today</b> — 403s; only 8 of 32 NFL win totals return.`,
+    `<b>Push vs poll</b> — Edwin's model is pull-on-a-schedule; push would be better if it exists.`,
+    `<b>Wednesday-drop format</b> — file shape and delivery not agreed yet.`
+  ],
+  impact:`No feed, no valuation, no market. Any lag behind the sportsbooks is free money
+  against the MM — the parity requirement is prize-integrity, not nice-to-have.`,
+  remit:null, cand:null,
+  questions:[
+    {id:"S1",o:"S",t:"<b>Fix the probabilities API</b> — escalated, Cody chasing."},
+    {id:"S5",o:"S",t:"<b>SR fit check</b> — cadence, quota, simulation games."},
+    {id:"S4",o:"S",t:"<b>Sportsbook parity</b> — Cody owns."},
+    {id:"S3",o:"S",t:"<b>Push vs poll</b>."}
+  ]
+},
+{
+  id:"esv", lane:"Valuation — CTS-001", title:"2 · Valuation engine → ESV",
+  glance:"One fair value per team, recomputed per play. The math chapter is missing.",
+  points:[
+    `Answers: <b>what is one share worth right now?</b> Output = the Expected Settlement Value — the estimate of what a share pays at season end.`,
+    `<b>What the document actually says:</b> laws, not math. Value and price are separate systems; ESV is deterministic, explainable, decomposable, with full lineage.`,
+    `<b>Section 3 — the valuation math — is missing from our copy.</b> The file ends at §2.33.`,
+    `What fills the gap: Edwin's spoken formula (20-07) and the decoded client sheet (22-07, arithmetic verified across all 32 NFL rows).`
+  ],
+  eqTitle:"The equations — real arithmetic",
+  eqs:[
+    {lbl:"Edwin, spoken 20-07", ex:`ESV = P(win this game) × $/win\n    + E[remaining wins] × $/win\n    + off-field`},
+    {lbl:"Client sheet, decoded 22-07 ($/win = $5.00, unconfirmed)", ex:`ESV = OffField + $5.00 × E[wins]`}
+  ],
+  inputs:["P(win) + win expectations (SR)","off-field revenue (earnings engine)","$/win"],
+  outputs:["one ESV per team, per play in-game","decomposition: this game / rest of season / off-field"],
+  deferred:[
+    `<b>Settlement (E11)</b> — what actually pays out at season end. Defines what ESV <i>means</i>. STILL unasked after the 23-07 call.`,
+    `<b>Resolved 23-07:</b> remaining wins = InPlay internal, weekly (E13 ✅) · in-game channel = SR probability only, no event weights (E15 ✅) · off-field = Edwin's popularity index, ~$14–30, static start, Wednesday refresh (E2 ✅).`,
+    `<b>$/win</b> — $5.00 decoded, unconfirmed (E1). <b>Initial valuations</b> (E3). <b>Week zero</b> (E6). <b>§3 PDF</b> (E10). <b>NCAA scope</b> (E12) — also still unasked.`
+  ],
+  impact:`The anchor for every quote in every market. With E13/E15/E2 resolved, this engine is
+  now small: one SR pull + one weekly file + one formula. E11 still defines what the number
+  MEANS — top of the next call.`,
+  remit:`<b>Remit:</b> entirely Edwin's — this is the economics of his product.`,
+  cand:null,
+  questions:[
+    {id:"E11",o:"E",t:"<b>Settlement definition</b> — top of the next call."},
+    {id:"E12",o:"E",t:"<b>NCAA scope</b> — still unasked."},
+    {id:"E1",o:"E",t:"<b>$/win</b> — confirm $5.00; NCAA answer."},
+    {id:"E3",o:"E",t:"<b>Initial valuations</b>."},
+    {id:"E6",o:"E",t:"<b>Week-zero NCAA</b>."},
+    {id:"E10",o:"E",t:"<b>CTS-001 §3 PDF</b>."},
+    {id:"E4",o:"E",t:"<b>Python files</b> — Edwin sending (in motion)."}
+  ]
+},
+{
+  id:"rp", lane:"Market state — CTS-002", title:"3 · Reference Price publication",
+  glance:"RP = ESV by law. No math — gating, stamping, and the frozen-price failure mode.",
+  points:[
+    `The ESV republished <b>unchanged</b> — the anchor the quoting engine builds around. The law exists to ban downstream “adjustment”.`,
+    `Adds publication management only: <b>lifecycle gating</b> + <b>timestamp/version stamping</b>.`,
+    `<b>Failure mode:</b> valuation dies → last RP stands <b>frozen</b>; nobody may invent a substitute. Quoting continues around it, wide.`
+  ],
+  eqTitle:"The rule — an identity by law, not a calculation",
+  eqs:[{kind:"rule", lbl:"Publication ban — nothing downstream may adjust the price", ex:`RP = ESV`}],
+  inputs:["ESV stream","lifecycle state","feed health"],
+  outputs:["published RP per team (+ frozen flag)","→ quoting · → app price display"],
+  deferred:[
+    `<b>The delivery mechanism</b> — bus topic? push? cadence? This contract is the seam that lets valuation and quoting build as separate workstreams.`,
+    `<b>Who publishes RP</b> — the two CTS docs point at each other. Moot (we build both) but the pipe needs one owner.`
+  ],
+  impact:`Until the RP contract is fixed, the two workstreams can't split — the plan's key
+  parallelisation point.`,
+  remit:`<b>Remit:</b> ours — pure transport. Invisible to the book.`,
+  cand:`<b>Candidate thinking (no authority):</b> a NATS topic per team fits the existing platform.`,
+  questions:[{id:"N1",o:"N",t:"<b>ESV → RP delivery mechanism</b> — ours."}]
+},
+{
+  id:"moc", lane:"Market state — CTS-002", title:"4 · Operating condition (MOC)",
+  glance:"Can we trust our inputs enough to quote tight? The classifier F is deliberately undefined.",
+  points:[
+    `One question, per team, per cycle: <b>can we trust our inputs enough to quote tight?</b> Five answers: Normal · Degraded · Protective · Recovery · Emergency. Sits at Normal almost all the time.`,
+    `Not a formula — a <b>decision table</b>, top-down, first match wins (the doc literally says “Do NOT define F”). Every <b>?</b> below is an undefined threshold — N3, Edwin's.`,
+    `<b>Think vs act:</b> input failure (feed/valuation) → path still works → quote wide. Path failure (gateway/FIX) → can't post at all → <b>EMERGENCY = dead-man switch + halt, not a profile</b>.`,
+    `<b>feed_lag is constructed:</b> event timestamp vs our clock, or cadence expectation (a play every ~30–40s — silence IS the signal). Depends on S3.`,
+    `<b>Example:</b> ESV 8s stale → Degraded · RP frozen → Protective · FIX drops → Emergency (switch pulls quotes) · feed returns → Recovery → Normal.`
+  ],
+  eqTitle:"The working-out — signals in, decision table, one class out",
+  eqs:[
+    {kind:"lookup", lbl:"The concrete signals — nothing else may be consulted", ex:`esv_age     seconds since this team's last ESV arrived\nrp_frozen   is the RP in the protected/frozen state?\nfeed_up     Sport Radar connection alive?\nfeed_lag    delay behind real events (constructed — see above)\ncompute_ok  can we still THINK? (valuation · state · quoting)\npath_ok     can we still ACT?   (gateway · FIX session to T0)\nlifecycle   pre-IPO / IPO / open / halted / settlement`},
+    {kind:"lookup", lbl:"The decision table — top-down, first match wins (every ? = N3, undefined)", ex:`path_ok = false          → EMERGENCY\n                           not a profile: dead-man switch pulls\n                           resting quotes + supervision halt\ncompute_ok = false\n  OR rp_frozen\n  OR esv_age > ?          → PROTECTIVE  (path works: quote wide\n                                         around the frozen RP)\nesv_age > ?\n  OR feed_lag > ?         → DEGRADED\nprobation after bad state → RECOVERY\notherwise                 → NORMAL`}
+  ],
+  inputs:["esv_age + rp_frozen (stages 2–3)","feed_up + feed_lag (Sport Radar)","compute_ok + path_ok (our stack)","lifecycle state"],
+  outputs:["one condition class per team, per cycle"],
+  deferred:[
+    `<b>Every threshold in F</b> — how stale flips Normal → Degraded? When does the RP freeze → Protective? How does Recovery clear?`
+  ],
+  impact:`Thresholds too loose → quoting tight off stale data (sniping). Too tight → the market
+  flaps defensive constantly. This knob picks which failure you get.`,
+  remit:`<b>Remit:</b> the thresholds change when the market visibly goes defensive —
+  <b>Edwin decides the policy, we implement the classifier</b>.`,
+  cand:null,
+  questions:[
+    {id:"N3",o:"N",t:"<b>Classifier thresholds</b> — Edwin decides policy, we implement."},
+    {id:"S3",o:"S",t:"<b>Delivery method</b> — decides how feed_lag can even be measured."},
+    {id:"G-cancel",o:"G",t:"<b>Dead-man switch</b> — part of Hasan's cancel build; EMERGENCY's real response depends on it."}
+  ]
+},
+{
+  id:"mop", lane:"Market state — CTS-002", title:"5 · Profile + sessions (MOP)",
+  glance:"Given condition + session → how tight, deep, and fast the market should be.",
+  points:[
+    `The market's <b>personality dial</b>. A profile is a row of five multipliers: <b>S</b>pread · <b>D</b>epth · <b>Q</b>uantity · re<b>F</b>resh · <b>I</b>nventory-sensitivity.`,
+    `Three <b>sessions</b> per team, off the fixture schedule: <b>in-game</b> (tight, fast) · <b>around-game</b> · <b>overnight</b> (deliberately wide, ~$2.5–5 — “let the market tell you where it is”).`,
+    `The two standards carry <b>mismatched profile menus</b> (Balanced/Emergency vs Liquidity-Preservation/Protective). One merged table must exist.`
+  ],
+  eqTitle:"The shape — a table lookup, not an equation",
+  eqs:[
+    {kind:"lookup", lbl:"Two inputs in, one row out", ex:`( condition , session )  →  profile row = ( S, D, Q, F, I )`},
+    {lbl:"How each dial is applied — a multiplier on a base value", ex:`actual spread     = S × base spread\nladder levels     = D × base levels\ndisplayed size    = Q × base size\nrefresh interval  = F × base interval    (0.5 = twice as fast)\nskew gain λ       = I × base λ           (higher = fights inventory harder)\n\nevery base value is undefined → E5`},
+    {kind:"lookup", lbl:"All six profiles — PTS-001 §6.6.1, the doc's only hard numbers", ex:`              S     D     Q     F      I\nStable      1.00  1.50  1.50  1.00   0.50   calm seas\nActive      1.50  1.00  1.00  0.50   1.00   busy market\nDefensive   2.50  0.60  0.60  1.50   1.75   getting picked off\nRecovery    1.75  1.00  0.90  1.00   2.50   digesting a bad position\nLiq. Pres.  3.00  0.50  0.50  1.25   3.50   conserving ammunition\nProtective  5.00  0.25  0.25  restr  5.00   alarm bells`},
+    {lbl:"Reading a row — Protective (S=5.00, D=0.25, Q=0.25, F=restricted, I=5.00)", ex:`actual spread   = 5.00 × base spread    → 5× wider\nladder levels   = 0.25 × base levels    → quarter the depth\ndisplayed size  = 0.25 × base size      → quarter the shown size\nrefresh         = restricted            → only as protection permits\nskew gain λ     = 5.00 × base λ         → fights inventory 5× harder`}
+  ],
+  effects:[
+    `<b>Spread wider</b> → every round-trip costs users more · volume falls · MM margin per trade rises · protection against stale-price sniping rises · price signal gets coarser. <b>Tighter</b> → the mirror: more trading, thinner margin, more sniping risk, sharper signal.`,
+    `<b>Book deeper</b> → big orders fill with little price impact (market feels liquid) · more MM capital exposed across levels. <b>Shallower</b> → big orders move price hard — one aggressive order can sweep the book (why depth composes with the band + synthetic MO).`,
+    `<b>Size bigger</b> → larger fills at the touch · MM absorbs bigger inventory swings per fill. <b>Smaller</b> → less risk per fill · users part-fill and walk the ladder.`,
+    `<b>Refresh faster</b> → quotes track the RP · sniping window shrinks · message load rises (T2 ceiling). <b>Slower</b> → staleness window grows — deliberate overnight, dangerous in-game.`,
+    `<b>Skew stronger (I·λ ↑)</b> → MM sheds inventory fast, but its own re-pricing pushes the market around. <b>Softer</b> → absorbs flow calmly, but the position accumulates.`,
+    `The frame: every dial trades <b>user cost / activity</b> against <b>MM exposure / staleness risk</b>. In the challenge the economics to protect are <b>realism + un-gameability</b> — profit is explicitly last.`
+  ],
+  inputs:["condition (stage 4)","session (schedule + game status)","config"],
+  outputs:["active profile per team: S · D · Q · F · I"],
+  deferred:[
+    `<b>The merged profile set</b> — which six profiles exist, and the condition→profile mapping.`,
+    `<b>The base values</b> the multipliers scale — base spread, base depth, base size: all undefined. §6.6.1's multiplier table is the doc's only hard numbers.`,
+    `<b>Session boundaries</b> — when each session starts/ends; NCAA plays six days a week.`,
+    `<b>Weekly Financial Report</b> — gates the weekly lifecycle; owner and timing unknown.`
+  ],
+  impact:`Most of what users actually feel — how tight the market is during a game, how wide at 3am.`,
+  remit:`<b>Remit:</b> table structure ours; <b>every value and boundary in it is Edwin's</b> —
+  all directly visible behaviour.`,
+  cand:null,
+  questions:[
+    {id:"E5",o:"E",t:"<b>The numbers per profile/session</b> — spreads, depths, sizes."},
+    {id:"N2",o:"N",t:"<b>Merged table structure</b> — ours; values Edwin's."},
+    {id:"N4",o:"N",t:"<b>Session boundaries</b> — Edwin decides, we implement."},
+    {id:"E9",o:"E",t:"<b>Weekly Financial Report</b> — owner, contents, timing."}
+  ]
+},
+{
+  id:"trigger", lane:"Quoting — decision cycle (PTS-001)", title:"6 · Trigger",
+  glance:"What starts a cycle: new RP, a fill, a state change — or a heartbeat.",
+  points:[
+    `Four things start a cycle: a <b>new RP</b> (a touchdown arrives this way — valuation already moved), a <b>fill</b> against our quotes, a <b>condition/session change</b>, or the <b>call schedule</b> firing.`,
+    `<b>Cadence set 23-07, bifurcated by game state:</b> live games ~200ms per call ("a second's too long") · non-live every 30–60s · earnings windows (Tue/Wed): all ~170 symbols for ~5 minutes.`,
+    `Cycles never overlap; triggers arriving mid-cycle batch into the next one.`
+  ],
+  eqTitle:"The shape — an event rule, not an equation",
+  eqs:[
+    {kind:"rule", lbl:"Any source → one cycle; mid-cycle arrivals coalesce", ex:`new RP · fill · state change · session change · heartbeat\n        → start ONE cycle\n(triggers landing mid-cycle batch into the next)`},
+    {kind:"lookup", lbl:"The four triggers — precisely", ex:`NEW_RP     the ESV moved (a touchdown arrives as this —\n           valuation already repriced)\n\nFILL       ANY execution against ANY of our resting orders:\n           any partial, any level, either side. 1 share of a\n           500 lot counts — inventory moved → skew must reprice.\n           (Whether a small partial just replenishes instead of\n           a full recycle = N10)\n\nSTATE      the MOC class flipped (Normal → Degraded …)\n           OR the session flipped (overnight → around-game →\n           in-game, off the schedule + game status — N4)\n           → different profile row → rebuild quotes\n\nHEARTBEAT  nothing happened for X ms → cycle anyway.\n           Bounds staleness + keeps the book looking alive.\n           X per session (in-game ~200 ms IS the heartbeat) — ?`}
+  ],
+  inputs:["RP updates","execution reports","state changes","heartbeat"],
+  outputs:["one classified trigger → starts the cycle"],
+  deferred:[
+    `<b>Cadence per session</b> — heartbeat rates are undefined everywhere.`,
+    `<b>The venue ceiling</b> — tZERO's per-account MaxOrdRate is unknown; cadence must fit inside it.`,
+    `<b>The platform team's 200 ms full-replace</b> — a suggestion only, not adopted.`
+  ],
+  impact:`Cadence × books × orders = message load (T2), and the gap between cycles is the
+  staleness window a sniper exploits.`,
+  remit:`<b>Remit:</b> refresh cadence is visible market behaviour — <b>Edwin/Troy confirm the
+  numbers</b>; the trigger plumbing is ours.`,
+  cand:null,
+  questions:[
+    {id:"T2",o:"T",t:"<b>MaxOrdRate</b> + sustained-load authorization."},
+    {id:"E5",o:"E",t:"<b>Cadence per session</b> — confirm as numbers."},
+    {id:"N9",o:"N",t:"<b>Adopt-or-redesign</b> the 200 ms full-replace framing."}
+  ]
+},
+{
+  id:"assess", lane:"Quoting — decision cycle (PTS-001)", title:"7 · Assess",
+  glance:"Read the room: flow speed, fill velocity, inventory, protection flags.",
+  points:[
+    `Before pricing, measure the environment: <b>order arrival rate</b>, <b>how fast quotes are being eaten</b>, <b>inventory position + velocity</b>, <b>protection flags</b>.`,
+    `Mechanically: rolling-window counters. The outputs steer the activity adjustment (stage 8) and mode escalation.`
+  ],
+  eqTitle:"The counters — trivial arithmetic; the windows are the unknown",
+  eqs:[{lbl:"Rolling-window counters", ex:`arrival rate  = count(orders, window) ÷ window\nfill velocity = filled qty(window) ÷ window\nbook burn     = fill velocity ÷ displayed total\ninventory %   = inventory ÷ float   ← denominator = E14`}],
+  inputs:["order flow","fills","inventory history","protection flags"],
+  outputs:["assessment snapshot per cycle"],
+  deferred:[
+    `<b>The whole methodology</b> — PTS-001: the product standard “SHALL define the mathematical methodology used to determine assessment classifications.” No such document exists. Window lengths, what counts as “fast” or “aggressive”: undefined.`
+  ],
+  impact:`This is the MM's threat detection. Wrong windows → widens too late (picked off) or
+  over-reacts to noise (unstable book).`,
+  remit:`<b>Remit:</b> reaction speed and sensitivity are the algorithm's temperament —
+  <b>Edwin's definitions to give</b> (or explicitly delegate).`,
+  cand:null,
+  questions:[
+    {id:"E5",o:"E",t:"<b>Assessment definitions</b> — does InPlay have intended definitions, or is this explicitly delegated?"}
+  ]
+},
+{
+  id:"price", lane:"Quoting — decision cycle (PTS-001)", title:"8 · Price — reservation prices",
+  glance:"RP ± four offset components = the MM's true best bid and offer.",
+  points:[
+    `Push away from RP on each side to get the MM's <b>true best prices</b>. The two sides are independent — lopsided on purpose.`,
+    `<b>Inventory skew</b> is the mechanism that keeps the MM flat: long → bid backs away (accumulate less), offer drops toward RP (shed). Short → mirror.`,
+    `The densest cluster of deferred math in the whole standard.`
+  ],
+  eqTitle:"The equations — real arithmetic (the densest deferred math)",
+  eqs:[
+    {lbl:"Reservation prices", ex:`reservation bid   = RP − BidOffset\nreservation offer = RP + OfferOffset`},
+    {lbl:"Each offset — four components, per side", ex:`Offset = base spread\n       + inventory skew\n       + activity adjustment\n       + protection adjustment`},
+    {lbl:"The skew — the feedback loop", ex:`inventory skew = λ × inventory (% of float)`},
+    {kind:"rule", lbl:"Worked example — ILLUSTRATIVE numbers only, not parameters", ex:`RP $25.00 · base spread 3¢ · long 4% of float · λ 0.5\n\nskew         = 0.5 × 0.04 × $25.00 = 50¢  (loaded side: the bid)\nbid offset   = 3¢ + 50¢ = 53¢  →  reservation bid   $24.47\noffer offset = 3¢ +  0¢ =  3¢  →  reservation offer $25.03\n\n→ heavily skewed to SELL: offer hugs RP, bid backs far away`}
+  ],
+  inputs:["RP","profile (stage 5)","assessment (stage 7)","inventory %"],
+  outputs:["reservation bid + offer per team"],
+  deferred:[
+    `<b>All four component formulas</b> — “SHALL define the mathematical methodology used to determine each Reservation Price Component.” Base spread, λ, activity formula, protection formula: none defined.`,
+    `<b>The inventory denominator</b> — sheet float 875k vs 5M capacity → effective gain differs ~5.7×.`,
+    `<b>The platform team's A-S kernel + λ = 1500¢</b> — suggestion only, not adopted.`
+  ],
+  impact:`These numbers ARE the market's economics: how expensive to trade, how hard the MM
+  fights to stay flat, how it behaves under fire.`,
+  remit:`<b>Remit:</b> entirely Edwin's — this is the core of his algorithm.`,
+  cand:null,
+  questions:[
+    {id:"E5",o:"E",t:"<b>Base spreads + λ</b> per session/profile."},
+    {id:"E14",o:"E",t:"<b>Float basis</b> — 875k vs 5M."},
+    {id:"N9",o:"N",t:"<b>Adopt-or-redesign</b> the suggested A-S formulation."}
+  ]
+},
+{
+  id:"build", lane:"Quoting — decision cycle (PTS-001)", title:"9 · Build — ladder + sizes",
+  glance:"N levels per side, spaced and sized, seeded randomness so it doesn't look robotic.",
+  points:[
+    `Around each reservation price: <b>N levels</b> with configured spacing; the side's budget split across levels by weights — most size near the top.`,
+    `<b>Randomization = quantities ONLY (23-07)</b> — price is purely algorithmic. Sizes (especially top of book) get seeded, bounded jitter so the book doesn't read programmatic — replayable, never MORE aggressive than the reservation price.`,
+    `<b>Tick rule:</b> bids round down, offers round up — rounding widens, never crosses.`,
+    `The standard also allows <b>sizes</b> to carry skew (long → thin bid, fat offer) — a second skew channel alongside price.`
+  ],
+  eqTitle:"One equation + one rule",
+  eqs:[
+    {lbl:"Displayed quantity per level k — real arithmetic", ex:`Q(k) = side budget × W(k) × R(k)\n\nW = level weights, Σ W = 1\nR = bounded seeded jitter`},
+    {kind:"rule", lbl:"Tick rounding — a rule, not math", ex:`bids round DOWN · offers round UP\nrounding always widens — it can never cross the market`},
+    {kind:"rule", lbl:"Worked example — ILLUSTRATIVE numbers only, not parameters", ex:`reservation bid $24.98 · offer $25.01\n3 levels/side · 3¢ spacing · 1,000 sh budget/side\nfront-loaded weights (~55/30/15%) · seeded jitter on sizes\n\n   BIDS              OFFERS\n   $24.98   540      $25.01   580\n   $24.95   310      $25.04   270\n   $24.92   150      $25.07   150`}
+  ],
+  inputs:["reservation prices","profile: D + Q multipliers","side budget","seeded RNG"],
+  outputs:["target book: prices + sizes, both sides, all levels"],
+  deferred:[
+    `<b>Ladder geometry</b> — the doc lists “uniform, front-loaded, back-loaded, convex, concave, adaptive” and defines none. Levels, spacing, origin: all deferred.`,
+    `<b>Quantity function</b> — weights, min displayed size, randomization bounds: deferred.`,
+    `<b>Size asymmetry</b> — price-skew only, or size-skew too? Permitted, undecided.`,
+    `<b>Aggressive orders</b> — Edwin's deliberate price-movers sit entirely OUTSIDE the standard. No bounds exist.`
+  ],
+  impact:`What the book physically looks like to every user — and whether its patterns can be gamed.`,
+  remit:`<b>Remit:</b> all directly visible in the book — <b>Edwin's calls</b>.`,
+  cand:null,
+  questions:[
+    {id:"E5",o:"E",t:"<b>Geometry, sizes, randomization bounds</b>."},
+    {id:"N11",o:"N",t:"<b>Size asymmetry</b> — Edwin's call."},
+    {id:"E8",o:"E",t:"<b>Aggressive-order bounds</b> — not in v1; bounds before build."}
+  ]
+},
+{
+  id:"validate", lane:"Quoting — decision cycle (PTS-001)", title:"10 · Validate",
+  glance:"Never publish a broken market. Rebuild on failure — up to an undefined retry cap.",
+  points:[
+    `Before publishing: <b>bid &lt; offer</b> everywhere · every price <b>inside the band</b> · sizes non-negative, inside budget · <b>always two-sided</b> (unless halted).`,
+    `A failed book is <b>never published</b> — rebuild the failed component (worst first), up to a retry cap, then fall back to a defensive profile. Still two-sided, never dark.`
+  ],
+  eqTitle:"The checks — assertions, not equations",
+  eqs:[{kind:"rule", lbl:"Every check must pass before publish", ex:`bid < offer at every level\nevery price inside the band\nsizes ≥ 0 and within budget\nbest bid AND best offer present (two-sided unless halted)`}],
+  inputs:["target book","band + limits config"],
+  outputs:["validated book — or defensive fallback"],
+  deferred:[
+    `<b>The retry cap</b> — “a maximum number of reconstruction attempts per Decision Cycle.” No number anywhere.`,
+    `<b>The band width</b> — ±30% is Edwin's “or whatever we come up with” (enforcement lives at stage 15).`
+  ],
+  impact:`The last line of defence against publishing a crossed or out-of-band market. The cap
+  must be SOME recorded number or replay breaks.`,
+  remit:`<b>Remit:</b> retry cap is invisible to the book — ours. Band width is Edwin's.`,
+  cand:null,
+  questions:[
+    {id:"E5",o:"E",t:"<b>Band width</b> — confirm or set."},
+    {id:"E7",o:"E",t:"<b>Conformance bar</b> — how strictly the ceremony binds in season 1."}
+  ]
+},
+{
+  id:"publish", lane:"Quoting — decision cycle (PTS-001)", title:"11 · Publish — cancel-replace into tZERO",
+  glance:"Make the venue book match the target. Blocked on the gateway cancel build.",
+  points:[
+    `Turn the validated book into reality on the venue — but only touch what changed: untouched levels REST (v1 lifecycle, stage 12).`,
+    `<b>Venue facts (live-verified):</b> order-based only (no quote interface) · limit orders only · TIF DAY/GTC/GTD.`,
+    `Resting orders <b>survive disconnects</b> — a dead MM's quotes rest until 23:59 ET. The dead-man switch is load-bearing.`,
+    `<b>The gateway has no outbound cancel (35=F) or cancel/replace (35=G) at all.</b> The cancel build (committed 22-07, owner Hasan) is the hard prerequisite the whole MM queues behind.`,
+    `<b>v1 model set 23-07 (Edwin + George):</b> post-first — don't wait for cancel confirmations; a momentary self-cross during a price adjustment is tolerated ("on the first iteration… I don't care").`,
+    `The 22-07 reconciler/amend analysis is <b>shelved, preserved in learnings</b> for the augment-later phase. Replace = back of queue anyway (T8.1) — and nobody cares.`
+  ],
+  eqTitle:"The v1 procedure — mechanics, not math (set 23-07)",
+  eqs:[
+    {kind:"rule", lbl:"Per level, per cycle", ex:`partially filled, price unchanged → LEAVE IT — rests until gone\nprice moved                       → cancel old level, post the\n                                    REMAINING qty at the new price\nfully filled, price unchanged     → reload at top of book\n                                    (randomized size)`},
+    {kind:"rule", lbl:"Post-first — no waiting", ex:`send the new orders without waiting for cancel confirmations.\na momentary self-cross during the adjustment is tolerated in v1.\n(new orders are faster than cancels — Edwin)`},
+    {kind:"rule", lbl:"The race that still exists", ex:`between snapshot and cancel, an order can fill:\nthe cancel returns "too late — already executed"\n→ the state machine reconciles fills vs cancel confirms`}
+  ],
+  inputs:["validated book","MM FIX OE session","live-order state"],
+  outputs:["resting limit orders in T0's book"],
+  deferred:[
+    `<b>Full-replace vs diff-publish</b> — wipe everything (simple, message-heavy) or touch only changed levels (lean, more state)?`,
+    `<b>MaxOrdRate</b> on the MM account — the real throughput ceiling.`,
+    `<b>MM account entitlement</b> — mechanism known (UAAR/UEPR/UBT); permission to use it pending.`
+  ],
+  impact:`Nothing MM-shaped can re-quote until the cancel build lands. Full-vs-diff couples
+  directly to T2 and the lifecycle question (next stage).`,
+  remit:`<b>Remit:</b> the FIX mechanics are ours; the cadence and its book-visible effects are
+  Edwin/Troy's to confirm.`,
+  cand:null,
+  questions:[
+    {id:"G-cancel",o:"G",t:"<b>Gateway cancel build (Hasan)</b> — still the hard gate."},
+    {id:"T1",o:"T",t:"<b>MM account in QA</b> — permission + mapping."},
+    {id:"T2",o:"T",t:"<b>Rate limit</b> — pressure much lower now cadence is bifurcated."},
+    {id:"T11",o:"T",t:"<b>Self-match prevention</b> — Troy checking what T0 employs."}
+  ]
+},
+{
+  id:"lifecycle", lane:"Quoting — decision cycle (PTS-001)", title:"12 · Quote lifecycle — v1: rest until gone",
+  glance:"Set by Edwin 23-07: no top-ups, no aging. The design surface left is fill-response.",
+  points:[
+    `<b>The v1 lifecycle (Edwin, 23-07):</b> a partially-filled order is <b>never refreshed</b> — it rests until completely gone (500 → 87 → 55 → 0).`,
+    `On a <b>price move</b>: cancel the old level, post the <b>remaining</b> quantity at the new price. On a <b>full fill</b> at unchanged price: reload at top of book (randomized size).`,
+    `Ch 7's aging/refresh/replenish machinery is <b>moot</b> — its five deferred numbers no longer need answers.`,
+    `<b>What replaces it: fill-response logic (N14)</b> — "if you get a fill, what do you do next?" e.g. off-game, filled at 6 → maybe leave the bid and let the ladder fill down (5, 4, 3).`
+  ],
+  eqTitle:"The whole lifecycle now — a rule, not a state machine",
+  eqs:[{kind:"rule", lbl:"Per order (set 23-07)", ex:`posted → rests → (partial fills eat it down) → gone\n\nprice moves   → cancel + repost the REMAINDER at the new price\nfully filled  → reload at top of book (randomized size)\nnever         → topped up, refreshed, or aged out`}],
+  inputs:["published quotes","fills / partial fills","price moves"],
+  outputs:["cancel + repost actions","reload-at-top actions"],
+  deferred:[
+    `<b>Fill-response rules (N14)</b> — in-game vs off-game behaviour after a fill; design with Edwin on the next call.`
+  ],
+  impact:`This one decision deleted the top-up arithmetic, the aging machinery, AND the
+  amend-vs-cancel trilemma. Fill-response is now where the MM's personality lives.`,
+  remit:`<b>Remit:</b> the lifecycle is Edwin's, now given. Fill-response rules are his too —
+  we bring scenarios, he picks behaviours.`,
+  cand:null,
+  questions:[
+    {id:"N14",o:"N",t:"<b>Fill-response logic</b> — design with Edwin, next call."},
+    {id:"E7",o:"E",t:"<b>Conformance</b> — Ch 7 moot; confirm in the season-1 bar."}
+  ]
+},
+{
+  id:"commit", lane:"Quoting — decision cycle (PTS-001)", title:"13 · Commit + replay",
+  glance:"Append-only record of every cycle. Determinism makes replay free — tooling isn't.",
+  points:[
+    `Every cycle writes an immutable record: <b>trigger · inputs · published book · code version</b>.`,
+    `The cycle is a pure function (seeded randomness, no wall clocks), so <b>replay = re-run + diff</b>. No separate replay system needed.`,
+    `This record is also the <b>behavioural dataset the challenge exists to produce</b>.`
+  ],
+  eqTitle:"The record — a data structure, not an equation",
+  eqs:[{kind:"rule", lbl:"Append-only, per cycle", ex:`record = { trigger, inputs, published book, code version }\nreplay  = re-run the pure function on the record + diff`}],
+  inputs:["everything the cycle consumed + produced"],
+  outputs:["append-only event log per team","the market-data asset"],
+  deferred:[
+    `<b>Season-1 scope</b> — recording is cheap; replay/audit tooling is not. Where's the launch line?`,
+    `<b>The conformance bar</b> — Edwin softened the standards; the explicit sign-off hasn't happened.`
+  ],
+  impact:`Cheap now, brutal to retrofit — non-negotiable from day one regardless of Thursday.`,
+  remit:`<b>Remit:</b> ours — invisible to the book. Only the conformance line needs Edwin.`,
+  cand:null,
+  questions:[
+    {id:"N8",o:"N",t:"<b>Replay scope for launch</b> — record all, defer tooling."},
+    {id:"E7",o:"E",t:"<b>Season-1 conformance bar</b> — sign-off Thursday."}
+  ]
+},
+{
+  id:"venue", lane:"Venue — tZERO", title:"14 · Match, fills → inventory loop",
+  glance:"T0 matches price-time; fills come back and close the feedback loop.",
+  points:[
+    `tZERO owns the <b>book, matching (price-time), order lifecycle, trade records</b>.`,
+    `Fills return as execution reports → inventory updates → <b>next cycle's skew leans against the position</b>. This loop is the MM's only risk control.`,
+    `Busts arrive the same way: <b>ExecType=H</b> reverses both counterparties.`
+  ],
+  eqTitle:"The matching rule — tZERO's, not ours",
+  eqs:[{kind:"rule", lbl:"Price-time priority", ex:`best price first\namong equal prices: earliest first`}],
+  inputs:["MM resting orders","user order flow"],
+  outputs:["fills → inventory feedback (loops to stage 8)","trade records"],
+  deferred:[
+    `<b>MM account in QA</b> — creation mechanism known; entitlement + REST↔OMS mapping pending.`,
+    `<b>Float warehousing mechanics</b> — T0 ledger treatment of warehoused IPO float (clips ~50k, ~35–50%).`
+  ],
+  impact:`No QA account, no integration testing of anything.`,
+  remit:null, cand:null,
+  questions:[
+    {id:"T1",o:"T",t:"<b>QA entity entitlement</b> — gates all venue testing."},
+    {id:"T6",o:"T",t:"<b>Float warehousing ledger mechanics</b>."}
+  ]
+},
+{
+  id:"supervision", lane:"Oversight — separate from the MM", title:"15 · Market supervision", last:true,
+  glance:"Bands, halts, busts. Deliberately outside the MM — it can't judge its own trades.",
+  points:[
+    `Deliberately a <b>separate system</b>: the MM is counterparty to most trades and cannot supervise executions it profited from.`,
+    `Three escalating tools: <b>band</b> (~±30% corridor around RP) → <b>halt</b> (stop matching) → <b>bust</b> (void an executed trade; T0 reverses both sides).`,
+    `Role split: participants cancel their own unfilled orders only · the <b>venue</b> voids trades · the <b>operator</b> decides when — per policy that doesn't exist yet.`
+  ],
+  eqTitle:"The escalation ladder — policy, not math",
+  eqs:[{kind:"rule", lbl:"Preventive → pause → last resort", ex:`band (~±30% around RP)  →  halt  →  bust (ExecType=H)`}],
+  inputs:["ALL executions (not just the MM's)","RP at execution time","band config"],
+  outputs:["out-of-band flags → ops UI","halt/resume","bust instructions → T0"],
+  deferred:[
+    `<b>Band width + enforcement point</b> — entry, execution, or both.`,
+    `<b>Native enforcement</b> — can T0's matcher reject out-of-band executions at source? If yes, busts become an edge case.`,
+    `<b>Bust procedure + SLA</b> · <b>halt semantics</b> — who, how fast, what happens to resting orders.`
+  ],
+  impact:`This is user trust. One $85 fill on a $6 market, slowly reversed, and participation
+  dies. Composes with the synthetic market order — its depth N must keep fills inside the band.`,
+  remit:`<b>Remit:</b> policy is Edwin + T0's; the detector and ops surface are ours.`,
+  cand:null,
+  questions:[
+    {id:"T3",o:"T",t:"<b>Native band enforcement</b>?"},
+    {id:"T4",o:"T",t:"<b>Bust procedure + SLA</b>."},
+    {id:"T5",o:"T",t:"<b>Halt semantics</b>."},
+    {id:"E5",o:"E",t:"<b>Band width</b> — confirm ±30% or set it."}
+  ]
+}
+];
+
+const pipe = document.getElementById("pipe");
+const detail = document.getElementById("detail");
+let currentLane = null;
+
+STAGES.forEach((s)=>{
+  if(s.lane!==currentLane){
+    const lane=document.createElement("div");
+    lane.className="lane"; lane.textContent=s.lane;
+    pipe.appendChild(lane); currentLane=s.lane;
+  }
+  const n=document.createElement("div");
+  n.className="node"+(s.last?" last":""); n.id="node-"+s.id;
+  n.innerHTML=`<div class="t">${s.title}</div><div class="g">${s.glance}</div>
+    <div class="qrow">${s.questions.map(q=>`<span class="qtag ${q.o}">${q.id}</span>`).join("")}</div>`;
+  n.addEventListener("click",()=>select(s.id,true));
+  pipe.appendChild(n);
+  if(s.id==="venue"){
+    const note=document.createElement("div");
+    note.className="loopnote"; note.textContent="↩ fills loop back into stage 8's inventory skew";
+    pipe.appendChild(note);
+  }
+});
+
+function select(id,scroll){
+  const s=STAGES.find(x=>x.id===id); if(!s)return;
+  document.querySelectorAll(".node").forEach(n=>n.classList.remove("active"));
+  document.getElementById("node-"+id).classList.add("active");
+  history.replaceState(null,"","#"+id);
+  detail.innerHTML=`
+    <div class="lane-tag">${s.lane}</div>
+    <h2>${s.title}</h2>
+    <div class="one">${s.glance}</div>
+    <div class="sect"><h3>What it is</h3>
+      <ul class="pts">${s.points.map(p=>`<li>${p}</li>`).join("")}</ul></div>
+    ${s.eqs.length?`<div class="sect"><h3>${s.eqTitle||"The equations"}</h3>
+      ${s.eqs.map(e=>`<div class="eq${e.kind?" "+e.kind:""}"><div class="lbl">${e.lbl}</div><pre>${e.ex}</pre></div>`).join("")}</div>`:""}
+    ${s.effects?`<div class="sect"><h3>Economic effects — each lever, both directions</h3>
+      <ul class="pts">${s.effects.map(p=>`<li>${p}</li>`).join("")}</ul></div>`:""}
+    <div class="sect"><h3>In / out</h3>
+      <div class="io">
+        <div class="box"><b>Consumes</b><ul>${s.inputs.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="box"><b>Produces</b><ul>${s.outputs.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      </div></div>
+    <div class="sect"><h3>What's deferred / undefined</h3>
+      <ul class="def">${s.deferred.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+    <div class="sect"><h3>Why it matters</h3><p class="impact">${s.impact}</p></div>
+    ${s.remit?`<div class="sect"><h3>Whose question</h3><p class="remit">${s.remit}</p></div>`:""}
+    ${s.cand?`<div class="sect"><h3>Candidate thinking — no authority</h3><p class="cand">${s.cand}</p></div>`:""}
+    <div class="sect"><h3>The questions (open-questions.md)</h3>
+      <ul class="qlist">${s.questions.map(q=>`<li><span class="qtag ${q.o}">${q.id}</span><span class="qt">${q.t}</span></li>`).join("")}</ul></div>
+    <p class="hint">E = Edwin/InPlay · T = tZERO · S = Sport Radar · N = ours (often: Edwin
+    decides, we implement) · red = hard gate.</p>`;
+  if(scroll && window.matchMedia("(max-width:900px)").matches)
+    detail.scrollIntoView({behavior:"smooth",block:"start"});
+  detail.scrollTop=0;
+}
+
+select((location.hash||"#feeds").slice(1),false);
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTS-001 · The Valuation System — Plain English Guide</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --val:#0e5a6a; --val-deep:#0a4350; --val-soft:#dfecef; --val-ghost:#edf4f5;
+    --mkt:#a83a2c; --mkt-deep:#7f2b20; --mkt-soft:#f5e4df;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --conf:#0e6a4c; --conf-soft:#e0eee5;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:.5rem 1rem}
+  .stripe b{color:#9fd4c4;font-weight:600}
+  .topnav{position:sticky;top:0;z-index:10;background:var(--paper-deep);border-bottom:1px solid var(--rule-strong);padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;box-shadow:0 2px 8px rgba(60,50,25,.08)}
+  .topnav a{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s}
+  .topnav a:hover{border-color:var(--val);color:var(--val-deep);background:var(--val-ghost)}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--val);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--mkt);color:var(--mkt)}
+  .meta span.go{border-color:var(--conf);color:var(--conf)}
+
+  section{padding:2.6rem 0 0}
+  h2{font-size:1.55rem;letter-spacing:-.01em;padding-top:1rem;border-top:1px solid var(--rule);display:flex;gap:.7rem;align-items:baseline}
+  h2 .n{font-family:var(--mono);font-size:.8rem;color:var(--val);letter-spacing:.1em}
+  h3{font-size:1.08rem;margin-top:1.6rem}
+  p{margin-top:.85rem;max-width:44rem}
+  p.lead{font-size:1.08rem}
+  ul,ol{margin:.85rem 0 0 1.3rem;max-width:42rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--val)}
+  b{font-weight:700}
+  em{color:var(--ink-soft)}
+  code{font-family:var(--mono);font-size:.82em;background:rgba(255,255,255,.6);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+
+  .pull{margin:1.4rem 0 0;padding:1rem 1.3rem;border-left:4px solid var(--val);background:var(--val-ghost);font-size:1.06rem;font-style:italic}
+  .pull b{font-style:normal}
+
+  .callout{margin:1.4rem 0 0;border:1px solid var(--rule-strong);border-radius:10px;padding:1rem 1.2rem;background:rgba(255,255,255,.5)}
+  .callout .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;display:inline-block;margin-bottom:.4rem}
+  .callout.touchdown{border-color:var(--conf);background:var(--conf-soft)}
+  .callout.touchdown .tag{color:var(--conf)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.warn .tag{color:var(--amber)}
+  .callout p{margin-top:.35rem}
+
+  .formula{margin:1.3rem 0 0;background:#20241f;color:#cfe8d8;border-radius:10px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.85rem;line-height:1.9;overflow-x:auto}
+  .formula .c{color:#7fa08c}
+  .formula b{color:#9fe8c4;font-weight:600}
+
+  table{width:100%;border-collapse:collapse;margin-top:1.2rem;font-size:.92rem}
+  th{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong)}
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{font-weight:700;white-space:nowrap}
+  tr:nth-child(even) td{background:rgba(255,255,255,.35)}
+
+  .chain{margin:1.4rem auto 0;max-width:26rem;text-align:center;font-family:var(--mono)}
+  .chain .box{border:1.5px solid var(--rule-strong);background:rgba(255,255,255,.6);border-radius:8px;padding:.5rem .8rem;font-size:.78rem}
+  .chain .box b{display:block;font-size:.85rem;color:var(--val-deep)}
+  .chain .box small{color:var(--ink-soft);font-family:var(--serif);font-style:italic;font-size:.78rem}
+  .chain .arr{color:var(--val);font-size:.8rem;padding:.15rem 0}
+  .chain .box.mkt b{color:var(--mkt-deep)}
+  .chain .box.mkt{border-style:dashed}
+
+  .rulelist{counter-reset:rule;list-style:none;margin-left:0}
+  .rulelist li{counter-increment:rule;position:relative;padding-left:2.6rem;margin-top:.9rem}
+  .rulelist li::before{content:counter(rule,decimal-leading-zero);position:absolute;left:0;top:.1rem;font-family:var(--mono);font-size:.72rem;color:var(--val);border:1px solid var(--rule-strong);border-radius:6px;padding:.1rem .3rem;background:rgba(255,255,255,.6)}
+
+  footer{margin-top:4rem;border-top:3px double var(--rule-strong);padding-top:1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+</style>
+</head>
+<body>
+
+<div class="stripe">InPlay Core Technical Standards · derived explainer · <b>source doc wins — except where the 20-07 touchdown superseded it</b> · trade secret of InPlay Global, Inc.</div>
+<nav class="topnav">
+  <a href="#thirty">30-sec</a><a href="#basics">1 · Basics</a><a href="#stack">2 · The stack</a><a href="#rules">3 · Golden rules</a><a href="#hierarchy">4 · Hierarchy</a><a href="#components">5 · Components</a><a href="#missing">6 · Missing math</a><a href="#edwin">7 · Edwin 20-07</a><a href="#quirks">8 · Quirks</a><a href="#tldr">9 · TL;DR</a>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">CTS-001 · Financial Valuation Standard · in plain english</div>
+  <h1>The Valuation System <span class="thin">— what a team is worth</span></h1>
+  <p class="deck">For someone with no finance background who needs to understand — and now build — the engine that continuously answers: <b>"what is one share of the Chicago Bears worth right now?"</b></p>
+  <div class="meta">
+    <span class="go">✓ Novosapien build — confirmed 20-07</span>
+    <span class="hot">Section 3 (the math) missing from vault copy</span>
+    <span>companion: CTS-001-financial-valuation-standard.md</span>
+  </div>
+</header>
+
+<section id="thirty">
+  <h2><span class="n">◎</span>The 30-second version</h2>
+  <p class="lead">Every team in the challenge has a stock. Before anyone can trade it, something has to answer one question, continuously, all season: what's a share worth <em>right now</em>? CTS-001 specifies that system. Its answer is the <b>Expected Settlement Value (ESV)</b> — the best estimate of what a share will actually pay out when the season ends and the company is wound up. It's re-estimated every time something material happens: a touchdown, an interception, a result elsewhere shifting the season outlook.</p>
+  <div class="pull"><b>The single most important idea in the document:</b> value and price are different things, produced by different systems, and neither is allowed to influence the other.</div>
+  <ul>
+    <li><b>ESV (value)</b> — what the valuation system calculates a share is <em>worth</em>, from win probabilities and revenue economics. Calm, mechanical, explainable.</li>
+    <li><b>Market price</b> — whatever buyers and sellers actually trade at on the order book. Emotional, herd-driven, discovered by the crowd.</li>
+  </ul>
+  <p>The market maker (PTS-001) takes the ESV — republished as the <b>Reference Price</b> — and builds its bid/offer quotes around it. Users then trade wherever they like. If the crowd trades the Bears way above their ESV, that's the market's business; the valuation system never budges because of it.</p>
+</section>
+
+<section id="basics">
+  <h2><span class="n">§1</span>Valuation basics <em style="font-size:.85rem">(skip if you know this)</em></h2>
+  <p>Think of a <b>house sale</b>. A surveyor values the house at £300k on fundamentals — size, location, condition. That's the <b>ESV</b>: a model-driven estimate of worth. The house actually sells for £340k because two buyers got into a bidding war. That's the <b>market price</b>: what someone actually paid. The surveyor doesn't revise the valuation to £340k because of the bidding war — fundamentals didn't change; sentiment did.</p>
+  <p>CTS-001 builds a surveyor, not an auctioneer. The vocabulary:</p>
+  <table>
+    <tr><th>Term</th><th>Plain meaning</th></tr>
+    <tr><td>Team Company</td><td>A real company created for one team (Bears Inc.). Owns the team's revenue rights and issues the stock.</td></tr>
+    <tr><td>Defined Event</td><td>The competition period the company exists for — here, the NFL / NCAA football regular season.</td></tr>
+    <tr><td>Contractual Economic Rights</td><td>The revenue streams the Team Company legally owns — performance money, commercial money, minus expenses. The <em>only</em> things that create value.</td></tr>
+    <tr><td>InPlay Security</td><td>One share of a Team Company. Non-voting. Owning it = owning a slice of those revenue rights.</td></tr>
+    <tr><td>ESV</td><td><b>Expected Settlement Value</b> — the continuously updated estimate of what one share pays out at season end. The system's entire output.</td></tr>
+    <tr><td>Initial Valuation</td><td>The first ESV, set at IPO. Everything after is an update to it.</td></tr>
+    <tr><td>Reference Price</td><td>The ESV, republished as the price anchor the market maker quotes around. Formally a CTS-002 job — in our build, the same pipe.</td></tr>
+    <tr><td>Economic Component</td><td>The standardized representation of one revenue right — the objects the math actually runs on.</td></tr>
+    <tr><td>IVS</td><td><b>InPlay Valuation System</b> — the engine that computes ESV. What this document specifies. What we're building.</td></tr>
+    <tr><td>Approved Valuation Input</td><td>A data source explicitly allowed to move the ESV (e.g. win probabilities). Anything not on the list may not touch value.</td></tr>
+    <tr><td>Valuation Lineage</td><td>The complete audit trail: every ESV from IPO to settlement, reconstructible.</td></tr>
+    <tr><td>Settlement</td><td>Season ends → real earnings known → each share pays out its actual value → ESV and reality converge.</td></tr>
+  </table>
+</section>
+
+<section id="stack">
+  <h2><span class="n">§2</span>Where CTS-001 sits — the three-document stack</h2>
+  <table>
+    <tr><th>Document</th><th>Role</th><th>One-liner</th></tr>
+    <tr><td>CTS-001 (this)</td><td>What is a team worth?</td><td>Produces the <b>ESV</b> — the fair-value anchor everything else orbits.</td></tr>
+    <tr><td>CTS-002</td><td>How do markets run?</td><td>Publishes the ESV as the <b>Reference Price</b>, tracks market health, sets the rules of engagement.</td></tr>
+    <tr><td>PTS-001</td><td>How does the market maker behave?</td><td>Builds tradable bid/offer ladders <em>around</em> the Reference Price.</td></tr>
+  </table>
+  <p>CTS-001 is the top of the hierarchy: in any conflict, it wins. It feeds everything and consumes nothing from downstream — by law, no market data may flow back up into valuation.</p>
+</section>
+
+<section id="rules">
+  <h2><span class="n">§3</span>The golden rules <em style="font-size:.85rem">(the "Constitutional Laws," §1B)</em></h2>
+  <p>Ten laws, distilled to what they mean in practice:</p>
+  <ol class="rulelist">
+    <li><b>Only contractual value counts.</b> ESV = the value of the revenue rights the company actually owns. No vibes, no brand premium, no discretionary bumps.</li>
+    <li><b>Information-driven, not clock-driven.</b> ESV updates when something <em>material</em> happens, not on a timer. A touchdown → recompute now. Nothing happening → nothing to recompute. In a live game this effectively means per-play.</li>
+    <li><b>Independent of market price.</b> The order book, spreads, volume, sentiment, the market maker's inventory — none of it may move the ESV. Ever. This is the load-bearing wall of the whole architecture.</li>
+    <li><b>Deterministic.</b> Same inputs + same methodology + same version = same ESV, on any machine, in any language, at any time. No true randomness, no wall clocks.</li>
+    <li><b>Complete lineage.</b> Every ESV must be reconstructible from the Initial Valuation plus every update since. No orphan numbers.</li>
+    <li><b>Everything counted exactly once.</b> Every revenue right appears in the valuation once — nothing omitted, nothing double-counted.</li>
+    <li><b>Fully explainable.</b> Any ESV can be decomposed: <em>this much</em> from today's game, <em>this much</em> from the rest of the season, <em>this much</em> off-field. No hidden weights or opaque heuristics.</li>
+    <li><b>Valuation and price discovery never redefine each other.</b> The IVS values; the market prices; separate jobs forever.</li>
+    <li><b>Same math everywhere.</b> Simulation, education, production — environments may differ in rules, never in valuation methodology.</li>
+    <li><b>Integrity is conformance.</b> An ESV that isn't correct, consistent, deterministic, reconciled, reproducible, auditable <em>and</em> explainable is nonconforming. (See §7 for how hard to hold this bar in season 1.)</li>
+  </ol>
+</section>
+
+<section id="hierarchy">
+  <h2><span class="n">§4</span>The financial hierarchy — where value comes from</h2>
+  <p>The document's core structure (§2.3) is a strict one-way chain:</p>
+  <div class="chain">
+    <div class="box"><b>Team Company</b><small>the legal entity — owns everything</small></div>
+    <div class="arr">↓ owns</div>
+    <div class="box"><b>Contractual Economic Rights</b><small>the revenue streams</small></div>
+    <div class="arr">↓ backs</div>
+    <div class="box"><b>InPlay Security</b><small>the share — a proportional slice</small></div>
+    <div class="arr">↓ valued as</div>
+    <div class="box"><b>Expected Settlement Value</b><small>what the slice is worth right now</small></div>
+    <div class="arr">↓ anchors</div>
+    <div class="box mkt"><b>Secondary Market Price</b><small>what people actually trade at</small></div>
+  </div>
+  <p>Each level derives <b>only</b> from the level above. The chain never runs backwards — that's rule 3 again, structurally. A share is worth a slice of the company's revenues; the revenues come from the season; the market price is downstream of all of it and feeds back into none of it.</p>
+  <p>Worth internalizing: <b>shareholders own the company, not the revenue streams directly.</b> The share's value routes through the company — which is why every share of the same team has exactly one ESV.</p>
+</section>
+
+<section id="components">
+  <h2><span class="n">§5</span>Economic Components — how rights become math</h2>
+  <p>Section 2 of the doc builds a representation layer between legal documents and equations:</p>
+  <ul>
+    <li>Every revenue right gets exactly <b>one Economic Component</b> — a standardized object the math can run on. One right ↔ one component, always.</li>
+    <li>Components come in <b>four classes</b>: <b>Performance</b> (on-field results money), <b>Commercial</b> (sponsorship/deal money), <b>Revenue Allocation</b> (league/pool distributions), <b>Expense</b> (contractual deductions — the only negative class).</li>
+    <li>Each component has two halves: a <b>structural identity</b> that never changes (what right is this? where did it come from?) and an <b>economic value</b> that changes constantly (what's it worth right now?).</li>
+    <li>A registry (the <b>ECR</b>) tracks identity, origin and lifecycle: <em>Registered → Active → Continuously Re-estimated → Settled → Archived</em>.</li>
+    <li><b>ESV = the aggregation of all component values for that team.</b> The equations only ever touch components — never legal documents, never the company itself.</li>
+  </ul>
+  <p>Why the ceremony? It's what makes rules 5–7 (lineage, completeness, explainability) mechanically possible: if every value lives in a registered component, every ESV is auditable by construction.</p>
+  <div class="callout touchdown"><span class="tag">✓ build reality · 20-07</span>
+    <p>For the challenge this collapses to roughly <b>three components per team</b> — today's-game revenue, rest-of-season revenue, off-field revenue. Keep the structure (genuinely useful for explainability); skip the bureaucracy.</p>
+  </div>
+</section>
+
+<section id="missing">
+  <h2><span class="n">§6</span>What the document does <em>not</em> contain — the missing math</h2>
+  <div class="callout warn"><span class="tag">⚠ gap</span>
+    <p>The vault copy of CTS-001 ends at §2.33. <b>Section 3 — "the mathematical valuation of those Economic Components" — is referenced throughout and absent.</b> The document defines <em>what</em> gets valued and <em>under what laws</em>, but not <em>how</em>: no probability methodology, no aggregation formula, no worked example.</p>
+    <p>This gap is now mostly filled by Edwin directly (§7) — but request the Section 3 PDF anyway; if it exists it may contain constraints the call didn't cover.</p>
+  </div>
+</section>
+
+<section id="edwin">
+  <h2><span class="n">§7</span>What Edwin actually told us <em style="font-size:.85rem">(20-07-2026 touchdown)</em></h2>
+  <p>The touchdown call reframed this document substantially. Edwin: the standards were <em>"meant for Claude to read… they're fairly simple."</em> Translation: the doc is generated context, not carved-in-stone law — the real spec is the model below.</p>
+  <h3>The actual valuation formula</h3>
+  <div class="formula">
+    share price <b>=</b> on-field <b>+</b> off-field<br><br>
+    on-field&nbsp;&nbsp;<b>=</b> P(win THIS game) × $/win&nbsp;&nbsp;&nbsp;<span class="c">← live win probability, this game</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>+</b> E[wins, rest of season] × $/win&nbsp;&nbsp;&nbsp;<span class="c">← expected remaining wins, all other games</span><br><br>
+    off-field <b>=</b> marketing / advertising revenue component&nbsp;&nbsp;&nbsp;<span class="c">← interpretive, not guaranteed</span>
+  </div>
+  <ul>
+    <li><b>$/win</b> is the revenue value of a win (the vision doc's example: 5 expected wins × $5 = $25/share at IPO).</li>
+    <li><b>P(win)</b> comes from <b>Sport Radar's live win probabilities</b> — backed by ~20 years of historical data. This is our Approved Valuation Input. <em>Currently broken: the probabilities API is 403ing and returning only 8 of 32 NFL win totals — being chased.</em></li>
+    <li><b>Off-field is deliberately interpretive</b> — "it's not guaranteed every game… that makes the market really really dynamic for trading." The uncertainty is a feature: it gives traders something to disagree about.</li>
+    <li><b>During a live game, ESV moves per play</b> — touchdown up, turnover down. That cadence <em>is</em> the product.</li>
+  </ul>
+  <h3>Other confirmations that shape this build</h3>
+  <ul>
+    <li><b>Markets are truly isolated.</b> The Cowboys' valuation never affects the Bears' intragame. Each game is effectively a <em>pairs trade</em> — two correlated symbols with complementary win probabilities. Between games, results flow into next week's expectations.</li>
+    <li><b>Rankings don't price in.</b> No goal-difference-style effects; earnings link to wins and off-field revenue only (playoffs out of scope).</li>
+    <li><b>Edwin has done this before.</b> His previous simulations ran on a trigger script Kevin reckons still exists. Find it — it's the calibration starting point, not a blank page.</li>
+    <li><b>Event weighting is subjective and learnable.</b> A touchdown's impact depends on context (score, quarter, down). Start with a guess per trigger type, calibrate against how the market responds. Expect the first weeks to be volatile while it learns.</li>
+  </ul>
+  <div class="callout touchdown"><span class="tag">✓ what this means for the golden rules</span>
+    <p>The architecture stands — determinism, lineage, explainability are still right, and cheap if built in from day one. But hold the <em>ceremony</em> lightly. Get Edwin's explicit sign-off on the season-1 conformance bar at the Thursday session.</p>
+  </div>
+</section>
+
+<section id="quirks">
+  <h2><span class="n">§8</span>Quirks and open questions</h2>
+  <h3>In the source document</h3>
+  <ul>
+    <li><b>Section 3 (the math) is missing</b> from the vault copy — the file ends at §2.33. Request it; Edwin's spoken formula fills most of the gap but may not be all of it.</li>
+    <li><b>Who publishes the Reference Price</b> is ambiguous between CTS-001 and CTS-002 (each points at the other). Irrelevant in practice — we build both — but the ESV→RP pipe needs a concrete design (push cadence? bus topic? per-play?).</li>
+    <li>The <b>"Board-approved," trade-secret, formal-approval framing</b> throughout reads as aspirational corporate scaffolding for a company of six. Treat as context, not process.</li>
+  </ul>
+  <h3>Genuinely open — for Thursday / T0 calls</h3>
+  <ol>
+    <li><b>$/win — the actual number(s)</b>, and whether it differs NFL vs NCAA.</li>
+    <li><b>The off-field revenue model</b> — what moves it, how often, who supplies the number.</li>
+    <li><b>IPO Initial Valuations</b> — who computes the opening ESV per team, from what (preseason win totals?).</li>
+    <li><b>Sport Radar probabilities feed</b> — fix the 403s/partial data; formalize it as the Approved Valuation Input; define fallback if the feed dies mid-game (CTS-002's answer: freeze the last valid price, never invent one).</li>
+    <li><b>Settlement mechanics</b> — how ESV converges to the final payout, and who declares the final numbers (ties into the Weekly Financial Report question in CTS-002).</li>
+    <li><b>Edwin's old trigger script</b> — locate it.</li>
+  </ol>
+</section>
+
+<section id="tldr">
+  <h2><span class="n">§9</span>TL;DR mental model</h2>
+  <p class="lead">A deterministic surveyor with a live feed:</p>
+  <ul>
+    <li><b>One number per team, always:</b> ESV = P(win today)×$/win + expected remaining wins×$/win + off-field.</li>
+    <li><b>Inputs:</b> Sport Radar win probabilities + the revenue model. Nothing else — <em>especially</em> not the market.</li>
+    <li><b>Cadence:</b> event-driven; per-play during games.</li>
+    <li><b>Never:</b> looks at market prices, invents value, forgets anything (full lineage), or gives two different answers from the same inputs.</li>
+    <li><b>Output:</b> flows to the market maker as the Reference Price — the anchor the whole tradable market is built around.</li>
+    <li><b>Held lightly:</b> the doc's ceremony compresses to a small, explainable, replayable pricing service. The laws worth keeping are independence, determinism, and explainability.</li>
+  </ul>
+</section>
+
+<footer>
+  <span>CTS-001 · plain english guide · derived explainer</span>
+  <span>reconciled with the 20-07-2026 touchdown</span>
+</footer>
+
+</div>
+</body>
+</html>
