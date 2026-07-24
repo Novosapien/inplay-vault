@@ -4,9 +4,11 @@
 > **Date:** 2026-05-09
 > **Updated:** 2026-06-26 — AI Agent Research deep-dive: phased build (pre-canned → saved-custom → AI companion), pricing reset (99c → $14.99 → $49.99), in-app payment decision, background/foreground/multi-agent architecture. From [[26-06-2026-ai-agent-research-component]]
 > **Updated:** 2026-07-13 — v1 pre-canned reports demoed live in-app; ladder refined to four steps (LLM analysis layer inserted before the full AI agent). From [[13-07-2026-touchdown]]
+> **Updated:** 2026-07-22, Subscription pricing set at exec level: Research **$49.99/mo**, Watch / Pro-View **$49.99/mo**, bundle ("Pro Trading Package") **$79.99/mo** (monthly; ads still run). Resolves the research-tab pricing open question. From [[22-07-2026-touchdown]]
+> **Updated:** 2026-07-24, Pricing refined into a four-tier ladder (Free Trial / Plus $24.99 / Pro $49.99 / Elite $79.99) and the first pre-canned report catalog supplied. Source docs (archived in shared `meeting-notes`): `InPlay_Subscription_Pricing_Strategy.docx`, `InPlay Research Module- Reports.docx`.
 > **Status:** Defined _(Phase 1 scoped; AI companion is Phase 2, still conceptual)_
 > **Owner:** George Westbrook (engineering) + Cody Haugen (product / client-facing)
-> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[13-07-2026-touchdown]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[13-07-2026-touchdown]], [[22-07-2026-touchdown]]_ · source docs (24-07, archived in shared): `InPlay_Subscription_Pricing_Strategy.docx`, `InPlay Research Module- Reports.docx` · [[24-07-2026-touchdown]]
 
 ---
 
@@ -59,9 +61,28 @@ Underneath the three tiers, the original **AI Research Agent** modes still apply
 - _Phase 2:_ a subscriber can ask the **AI companion** in natural language ("best teams in the 4th quarter when it's snowing, two minutes left, on back-to-back road games") and get a built report back, conversationally refined.
 - The tab is **discoverable from multiple entry points** (it lives in "More" and "anything in More gets buried" — Cody), including a research prompt on the **team-profile page** and **house-ad tips** that route in (see §3 / Advertising).
 
+**Pre-canned report catalog (supplied 24-07, `InPlay Research Module- Reports.docx`):** the first concrete set of built-once reports, answering the long-standing "examples to be supplied" ask:
+
+- **Top offensive teams** per category with filters: passing yards/game, rushing yards/game, points/game.
+- **Top defensive teams** per category with filters: passing yards allowed/game, rushing yards allowed/game, points allowed/game.
+- **Team Splits Report:** every category above on a team-by-team basis, split home vs away, plus further splits (turf vs grass, 1st half vs 2nd half, points for vs points against).
+- **Top-16 vs bottom-16:** the top 16 teams on average across the stat categories against the bottom 16.
+- **Volatility-moment reports:** teams with the most 5% / 10% volatility-moment games.
+- **Monetisation rule (important):** any report that **combines sports stats with InPlay's proprietary market / trading data** is **premium-only** (paid monthly subscription). Pure sports-stat roll-ups can seed the free tasters; the proprietary cross-correlated data is always paywalled.
+
 **Business rules — pricing & access (reset 26-06):**
 
 - **Subscription pricing (trading-challenge iteration):** **99c first month, then $14.99/month.** The 99c is a deliberate **card-capture** hook ("no one cancels that s***"). _This replaces the earlier ~$99.99/mo production placeholder; the $99.99 framing was the production-vs-raw-SR-data argument, see §7._
+- **Pricing reset (22-07, Edwin, exec-level):** everything priced at **$49.99/month**. Two standalone monthly packages, **Research $49.99/mo** and **Watch / Pro-View $49.99/mo**, plus a **bundle ("Pro Trading Package") at $79.99/mo**. All monthly, and **ads still run on these surfaces** (George). Positioned as deliberately cheap: fantasy-sports data runs **$50–75/mo**, betting-pick subscriptions cost hundreds per month, financial-data packages run hundreds to thousands per month, and raw Sport Radar redistribution is **$5–20k/mo** per user. This **supersedes the 26-06 consumer ladder (99c then $14.99, AI tier $49.99)** for the research subscription headline; the free-taste versus grayed-out split still needs defining (Cody and George to do the deep pass on what sits in the free trial versus the graded-out version). The **Watch / Pro-View** package sells the live Watch Mode plus pro charting (SMA/EMA/Bollinger, candlesticks, minute intervals); Cody and Edwin note charting at this granularity is a paid product elsewhere and there is **no other source for this alt-asset data**, so it can be charged for. (Source: [[22-07-2026-touchdown]])
+- **Pricing model refined into a four-tier ladder (24-07, `InPlay_Subscription_Pricing_Strategy.docx`):** a structured subscription ladder replaces the loose 22-07 figure. Ads still run on the paid surfaces.
+  - **Free Trial** (free): everything in the Pro tier, for the first 5 days (29th to 3rd for users already signed up, or the first 5 days from signup). A card-capture funnel into Pro.
+  - **InPlay Plus, $24.99/mo:** Research Lite, basic chart indicators, limited historical data, standard alerts.
+  - **InPlay Pro (recommended core plan), $49.99/mo:** full research module, full technical charting, historical event overlays, Watch Mode command center, advanced alerts.
+  - **InPlay Elite, $79.99/mo:** everything in Pro plus fastest alerts, analyst-exclusive reports, early feature access, additional historical databases (past-season volatility moments + sports data), multi-game monitoring.
+  - **Standalone feature valuations** (bundling/upsell math): In-Depth Research Module $24.99/mo, Technical Charting & Event Overlays $19.99/mo, Watch Mode Command Center $29.99/mo.
+  - **Strategic framing:** users benchmark InPlay against FantasyPros, Action Network, TradingView and Koyfin; the differentiator is combining live sports events, trading charts, historical overlays, alerts and execution in one workflow. Historical event replay drives perceived value; Watch Mode is seen as the strongest conversion driver.
+  - ⚠️ **Unresolved tension:** the same doc's strategic insight recommends a **$29.99/mo Pro launch price** as "likely optimal," which conflicts with the $49.99 Pro tier above. Tier prices are a proposal under review, not locked (see [[open-questions]]). The 22-07 exec figure ($49.99 Research / $49.99 Watch-Pro-View / $79.99 bundle) and this 24-07 four-tier model both need one reconciled decision.
+- **Further pricing + content signals (24-07 touchdown):** the middle package price is still moving, floated at **$34.99 vs $39.99** ("maybe $34.99 hits harder") against the strategy doc's $24.99 Plus; Cody stresses pricing stays a WIP even post-launch. Rough economics: ~500k users, roughly half of them paying "degens," implies ~**$2M/month** subscription revenue, with ~100k signups expected off a ~200k-follower creator base. **Timing:** research/subscriptions are **not a launch feature** (Cody leans **October**), but Edwin wants the research piece **inserted within 1–2 weeks** so influencers can start talking about it; Cody is sending the package list + pricing to George. **College analyst-content format:** short **video clips** for the top 25 teams, and a **~2–3-second pricing/matchup blurb** for the next ~110 teams; video is preferred (repurposed across socials if it can't live in-app), with a 30–45 min weekly Preferred Walk-Ons slot chopped into 30s–1min clips. This paid analyst content surfaces on the new **Analyst Prices** page (see [[team-page/team-page]]). (Source: [[24-07-2026-touchdown]])
 - **Phase 2 AI companion raises the tier to $49.99/month** ("a smart person that builds reports in seconds, sitting next to you").
 - **Everything in the tab is behind the subscription** for simplicity, **except** a **couple of always-visible pre-canned reports** shown free as a taste (no time-limit — "if you derive value from one free report, good on you," but the rest are grayed out to pull the upgrade).
 - **AI companion is never offered in a free demo.**
@@ -291,7 +312,7 @@ Leaf node — the three feature tiers are phases on one Research Tab, not separa
 
 ## Open Questions for Next Call
 
-- **Data-point catalog scope** — what data points / categories are exposed in the builder, and the search behaviour. Cody: "we need to figure out what exactly we want to show here, otherwise your catalog could be everything." Pre-canned report examples to be supplied by the InPlay team.
+- **Data-point catalog scope:** what data points / categories are exposed in the builder, and the search behaviour. Cody: "we need to figure out what exactly we want to show here, otherwise your catalog could be everything." Pre-canned report examples to be supplied by the InPlay team. **24-07: first catalog supplied** (see the pre-canned report catalog in §2, from `InPlay Research Module- Reports.docx`); catalog scope for the custom builder still open.
 - **AI billing model** — final split between per-report flat pricing and token/credit, and which LLM instance + guardrails.
 - **Column-limit values** — the launch limit (5? 7?) and the upsell steps.
 - **Ownership reconciliation** — the manual-chat mode = Third Space's Research AI Chat. One build, surfaced in both places — confirm which component owns it.

@@ -46,6 +46,17 @@ eas update --branch production --message "fix price display bug"
 | New native library | Full build + review | 1-7 days |
 | App icon change | Full build + review | 1-7 days |
 
+## Release Governance & OTA Caps (24-07-2026)
+
+> Brett introduced release discipline as the team nears the production launch (< 1 month out). Source: [[24-07-2026-touchdown]].
+
+- **The risk principle:** the more change lands close to the production launch, the more risk enters the code base. Expect Novo to **push back on late requests**: get the key features and functions live first, then resume a build/deliver **cadence** post-launch. Requests are not rejected, they are **backlogged and scheduled** (Cody explicitly told to keep bringing ideas).
+- **Two ways a change reaches the app store, and why it matters:**
+  - **App-store push** (full build + review): tried to be avoided, but certain code changes **force** it.
+  - **OTA (over-the-air):** feels flexible, but the stores **cap how much you can push** over the air. Exceed the cap and you must do additional work and start risking the release.
+- **Consequence:** releases will be **staged**, work is slotted into the OTA caps ("filling that bucket") so InPlay does not blow the production criteria each app store governs. When Novo appears to stall a request for a couple of weeks, the two reasons are **(1) risk** and **(2) app-store compliance / cap management**, not lack of capacity.
+- This sits on top of the existing **CI/CD / DevOps** testing and release-cycle discipline; the new constraint is the app-store layer on top of it.
+
 ## Launch Timeline
 
 First App Store submission should happen **2-3 weeks before launch**. Apple can reject for surprising reasons and resubmission restarts the review clock. Budget for at least one rejection cycle.

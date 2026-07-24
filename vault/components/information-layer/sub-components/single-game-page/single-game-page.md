@@ -317,6 +317,8 @@ Data-dense but layered. The game page is the most information-rich screen in the
 
 **Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **T0 price history + SR events + win probability onto the same timeline** — blocked on trading integration (T0 QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
 
+**Gamecast feed-source clarified (24-07):** the custom Gamecast runs on InPlay's licensed **Sport Radar media data feeds** (fetch pre-event history, then stream live events). The faster SR **betting feed** (which powers the licensed "ugly" match tracker) is **not accessible** to InPlay because it is not a licensed sports book. Decision: prioritise the **fastest feed available** so the visual and pricing signal stay TV-competitive; the real-world-to-delivery **delta is uncontrollable** (whenever SR sends). Full feed/probabilities detail in [[integrations]]; MM probability consumption in [[market-maker/market-maker]]. (Source: [[24-07-2026-touchdown]])
+
 _This section answers Open Question 3 below (landscape rotation): yes — Watch Mode is the landscape experience._
 
 (Source: standups 2026-07-13 / 2026-07-15 / 2026-07-17)

@@ -2,9 +2,9 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-06-22
-> **Status:** Defined _(updated 22-06-2026: launch format reset from TikTok reels to a card-based course experience; updated 13/17-07-2026: <2-min video cap, content re-slice in flight)_
+> **Status:** Defined _(updated 22-06-2026: launch format reset from TikTok reels to a card-based course experience; updated 13/17-07-2026: <2-min video cap, content re-slice in flight; updated 22-07-2026: in-app "how to use the app" piece + AI-clone persona videos + social-clip length debate)_
 > **Owner:** Kevin (content + scope) / George Westbrook (engineering + UI) / Brett StClair (client-facing) / Edwin (commercial + depth)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]], [[meetings/22-06-2026-education-component]], [[meetings/13-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[meetings/14-05-2026-education-thirdspace-challenge-website]], [[meetings/22-06-2026-education-component]], [[meetings/13-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]], [[meetings/22-07-2026-touchdown]]_
 
 ---
 
@@ -362,6 +362,11 @@ Education is **free** in the trading challenge (the premium / paid surfaces disc
 > **Update (22 June, Education component deep-dive):** This session **reset the launch design** and the body above has been rewritten accordingly. Headlines: launch format moved from **TikTok 15-sec reels to a card-based course library** with **slideshow / whiteboard videos + voiceover + text + quiz** (reels parked as possible v2), catalogue set at **36 modules across Beginner (16) / Intermediate (10) / Expert (10)**, **non-sequential** access, completed modules **grayed-but-visible**, reward fixed at **100 InPlay coins (referral credits) per module, earn-once**, an **in-module glossary** (swipe right), a new **Certification & Badges** sub-component (profile "Certs"), the **AI chatbot deferred to Phase 2**, sponsorship reframed to the **slide-group level** with skippable pre-video CPM, and a production approach of **AI-generated slideshow video, pilot 1-2 modules then replicate**, hosted on the YouTube channel. Premium Sport Radar data resale + paid AI companion were ruled **out of Education scope** and flagged for a **Research Tab** session. _Source: [[meetings/22-06-2026-education-component]]. See also the prior touchdown context in [[digests/touchdowns-12-17-jun-2026]]._
 >
 > **Update (12-17 June touchdowns, superseded by 22-06):** The delivery format was still open across these touchdowns (TikTok video + AI voice + code-gen animation + podcast, brand-owned modules). The 22 June deep-dive resolved it (see above). Kept for traceability. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]._
+>
+> **Update (22-07-2026 touchdown):** three education threads.
+> **(1) In-app "how to use the app" piece.** Edwin wants a new education-center piece / navigating tool that teaches **the app itself** (not just trading). There is now so much depth (pro charts, volatility-moment info cards, watch mode) that a user "may take all season to figure it out." Sits alongside the trading-basics modules as a launch-relevant on-boarding aid.
+> **(2) AI-clone persona videos.** Kevin + Cody met an **AI-clone company**: create **hyper-realistic AI "clones," each its own demographic-targeted persona (~20 clones)**, that present tutorial / how-to and social content; clips can be chopped to any length or left full; described as very inexpensive. Rationale (Cody): one celebrity (LeBron) reaches ~70% of the market, whereas ~20 demographic-matched clones reach 95–100% (a clone for Gary's demographic, one for Jared's, and so on), the only crossover being trading. Extends the AI-UGC-avatar production route already in §3.
+> **(3) Social-clip length debate (unresolved).** Jared (Gen Z): social clips should be **15–30s**, not a minute, and platforms differ (TikTok/Instagram short; YouTube can run 2–3 min to hours). Cody challenged the attention-deficit premise (people watch hours of gaming YouTube). Gary: too short and the viewer doesn't understand, he'd rather **45s and get it** than 15s and not, and for non-traders the clip must be detailed enough to land. Edwin: **do both**, a minimum of ~15–30s to explain any one app feature plus YouTube for depth; users are **not equal** (core early users already trade crypto or other assets) so messaging for a 50-year-old differs from an 18-year-old, and the team should **build for whoever converts fastest first**. These are **social videos, distinct from the in-app modules**. _Source: [[22-07-2026-touchdown]]._
 
 ## Diagrams
 
