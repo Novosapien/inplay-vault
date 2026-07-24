@@ -157,24 +157,27 @@ const STAGES = [
   id:"feeds", lane:"Data (external)", title:"1 · Sport Radar feeds",
   glance:"Win probabilities, season win totals, play-by-play events, fixture schedule.",
   points:[
-    `Four inputs come from Sport Radar: <b>live win probability</b> for a game in progress, <b>season win totals / futures</b>, the <b>play-by-play event stream</b>, and the <b>fixture schedule</b>.`,
-    `Sport Radar is the single <b>Approved Valuation Input</b> — nothing else is allowed to move value.`
+    `Two data sources now (23-07): <b>Sport Radar</b> — live win probability, pulled during games (~200ms calls) + the schedule/game status; and <b>the Wednesday drop</b> — InPlay delivers the updated off-field index + remaining-game win probabilities every Wednesday.`,
+    `Sport Radar's live probability is the single in-game price driver — no event weights in v1.`,
+    `<b>Parity rule:</b> our probabilities must not lag DraftKings/FanDuel, or users pick the MM off. Cody owns the feeds.`
   ],
   eqs:[],
-  inputs:["— (external provider)"],
-  outputs:["P(win) per live game","season win expectations","game events (per play)","schedule + game status"],
+  inputs:["— (external + InPlay weekly)"],
+  outputs:["P(win) per live game (pulled)","Wednesday file: off-field index + remaining-wins","schedule + game status"],
   deferred:[
-    `<b>Delivery method</b> — push vs poll. Sets the latency budget for everything downstream.`,
+    `<b>Can SR serve it the way Edwin expects?</b> — probability readable ~every 200ms per live game, quota to match, + simulation games for testing (S5).`,
     `<b>The feed is broken today</b> — 403s; only 8 of 32 NFL win totals return.`,
-    `<b>Which product carries E[remaining wins]</b> — feeds E13 at the next stage.`
+    `<b>Push vs poll</b> — Edwin's model is pull-on-a-schedule; push would be better if it exists.`,
+    `<b>Wednesday-drop format</b> — file shape and delivery not agreed yet.`
   ],
-  impact:`No feed, no valuation, no market. Every millisecond of delay is a window where users
-  know the score before the MM does — the stale-quote sniping exposure.`,
+  impact:`No feed, no valuation, no market. Any lag behind the sportsbooks is free money
+  against the MM — the parity requirement is prize-integrity, not nice-to-have.`,
   remit:null, cand:null,
   questions:[
     {id:"S1",o:"S",t:"<b>Fix the probabilities API</b> — escalated, Cody chasing."},
-    {id:"S2",o:"S",t:"<b>Production quota</b> — trial ~45% used."},
-    {id:"S3",o:"S",t:"<b>Push vs poll</b> — the latency budget question."}
+    {id:"S5",o:"S",t:"<b>SR fit check</b> — cadence, quota, simulation games."},
+    {id:"S4",o:"S",t:"<b>Sportsbook parity</b> — Cody owns."},
+    {id:"S3",o:"S",t:"<b>Push vs poll</b>."}
   ]
 },
 {
@@ -194,26 +197,23 @@ const STAGES = [
   inputs:["P(win) + win expectations (SR)","off-field revenue (earnings engine)","$/win"],
   outputs:["one ESV per team, per play in-game","decomposition: this game / rest of season / off-field"],
   deferred:[
-    `<b>Settlement</b> — what actually pays out at season end. Defines what ESV <i>means</i>.`,
-    `<b>E[remaining wins]</b> — no defined computation: futures? summed per-game probabilities? intragame updates?`,
-    `<b>The event channel</b> — recompute purely from updated P(win), or apply per-event weights on top? Double-counting risk if both.`,
-    `<b>Off-field wiring</b> — what moves it between earnings events, at what cadence.`,
-    `<b>$/win</b> — $5.00 decoded, unconfirmed; NCAA unknown. <b>Initial valuations</b> — who computes, from what. <b>Week zero</b> NCAA policy. <b>§3 PDF</b> — request it.`
+    `<b>Settlement (E11)</b> — what actually pays out at season end. Defines what ESV <i>means</i>. STILL unasked after the 23-07 call.`,
+    `<b>Resolved 23-07:</b> remaining wins = InPlay internal, weekly (E13 ✅) · in-game channel = SR probability only, no event weights (E15 ✅) · off-field = Edwin's popularity index, ~$14–30, static start, Wednesday refresh (E2 ✅).`,
+    `<b>$/win</b> — $5.00 decoded, unconfirmed (E1). <b>Initial valuations</b> (E3). <b>Week zero</b> (E6). <b>§3 PDF</b> (E10). <b>NCAA scope</b> (E12) — also still unasked.`
   ],
-  impact:`The anchor for every quote in every market. E11 defines the meaning; E13 + E15 decide
-  whether the engine can be coded at all. Build cannot start here until those three land.`,
+  impact:`The anchor for every quote in every market. With E13/E15/E2 resolved, this engine is
+  now small: one SR pull + one weekly file + one formula. E11 still defines what the number
+  MEANS — top of the next call.`,
   remit:`<b>Remit:</b> entirely Edwin's — this is the economics of his product.`,
   cand:null,
   questions:[
-    {id:"E11",o:"E",t:"<b>Settlement definition</b> — top of Thursday."},
-    {id:"E13",o:"E",t:"<b>E[remaining wins] methodology</b> — with E11."},
-    {id:"E15",o:"E",t:"<b>Event weights vs probability-only</b>."},
-    {id:"E2",o:"E",t:"<b>Off-field wiring</b>."},
+    {id:"E11",o:"E",t:"<b>Settlement definition</b> — top of the next call."},
+    {id:"E12",o:"E",t:"<b>NCAA scope</b> — still unasked."},
     {id:"E1",o:"E",t:"<b>$/win</b> — confirm $5.00; NCAA answer."},
     {id:"E3",o:"E",t:"<b>Initial valuations</b>."},
     {id:"E6",o:"E",t:"<b>Week-zero NCAA</b>."},
     {id:"E10",o:"E",t:"<b>CTS-001 §3 PDF</b>."},
-    {id:"E4",o:"E",t:"<b>Old trigger script</b> — moot if E15 = probability-only."}
+    {id:"E4",o:"E",t:"<b>Python files</b> — Edwin sending (in motion)."}
   ]
 },
 {
@@ -315,9 +315,9 @@ const STAGES = [
   id:"trigger", lane:"Quoting — decision cycle (PTS-001)", title:"6 · Trigger",
   glance:"What starts a cycle: new RP, a fill, a state change — or a heartbeat.",
   points:[
-    `Four things start a cycle: a <b>new RP</b> (a touchdown arrives this way — valuation already moved), a <b>fill</b> against our quotes, a <b>condition/session change</b>, or a <b>heartbeat</b> expiring.`,
-    `Cycles never overlap; triggers arriving mid-cycle batch into the next one.`,
-    `“~5–10×/sec intragame” is <b>spoken guidance</b> (Troy, 20-07), not a specced number.`
+    `Four things start a cycle: a <b>new RP</b> (a touchdown arrives this way — valuation already moved), a <b>fill</b> against our quotes, a <b>condition/session change</b>, or the <b>call schedule</b> firing.`,
+    `<b>Cadence set 23-07, bifurcated by game state:</b> live games ~200ms per call ("a second's too long") · non-live every 30–60s · earnings windows (Tue/Wed): all ~170 symbols for ~5 minutes.`,
+    `Cycles never overlap; triggers arriving mid-cycle batch into the next one.`
   ],
   eqTitle:"The shape — an event rule, not an equation",
   eqs:[
@@ -402,7 +402,7 @@ const STAGES = [
   glance:"N levels per side, spaced and sized, seeded randomness so it doesn't look robotic.",
   points:[
     `Around each reservation price: <b>N levels</b> with configured spacing; the side's budget split across levels by weights — most size near the top.`,
-    `<b>Seeded, bounded randomization</b> so the book doesn't read as a machine — replayable, and never MORE aggressive than the reservation price.`,
+    `<b>Randomization = quantities ONLY (23-07)</b> — price is purely algorithmic. Sizes (especially top of book) get seeded, bounded jitter so the book doesn't read programmatic — replayable, never MORE aggressive than the reservation price.`,
     `<b>Tick rule:</b> bids round down, offers round up — rounding widens, never crosses.`,
     `The standard also allows <b>sizes</b> to carry skew (long → thin bid, fat offer) — a second skew channel alongside price.`
   ],
@@ -457,20 +457,18 @@ const STAGES = [
   id:"publish", lane:"Quoting — decision cycle (PTS-001)", title:"11 · Publish — cancel-replace into tZERO",
   glance:"Make the venue book match the target. Blocked on the gateway cancel build.",
   points:[
-    `Turn the validated book into reality on the venue. Troy's framing: <b>“wipe the book and replace it.”</b>`,
+    `Turn the validated book into reality on the venue — but only touch what changed: untouched levels REST (v1 lifecycle, stage 12).`,
     `<b>Venue facts (live-verified):</b> order-based only (no quote interface) · limit orders only · TIF DAY/GTC/GTD.`,
     `Resting orders <b>survive disconnects</b> — a dead MM's quotes rest until 23:59 ET. The dead-man switch is load-bearing.`,
     `<b>The gateway has no outbound cancel (35=F) or cancel/replace (35=G) at all.</b> The cancel build (committed 22-07, owner Hasan) is the hard prerequisite the whole MM queues behind.`,
-    `<b>Real cycles are a mix (22-07):</b> levels and quantities differ cycle-to-cycle, so publish = a <b>reconciler</b> — diff target vs live, then amend / cancel / create per slot, ordered retreat-first. In-game RP moves keep N constant → the dominant case is pure amends.`,
-    `<b>The honest fallback:</b> full wipe-and-replace is a legitimate v1 — simple, correct, message-heavy. The reconciler is an optimization; <b>T2's MaxOrdRate answer decides whether it's needed</b>, not taste.`
+    `<b>v1 model set 23-07 (Edwin + George):</b> post-first — don't wait for cancel confirmations; a momentary self-cross during a price adjustment is tolerated ("on the first iteration… I don't care").`,
+    `The 22-07 reconciler/amend analysis is <b>shelved, preserved in learnings</b> for the augment-later phase. Replace = back of queue anyway (T8.1) — and nobody cares.`
   ],
-  eqTitle:"The procedure — mechanics, not math",
+  eqTitle:"The v1 procedure — mechanics, not math (set 23-07)",
   eqs:[
-    {kind:"rule", lbl:"Per cycle, per team", ex:`cancel the MM's resting orders → post the new target book\n(full-replace vs diff-publish = undecided — N9 / N10)`},
-    {kind:"lookup", lbl:"The sequencing choice — how old quotes become new quotes", ex:`A  cancel → confirm → post   naked window: no MM quotes for\n                             ~a round-trip. Users' orders still\n                             rest; band caps sweep damage.\n\nB  post new → cancel old     overlap: 2× displayed size briefly,\n                             and new bid can CROSS stale offer →\n                             self-trade / wash-trade block.\n\nC  amend in place (35=G)     atomic per order: no gap, no overlap.\n                             Needs the gateway build. Adding/\n                             removing levels still needs A or B.`},
-    {kind:"lookup", lbl:"The real shape — a book reconciler (per-slot plan, not one global strategy)", ex:`target book − believed-live book → operation plan\n\nslot persists, price/qty changed        → AMEND  (35=G)\nslot gone (fewer levels)                → CANCEL (35=F)\nslot new (more levels / order consumed) → CREATE (35=D)\nslot identical                          → no-op — zero messages\n\npairing: PER SIDE (side can never be amended — a bid stays\na bid). Sort live, sort target, zip. Recomputed fresh every\ncycle — no long-lived slot identity to maintain.\n\nscale: N ≈ 3–6 levels/side → ~6–12 orders per team per cycle`},
-    {kind:"rule", lbl:"Ordering rules that keep a mixed batch safe", ex:`1  retreating side first  (prices moving up → offers first,\n   moving down → bids first — retreat can never cross)\n2  cancels before creates at overlapping prices\n3  advancing side: deepest level first, top of book LAST\n4  micro-barrier only where an advancing order would cross\n   our own stale order — wait for that ONE cancel-ack`},
-    {kind:"rule", lbl:"The race that exists in every plan", ex:`between snapshot and cancel/amend, an order can fill:\nthe op returns "too late — already executed"\n→ the state machine must reconcile fills vs op confirms`}
+    {kind:"rule", lbl:"Per level, per cycle", ex:`partially filled, price unchanged → LEAVE IT — rests until gone\nprice moved                       → cancel old level, post the\n                                    REMAINING qty at the new price\nfully filled, price unchanged     → reload at top of book\n                                    (randomized size)`},
+    {kind:"rule", lbl:"Post-first — no waiting", ex:`send the new orders without waiting for cancel confirmations.\na momentary self-cross during the adjustment is tolerated in v1.\n(new orders are faster than cancels — Edwin)`},
+    {kind:"rule", lbl:"The race that still exists", ex:`between snapshot and cancel, an order can fill:\nthe cancel returns "too late — already executed"\n→ the state machine reconciles fills vs cancel confirms`}
   ],
   inputs:["validated book","MM FIX OE session","live-order state"],
   outputs:["resting limit orders in T0's book"],
@@ -485,39 +483,36 @@ const STAGES = [
   Edwin/Troy's to confirm.`,
   cand:null,
   questions:[
-    {id:"G-cancel",o:"G",t:"<b>Gateway cancel build (Hasan)</b> — hard gate."},
-    {id:"N12",o:"N",t:"<b>Sequencing</b> — 🟡 recommended: C (35=G amend) primary + A at structural edges; B dominated."},
-    {id:"T8",o:"T",t:"<b>Verify 35=G semantics in QA</b> — gates the N12 recommendation."},
-    {id:"T1",o:"T",t:"<b>MM account in QA</b> — entitlement + mapping."},
-    {id:"T2",o:"T",t:"<b>MaxOrdRate</b>."},
-    {id:"N9",o:"N",t:"<b>Full-replace vs diff</b> — engineering choice, consequences flagged."}
+    {id:"G-cancel",o:"G",t:"<b>Gateway cancel build (Hasan)</b> — still the hard gate."},
+    {id:"T1",o:"T",t:"<b>MM account in QA</b> — permission + mapping."},
+    {id:"T2",o:"T",t:"<b>Rate limit</b> — pressure much lower now cadence is bifurcated."},
+    {id:"T11",o:"T",t:"<b>Self-match prevention</b> — Troy checking what T0 employs."}
   ]
 },
 {
-  id:"lifecycle", lane:"Quoting — decision cycle (PTS-001)", title:"12 · Quote lifecycle",
-  glance:"Ch 7's aging/refresh/replenish machinery — possibly moot under full cancel-replace.",
+  id:"lifecycle", lane:"Quoting — decision cycle (PTS-001)", title:"12 · Quote lifecycle — v1: rest until gone",
+  glance:"Set by Edwin 23-07: no top-ups, no aging. The design surface left is fill-response.",
   points:[
-    `Ch 7 tracks every published quote through states with an <b>age</b>, and three update verbs: <b>refresh</b> (update in place) · <b>replace</b> (swap for new) · <b>replenish</b> (top quantity back up after fills).`,
-    `It prefers incremental updates; full rebuilds are reserved for big events.`,
-    `<b>The tension:</b> full-replace → a quote lives one cycle → the machinery is moot. Diff-publish → every number is needed. <b>The model choice decides whether this chapter exists.</b>`
+    `<b>The v1 lifecycle (Edwin, 23-07):</b> a partially-filled order is <b>never refreshed</b> — it rests until completely gone (500 → 87 → 55 → 0).`,
+    `On a <b>price move</b>: cancel the old level, post the <b>remaining</b> quantity at the new price. On a <b>full fill</b> at unchanged price: reload at top of book (randomized size).`,
+    `Ch 7's aging/refresh/replenish machinery is <b>moot</b> — its five deferred numbers no longer need answers.`,
+    `<b>What replaces it: fill-response logic (N14)</b> — "if you get a fill, what do you do next?" e.g. off-game, filled at 6 → maybe leave the bid and let the ladder fill down (5, 4, 3).`
   ],
-  eqTitle:"The shape — a state machine, not an equation",
-  eqs:[{kind:"lookup", lbl:"One state at a time, per quote", ex:`Created → Published → Executed (full / partial)\n                    | Refreshed | Replaced | Replenished\n                    | Cancelled | Expired  | Suppressed`}],
-  inputs:["published quotes","fills / partial fills","cadence"],
-  outputs:["state transitions · replenish/refresh actions (if kept)"],
+  eqTitle:"The whole lifecycle now — a rule, not a state machine",
+  eqs:[{kind:"rule", lbl:"Per order (set 23-07)", ex:`posted → rests → (partial fills eat it down) → gone\n\nprice moves   → cancel + repost the REMAINDER at the new price\nfully filled  → reload at top of book (randomized size)\nnever         → topped up, refreshed, or aged out`}],
+  inputs:["published quotes","fills / partial fills","price moves"],
+  outputs:["cancel + repost actions","reload-at-top actions"],
   deferred:[
-    `<b>Five deferred numbers</b> — min lifetime · max lifetime · refresh interval · expiry threshold · aging variation. Defined nowhere.`,
-    `<b>Whether Ch 7 applies at all</b> — the full-replace vs in-place architecture call.`
+    `<b>Fill-response rules (N14)</b> — in-game vs off-game behaviour after a fill; design with Edwin on the next call.`
   ],
-  impact:`Drives message volume (T2), what users see (order-ID churn every 200 ms vs stable
-  resting orders — churn also resets price-time priority), and Ch 7 conformance.`,
-  remit:`<b>Remit:</b> mechanism is engineering; the observable consequences (churn, priority,
-  book stability) go to Edwin with both models on the table.`,
+  impact:`This one decision deleted the top-up arithmetic, the aging machinery, AND the
+  amend-vs-cancel trilemma. Fill-response is now where the MM's personality lives.`,
+  remit:`<b>Remit:</b> the lifecycle is Edwin's, now given. Fill-response rules are his too —
+  we bring scenarios, he picks behaviours.`,
   cand:null,
   questions:[
-    {id:"N10",o:"N",t:"<b>Lifecycle model</b> — both options + consequences to Edwin."},
-    {id:"E7",o:"E",t:"<b>Does full cancel-replace satisfy Ch 7's intent?</b>"},
-    {id:"T2",o:"T",t:"<b>Message budget</b> constrains the choice."}
+    {id:"N14",o:"N",t:"<b>Fill-response logic</b> — design with Edwin, next call."},
+    {id:"E7",o:"E",t:"<b>Conformance</b> — Ch 7 moot; confirm in the season-1 bar."}
   ]
 },
 {

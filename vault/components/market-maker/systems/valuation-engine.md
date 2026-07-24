@@ -2,7 +2,7 @@
 
 > **Component:** [[market-maker/market-maker]]
 > **Standard:** [[standards/CTS-001-financial-valuation-standard|CTS-001]] · guide: [[standards/CTS-001-plain-english-guide]]
-> **Status:** Formula known (20-07) — numbers and data feed outstanding
+> **Status:** Inputs resolved (23-07 MM call) — $5/win sign-off (E1), settlement (E11) and the Sport Radar fit check (S5) outstanding
 > **One-liner:** Continuously answers "what is one share of this team worth right now?" — one number (ESV) per team, updated per play during live games.
 
 ---
@@ -44,15 +44,15 @@ off-field = marketing / advertising revenue component
 - IPO anchor from the vision doc: e.g. 5 expected wins × $5 = $25/share, plus
   off-field.
 
-## Inputs
+## Inputs (resolved 23-07 — see [[market-maker/decisions]])
 
 | Input | Source | Status |
 |---|---|---|
-| Live win probabilities (this game) | Sport Radar (~20 yrs historical backing) | ⚠️ API broken — 403s, only 8/32 NFL win totals; Cody chasing |
-| Season win expectations (remaining games) | Sport Radar futures/win totals | ⚠️ same feed issue |
-| $/win revenue value | Edwin | 🔴 owed — Thursday |
-| Off-field revenue (EST/ACT) | [[earnings-report/earnings-report]] engine — ½ on-field winner, $250/game volume-allocated | Partially defined there |
-| Game events (trigger recompute) | Sport Radar push/poll | Defined in [[architecture/integrations/integrations]] |
+| Live win probability (this game) | **Sport Radar, pulled directly** during live games (~200ms calls) — the event is already priced into the probability; no own event weights in v1 | ✅ model set · ⚠️ API broken (S1) · fit check owed (S5) |
+| Expected remaining wins | **InPlay internal, produced weekly** (SR doesn't do season totals); Edwin helping automate; arrives in the **Wednesday drop** | ✅ 23-07 |
+| $/win revenue value | $5.00 decoded from the client sheet | 🟡 sign-off pending (E1) |
+| Off-field value | **Edwin's popularity index** — ~$14–30/team, static at start, already in the NFL IPO prices; refreshed in the Wednesday drop | ✅ 23-07 (EST/ACT interplay deferred) |
+| The Wednesday data drop | InPlay → us, every Wednesday: updated off-field metric + remaining-game win probabilities, plugged into the algo | ✅ cadence agreed · format TBD |
 
 ## Behaviour
 
@@ -71,20 +71,20 @@ off-field = marketing / advertising revenue component
   valid value (the market-state layer handles the frozen publication — see
   [[market-maker/systems/market-state]]).
 
-## Event Weighting & Calibration
+## Event Weighting — descoped for v1 (23-07)
 
-- There is **no objective "big play" classification** — Sport Radar data is
-  factual but materiality is subjective (a sack on 3rd down ≠ 1st down;
-  garbage-time yards mean nothing). A prior Sport Radar content exercise
-  produced ~40 qualifying data points, but subjectivity remains. (Source:
-  standup 2026-07-20)
-- Event weights start as guesses and are **learned from observed market
-  reaction** over time — first weeks expected volatile while the model
-  calibrates. Win probability does much of this implicitly; explicit trigger
-  weights layer on top.
-- **Edwin has a prior trigger script** from the ~2-years-ago simulations
-  (Kevin believes a full script exists) — the calibration starting point.
-- Open: how to value **week zero of college football** (blowout mismatches).
+- **v1 has no event-weight model.** Edwin: "you don't have to create it —
+  you just pull Sport Radar's probability in." The in-game price channel is
+  SR's live win probability, which already reflects every play in context
+  (score, quarter, time left — a garbage-time score barely moves it; an
+  early-game injury moves it a lot).
+- Out-of-game events (injury, trade, draft) flow through the **weekly
+  remaining-wins update** and the popularity index, not through live
+  triggers.
+- **Edwin is sending the original MM simulation Python files** ("functional,
+  not a heavy lift") — reference material, not a dependency (E4 in motion).
+- Still open: how to value **week zero of college football** (blowout
+  mismatches, E6) — moot for launch if E12 lands NFL-only.
 
 ## Interfaces
 
@@ -95,9 +95,11 @@ off-field = marketing / advertising revenue component
 
 ## Open Items
 
-Tracked in [[market-maker/open-questions]]: $/win value(s), off-field model
-wiring, IPO initial valuations, Sport Radar feed fix, ESV delivery mechanism,
-settlement convergence, Edwin's trigger script, week-zero policy.
+Tracked in [[market-maker/open-questions]]: **E11 settlement** (what a share
+actually pays — defines what ESV means), E1 $/win sign-off, E3 initial
+valuations, S1 feed fix, **S5 Sport Radar fit** (can they serve live
+probability at ~200ms-call cadence + simulation games?), S4 sportsbook
+parity, N1 ESV delivery mechanism, E6 week zero, Wednesday-drop file format.
 
 > Note: CTS-001's Section 3 (the formal valuation math) is **missing from the
 > vault copy** — the file ends at §2.33. Edwin's spoken formula above fills the

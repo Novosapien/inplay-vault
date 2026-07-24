@@ -11,6 +11,22 @@
 > authoritative question list is [[market-maker/open-questions]].
 > Values mirror [[market-maker/parameters]]; symbols in [[market-maker/glossary]].
 
+> **⚠ 23-07 v1 SUPERSESSIONS (MM call — see [[market-maker/decisions]]).**
+> Edwin simplified the machine. Where this doc conflicts with the list below,
+> the list wins:
+> - **No top-ups:** a partially-filled order rests until completely gone.
+>   Price move → cancel + post the *remaining* qty at the new price. Full
+>   fill at unchanged price → reload at top of book.
+> - **Publish is post-first:** no waiting for cancel confirmations; a
+>   momentary self-cross during an adjustment is tolerated in v1.
+> - **Cadence bifurcated:** live ~200ms · non-live 30–60s · earnings windows
+>   all symbols ~5 min. (Replaces the per-session heartbeats below.)
+> - **Randomizer = quantities only** — no price jitter (ε is dead).
+> - **In-game driver = SR live probability pulled directly** — no event
+>   weights.
+> - New design surface: **fill-response logic (N14)** — "you got filled, now
+>   what?"
+
 The whole engine is one loop per team. Pseudocode is Python-ish; everything is
 deterministic — the only randomness is `seeded_rng`, seeded from
 `(team, cycle_id)`, so replay reproduces it exactly.
@@ -45,9 +61,9 @@ def wait_for_trigger(team, state):
     events = drain_event_queue(team)             # coalesce — many triggers, one cycle
     if events:
         return classify(events)                  # NEW_RP | FILL | STATE_CHANGE | SESSION_CHANGE
-    if time_since_last_cycle(team) > HEARTBEAT:  # 🟡 HEARTBEAT = 200 ms in-game,
-        return HEARTBEAT                         #    2 s around-game, 30 s overnight
-    sleep_until_next_event_or_heartbeat()
+    if time_since_last_cycle(team) > CALL_INTERVAL:  # ✅ 23-07: ~200 ms live game ·
+        return HEARTBEAT                             #    30–60 s non-live ·
+    sleep_until_next_event_or_heartbeat()            #    earnings window: all symbols ~5 min
 ```
 
 Rules: cycles never overlap; triggers arriving mid-cycle batch into the next
@@ -177,15 +193,16 @@ ROP = em.anchor + OO                                  # ✅ reservation offer
 ## 8 · Ladder — market structure
 
 ```python
-def build_ladder(em, RBP, ROP, rng):
+def build_ladder(em, RBP, ROP):
+    # ✅ 23-07: price is purely algorithmic — NO price jitter (ε removed);
+    # randomization lives in quantities only (§9)
     spacing = cfg.tick * cfg.spacing_ticks            # 🟡 spacing_ticks = 3
     bids, offers = [], []
     for k in range(em.n_levels):
-        jitter = rng.uniform(-1, 1) * cfg.tick        # 🟡 ε bounded to ±1 tick, seeded
-        b = RBP - k * spacing + (jitter if k > 0 else 0)   # level 0 never jittered
-        o = ROP + k * spacing + (jitter if k > 0 else 0)
-        bids.append(  round_down_to_tick(min(b, RBP)) )    # never MORE aggressive
-        offers.append(round_up_to_tick(  max(o, ROP)) )    # than reservation
+        b = RBP - k * spacing
+        o = ROP + k * spacing
+        bids.append(  round_down_to_tick(b) )         # rounding widens,
+        offers.append(round_up_to_tick(  o) )         # never crosses
     assert bids[0] < offers[0]                        # no locked/crossed — ever
     return bids, offers
 ```
@@ -236,12 +253,20 @@ falls back to a defensive profile (still two-sided).
 
 ```python
 def publish(team, target, state):
-    # Troy's "wipe the book and replace it" — simplest correct v1:
-    cancel_all(team, state.live_orders)               # batch cancel via FIX OE session
-    for side, price, qty in target.orders():
-        send_limit_order(team, side, price, qty)      # ClOrdID = f(team, cycle, slot)
-    # later optimisation: diff target vs live and only touch changed levels
-    # (fewer messages → helps the T2 throughput question)
+    # ✅ 23-07 v1 model (Edwin + George):
+    for level in unchanged_levels(target, state):     # partially-filled orders
+        pass                                          # rest until GONE — never touched
+    for level in price_moved_levels(target, state):
+        cancel(level.old_order)                       # cancel old level...
+        send_limit_order(team, level.side,            # ...post REMAINING qty at
+                         level.new_price,             #    the new price
+                         level.old_order.leaves_qty)
+    for level in fully_filled_levels(target, state):
+        send_limit_order(team, level.side,            # reload at top of book,
+                         level.price,                 #    randomized size
+                         randomized_qty(level))
+    # post-first: do NOT wait for cancel acks — a momentary self-cross
+    # during the adjustment is tolerated in v1 ("first iteration, I don't care")
 ```
 
 ---
@@ -269,8 +294,11 @@ No separate "replay function" exists — purity of §0 makes replay free.
 def on_execution_report(team, report, state):
     if report.exec_type == FILL:
         state.inventory += signed_qty(report)         # feeds §6's skew next cycle
-        enqueue_trigger(team, FILL)                   # partial fills at the touch may
-                                                      # replenish rather than full recycle
+        # ✅ 23-07: NO replenish — a partial fill leaves the order resting
+        # with its remainder. A FULL fill invokes fill-response logic (N14):
+        # in-game → reload at top of book next call;
+        # off-game → maybe leave it and let the ladder fill down (design w/ Edwin)
+        enqueue_trigger(team, FILL)
     if report.exec_type == BUST:                      # ExecType=H from T0
         state.inventory -= signed_qty(report.original)
         enqueue_trigger(team, STATE_CHANGE)
@@ -280,12 +308,14 @@ def on_execution_report(team, report, state):
 
 ## The complete constant list this file introduces
 
-`HEARTBEAT` per session · assessment `window` · classifier thresholds (5 s /
-10 s / 2000 ms) · the `PROFILE` table + `WIDE` row · `INV_WARN` 5% ·
-`INV_MAX` 10% · `spread_ticks` 2 · `n_base` 4 · `l_base` 5 000 · `r_base`
-200 ms · `lam_base` 0.5 · `BURN_REF` 0.2/s · protection add-on 1× ·
-`spacing_ticks` 3 · ε ±1 tick · `FRONT` 0.55 · size jitter ±20% · `MIN_SHOW`
-50 · lot 10 · `BAND` ±30% · budget slack 5%.
+`CALL_INTERVAL` ✅ bifurcated (live ~200ms · non-live 30–60s · earnings
+burst) · assessment `window` · classifier thresholds (5 s / 10 s / 2000 ms) ·
+the `PROFILE` table + `WIDE` row · `INV_WARN` 5% · `INV_MAX` 10% ·
+`spread_ticks` 2 · `n_base` 4 · `l_base` 5 000 · `lam_base` 0.5 · `BURN_REF`
+0.2/s · protection add-on 1× · `spacing_ticks` 3 · ~~ε price jitter~~ ✂ dead
+(price purely algorithmic, 23-07) · `FRONT` 0.55 · size jitter ±20% ·
+`MIN_SHOW` 50 · lot 10 · `BAND` ±30% · budget slack 5%.
 
-**Every one is 🟡 proposed.** That list *is* the Thursday agenda — each number
-Edwin confirms or changes gets promoted to ✅ in [[market-maker/parameters]].
+**Everything not marked ✅/✂ is a placeholder** (stance 22-07: we ask, we
+don't propose). Each number Edwin confirms gets promoted to ✅ in
+[[market-maker/parameters]].

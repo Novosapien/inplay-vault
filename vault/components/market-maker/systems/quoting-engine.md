@@ -2,8 +2,8 @@
 
 > **Component:** [[market-maker/market-maker]]
 > **Standard:** [[standards/PTS-001-simulated-designated-market-maker-standard|PTS-001]] · guides: [[standards/PTS-001-plain-english-guide]] · [[standards/PTS-001-comprehensive-guide]]
-> **Status:** Architecture known — pricing parameters owed (Thursday 23-07)
-> **One-liner:** The bot. Turns a Reference Price + a profile into two-sided limit-order ladders resting in T0's book, refreshed ~5–10×/sec, skewed to shed inventory.
+> **Status:** v1 model set (23-07 MM call) — pricing numbers owed; fill-response logic (N14) to design
+> **One-liner:** The bot. Turns a Reference Price + a profile into two-sided limit-order ladders resting in T0's book — refreshed ~200ms during live games, every 30–60s otherwise — skewed to shed inventory. v1 mantra (Edwin): "really simple to start."
 > **Companion:** [[market-maker/systems/decision-cycle-reference]] — every function in the cycle written out as concrete pseudocode with proposed default values.
 
 ---
@@ -50,10 +50,22 @@ trigger (new RP · fill · state change · session change · ~200ms heartbeat)
   → commit   (immutable record for replay)
 ```
 
-- **Cancel-replace regime:** the MM constantly wipes and replaces its quotes —
-  "liquidity lag". Baseline ~**5–10×/sec** plus **event-triggered
-  recalculation** (touchdown → recompute now, then resume baseline). It does
-  not wait to be traded against. (Source: standup 2026-07-20)
+- **Cadence bifurcated by game state (23-07):** live games ~**200ms per
+  call** ("a second's too long") · non-live **every 30–60s** · **earnings
+  windows** (Tue NFL / Wed NCAA): all ~170 symbols for ~5 minutes. Supersedes
+  the flat 5–10×/sec framing — steady-state load is small.
+- **v1 quote lifecycle (23-07, supersedes everything earlier):**
+  - A partially-filled resting order is **never topped up** — it rests until
+    completely gone (500 → 87 → 55 → 0).
+  - **Price moves:** cancel the old level, post the **remaining** quantity at
+    the new price.
+  - **Full fill at unchanged price:** reload at top of book (randomized size).
+  - **Publish is post-first:** don't wait for cancel confirmations; a
+    momentary self-cross during an adjustment is acceptable in v1 (Edwin:
+    "on the first iteration… I don't care"; George confirmed 23-07).
+- **Fill-response logic is the open design surface (N14):** "if you get a
+  fill, what do you do next?" — e.g. outside games, get filled at 6 → maybe
+  leave the bid and let the ladder fill down rather than instantly re-quote.
 - Cycles never overlap; multiple triggers mid-cycle batch into the next one.
 
 ## Pricing
@@ -73,13 +85,12 @@ reservation offer = RP + (base spread + inventory skew + activity adj + protecti
   to ~flat, with gain λ scheduled by regime (pricing profile).
 - **Ladders:** N levels per side, spaced by the profile, budget spread across
   levels by normalized weights, most size near the top.
-- **Randomizer:** quoted sizes randomized so the book doesn't read as a
-  machine (no 500/500/500 lots) — bounded, *seeded* (replayable). Occasionally
-  a randomized **aggressive order** deliberately moves the market: e.g. long
-  50k wanting 10k → buy another 10k aggressively, rip the price higher, then
-  sell the excess into the backfilled higher prices. (Source: standup
-  2026-07-20 — this goes beyond the doc's passive quoting; needs its own
-  bounds.)
+- **Randomizer = quantities ONLY (narrowed 23-07):** price is purely
+  algorithmic — no price randomization. Quoted sizes (especially top of
+  book) randomized so the book doesn't read programmatic — bounded, *seeded*
+  (replayable). The occasional randomized **aggressive order** Edwin
+  described (deliberately moving price to exit inventory) remains
+  out-of-scope for v1 pending bounds (E8).
 - **Ticks:** bids round down, offers round up — rounding widens, never
   crosses.
 - **Limit orders only** — everything stays a limit order, but a limit can
@@ -108,11 +119,12 @@ can come later (scope call for Thursday).
 
 ## Special Responsibilities
 
-- **IPO fill guarantee / float warehousing:** the MM warehouses unsold IPO
-  float in max clips (~50k), guaranteeing ~35% (possibly up to 50%) of every
-  float is consumed — the straw-buyer mechanism from the 17-06 discussion.
-  Mechanics with the T0 ledger open. (Source: standup 2026-07-15; see
-  [[ipo-module/ipo-module]])
+- **IPO buyer (firmed 23-07):** the MM buys at **every IPO** — when buyers
+  are short, and to balance how many shares get pushed into the market.
+  Edwin: **"we're going to start with the IPO"** — sequencing signal; fuller
+  session promised. Earlier framing (float warehousing, max clips ~50k,
+  ~35–50% guarantee) stands as the mechanism sketch; T0 ledger mechanics
+  open (T6). (See [[ipo-module/ipo-module]])
 - **Load-balancing vs market-making algo split** (named 17-07) — boundary
   unclear, clarify Thursday.
 

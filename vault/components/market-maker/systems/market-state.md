@@ -69,9 +69,10 @@ Three liquidity sessions with different profiles (Source: standup 2026-07-20):
 
 | Session | Behaviour |
 |---|---|
-| **In-game** | Tight, fast — cancel-replace ~5–10×/sec, event-triggered recompute |
+| **In-game** | Tight, fast — calls ~every 200ms ("a second's too long", 23-07) |
 | **Around-game** | Intermediate — pre-game build-up, post-game wind-down |
-| **Overnight / between games** | Deliberately wide (~$2.5–5 spreads), slow — "let the market at least tell you where it is" rather than quoting tight into nothing |
+| **Overnight / between games** | Deliberately wide (~$2.5–5 spreads), slow — non-live calls every 30–60s (23-07) |
+| **Earnings window** (Tue NFL / Wed NCAA) | Burst: call all ~170 symbols for ~5 minutes around the 7:30 release (23-07) |
 
 Driven by the fixture schedule + Sport Radar official event status, per game
 (the Cowboys can be in-game while the Packers are overnight). Underneath sits

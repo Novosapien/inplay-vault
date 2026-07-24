@@ -1,8 +1,8 @@
 # InPlay Trading Challenge — Market Maker
 
 > **Vision:** [[vision]]
-> **Date:** 2026-07-20 · restructured 2026-07-21
-> **Status:** Collecting — deep-dive with Edwin **Thursday 23-07, 3–4pm London**
+> **Date:** 2026-07-20 · restructured 2026-07-21 · v1 model set 2026-07-23
+> **Status:** v1 model set (23-07 MM call) — **another MM call expected**; E11 settlement + E12 NCAA still unasked
 > **Owner:** Kevin Murray (Head Execution Trader) / George Westbrook (engineering) / Edwin (co-build, domain expertise)
 > **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
 
@@ -44,9 +44,10 @@ matching engine), and the SDMM itself (PTS-001). Edwin: *"We will build them."*
 ## The One-Sentence Mental Model
 
 > Quote two-sided ladders around a fair price we compute ourselves, sized
-> generously, skewed to shed inventory, refreshed ~5–10×/sec via
-> cancel-replace, published to T0 — deterministically, for every team, all
-> season.
+> generously, skewed to shed inventory — refreshed ~200ms during live games,
+> every 30–60s otherwise — published to T0 deterministically, for every team,
+> all season. v1 keeps it simple: orders rest until fully traded; on a price
+> move, cancel and repost the remainder at the new price.
 
 ## System Map
 
@@ -66,7 +67,8 @@ Sport Radar (win probabilities, game events)
            ▼
 ┌───────────────────────┐
 │ QUOTING ENGINE (SDMM) │  decision cycle → reservation prices → ladders → sizes
-│ (PTS-001)             │  → validate → cancel-replace into T0 (~5–10×/sec)
+│ (PTS-001)             │  → validate → cancel-replace into T0
+│                       │  (live ~200ms · non-live 30–60s · earnings burst)
 └──────────┬────────────┘
            ▼
      T0 order book  ◄──── users (Trading Service → FIX GW)
@@ -89,9 +91,9 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 | System | What it does | Status |
 |--------|--------------|--------|
-| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value (ESV) from win probabilities + the revenue model | Formula known (20-07) · numbers owed |
+| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value (ESV) from win probabilities + the revenue model | Inputs resolved 23-07 (SR live pull + Wednesday drop) · $5/win sign-off + E11 pending |
 | [[market-maker/systems/market-state\|Market State]] | Publishes the Reference Price; classifies market condition; selects profile + liquidity session | Shape known · classifier ours to design |
-| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: decision cycle, reservation prices, ladders, inventory skew, randomizer, cancel-replace | Architecture known · params owed |
+| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: decision cycle, reservation prices, ladders, inventory skew, randomizer, cancel-replace | v1 model set 23-07 (rest-until-gone · bifurcated cadence) · numbers owed |
 | [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 |
 | [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game |
 | [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last |
