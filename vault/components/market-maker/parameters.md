@@ -7,6 +7,47 @@
 
 ---
 
+## ⭐ v1.3 Build Spec registry (24-07) — THE authoritative set
+
+The v1.3 spec's Configuration Dictionary (§12.2) supersedes the sections
+below for implementation. ✅ = spec-fixed · 🟡 ▸ = build as given, value
+pending InPlay approval (spec Ch 14-A) · 🔴 = no default, external closure
+(spec §12.3). Rows tagged **E17/E18** sit inside an open conflict.
+
+| Parameter | Value | Status | Spec § |
+|---|---|---|---|
+| Tick size | $0.01 | ✅ | 5.3 |
+| Spread — Stable / Active / Defensive | $0.10 / $0.20 / $0.40 | ✅ | 5.2 |
+| Quote levels — Stable / Active / Defensive | 3 / 2 / 1 | ✅ | 5.2 |
+| Ladder offsets — Stable · Active | ±$0.05, ±$0.10 · ±$0.10 | 🟡 ▸ | 5.6 |
+| Base quantities — Stable L1/L2/L3 · Active · Defensive | 10,000/7,500/5,000 · 7,500/5,000 · 5,000 | 🟡 ▸ | 5.7.1 |
+| Inventory skew S · cap M | $1.00 · $0.25 | 🟡 ▸ | 4.5 |
+| Pending-exposure weight · EPR clamp · modifier clamp | 0.50 · ±0.50 · 0.50–1.50 | ✅ | 4.4, 5.7.2 |
+| Quantity variation · increment / min / max | ±25% (seeded SHA-256, fixture verified) · 500 / 1,000 / 15,000 sh | ✅ | 5.7.3 |
+| Replenishment threshold · delay | 50% of target · 15 s | 🟡 ▸ **E17** | 5.9 |
+| Material IA change · material qty change | $0.005 · 500 sh | ✅ | 5.8 |
+| Public deviation threshold | max($0.50, 10% × RP) | 🟡 ▸ | 5.5 |
+| Price bounds | min $0.01 · max = MEV (season-open NFL $127.50) | ✅ | 5.4 |
+| Valuation sweep · max interval | 2.0 s · 2.5 s | ✅ **E18** | 3.1.4 |
+| Live freshness bands | 5 / 10 / 20 s | ✅ **E18** | 3.3.1 |
+| Pregame freshness bands | 24 h / 6 h / 60 min / 15 min | ✅ | 3.3.2 |
+| Status + Market-State promotion dwells | 10 s each | 🟡 ▸ | 3.4.1, 6.4.1 |
+| Confidence deduction schedule | table §3.5 | 🟡 ▸ | 3.5 |
+| Game values — win / tie | $5.00 / $2.50 | ✅ | 3.1.2 |
+| Probability sum bands | ±1e-6 accept · ±1% normalize · else reject | ✅ | 3.2.1 |
+| MM IPO allocation | floor(85% × unsold shares) | ✅ | 9.2 |
+| Off-field pool / window / cadence / zero-volume split | $2.50 per game · prior-final→final · weekly post-MNF (NFL), post-week-final (NCAA) · $1.25/$1.25 | ✅ | 3.6 |
+| Popularity model — BDI clamp · blend horizon · capture clamp | 0.10–10.0 · 4 publications · 0.20–0.80 | 🟡 ▸ | 3.6.5 |
+| Security universe | 32 NFL + 138 NCAA D-I = 170 | ✅ | 2.5 |
+| Venue timeouts / retries / rate limits / book age / clock skew / retention / load profile / RTO | — no defaults; config only | 🔴 §12.3 | 12.3 |
+
+---
+
+> ⚠️ **Everything below this line predates the v1.3 spec (24-07).** Kept for
+> history and for numbers the spec doesn't cover (capacity, IPO warehousing,
+> synthetic MO). Where a row conflicts with the registry above, the registry
+> wins.
+
 ## Valuation
 
 | Parameter | Meaning | Value | Status | Source |
@@ -65,8 +106,8 @@
 | Liq. Preservation | 3.00 | 0.50 | 0.50 | 1.25 | 3.50 |
 | Protective | 5.00 | 0.25 | 0.25 | restricted | 5.00 |
 
-⚠ Needs merging with CTS-002's profile menu (Balanced/Emergency) into one
-table → N2 in [[market-maker/open-questions]].
+✂ **Superseded 24-07:** the merged table is the v1.3 spec's §5.2
+(Stable/Active/Defensive/Suspended — see the registry above). N2 resolved.
 
 ## Supervision
 

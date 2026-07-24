@@ -5,13 +5,13 @@
 > T0 call. Global architecture questions live in
 > [[architecture/open-questions]]; this is the MM-specific working list.
 
-**Next scheduled venues:** T0 tech calls Tue + Thu · **another MM call with
-Edwin expected** (the 23-07 call never reached E11/E12; George emailing him
-the anchor doc).
+**Next scheduled venues:** T0 tech calls Tue + Thu · written blocking
+questions to InPlay per spec §1.6-1.
 
-**Next-call priority (set 23-07):** E11 settlement → E12 NCAA scope → E14
-float basis → E16 always-on trading → N14 fill-response walk-through → E1
-$/win sign-off. Asked as **questions**.
+**Priority (reset 24-07 after the v1.3 spec landed):** E17 quote lifecycle →
+E18 cadence → E19 remaining-season probability source → S6 tie probability →
+S7 SR product/quota ask → spec Ch 14-A ▸ value approvals → B-3…B-10 business
+decisions. E11/E12/E1/E5/E14 are **answered by the spec** (see below).
 
 > **Stance (George, 22-07): we ask — we do not propose.** Parameter values and
 > deferred math are InPlay's remit, not ours. The placeholder constants in
@@ -48,22 +48,25 @@ $/win sign-off. Asked as **questions**.
 
 | # | Question | Blocks | Status |
 |---|----------|--------|--------|
-| E1 | **Sign off $5 per win** — the client's own price sheet works out to: each expected win adds **$5.00** to the share price. Confirm it, and say whether NCAA uses the same number | Valuation | 🟡 Decoded — needs sign-off |
+| E1 | ~~Sign off $5 per win~~ **✅ RESOLVED 24-07 (v1.3 spec §3.1.2):** $5.00/win both leagues, plus a **$2.50 tie value** — new, never mentioned on a call | Valuation | ✅ Resolved |
 | E2 | ~~Off-field: which number goes into the price?~~ **✅ RESOLVED 23-07:** Edwin's **popularity index** — ~$14–30 per team, static at the start, already inside the NFL IPO prices, refreshed in the **Wednesday data drop**. Residual: how the EST/ACT earnings mechanic interacts with it long-term — deferred | Valuation | ✅ Resolved (residual deferred) |
 | E3 | **Opening prices** — who calculates each team's starting price at IPO, and from what? (NFL sheet exists; NCAA owed) | Valuation, IPO | 🟡 NFL known / 🔴 NCAA |
 | E4 | **Edwin's old simulation code** — he's sending the original market-maker Python files ("functional, not a heavy lift") | Calibration | 🟡 In motion (23-07) |
-| E5 | **All the pricing numbers** — spreads, ladder shape, sizes, how hard the MM fights to stay flat (λ) — per session and profile. **We ask; we don't propose** | Quoting | 🔴 Open |
+| E5 | ~~All the pricing numbers~~ **✅ RESOLVED 24-07 (v1.3 spec §5.2/§5.6/§5.7/§12.2):** spreads $0.10/$0.20/$0.40, levels 3/2/1, sizes 10k/7.5k/5k, skew S=$1.00 cap $0.25. Most are ▸ proposed — build the mechanism as given; final values await InPlay approval (spec Ch 14-A) | Quoting | ✅ Resolved (▸ values pending) |
 | E6 | **Week-zero college games** — how to price massive-mismatch openers | Valuation | 🔴 Open (Cody to ask) |
 | E7 | **How strictly do the standards bind for season 1?** — which rules bend for launch (replay tooling, audit depth, the quote-aging chapter)? | Everything | 🟡 Needs explicit sign-off |
 | E8 | **Limits on deliberate price-moving** — Edwin described the MM occasionally moving the price on purpose to exit stock. What bounds make that acceptable? (Agreed: not in v1) | Quoting, integrity | 🔴 Open |
 | E9 | **Weekly Financial Report** — who produces it, what's in it, when | Market state, settlement | 🔴 Open |
 | E10 | **The missing valuation-math chapter** — CTS-001 §3 is referenced everywhere and absent from our copy. Request the PDF | Valuation | 🔴 Open |
-| E11 | **What does a share actually pay out at season end?** — THE most important question. If the answer is "off-field + $5 × actual wins", then the whole pricing engine is just a live estimate of that number and everything becomes simple | Everything | 🔴 **Top of agenda** |
-| E12 | **Do NCAA teams trade this season?** — the price sheet covers 32 of 170 teams. NFL-only at launch, or does NCAA get prices too? Decides how many markets we run | Scope, plan | 🔴 Open |
+| E11 | ~~What does a share actually pay out at season end?~~ **✅ RESOLVED 24-07 (v1.3 spec §11.3):** `FSV = realized on-field + realized off-field` — $5/win + $2.50/tie summed over the regular season, plus the realized off-field pools. It IS the simple answer: the pricing engine is a live estimate of that number | Everything | ✅ Resolved |
+| E12 | ~~Do NCAA teams trade this season?~~ **✅ RESOLVED 24-07 (v1.3 spec §2.5):** yes — 170 securities, evaluated 24 h/day | Scope, plan | ✅ Resolved |
 | E13 | ~~How is "expected remaining wins" calculated?~~ **✅ RESOLVED 23-07:** produced **internally by InPlay, weekly** (Sport Radar doesn't do season totals — futures aren't updated); Edwin helping automate; delivered in the Wednesday drop | Valuation | ✅ Resolved |
-| E14 | **Which share count for the skew?** — the MM's skew works off "inventory as a % of the float". Is the float 875k (the sheet) or 5M (the capacity)? The answer changes the skew's strength ~5.7× | Quoting | 🔴 Open |
+| E14 | ~~Which share count for the skew?~~ **✅ RESOLVED 24-07 (v1.3 spec §4.3):** the denominator is **Reference Float = issued − treasury**. Actual share counts follow from issuance | Quoting | ✅ Resolved |
 | E15 | ~~When a play happens, what moves the price?~~ **✅ RESOLVED 23-07:** just Sport Radar's live win probability, pulled directly — no own event weights in v1 ("you don't have to create it") | Valuation | ✅ Resolved |
-| E16 | **Is trading just… on, all day?** — confirm the product intent: continuous matching all day, every day (apart from the short daily maintenance gap) — no daily opening auction, no open/close ceremony (mirrors T9; opened 23-07) | Market state | 🔴 New |
+| E16 | **Is trading just… on, all day?** — the v1.3 spec implies yes (24 h/day evaluation, no sessions, no auctions mentioned) but doesn't say it outright. Confirm with T0 on the venue side (T9) | Market state | 🟡 Spec implies yes — confirm |
+| E17 | **Quote lifecycle — spec vs what you said (NEW 24-07, conflict):** the spec tops orders back up once half-eaten after 15 s (§5.9); on the 23-07 call Edwin said "rest until completely gone, no top-ups ever". Which one is v1? | Quoting engine | 🔴 **Blocking question** |
+| E18 | **Live cadence — spec vs what you said (NEW 24-07, conflict):** the spec sweeps every 2.0 s and calls a 5 s-old probability "Current" (§3.1.4, §3.3.1); on the call Edwin said ~200 ms, "a second's too long". Which one is v1? | Valuation, quoting | 🔴 **Blocking question** |
+| E19 | **Where does the rest-of-season number come from? (NEW 24-07, conflict + proof):** the spec demands per-game probabilities for all ~2,400 games from season open (D-1) and bans internally-generated probabilities (§1.5) — but SR prices games **rolling** (verified: NCAA 70 of ~1,700 today), so Σ GEV(g) can't be computed from SR alone. Options: (a) SR season win totals for the unpriced tail — NFL verified, NCAA absent; (b) InPlay-internal weekly (Edwin's own 23-07 model) via a §1.5 Change Order; (c) both. Needs a ruling | Valuation | 🔴 **Blocking question** |
 
 ## Owed by / with T0 (Tue + Thu calls)
 
@@ -79,25 +82,27 @@ $/win sign-off. Asked as **questions**.
 | T10 | **One environment for everything** — T0 have said it's basically one environment: all testing, QA, and production in the same place (George, 23-07). So every risky experiment (account setup, the queue test, rate limits, halt and bust drills) must be done **before real users arrive** — after that there is no sandbox. Ask: can we have **permanent test symbols** (~10)? ⚠ They'd be FINRA-regulated securities, so users must be **blocked from trading them in the app** — confirm what's allowed and how many we can have | All testing, the plan | 🔴 Open — top of list |
 | T7 | ~~MM order entry = standard OE session?~~ **✅ RESOLVED 22-07:** no Quote/MassQuote interface exists in tZERO's FIX schema — the MM is order-based (resting limit orders via D/F/G) by necessity. Dedicated MM FIX session (isolation) remains a filed ask | — | ✅ Resolved |
 | T8 | ~~Order-update behaviour~~ **✅ RESOLVED / MOOT 23-07:** **8.1 answered** — an updated order goes to the **back of the queue** (T0 call + Troy: standard on every matching engine); Edwin: "we don't care about that." **8.2 moot** — we never top up partially-filled orders (new lifecycle). **8.3 moot for v1** — a momentary self-cross during a price adjustment is tolerated (George-confirmed). Self-match prevention follow-up → T11 | — | ✅ Resolved |
-| T11 | **What self-match prevention does T0 have?** — Troy checking (23-07). Relates to the per-account wash-trade toggle in the OMS spec. For USER wash-trading the v1 policy is rulebook ban + order queries on high-volume accounts + removal from the event | Supervision | 🟡 Troy checking |
+| T11 | **What self-match prevention does T0 have?** — Troy checking (23-07). Relates to the per-account wash-trade toggle in the OMS spec. For USER wash-trading the v1 policy is rulebook ban + order queries on high-volume accounts + removal from the event. ⚠ NEW 24-07: the v1.3 spec **assumes** a matching-engine MM self-trade-prevention group (§11.2) — but tZERO's OE spec has no ExecInst/STP at order entry. Reconcile with Troy | Supervision | 🟡 Troy checking — spec tension added |
 
 ## Owed by Sport Radar
 
 | # | Question | Blocks | Status |
 |---|----------|--------|--------|
-| S1 | **The probabilities API is broken** — 403 errors; only 8 of 32 NFL win totals come back. The pricing engine has no input until this is fixed | Valuation | 🟡 Escalated — Cody chasing |
+| S1 | ~~The probabilities API is broken~~ **🟡 DOWNGRADED 24-07:** the Probabilities product **works on the trial key** (live-verified 200s; NCAA + NFL priced games returned). The 403s were entitlement/key placement, not a broken API. Still needed: a **production key + quota** (see S7) and the trial key placed in the service's `PROBABILITIES_API_KEY` | Valuation | 🟡 Production entitlement pending |
 | S2 | **More API allowance** — the trial quota is nearly half used; we need a production-sized allowance | Valuation | 🟡 Cody on it |
 | S3 | **Do they push updates to us, or do we keep asking?** — sets how stale our prices can get, and whether we can even measure the feed's delay | Valuation cadence | 🔴 Open (long-standing) |
 | S4 | **Our probabilities must not lag the sportsbooks** — if the feed is behind DraftKings/FanDuel, users pick the MM off ("too easy for people to make money"). Cody owns getting the right feeds | MM integrity | 🔴 Open — Cody (23-07) |
-| S5 | **Can Sport Radar actually serve it the way Edwin expects?** — live win probability per game, readable roughly every 200ms during play, with enough quota; plus the **simulation games** we want for testing (replay a past game in a ~4-hour window). Check their API products against this shape before the next MM call (George, 23-07) | Valuation, testing | 🔴 Open — check next |
+| S5 | ~~Can Sport Radar actually serve it?~~ **✅ RESOLVED 24-07 (code + live probes):** probabilities update **per play (~30–40 s)**, so nothing needs 200 ms polling — ~2 s per live game meets the spec's freshness bands (the decision cycle reads memory, never SR). **Simulation works today**: SR's playback host replays real recorded games (no auth, real-time) and a local JSONL fast-replay runs the same pipeline in seconds | Valuation, testing | ✅ Resolved |
+| S6 | **No tie probability exists (NEW 24-07):** SR's feed is a 2-way home/away market — verified live. The spec requires win/**tie**/loss and forbids inferring a missing tie (§3.2.2). NFL games can tie. Needs an InPlay ruling: different SR product, provider tie-impossible flag, or a spec change | Valuation | 🔴 **Blocking question** |
+| S7 | **The SR product/quota ask (NEW 24-07):** either **global AF probabilities v2** (its live-bulk endpoint = all live games in one call → ~200k calls/mo, 0.5 QPS — preferred; currently 403, separate package) or a production quota on the current product (~2.5M calls/mo, ~20 QPS peak NCAA Saturday). One line to SR via InPlay; feeds spec D-1 | Valuation cadence, cost | 🔴 Open — take to InPlay |
 
 ## Ours to design (Novosapien)
 
 | # | Question | Blocks | Status |
 |---|----------|--------|--------|
 | N1 | **How the price travels** — the pipe carrying each new fair value from the valuation engine to the quoting engine (likely a NATS topic per team). Ours; invisible to the book | Valuation → quoting | 🔴 Open |
-| N2 | **One profile table** — the two standards list different profile menus; merge them into one. Structure ours; every number in it Edwin's | Market state, quoting | 🔴 Open |
-| N3 | **When do we stop trusting our inputs?** — the staleness/delay thresholds that flip a market defensive. **Edwin decides the policy, we implement** | Market state | 🔴 Open |
+| N2 | ~~One profile table~~ **✅ RESOLVED 24-07 (v1.3 spec §5.2 + §6):** the merged table exists — Stable / Active / Defensive / Suspended with spread, levels, and sizes per state | Market state, quoting | ✅ Resolved |
+| N3 | ~~When do we stop trusting our inputs?~~ **✅ RESOLVED 24-07 (v1.3 spec §3.3–3.5):** freshness bands (live 5/10/20 s; pregame by time-to-kickoff), status ladder (Valid/Warning/Degraded/Invalid) with quoting effects, confidence deductions — all specified. ⚠ the live band numbers are inside the E18 cadence conflict | Market state | ✅ Resolved (E18 caveat) |
 | N4 | **When does each session start and end?** — in-game / around-game / overnight, per team (NCAA plays 6 days a week). **Edwin decides, we implement** | Market state | 🔴 Open |
 | N5 | **"Just buy it" button depth** — how many price levels through a synthetic market order reaches; chase it if unfilled, yes/no; how it interacts with the wallet check | Trading app | 🔴 Open — Troy assisting |
 | N6 | **Two algos were named — where's the line?** — "load-balancing" vs "market-making" (17-07); nobody has defined the boundary | Architecture | 🔴 Open |
@@ -105,10 +110,10 @@ $/win sign-off. Asked as **questions**.
 | N8 | **How much replay tooling at launch?** — recording everything is cheap and mandatory; the tools to replay it are not. Where's the v1 line? | Quoting engine | 🟡 Proposal: record all, defer tooling |
 | N9 | **The platform team's suggestions: accept or replace, one by one** — their prototype's formulas, their numbers, the 200ms full-refresh idea, the MM-as-a-user-account idea. All treated as input only; our from-scratch design accepts or replaces each explicitly | MM design | 🔴 Open |
 | N10 | ~~Do quotes live one cycle, or get managed over time?~~ **✅ RESOLVED 23-07 — Edwin defined the lifecycle:** partially-filled orders **rest until completely gone** (no top-ups, no aging). On a price move: cancel the old level, post the **remaining** quantity at the new price. After a full fill at an unchanged price: reload at top of book. The standard's quote-aging chapter is moot | Quoting engine | ✅ Resolved |
-| N11 | **Skew the sizes too, or just the prices?** — when the MM is long it could also show less on the bid and more on the offer, not just move prices. Directly visible in the book | Quoting engine | 🔴 **Edwin's call** |
+| N11 | ~~Skew the sizes too, or just the prices?~~ **✅ RESOLVED 24-07 (v1.3 spec §5.7.2):** yes, both — the position-side modifier shrinks the long side's buy size and grows its sell size (0.50–1.50×, off Effective Position Ratio) | Quoting engine | ✅ Resolved |
 | N13 | **What data the MM consumes, and how** — everything arrives pushed and sits in memory; the loop never reads a database. Proposed: the quoting engine needs only the fair price and its own orders; the venue's book feed is for the watchdog and monitoring, not for quoting (MD spec read 23-07 confirms the feed streams updates after one subscribe) | Architecture, supervision | 🟡 Proposed |
 | N12 | ~~How old quotes become new ones each cycle~~ **✅ RESOLVED for v1, 23-07 (Edwin + George):** post the new quotes **without waiting** for cancel confirmations; a momentary self-cross during a price adjustment is acceptable ("on the first iteration… I don't care"). The 22-07 amend-in-place/reconciler analysis is **shelved, preserved in [[market-maker/learnings]]** for the augment-later phase | Quoting engine | ✅ Resolved for v1 |
-| N14 | **Fill-response logic** — "if you get a fill, what do you do next?" e.g. outside games: filled at 6 → maybe leave the bid at 6 and let the ladder fill down (5, 4, 3) rather than instantly re-quoting. Rules to design with Edwin (opened 23-07) | Quoting engine | 🔴 Open — next call |
+| N14 | ~~Fill-response logic~~ **🟡 SPEC-ANSWERED 24-07, gated on E17:** the spec defines it mechanically (§5.9 — replenish below 50 % after 15 s; immediate on full fill / side empty / price move). But that mechanism IS the E17 conflict with Edwin's rest-until-gone. Resolves whichever way E17 does | Quoting engine | 🟡 Gated on E17 |
 
 ---
 
@@ -126,3 +131,11 @@ T8 (replace = back of queue; top-up + crossing edge cases moot) · N10 (quote
 lifecycle: rest until gone, cancel + repost remaining on price move) · N12
 (v1: post-first, momentary self-cross tolerated) · cadence bifurcated by game
 state (supersedes flat 5–10/sec).
+
+**24-07 v1.3 spec intake:** E1 ($5/win + $2.50/tie) · E5 (pricing numbers, ▸
+pending) · E11 (settlement = realized on+off field) · E12 (NCAA in, 170) ·
+E14 (float = issued − treasury) · N2 (state table §5.2) · N3 (freshness/status
+§3.3–3.5) · N11 (sizes skew too, §5.7.2) · S5 (per-play updates + simulation
+verified). ⚠ The 23-07 resolutions **N10/N12 (lifecycle), cadence, and E13
+(internal weekly wins)** are contradicted by the spec — held open as
+**E17/E18/E19**, not silently re-resolved.

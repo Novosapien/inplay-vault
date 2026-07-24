@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Market Maker · Consolidated Build Specification — Version 1.3</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --bid:#0e6a4c; --bid-deep:#0a4f39; --bid-soft:#e0eee5; --bid-ghost:#eef5ef;
+    --offer:#a83a2c; --offer-deep:#7f2b20; --offer-soft:#f5e4df; --offer-ghost:#f9efec;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{
+    background:var(--ink); color:var(--paper); font-family:var(--mono);
+    font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+    text-align:center; padding:.5rem 1rem;
+  }
+  .stripe b{color:#e8b7ad;font-weight:600}
+  /* ---------- top navigation ---------- */
+  .topnav{
+    position:sticky;top:0;z-index:10;background:var(--paper-deep);
+    border-bottom:1px solid var(--rule-strong);
+    padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;
+    box-shadow:0 2px 8px rgba(60,50,25,.08);
+  }
+  .topnav a{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;
+    color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);
+    padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s;
+  }
+  .topnav a:hover{border-color:var(--bid);color:var(--bid-deep);background:var(--bid-ghost)}
+  .topnav a.home{border-color:var(--ink);color:var(--ink);font-weight:700}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+  /* ---------- page switching (CSS-only, :target) ---------- */
+  .page{display:none}
+  .page:target{display:block}
+  #cover{display:block}
+  .page:target ~ #cover{display:none}
+  /* ---------- masthead / cover ---------- */
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--bid);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3.1rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--offer);color:var(--offer)}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.5rem;list-style:none;margin-top:1.6rem}
+  .toc-grid a{
+    display:flex;gap:.6rem;align-items:baseline;text-decoration:none;color:var(--ink);
+    padding:.6rem .75rem;border:1px solid var(--rule);background:rgba(255,255,255,.35);
+    font-size:.87rem;line-height:1.3;transition:border-color .15s,background .15s;
+  }
+  .toc-grid a:hover{border-color:var(--bid);background:var(--bid-ghost)}
+  .toc-grid .n{font-family:var(--mono);font-size:.64rem;color:var(--bid);flex:none;padding-top:.1rem}
+  .covernote{margin-top:2rem;font-size:.9rem;font-style:italic;color:var(--ink-soft)}
+  /* ---------- page headers & content ---------- */
+  .pagehead{padding:2.8rem 0 1.2rem;border-bottom:3px double var(--rule-strong);margin-bottom:.6rem}
+  .pagehead h2{font-size:clamp(1.6rem,4.2vw,2.3rem);line-height:1.12;font-weight:700;letter-spacing:-.012em;border:none;padding:0}
+  h3{font-size:1.16rem;font-weight:700;margin-top:2.2rem}
+  h3 .ref{font-family:var(--mono);font-size:.6rem;font-weight:400;color:var(--ink-soft);letter-spacing:.06em;margin-left:.5rem;vertical-align:middle}
+  h4{font-size:1rem;font-weight:700;margin-top:1.7rem}
+  h4 .ref{font-family:var(--mono);font-size:.58rem;font-weight:400;color:var(--ink-soft);letter-spacing:.06em;margin-left:.5rem;vertical-align:middle}
+  p{margin-top:.95rem}
+  p.lede{font-size:1.06rem}
+  a{color:var(--bid-deep)}
+  ul,ol{margin:.9rem 0 0 1.35rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--bid);font-family:var(--mono);font-size:.85em}
+  code{font-family:var(--mono);font-size:.84em;background:var(--paper-deep);padding:.1em .35em;border-radius:3px}
+  /* ---------- typeset math ---------- */
+  .math{
+    margin:1.2rem 0 0;background:rgba(255,255,255,.6);
+    border:1px solid var(--rule-strong);border-left:4px solid var(--bid);
+    padding:1.3rem 1.5rem;overflow-x:auto;
+  }
+  .math + .math{margin-top:.85rem}
+  .mathgrid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:1.2rem}
+  .mathgrid .math{margin:0}
+  .mathgrid + .math,.math + .mathgrid{margin-top:.85rem}
+  .mathgrid + .mathgrid{margin-top:.85rem}
+  .math .eq{
+    font-family:var(--serif);font-size:1.18rem;line-height:1.9;white-space:nowrap;
+    text-align:center;letter-spacing:.01em;
+  }
+  .math .eq + .eq{margin-top:.9rem}
+  .math .note{display:block;font-size:.8rem;font-style:italic;color:var(--ink-soft);text-align:center;margin-top:.5rem;letter-spacing:0;white-space:normal;line-height:1.5}
+  var{font-style:italic;font-weight:500}
+  .math sub,.where sub{font-size:.66em;font-style:normal}
+  .math sup{font-size:.66em}
+  .math .fn{font-style:normal}
+  .math .sum{font-size:1.35em;font-style:normal;vertical-align:-.08em;padding-right:.06em}
+  .frac{display:inline-block;vertical-align:middle;text-align:center;line-height:1.2;margin:0 .18em}
+  .frac .top{display:block;padding:0 .35em .1em;border-bottom:1.4px solid var(--ink)}
+  .frac .bot{display:block;padding:.1em .35em 0}
+  .where{
+    display:grid;grid-template-columns:auto 1fr;gap:.3rem 1.1rem;
+    margin:.85rem 0 0;padding:1rem 1.3rem;font-size:.88rem;
+    border:1px dashed var(--rule-strong);background:rgba(255,255,255,.35);
+  }
+  .where dt{font-family:var(--serif);white-space:nowrap;text-align:right}
+  .where dt var{font-weight:600}
+  .where dd{color:var(--ink-soft);margin:0}
+  /* ---------- steps grid ---------- */
+  ol.steps{
+    list-style:none;margin:1.4rem 0 0;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.45rem;counter-reset:s;
+  }
+  ol.steps li{
+    counter-increment:s;margin:0;display:flex;gap:.65rem;align-items:baseline;
+    border:1px solid var(--rule);background:rgba(255,255,255,.45);
+    padding:.5rem .7rem;font-size:.88rem;
+  }
+  ol.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.78rem;color:var(--bid);flex:none}
+  ol.steps li.gate{border-color:var(--offer);background:var(--offer-ghost)}
+  ol.steps li.gate::before{color:var(--offer)}
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:.9rem}
+  th{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    text-align:left;color:var(--ink-soft);padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong);
+  }
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .num{font-family:var(--mono);font-size:.82rem;text-align:right}
+  td.mid,th.mid{text-align:center}
+  td.mono{font-family:var(--mono);font-size:.8rem}
+  .prop{color:var(--amber);font-weight:700}
+  /* ---------- callouts ---------- */
+  .callout{margin:1.4rem 0 0;padding:1rem 1.25rem;border:1px solid;border-left-width:4px;font-size:.94rem;background:rgba(255,255,255,.4)}
+  .callout .tag{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.45rem}
+  .callout.note{border-color:var(--bid)}         .callout.note .tag{color:var(--bid)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)} .callout.warn .tag{color:var(--amber)}
+  .callout.danger{border-color:var(--offer);background:var(--offer-ghost)} .callout.danger .tag{color:var(--offer)}
+  .rulebanner{
+    margin:1.6rem 0 0;text-align:center;padding:1.3rem 1.2rem;
+    border-top:3px double var(--rule-strong);border-bottom:3px double var(--rule-strong);
+    font-size:1.12rem;font-style:italic;
+  }
+  .rulebanner b{color:var(--bid-deep);font-style:normal}
+  /* ---------- flow diagram ---------- */
+  .flow{list-style:none;margin:1.5rem 0 0;padding:0}
+  .flow li{margin:0;position:relative;padding:0 0 1.3rem 0}
+  .flow li:not(:last-child)::after{content:"";position:absolute;left:50%;bottom:.26rem;width:2px;height:.76rem;background:var(--rule-strong)}
+  .flow li:not(:last-child)::before{content:"";position:absolute;left:50%;bottom:.1rem;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--rule-strong)}
+  .flow .box{border:1px solid var(--rule-strong);background:rgba(255,255,255,.5);padding:.62rem 1rem;text-align:center}
+  .flow .box .t{font-weight:700;font-size:.95rem}
+  .flow .box .d{font-size:.8rem;font-style:italic;color:var(--ink-soft);margin-top:.1rem}
+  .flow .box.const{background:var(--paper-deep);border-style:dashed}
+  .flow .box.pub{background:#1c231e;color:var(--paper);border-color:#1c231e}
+  .flow .box.pub .d{color:#a8dcb9}
+  /* ---------- priority lists ---------- */
+  ol.prio{list-style:none;margin:1.3rem 0 0;counter-reset:p}
+  ol.prio li{counter-increment:p;display:flex;gap:.9rem;align-items:baseline;padding:.5rem 0;border-bottom:1px solid var(--rule);margin:0}
+  ol.prio li::before{content:counter(p,decimal-leading-zero);font-family:var(--mono);font-size:.95rem;color:var(--bid);flex:none}
+  /* ---------- prev / next ---------- */
+  .pagenav{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:3.2rem;border-top:3px double var(--rule-strong);padding-top:1.2rem}
+  .pagenav a{
+    text-decoration:none;border:1px solid var(--rule-strong);background:rgba(255,255,255,.45);
+    padding:.75rem .95rem;display:flex;flex-direction:column;gap:.15rem;transition:all .15s;
+  }
+  .pagenav a:hover{border-color:var(--bid);background:var(--bid-ghost)}
+  .pagenav a.next{text-align:right;align-items:flex-end;grid-column:2}
+  .pagenav a.prev{grid-column:1}
+  .pagenav .k{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .pagenav .t{font-size:.92rem;font-weight:700;color:var(--ink)}
+  footer{margin-top:3.5rem;padding-top:1.3rem;border-top:1px solid var(--rule-strong);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--ink-soft);text-align:center;line-height:2}
+  em{font-style:italic}
+  @media (max-width:640px){ .where{grid-template-columns:auto 1fr} .mathgrid{grid-template-columns:1fr} }
+  @media print{
+    body{background:#fff;font-size:11pt}
+    .stripe,.topnav,.pagenav{display:none}
+    .page,#cover{display:block !important}
+    .pagehead{page-break-before:always}
+  }
+</style>
+</head>
+<body>
+
+<div class="stripe"><b>InPlay Global · Consolidated Build Specification</b> &nbsp;·&nbsp; verbatim rendering — the source document is authoritative &nbsp;·&nbsp; internal use only</div>
+
+<nav class="topnav" aria-label="Chapters">
+  <a class="home" href="#cover">☰ Contents</a>
+  <a href="#ch1">1 Governance</a>
+  <a href="#ch2">2 Architecture</a>
+  <a href="#ch3">3 Valuation</a>
+  <a href="#ch4">4 Position</a>
+  <a href="#ch5">5 Quote Construction</a>
+  <a href="#ch6">6 Market State</a>
+  <a href="#ch7">7 Events</a>
+  <a href="#ch8">8 Venue Sync</a>
+  <a href="#ch9">9 IPO</a>
+  <a href="#ch10">10 Recovery</a>
+  <a href="#ch11">11 Settlement</a>
+  <a href="#ch12">12 Configuration</a>
+  <a href="#ch13">13 Golden Tests</a>
+  <a href="#ch14">14 STOP LIST</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ==================== CH 1 ==================== -->
+<section class="page" id="ch1">
+  <div class="pagehead"><div class="eyebrow">Chapter 01</div><h2>Governance, Authority &amp; Rules of Use</h2></div>
+
+  <h3>Purpose and Supersession <span class="ref">§1.1</span></h3>
+  <p>This document is the single authoritative engineering specification for Version 1 of the InPlay Market Maker used in the InPlay Trading Challenge. It defines what the Market Maker shall do — every algorithm, state machine, object, and acceptance requirement — without prescribing language, database, infrastructure, or internal architecture.</p>
+  <p>Upon InPlay approval, this document supersedes the InPlay Market Maker Specification v1 and the Engineering Closure Document v1.0 for implementation purposes. The placeholder appendices of the original Specification are void and shall not be referenced.</p>
+
+  <h3>Conformance Standard <span class="ref">§1.2</span></h3>
+  <p>A requirement is sufficiently specified only when two qualified engineering teams, given the same accepted event sequence, approved configuration, authoritative inputs, and initial state, would produce identical authoritative outputs. Any implementation requiring interpretation of undefined business logic is non-conforming.</p>
+
+  <h3>Normative Language <span class="ref">§1.3</span></h3>
+  <table>
+    <tr><th style="width:11rem">Term</th><th>Meaning</th></tr>
+    <tr><td><b>SHALL / MUST</b></td><td>Mandatory requirement</td></tr>
+    <tr><td><b>SHALL NOT / MUST NOT</b></td><td>Prohibited behavior</td></tr>
+    <tr><td><b>MAY</b></td><td>Optional behavior</td></tr>
+    <tr><td><b>CONFIGURED</b></td><td>Value controlled through the Configuration Dictionary (Chapter 12)</td></tr>
+    <tr><td><b>OPEN</b></td><td>Unresolved requirement listed in Chapter 14 — implementation blocked pending approval</td></tr>
+  </table>
+  <p>Section numbers are the stable requirement identifiers for traceability, code comments, tests, and defect reports.</p>
+
+  <h3>Authority Hierarchy <span class="ref">§1.4</span></h3>
+  <ol class="prio">
+    <li><b>This Consolidated Build Specification</b></li>
+    <li><b>Approved Configuration Dictionary values</b> (Chapter 12)</li>
+    <li><b>Approved Interface Control Documents</b> (Matching Engine ICD, Sports Data ICD)</li>
+    <li><b>Approved Change Orders and Requirement Clarifications</b></li>
+    <li><b>External data-provider and venue technical specifications</b></li>
+  </ol>
+  <p>A lower-priority authority never overrides a higher one. A later document does not gain authority merely by being later.</p>
+
+  <h3>Version 1 Exclusions <span class="ref">§1.5</span></h3>
+  <p>Version 1 intentionally excludes: internally generated sports probabilities; machine-learning or adaptive valuation; predictive inventory optimization; discretionary pricing or trader intervention; profit-maximizing market-making logic; market-derived intrinsic valuation; production clearing, settlement, or broker-dealer books and records; and production functionality unique to tZERO or any regulated venue. The applicable venue is the InPlay Challenge matching environment.</p>
+
+  <h3>Directives for Agentic Implementation <span class="ref">§1.6</span></h3>
+  <p>These directives are mandatory for all implementation work performed by or with AI agents.</p>
+  <ol class="prio">
+    <li><span><b>Never invent a business rule.</b> If required behavior is not defined in this document or an approved authority in §1.4, it is an unresolved requirement. Halt that work item, raise a written blocking question to InPlay, and continue on unblocked work. Chapter 14 enumerates the known open items; the rule applies equally to any newly discovered gap.</span></li>
+    <li><span><b>Trace everything.</b> Every module, function, and test that implements a requirement shall cite its section number. The Requirements Traceability Matrix shall map every section of Chapters 2–13 to code and to Golden Tests.</span></li>
+    <li><span><b>Decimal arithmetic is authoritative.</b> Monetary values use decimal arithmetic with at least six decimal places intermediate; probabilities at least eight. Binary floating point shall not be authoritative. Prices round only at the step the algorithm specifies. Share quantities are whole shares.</span></li>
+    <li><span><b>Determinism is testable, not aspirational.</b> Build the replay harness first. Identical accepted inputs, configuration, and starting state shall reproduce byte-identical authoritative objects. Any nondeterminism (map iteration order, wall-clock reads inside calculations, uncontrolled randomness) is a defect.</span></li>
+    <li><span><b>Configured values are never hard-coded.</b> Every numeric default in this document is a Configuration Dictionary value (Chapter 12). Code reads configuration; it does not embed constants.</span></li>
+    <li><span><b>Proposed defaults are buildable.</b> Defaults marked "proposed" in Chapter 12 shall be implemented as given; final InPlay approval may change the value, not the mechanism.</span></li>
+    <li><span><b>The processing sequence is fixed.</b> No optimization may reorder the pipeline in §2.4 or the quote construction order in §5.1.</span></li>
+  </ol>
+
+  <h3>Symbol Table <span class="ref">§1.7</span></h3>
+  <p>Canonical symbols used in this document. Where one letter serves two domains, the scope column disambiguates; no formula mixes scopes.</p>
+  <table>
+    <tr><th style="width:10rem">Symbol</th><th>Meaning</th><th style="width:5.5rem" class="mid">Defined</th></tr>
+    <tr><td><var>RP</var></td><td>Reference Price per share</td><td class="mid mono">3.1.1</td></tr>
+    <tr><td><var>ROF</var></td><td>Realized On-Field Value</td><td class="mid mono">3.1.3</td></tr>
+    <tr><td><var>U</var> <em>(valuation scope)</em></td><td>Set of unfinished scheduled regular-season games</td><td class="mid mono">3.1.1</td></tr>
+    <tr><td><var>GEV</var>(<var>g</var>)</td><td>Expected value of unfinished game g</td><td class="mid mono">3.1.2</td></tr>
+    <tr><td><var>RAV</var> / <var>EAV</var></td><td>Realized / Expected approved off-field value</td><td class="mid mono">3.6</td></tr>
+    <tr><td><var>NP</var></td><td>Net Position</td><td class="mid mono">4.1</td></tr>
+    <tr><td><var>RF</var></td><td>Reference Float (issued minus treasury)</td><td class="mid mono">4.3</td></tr>
+    <tr><td><var>PR</var></td><td>Position Ratio = NP ÷ RF</td><td class="mid mono">4.3</td></tr>
+    <tr><td><var>IA</var> / <var>S</var> / <var>M</var></td><td>Inventory Adjustment / Skew Sensitivity / Maximum Adjustment</td><td class="mid mono">4.5</td></tr>
+    <tr><td><var>RM</var></td><td>Reservation Midpoint = RP + IA</td><td class="mid mono">4.6</td></tr>
+    <tr><td><var>PBE</var> / <var>PSE</var></td><td>Pending Buy / Sell Exposure</td><td class="mid mono">4.4</td></tr>
+    <tr><td><var>EP</var> / <var>EPR</var></td><td>Effective Position / Effective Position Ratio</td><td class="mid mono">4.4, 5.7.2</td></tr>
+    <tr><td><var>T</var></td><td>Tick size ($0.01)</td><td class="mid mono">5.3</td></tr>
+    <tr><td><var>MEV</var></td><td>Maximum Economic Value (price ceiling)</td><td class="mid mono">5.4</td></tr>
+    <tr><td><var>BDI</var> / <var>VMI</var></td><td>Base Demand Index / Volume Momentum Index</td><td class="mid mono">3.6.5</td></tr>
+    <tr><td><var>λ</var>(<var>w</var>)</td><td>Popularity blend weight, 0 → 1 over four publications</td><td class="mid mono">3.6.5</td></tr>
+    <tr><td><var>PI</var>(<var>i</var>,<var>w</var>)</td><td>Popularity Index of team i at publication w</td><td class="mid mono">3.6.5</td></tr>
+    <tr><td><var>CaptureShare</var>(<var>i</var>,<var>g</var>)</td><td>Expected off-field share of game g’s pool</td><td class="mid mono">3.6.5</td></tr>
+    <tr><td><var>H</var> / <var>U</var> <em>(quantity scope)</em> / <var>VF</var></td><td>Seed hash integer / uniform variate / Variation Factor</td><td class="mid mono">5.7.3</td></tr>
+    <tr><td><var>FSV</var></td><td>Final Settlement Value</td><td class="mid mono">11.3</td></tr>
+  </table>
+
+  <nav class="pagenav">
+    <a class="prev" href="#cover"><span class="k">← Contents</span><span class="t">Cover</span></a>
+    <a class="next" href="#ch2"><span class="k">Next →</span><span class="t">Ch 2 · Architecture &amp; Authoritative Objects</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 2 ==================== -->
+<section class="page" id="ch2">
+  <div class="pagehead"><div class="eyebrow">Chapter 02</div><h2>Architecture &amp; Authoritative Objects</h2></div>
+
+  <h3>Pipeline <span class="ref">§2.1</span></h3>
+  <p>The Market Maker is a chain of independent deterministic engines. Each engine consumes published authoritative objects, performs exactly one business function, and publishes exactly one authoritative object. Business logic flows through published objects, never through shared mutable state. No engine modifies an object it does not own.</p>
+  <ul class="flow">
+    <li><div class="box const"><div class="t">Approved Data Sources</div></div></li>
+    <li><div class="box"><div class="t">Valuation Engine</div></div></li>
+    <li><div class="box"><div class="t">Market State Engine</div></div></li>
+    <li><div class="box"><div class="t">Quote Construction Engine</div></div></li>
+    <li><div class="box"><div class="t">Venue Synchronization Engine</div></div></li>
+    <li><div class="box"><div class="t">Position &amp; Execution Engine</div></div></li>
+    <li><div class="box pub"><div class="t">Audit Repository</div></div></li>
+  </ul>
+
+  <h3>Engine Responsibilities and Ownership <span class="ref">§2.2</span></h3>
+  <table>
+    <tr><th>Engine</th><th>Consumes</th><th>Publishes / Owns</th><th>Shall Not</th></tr>
+    <tr><td><b>Valuation</b></td><td>Approved valuation inputs (results, probabilities, off-field values, schedule, configuration)</td><td>Reference Price Record</td><td>Quote, hold position, touch venue, set Market State</td></tr>
+    <tr><td><b>Market State</b></td><td>Reference Price Status, venue states, recovery state, lifecycle, manual overrides</td><td>Market State Record</td><td>Value, quote, process executions</td></tr>
+    <tr><td><b>Quote Construction</b></td><td>Reference Price, Market State, Position, Public Order Book, Configuration</td><td>Target Order Book</td><td>Value, set state, message venue, own position</td></tr>
+    <tr><td><b>Venue Synchronization</b></td><td>Target Order Book, venue messages</td><td>Venue State Record (working/confirmed books, order states, pending exposure); emits Execution Events</td><td>Determine prices, own net position, value</td></tr>
+    <tr><td><b>Position &amp; Execution</b></td><td>Execution Events, IPO Allocation, corporate actions</td><td>Position Record (Net Position, average cost, P&amp;L)</td><td>Value, set state, quote</td></tr>
+    <tr><td><b>Audit Repository</b></td><td>Every published authoritative object</td><td>Immutable Audit Records</td><td>Modify any object</td></tr>
+  </table>
+  <p>Pending exposure: defined and assigned in §4.4; the ownership shown in the table above is authoritative.</p>
+
+  <h3>Core Invariants <span class="ref">§2.3</span></h3>
+  <p><b>Reference Price independence.</b> Reference Price never depends on position, P&amp;L, participant orders, public prices, executed trades, spreads, pending orders, or cash balance — with exactly one bounded exception: the approved off-field allocation of §3.6, which admits counted trading volume only through capped, discrete, versioned weekly publications.</p>
+  <p><b>Position influence is bounded.</b> Position affects only the Reservation Midpoint, displayed quantities, and replenishment. Never Reference Price, Market State, probabilities, or settlement value.</p>
+  <p><b>Single ownership.</b> Every authoritative object has exactly one owner and exactly one authoritative definition.</p>
+  <p><b>No invented information.</b> The system never estimates authoritative inputs; absent an approved fallback, it degrades or suspends (§6).</p>
+  <p><b>Replay is verification.</b> Every accepted decision is reproducible from the audit trail; replay equality is the certification standard (§13.2).</p>
+  <div class="rulebanner"><b>Safety first.</b> When reliable quotation cannot be guaranteed, quoting suspends.<br><b>Wrong quotes are worse than no quotes.</b></div>
+
+  <h3>Deterministic Processing Sequence <span class="ref">§2.4</span></h3>
+  <p>Every accepted event follows this sequence, without exception or reordering:</p>
+  <ol class="steps">
+    <li>Accept</li>
+    <li>Validate</li>
+    <li>Immutable Input Snapshot</li>
+    <li>Reference Price</li>
+    <li>Market State</li>
+    <li>Target Order Book</li>
+    <li>Venue Synchronization</li>
+    <li>Position Update</li>
+    <li>Audit Record</li>
+  </ol>
+
+  <h3>Security Universe <span class="ref">§2.5</span></h3>
+  <p>Version 1 evaluates 170 securities — 32 NFL Team Companies and 138 NCAA Division I Team Companies — twenty-four hours per day. The Challenge covers regular-season games only: postseason games carry no on-field value, no expected value, and no off-field pool, and the set <var>U</var> in §3.1.1 contains only regular-season games. Complete recalculation of the full universe is required each sweep (§3.1.4); incremental valuation state is prohibited.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch1"><span class="k">← Previous</span><span class="t">Ch 1 · Governance</span></a>
+    <a class="next" href="#ch3"><span class="k">Next →</span><span class="t">Ch 3 · Valuation Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 3 ==================== -->
+<section class="page" id="ch3">
+  <div class="pagehead"><div class="eyebrow">Chapter 03</div><h2>Valuation Engine</h2></div>
+
+  <h3>Reference Price — Formula <span class="ref">§3.1.1</span></h3>
+  <div class="math">
+    <div class="eq"><var>RP</var> &nbsp;=&nbsp; <var>ROF</var> &nbsp;+&nbsp; <span class="sum">Σ</span><sub><var>g</var>∈<var>U</var></sub> <var>GEV</var>(<var>g</var>) &nbsp;+&nbsp; <var>RAV</var> &nbsp;+&nbsp; <var>EAV</var></div>
+  </div>
+  <dl class="where">
+      <dt><var>RP</var></dt><dd>Reference Price per share</dd>
+      <dt><var>ROF</var></dt><dd>Realized On-Field Value per share (completed games)</dd>
+      <dt><var>U</var> / <var>GEV</var>(<var>g</var>)</dt><dd>Set of unfinished scheduled games / expected value of unfinished game g</dd>
+      <dt><var>RAV</var></dt><dd>Realized approved off-field value per share</dd>
+      <dt><var>EAV</var></dt><dd>Expected approved off-field value per share</dd>
+  </dl>
+  <p><var>RAV</var> and <var>EAV</var> are produced by the Challenge Off-Field Value Methodology of §3.6 (closing former STOP-LIST items B-1 and B-2) and consumed here as approved, versioned inputs.</p>
+
+  <h3>Unfinished Game Expected Value <span class="ref">§3.1.2</span></h3>
+  <div class="math">
+    <div class="eq"><var>GEV</var>(<var>g</var>) &nbsp;=&nbsp; (<var>P</var><sub>win</sub>(<var>g</var>) × $5.00) &nbsp;+&nbsp; (<var>P</var><sub>tie</sub>(<var>g</var>) × $2.50)</div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>P</var><sub>win</sub> + <var>P</var><sub>tie</sub> + <var>P</var><sub>loss</sub> &nbsp;=&nbsp; 1.00000000</div>
+  </div>
+  <p>Loss contributes zero. The same equation applies pre-kickoff, live, and in overtime; only approved probabilities change.</p>
+
+  <h3>Realized On-Field Value <span class="ref">§3.1.3</span></h3>
+  <table>
+    <tr><th>Official result</th><th class="num">Realized value</th></tr>
+    <tr><td>Win</td><td class="num">$5.00</td></tr>
+    <tr><td>Tie</td><td class="num">$2.50</td></tr>
+    <tr><td>Loss</td><td class="num">$0.00</td></tr>
+  </table>
+  <p>A game moves from expected to realized value only when the approved result source marks it official and final. Later official corrections replace the prior result through a new Official Results Version.</p>
+
+  <h3>Evaluation Cycle <span class="ref">§3.1.4</span></h3>
+  <p>Every evaluation creates an immutable Input Snapshot (latest accepted results, probabilities, off-field values, schedule, configuration) and recomputes <var>RP</var> completely from it. Every accepted live probability update triggers immediate valuation of the affected securities; the portfolio heartbeat sweep continues independently. Sweeps never overlap: an in-flight sweep completes, the missed interval is recorded, and the next sweep starts immediately with fresh snapshots.</p>
+  <table>
+    <tr><th>Measurement</th><th>Requirement</th></tr>
+    <tr><td>Target sweep cadence</td><td class="mono">2.0 seconds</td></tr>
+    <tr><td>Maximum normal interval</td><td class="mono">2.5 seconds</td></tr>
+    <tr><td>Warning threshold</td><td>One missed interval</td></tr>
+    <tr><td>Data Health escalation</td><td>Two consecutive missed intervals</td></tr>
+  </table>
+
+  <h3>Publication Rule <span class="ref">§3.1.5</span></h3>
+  <p>A new Reference Price Record is published only when Reference Price, Status, Confidence, or any input version (results, probability, off-field, schedule, configuration) changes. A new snapshot alone never triggers publication, a Quote Cycle, or venue activity. Only one valuation may commit per security at a time; an older calculation never overwrites a newer authoritative result.</p>
+
+  <h3>Probability Validation and Normalization <span class="ref">§3.2</span></h3>
+  <p>Each unfinished game input carries: Game ID, Team Company ID, Probability Version, win/tie/loss probabilities, game status, provider event time, InPlay receive time, provider sequence (when available), and source ID. Each probability must satisfy 0 ≤ <var>P</var> ≤ 1.</p>
+
+  <h4>Sum Validation <span class="ref">§3.2.1</span></h4>
+  <div class="math">
+    <div class="eq"><var>S</var> &nbsp;=&nbsp; <var>P</var><sub>win</sub> + <var>P</var><sub>tie</sub> + <var>P</var><sub>loss</sub></div>
+  </div>
+  <table>
+    <tr><th>Sum S</th><th>Treatment</th></tr>
+    <tr><td class="mono">0.999999 ≤ S ≤ 1.000001</td><td>Accept without normalization</td></tr>
+    <tr><td class="mono">0.99 ≤ S &lt; 0.999999&ensp;or&ensp;1.000001 &lt; S ≤ 1.01</td><td>Normalize proportionally: <var>P</var>′ = <var>P</var> ÷ <var>S</var>; store normalized values in the snapshot, original provider values in audit</td></tr>
+    <tr><td class="mono">S &lt; 0.99&ensp;or&ensp;S &gt; 1.01</td><td>Reject as invalid</td></tr>
+  </table>
+
+  <h4>Special Cases <span class="ref">§3.2.2</span></h4>
+  <p><b>Missing tie.</b> If the provider expressly identifies the game as tie-impossible, <var>P</var><sub>tie</sub> = 0. Otherwise a missing tie probability makes the input incomplete; it shall not be inferred.</p>
+  <p><b>Duplicates.</b> Matching source, Game ID, provider sequence, values, and provider event time → no new Probability Version, no valuation, recorded as duplicate.</p>
+  <p><b>Out of order.</b> Older than the latest accepted provider sequence → retained for audit, never authoritative. Ordering falls back: provider sequence → provider event time → InPlay Event Sequence.</p>
+  <p><b>Corrections.</b> A provider-designated correction with higher sequence that passes validation creates a new Probability Version, new snapshot, and immediate valuation.</p>
+
+  <h3>Input Freshness <span class="ref">§3.3</span></h3>
+  <h4>Live-Game Probability Age (from InPlay receive time) <span class="ref">§3.3.1</span></h4>
+  <table>
+    <tr><th>Age of latest accepted probability</th><th>Input condition</th></tr>
+    <tr><td class="mono">0–5 seconds</td><td>Current</td></tr>
+    <tr><td class="mono">&gt;5–10 seconds</td><td>Warning</td></tr>
+    <tr><td class="mono">&gt;10–20 seconds</td><td>Degraded</td></tr>
+    <tr><td class="mono">&gt;20 seconds</td><td>Invalid</td></tr>
+  </table>
+
+  <h4>Pregame Probability Age <span class="ref">§3.3.2</span></h4>
+  <table>
+    <tr><th>Time until scheduled start</th><th>Maximum probability age</th></tr>
+    <tr><td>More than 24 hours</td><td class="mono">24 hours</td></tr>
+    <tr><td>6–24 hours</td><td class="mono">6 hours</td></tr>
+    <tr><td>1–6 hours</td><td class="mono">60 minutes</td></tr>
+    <tr><td>Less than 1 hour</td><td class="mono">15 minutes</td></tr>
+  </table>
+  <p>Exceeding the permitted age → Degraded; exceeding twice the permitted age → Invalid. Official results do not expire. Off-field inputs remain valid until replaced, withdrawn, expired, or failing integrity validation.</p>
+
+  <h3>Reference Price Status <span class="ref">§3.4</span></h3>
+  <p>Exactly one status per record — Valid, Warning, Degraded, or Invalid — with precedence Invalid &gt; Degraded &gt; Warning &gt; Valid. The most restrictive applicable condition controls.</p>
+  <table>
+    <tr><th style="width:6.5rem">Status</th><th>Trigger conditions (any)</th><th style="width:12rem">Quoting effect</th></tr>
+    <tr><td><b>Valid</b></td><td>All inputs present, validated, current; calculation succeeds</td><td>No restriction</td></tr>
+    <tr><td><b>Warning</b></td><td>Live probability 5–10s old; one missed sweep; non-critical provider warning</td><td>Quotable at Active parameters or stricter</td></tr>
+    <tr><td><b>Degraded</b></td><td>Live probability 10–20s old; pregame past limit (≤2×); two missed sweeps; recoverable inconsistency with a prior valid snapshot available</td><td>Quotable only at Defensive parameters</td></tr>
+    <tr><td><b>Invalid</b></td><td>Missing required probability; live &gt;20s; pregame &gt;2× limit; failed validation with no permitted prior; inconsistent results; off-field integrity failure; incomplete equation; invalid configuration; ambiguous authority</td><td>Suspended — no quotation</td></tr>
+  </table>
+
+  <h4>Status Recovery Dwell <span class="ref">§3.4.1</span></h4>
+  <table>
+    <tr><th>Promotion</th><th>Required continuous validation</th></tr>
+    <tr><td>Invalid → Degraded</td><td>One successful complete valuation</td></tr>
+    <tr><td>Degraded → Warning</td><td class="mono">10 seconds</td></tr>
+    <tr><td>Warning → Valid</td><td class="mono">10 seconds</td></tr>
+  </table>
+  <p>A new failure resets the applicable validation period.</p>
+
+  <h3>Reference Price Confidence <span class="ref">§3.5</span></h3>
+  <p>Confidence is an integer 0–100 beginning at 100 per successful calculation, floored at zero, with cumulative deductions. Confidence never mathematically modifies Reference Price.</p>
+  <table>
+    <tr><th>Condition</th><th class="num">Deduction</th></tr>
+    <tr><td>Live probability in Warning range</td><td class="num">15</td></tr>
+    <tr><td>Live probability in Degraded range</td><td class="num">40</td></tr>
+    <tr><td>Pregame probability stale but usable</td><td class="num">25</td></tr>
+    <tr><td>One missed valuation interval</td><td class="num">10</td></tr>
+    <tr><td>Two consecutive missed intervals</td><td class="num">30</td></tr>
+    <tr><td>Recoverable provider inconsistency</td><td class="num">20</td></tr>
+    <tr><td>Off-field input under approved correction review</td><td class="num">15</td></tr>
+    <tr><td>Schedule status under approved review</td><td class="num">20</td></tr>
+  </table>
+  <table>
+    <tr><th class="mid">Confidence</th><th>Maximum permitted status</th></tr>
+    <tr><td class="mid mono">90–100</td><td>Valid</td></tr>
+    <tr><td class="mid mono">70–89</td><td>Warning</td></tr>
+    <tr><td class="mid mono">40–69</td><td>Degraded</td></tr>
+    <tr><td class="mid mono">0–39</td><td>Invalid</td></tr>
+  </table>
+  <p>A specific Invalid condition produces Invalid status regardless of numerical confidence.</p>
+
+  <h3>Off-Field Value Methodology (Challenge) <span class="ref">§3.6</span></h3>
+
+  <h4>Per-Game Pool <span class="ref">§3.6.1</span></h4>
+  <p>Every scheduled NFL and NCAA Division I game carries an off-field pool of exactly $2.50 per share, split between the two participating Team Companies pro rata by counted share volume. The two allocations always sum to exactly $2.50 (pool conservation). Games a team does not play contribute nothing to that team. Only regular-season games carry pools. When the opponent is outside the security universe (e.g., an FCS school with no Team Company), the universe team receives the full $2.50 as both its expected and realized allocation for that game — no capture-share calculation applies.</p>
+
+  <h4>Volume Measurement Window <span class="ref">§3.6.2</span></h4>
+  <p>For team <var>i</var> in game <var>g</var>, the measurement window runs from the official final of team <var>i</var>’s prior scheduled game (or season open, for the first game) to the official final of game <var>g</var>. Every counted execution in a team’s security falls in exactly one window for that team. The two opponents’ windows need not align in calendar time; each team’s own window governs its side of the split.</p>
+
+  <h4>Counted Volume <span class="ref">§3.6.3</span></h4>
+  <p>Counted volume is share volume — never notional — of executions in the team’s security where at least one side is a participant account, counted once per execution. Market-Maker-versus-Market-Maker executions, prevented self-trades, and IPO allocations never count. Counted volume is computed only from accepted Execution Events and is fully replayable.</p>
+
+  <h4>Realized Off-Field Value <span class="ref">§3.6.4</span></h4>
+  <div class="math">
+    <div class="eq"><var>RealizedShare</var>(<var>i</var>,<var>g</var>) &nbsp;=&nbsp; <span class="frac"><span class="top"><var>Vol</var>(<var>i</var>,<var>g</var>)</span><span class="bot"><var>Vol</var>(<var>i</var>,<var>g</var>) + <var>Vol</var>(<var>j</var>,<var>g</var>)</span></span></div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>RAV</var>(<var>i</var>) &nbsp;+=&nbsp; $2.50 × <var>RealizedShare</var>(<var>i</var>,<var>g</var>)</div>
+  </div>
+  <p>If both windows contain zero counted volume, each team realizes $1.25. Realization occurs only at the weekly publication: for the NFL, after the week’s final game (Monday Night Football) is official and final; for NCAA Division I, after the week’s final scheduled game is official and final. Each publication creates a new Off-Field Value Version, a new Input Snapshot, and an immediate valuation (§3.1.5). Between publications, RAV never changes. A published Off-Field Value Version is final: post-publication volume corrections (including trade busts) never restate it silently, and may modify it only through an approved correction creating a new version, mirroring §3.2.2 for official results.</p>
+
+  <h4>Expected Off-Field Value — Popularity Model <span class="ref">§3.6.5</span></h4>
+  <p><var>EAV</var> is the sum over remaining scheduled games of the pool times the team’s expected capture share, derived from a deterministic Popularity Index blending IPO demand (the only signal available at season open) into realized volume behavior (the best predictor once trading exists).</p>
+  <div class="math">
+    <div class="eq"><var>BDI</var>(<var>i</var>) &nbsp;=&nbsp; <span class="fn">Clamp</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>IPOEligibleOrderShares</var>(<var>i</var>)</span><span class="bot"><var>IssuedShares</var>(<var>i</var>)</span></span>, &nbsp;0.10, &nbsp;10.0 <span style="font-size:1.3em">)</span> <span class="note">fixed at IPO completion</span></div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>VMI</var>(<var>i</var>,<var>w</var>) &nbsp;=&nbsp; <span class="frac"><span class="top"><var>CumulativeCountedVolume</var>(<var>i</var>,<var>w</var>)</span><span class="bot"><var>LeagueMeanCumulativeCountedVolume</var>(<var>w</var>)</span></span> <span class="note">= BDI(i) while league volume is zero</span></div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>λ</var>(<var>w</var>) &nbsp;=&nbsp; <span class="fn">min</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>CompletedPublications</var></span><span class="bot">4</span></span>, &nbsp;1 <span style="font-size:1.3em">)</span></div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>PI</var>(<var>i</var>,<var>w</var>) &nbsp;=&nbsp; (1 − <var>λ</var>) × <var>BDI</var>(<var>i</var>) &nbsp;+&nbsp; <var>λ</var> × <var>VMI</var>(<var>i</var>,<var>w</var>)</div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>CaptureShare</var>(<var>i</var>,<var>g</var>) &nbsp;=&nbsp; <span class="fn">Clamp</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>PI</var>(<var>i</var>)</span><span class="bot"><var>PI</var>(<var>i</var>) + <var>PI</var>(<var>j</var>)</span></span>, &nbsp;0.20, &nbsp;0.80 <span style="font-size:1.3em">)</span> <span class="note">opponent receives the complement</span></div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>EAV</var>(<var>i</var>) &nbsp;=&nbsp; <span class="sum">Σ</span><sub><var>g</var>∈remaining</sub> &nbsp;$2.50 × <var>CaptureShare</var>(<var>i</var>,<var>g</var>)</div>
+  </div>
+  <p>“Remaining” means not yet published, not “not yet played.” A completed game keeps carrying its expected capture share in EAV until its weekly publication, at which point the publication atomically removes it from the remaining set and adds its realized split to RAV in one Off-Field Value Version. Reference Price therefore never dips at a final whistle and jumps back at publication; the expected-to-realized swap is a single discrete step. For a non-universe-opponent game, the expected and realized value are both the full $2.50 (§3.6.1).</p>
+  <p>Properties: at season open λ = 0, so EAV is driven entirely by IPO demand; by the fourth publication it is fully volume-driven. Equal indices yield the neutral $1.25 per game. The clamp bounds any single game’s expected allocation to [$0.50, $2.00], capping both small-sample distortion and the payoff to manipulation. The Popularity Index and every CaptureShare are recomputed only at each weekly publication, published as a versioned Popularity Index Record, and are constant between publications. On-field performance enters RP only through probabilities and results (§3.1) — never through this model.</p>
+
+  <div class="callout danger"><span class="tag">§3.6.6 · Bounded Reflexivity Prohibition</span>
+  Trading activity shall influence Reference Price only through this section: capped at $2.50 per game, computed only from counted volume as defined in §3.6.3, and applied only at weekly publications. Live, continuous, or intra-week volume shall never feed valuation. No other trading-derived input of any kind may enter the Valuation Engine. Any implementation path by which order flow reaches RP outside this section is a Critical defect.</div>
+
+  <h4>Off-Field Ceiling <span class="ref">§3.6.7</span></h4>
+  <div class="math">
+    <div class="eq"><var>MaxApprovedOffFieldValue</var>(<var>i</var>) &nbsp;=&nbsp; <var>ScheduledGames</var>(<var>i</var>) × $2.50</div>
+  </div>
+  <p>Per the approved schedule: an NFL team with 17 scheduled games has a $42.50 ceiling; an NCAA Division I team with 12 has $30.00. The formula follows the schedule, so schedule changes adjust the ceiling automatically through a new Schedule Version. This value feeds the MEV price boundary in §5.4 directly.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch2"><span class="k">← Previous</span><span class="t">Ch 2 · Architecture</span></a>
+    <a class="next" href="#ch4"><span class="k">Next →</span><span class="t">Ch 4 · Position, Inventory &amp; Reservation Midpoint</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 4 ==================== -->
+<section class="page" id="ch4">
+  <div class="pagehead"><div class="eyebrow">Chapter 04</div><h2>Position, Inventory &amp; Reservation Midpoint</h2></div>
+
+  <h3>Net Position <span class="ref">§4.1</span></h3>
+  <div class="math">
+    <div class="eq"><var>NP</var> &nbsp;=&nbsp; <var>OpeningPosition</var> + <var>CumulativeBuys</var> − <var>CumulativeSells</var> + <var>CorporateAdjustments</var></div>
+  </div>
+  <p>One netted position per Market Maker per security. Negative <var>NP</var> is a simulated short. Version 1 imposes no inventory limits; inventory never prevents quoting. For reporting: <var>LongPosition</var> = max(<var>NP</var>, 0); <var>ShortPosition</var> = max(−<var>NP</var>, 0); the two are never simultaneously positive.</p>
+  <table>
+    <tr><th>Event</th><th>Net Position effect</th></tr>
+    <tr><td>Market Maker buy execution</td><td>Increase by executed quantity</td></tr>
+    <tr><td>Market Maker sell execution</td><td>Decrease by executed quantity</td></tr>
+    <tr><td>Cancel / Replace / Rejection / Acknowledgement</td><td>No effect</td></tr>
+  </table>
+
+  <h3>Average Cost and P&amp;L <span class="ref">§4.2</span></h3>
+  <p>Average Cost is maintained for reporting only and never affects quotation.</p>
+  <div class="math">
+    <div class="eq"><var>NewAvgCost</var> &nbsp;=&nbsp; <span class="frac"><span class="top">|<var>OldPos</var>| × <var>OldAvgCost</var> &nbsp;+&nbsp; <var>AddedQty</var> × <var>ExecPrice</var></span><span class="bot">|<var>OldPos</var>| + <var>AddedQty</var></span></span> <span class="note">adding in the same direction</span></div>
+  </div>
+  <p>Reducing a position: Average Cost of the remainder is unchanged. Crossing through zero: prior position fully closes; excess quantity opens a new position at the crossing execution price.</p>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>RealizedPnL</var> &nbsp;=&nbsp; <var>Qty</var> × (<var>ExecPrice</var> − <var>AvgCost</var>) <span class="note">long reduced</span></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>RealizedPnL</var> &nbsp;=&nbsp; <var>Qty</var> × (<var>AvgCost</var> − <var>ExecPrice</var>) <span class="note">short reduced</span></div>
+    </div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>UnrealizedPnL</var> &nbsp;=&nbsp; <var>NP</var> × (<var>RP</var> − <var>AvgCost</var>) <span class="note">if NP &gt; 0</span></div>
+    <div class="eq"><var>UnrealizedPnL</var> &nbsp;=&nbsp; |<var>NP</var>| × (<var>AvgCost</var> − <var>RP</var>) <span class="note">if NP &lt; 0</span></div>
+    <div class="eq"><var>UnrealizedPnL</var> &nbsp;=&nbsp; 0 <span class="note">if NP = 0</span></div>
+  </div>
+  <p>Reference Price — never public trade price — is the authoritative measure for unrealized P&amp;L.</p>
+
+  <h3>Reference Float and Position Ratio <span class="ref">§4.3</span></h3>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>RF</var> &nbsp;=&nbsp; <var>TotalIssuedShares</var> − <var>TreasuryShares</var></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>PR</var> &nbsp;=&nbsp; <span class="frac"><span class="top"><var>NP</var></span><span class="bot"><var>RF</var></span></span></div>
+    </div>
+  </div>
+  <p>Treasury shares are excluded because they are unavailable for ownership absent an approved corporate action. Positive <var>PR</var> is long; negative is short.</p>
+
+  <h3>Pending Exposure and Effective Position <span class="ref">§4.4</span></h3>
+  <p>Pending Buy Exposure (<var>PBE</var>) and Pending Sell Exposure (<var>PSE</var>) are the sums of remaining quantity of Market Maker orders in states Pending Submit, Active, Pending Replace, Pending Cancel, and Unknown-until-reconciled, published by the Venue Synchronization Engine in the Venue State Record.</p>
+  <div class="math">
+    <div class="eq"><var>EP</var> &nbsp;=&nbsp; <var>NP</var> + 0.50 × (<var>PBE</var> − <var>PSE</var>)</div>
+  </div>
+  <p>Effective Position is used only for displayed-quantity control (§5.7) — never for Reference Price or the Reservation Midpoint. The 50% weighting recognizes pending exposure without treating unexecuted orders as position.</p>
+
+  <h3>Inventory Adjustment (Linear Capped Skew) <span class="ref">§4.5</span></h3>
+  <p>The neutral position is zero shares. The IPO allocation creates an opening long position, so a sell-side preference is expected as secondary trading begins.</p>
+  <div class="math">
+    <div class="eq"><var>IA</var> &nbsp;=&nbsp; − <span class="fn">Clamp</span>( <var>PR</var> × <var>S</var>, &nbsp;−<var>M</var>, &nbsp;+<var>M</var> )</div>
+  </div>
+  <dl class="where">
+      <dt><var>IA</var></dt><dd>Inventory Adjustment (dollars)</dd>
+      <dt><var>PR</var></dt><dd>Position Ratio (§4.3)</dd>
+      <dt><var>S</var></dt><dd>Inventory Skew Sensitivity — Version 1 default $1.00 <em>(proposed)</em></dd>
+      <dt><var>M</var></dt><dd>Maximum Inventory Adjustment — Version 1 default $0.25 <em>(proposed)</em></dd>
+  </dl>
+  <p>A 10% long position yields −$0.10; a 10% short yields +$0.10; the adjustment never exceeds ±$0.25. Long positions lower quotes to encourage selling; short positions raise them. <var>IA</var> is computed to six decimal places and is not independently tick-rounded — tick rounding occurs only after inside prices are constructed (§5.3).</p>
+
+  <h3>Reservation Midpoint <span class="ref">§4.6</span></h3>
+  <div class="math">
+    <div class="eq"><var>RM</var> &nbsp;=&nbsp; <var>RP</var> + <var>IA</var></div>
+  </div>
+  <p>The Reservation Midpoint is internal, is never published outside the Market Maker, and must remain within the price boundaries of §5.4.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch3"><span class="k">← Previous</span><span class="t">Ch 3 · Valuation Engine</span></a>
+    <a class="next" href="#ch5"><span class="k">Next →</span><span class="t">Ch 5 · Quote Construction Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 5 ==================== -->
+<section class="page" id="ch5">
+  <div class="pagehead"><div class="eyebrow">Chapter 05</div><h2>Quote Construction Engine</h2></div>
+
+  <h3>Mandatory Construction Order <span class="ref">§5.1</span></h3>
+  <p>Every Quote Cycle executes exactly this sequence:</p>
+  <ol class="steps">
+    <li>Validate authoritative inputs</li>
+    <li>Determine Reference Price Status</li>
+    <li>Read authoritative Net Position</li>
+    <li>Calculate Position Ratio</li>
+    <li>Calculate Inventory Adjustment</li>
+    <li>Calculate Reservation Midpoint</li>
+    <li>Select Market State spread and depth</li>
+    <li>Construct unrounded inside prices</li>
+    <li>Apply tick rounding</li>
+    <li>Apply price boundaries</li>
+    <li>Apply public-order-book interaction</li>
+    <li>Construct remaining ladder levels</li>
+    <li>Calculate displayed quantities</li>
+    <li>Apply deterministic quantity variation</li>
+    <li class="gate">Validate the complete Target Order Book</li>
+    <li>Compare with the prior Target Order Book</li>
+    <li>Publish a new Quote Version only when required</li>
+  </ol>
+
+  <h3>Market State Quote Parameters <span class="ref">§5.2</span></h3>
+  <table>
+    <tr><th>Market State</th><th class="num">Total spread</th><th class="num">Bid levels</th><th class="num">Ask levels</th><th class="num">Base L1 quantity</th></tr>
+    <tr><td><b>Stable</b></td><td class="num">$0.10</td><td class="num">3</td><td class="num">3</td><td class="num">10,000</td></tr>
+    <tr><td><b>Active</b></td><td class="num">$0.20</td><td class="num">2</td><td class="num">2</td><td class="num">7,500</td></tr>
+    <tr><td><b>Defensive</b></td><td class="num">$0.40</td><td class="num">1</td><td class="num">1</td><td class="num">5,000</td></tr>
+    <tr><td><b>Suspended</b></td><td class="num">No quotes</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+  </table>
+
+  <h3>Inside Quotes and Tick Rounding <span class="ref">§5.3</span></h3>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>UnroundedBid</var><sub>1</sub> &nbsp;=&nbsp; <var>RM</var> − <span class="frac"><span class="top"><var>Spread</var></span><span class="bot">2</span></span></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>UnroundedAsk</var><sub>1</sub> &nbsp;=&nbsp; <var>RM</var> + <span class="frac"><span class="top"><var>Spread</var></span><span class="bot">2</span></span></div>
+    </div>
+  </div>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>Bid</var><sub>1</sub> &nbsp;=&nbsp; <span class="fn">floor</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>UnroundedBid</var><sub>1</sub></span><span class="bot"><var>T</var></span></span> <span style="font-size:1.3em">)</span> × <var>T</var> <span class="note">bids round down</span></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>Ask</var><sub>1</sub> &nbsp;=&nbsp; <span class="fn">ceil</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>UnroundedAsk</var><sub>1</sub></span><span class="bot"><var>T</var></span></span> <span style="font-size:1.3em">)</span> × <var>T</var> <span class="note">asks round up &nbsp;·&nbsp; T = $0.01</span></div>
+    </div>
+  </div>
+  <p>Bids always round down; asks always round up. After rounding, <var>Ask</var><sub>1</sub> − <var>Bid</var><sub>1</sub> ≥ <var>T</var> must hold. If rounded prices would lock or cross: Bid stays rounded down and Ask is set to <var>Bid</var><sub>1</sub> + <var>T</var>, subject to the maximum price boundary.</p>
+
+  <h3>Price Boundaries <span class="ref">§5.4</span></h3>
+  <div class="math">
+    <div class="eq"><var>MinimumPrice</var> &nbsp;=&nbsp; $0.01</div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>MaximumQuotePrice</var> &nbsp;=&nbsp; <var>MEV</var> &nbsp;=&nbsp; <var>MaxRemainingOnFieldValue</var> + <var>ROF</var> + <var>MaxApprovedOffFieldValue</var></div>
+  </div>
+  <p>No bid or ask may be zero or negative, and no ask may exceed MEV. Maximum Approved Off-Field Value = ScheduledGames × $2.50 per §3.6.7 (e.g., $42.50 for a 17-game NFL slate; season-open NFL MEV = $85.00 + $42.50 = $127.50 per share). Boundary compression: a level below minimum is set to minimum and lower duplicates are removed; a level above maximum is set to maximum and higher duplicates removed. If valid two-sided quoting is impossible within the boundaries, Market State becomes Suspended and no Target Order Book is published.</p>
+
+  <h3>Public Order Book Interaction <span class="ref">§5.5</span></h3>
+  <p>The public book supplied to quote construction excludes all Market Maker orders, contains only acknowledged active participant orders, and identifies best participant bid and ask with book version and timestamp. Pending or unacknowledged participant orders are ignored.</p>
+  <div class="math">
+    <div class="eq"><var>PublicDeviationThreshold</var> &nbsp;=&nbsp; <span class="fn">max</span>( $0.50, &nbsp;10% × <var>RP</var> )</div>
+  </div>
+  <p>A public quote is actionable only within the threshold of Reference Price; quotes outside it are ignored for placement (they remain visible in the market).</p>
+  <p><b>Participant bid ≥ preliminary MM ask:</b> raise the MM ask to at least ParticipantBid + <var>T</var>. If that would exceed MEV, publish no ask; bid levels may still publish.</p>
+  <p><b>Participant ask ≤ preliminary MM bid:</b> lower the MM bid to at most ParticipantAsk − <var>T</var>. If that would fall below minimum price, publish no bid; ask levels may still publish.</p>
+  <p><b>No joining or chasing:</b> when preliminary MM prices are inferior to actionable participant quotes but do not cross, the MM retains its preliminary prices. Version 1 prevents locking and crossing; it never improves to match participants.</p>
+  <p><b>Crossed participant book (ParticipantBid ≥ ParticipantAsk):</b> the book is invalid for placement; Venue Status becomes Degraded or Unknown per the interface condition.</p>
+  <p><b>One-sided participant market:</b> constrains only the opposing MM side; absence of a side never prevents MM quotation.</p>
+
+  <h3>Quote Ladder <span class="ref">§5.6</span></h3>
+  <p>Additional levels build outward from the final adjusted inside quote:</p>
+  <table>
+    <tr><th>State</th><th class="mid">Level</th><th class="mid">Bid offset from Bid1</th><th class="mid">Ask offset from Ask1</th></tr>
+    <tr><td><b>Stable</b></td><td class="mid mono">1 / 2 / 3</td><td class="mid mono">$0.00 / −$0.05 / −$0.10</td><td class="mid mono">$0.00 / +$0.05 / +$0.10</td></tr>
+    <tr><td><b>Active</b></td><td class="mid mono">1 / 2</td><td class="mid mono">$0.00 / −$0.10</td><td class="mid mono">$0.00 / +$0.10</td></tr>
+    <tr><td><b>Defensive</b></td><td class="mid mono">1</td><td class="mid mono">$0.00</td><td class="mid mono">$0.00</td></tr>
+  </table>
+  <p>After rounding, boundary application, and public-book adjustment, no two same-side levels may share a price: keep the level closest to the inside, discard the distant duplicate, and do not aggregate its quantity. Ordering: <var>Bid</var><sub>1</sub> &gt; <var>Bid</var><sub>2</sub> &gt; <var>Bid</var><sub>3</sub>; <var>Ask</var><sub>1</sub> &lt; <var>Ask</var><sub>2</sub> &lt; <var>Ask</var><sub>3</sub>; every bid below every ask.</p>
+
+  <h3>Displayed Quantity — Base Quantities <span class="ref">§5.7.1</span></h3>
+  <table>
+    <tr><th>State</th><th class="num">L1 bid/ask</th><th class="num">L2 bid/ask</th><th class="num">L3 bid/ask</th></tr>
+    <tr><td><b>Stable</b></td><td class="num">10,000</td><td class="num">7,500</td><td class="num">5,000</td></tr>
+    <tr><td><b>Active</b></td><td class="num">7,500</td><td class="num">5,000</td><td class="num">—</td></tr>
+    <tr><td><b>Defensive</b></td><td class="num">5,000</td><td class="num">—</td><td class="num">—</td></tr>
+  </table>
+
+  <h3>Position-Side Modifier <span class="ref">§5.7.2</span></h3>
+  <div class="math">
+    <div class="eq"><var>EPR</var> &nbsp;=&nbsp; <span class="fn">Clamp</span><span style="font-size:1.3em">(</span> <span class="frac"><span class="top"><var>EP</var></span><span class="bot"><var>RF</var></span></span>, &nbsp;−0.50, &nbsp;+0.50 <span style="font-size:1.3em">)</span></div>
+  </div>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>BuyModifier</var> &nbsp;=&nbsp; 1 − <var>EPR</var></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>SellModifier</var> &nbsp;=&nbsp; 1 + <var>EPR</var> <span class="note">0.50 ≤ Modifier ≤ 1.50</span></div>
+    </div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>PreVariationQuantity</var> &nbsp;=&nbsp; <span class="fn">round500</span>( <var>BaseLevelQuantity</var> × <var>SideModifier</var> ) <span class="note">halfway rounds down</span></div>
+  </div>
+  <p>Long positions shrink buy size and grow sell size; short positions do the reverse.</p>
+
+  <h3>Deterministic Variation <span class="ref">§5.7.3</span></h3>
+  <p>Displayed quantity varies ±25% from the position-adjusted quantity using a deterministic seed. Canonical encoding: the five fields Security ID, Quote Version, Side, Ladder Level, Configuration Version, in exactly that order, as their canonical string forms (Side rendered BID or ASK; Ladder Level as an unpadded decimal integer), joined with a single pipe character (<code>|</code>), encoded UTF-8, hashed with SHA-256; the first eight bytes of the digest, big-endian, form the unsigned 64-bit integer <var>H</var>.</p>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>U</var> &nbsp;=&nbsp; <span class="frac"><span class="top"><var>H</var></span><span class="bot">2<sup>64</sup> − 1</span></span></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>VariationFactor</var> &nbsp;=&nbsp; 0.75 + 0.50 × <var>U</var> <span class="note">0.75 ≤ VF ≤ 1.25</span></div>
+    </div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>FinalQuantity</var> &nbsp;=&nbsp; <span class="fn">round500</span>( <var>PreVariationQuantity</var> × <var>VariationFactor</var> ) <span class="note">then clamp to min/max</span></div>
+  </div>
+  <div class="callout note"><span class="tag">Golden fixture — §5.7.3</span>
+  Seed <code>NFL-DAL|QV-000123|BID|1|CFG-0007</code> yields first-eight-bytes <code>fc962a04143b0525</code>, <var>H</var> = 18200781141072086309, <var>U</var> = 0.9866663227, VariationFactor = 1.2433331614. Any implementation not reproducing this fixture exactly is non-conforming.</div>
+  <table>
+    <tr><th>Parameter</th><th class="num">Value</th></tr>
+    <tr><td>Minimum displayed quantity</td><td class="num">1,000 shares</td></tr>
+    <tr><td>Maximum displayed quantity per level</td><td class="num">15,000 shares</td></tr>
+    <tr><td>Quantity increment</td><td class="num">500 shares</td></tr>
+  </table>
+  <p>Variation is recomputed only when a new Target Order Book is otherwise required; a different possible random quantity is never, by itself, a reason to publish.</p>
+
+  <h3>Quote Persistence <span class="ref">§5.8</span></h3>
+  <p><b>Publish a new Target Order Book when any of these change:</b> final bid or ask price; ladder structure; final displayed quantity due to position or configuration change; Market State; Reference Price Version; a Position Version materially affecting price or quantity; applicable public-book constraints; Configuration Version; suspension status.</p>
+  <p><b>Never publish solely because:</b> a sweep ran without authoritative change; a duplicate or rejected event arrived; a public-book update left final MM prices unchanged; a different deterministic quantity could exist; a venue acknowledgement confirmed intent; nothing final changed.</p>
+  <p><b>Material position change:</b> a Position Version triggers reconstruction, but publication requires the update to move Inventory Adjustment by ≥ $0.005, change any rounded quote price, change any displayed quantity by ≥ 500 shares, or change a permitted side.</p>
+
+  <h3>Fill Replenishment <span class="ref">§5.9</span></h3>
+  <p>After a partial fill: position updates immediately; remaining quantity stays active; quotes reconstruct; replacement occurs only if the recalculated target differs from the remaining working state.</p>
+  <p>A level replenishes when remaining quantity falls below 50% of target displayed quantity, after a normal delay of 15 seconds from the latest fill on that order.</p>
+  <p>Immediate replenishment (no delay) when: the order fully fills; the entire quoted side empties; Market State changes; Reference Price or Position changes enough to alter a quote price; or Recovery Ready requires controlled reconstruction.</p>
+  <p>Replacement quantity equals the latest Target Order Book quantity — never a restoration of the pre-fill quantity.</p>
+  <p>A fill always creates a new Position Version; it creates a new Quote Version only when the resulting Target Order Book differs.</p>
+
+  <h3>Target Order Book Validation (pre-publication) <span class="ref">§5.10</span></h3>
+  <p>All sixteen checks must pass or publication is blocked and a Quote Construction Exception is raised:</p>
+  <ol class="steps">
+    <li>Reference Price Status permits quotation</li>
+    <li>Market State permits quotation</li>
+    <li>Reference Price within numeric bounds</li>
+    <li>Position Version authoritative</li>
+    <li>Public book version valid or expressly unavailable</li>
+    <li>Every price a valid tick</li>
+    <li>Every quantity a valid increment</li>
+    <li>Every quantity within min/max</li>
+    <li>Bids strictly descending</li>
+    <li>Asks strictly ascending</li>
+    <li>Best bid &lt; best ask</li>
+    <li>No intentional cross of an actionable participant quote</li>
+    <li>No duplicate same-side price</li>
+    <li>Boundaries satisfied</li>
+    <li>Required version references present</li>
+    <li>Deterministic hash inputs complete</li>
+  </ol>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch4"><span class="k">← Previous</span><span class="t">Ch 4 · Position &amp; Inventory</span></a>
+    <a class="next" href="#ch6"><span class="k">Next →</span><span class="t">Ch 6 · Market State Engine</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 6 ==================== -->
+<section class="page" id="ch6">
+  <div class="pagehead"><div class="eyebrow">Chapter 06</div><h2>Market State Engine</h2></div>
+
+  <h3>States and Inputs <span class="ref">§6.1</span></h3>
+  <table>
+    <tr><th>State</th><th>Meaning</th></tr>
+    <tr><td><b>Stable</b></td><td>Full normal quoting</td></tr>
+    <tr><td><b>Active</b></td><td>Quoting with widened, reduced-risk parameters</td></tr>
+    <tr><td><b>Defensive</b></td><td>Most restrictive active quoting</td></tr>
+    <tr><td><b>Suspended</b></td><td>No quotation permitted</td></tr>
+  </table>
+  <p>Market State is per security unless a system-wide condition applies. It is determined only from: Manual Override State, Recovery State, Reference Price Status, Venue Synchronization and Connection States, Security Lifecycle State, and the active Configuration Version. It never depends on position, volume, P&amp;L, sports events, order-book imbalance, or operator discretion.</p>
+
+  <h3>Determination Precedence <span class="ref">§6.2</span></h3>
+  <ol class="prio">
+    <li><b>Manual Kill Switch or Security Suspension</b></li>
+    <li><b>Security Lifecycle State</b></li>
+    <li><b>Recovery State</b></li>
+    <li><b>Reference Price Status</b></li>
+    <li><b>Venue Connection and Synchronization State</b></li>
+    <li><b>Promotion dwell requirements</b></li>
+    <li><b>Normal evaluation</b></li>
+  </ol>
+  <p>The first condition requiring the most restrictive state controls.</p>
+
+  <h3>Condition Mapping <span class="ref">§6.3</span></h3>
+  <table>
+    <tr><th>Condition</th><th style="width:14rem">Required Market State</th></tr>
+    <tr><td>Global kill switch active</td><td>Suspended (all securities)</td></tr>
+    <tr><td>Security suspension active / release requested but unapproved / manual recovery active</td><td>Suspended</td></tr>
+    <tr><td>Security Lifecycle in any state other than Trading</td><td>Suspended</td></tr>
+    <tr><td>Recovery State: Recovery Required, Restoring, Reconciling, Validating, or Failed</td><td>Suspended</td></tr>
+    <tr><td>Recovery State: Ready</td><td>Defensive</td></tr>
+    <tr><td>Reference Price Warning</td><td>At least Active</td></tr>
+    <tr><td>Reference Price Degraded</td><td>At least Defensive</td></tr>
+    <tr><td>Reference Price Invalid</td><td>Suspended</td></tr>
+    <tr><td>Venue Connected + Degraded</td><td>At least Defensive</td></tr>
+    <tr><td>Venue Recovering</td><td>At least Defensive (unless Recovery requires Suspended)</td></tr>
+    <tr><td>Venue Disconnected or authoritative venue state Unknown</td><td>Suspended</td></tr>
+    <tr><td>Venue Connected + Synchronized, or ordinary synchronizing after a new Target Order Book</td><td>No restriction</td></tr>
+  </table>
+
+  <h3>Transition Rules <span class="ref">§6.4</span></h3>
+  <p><b>Demotions are immediate.</b> Whenever the mapping requires a more restrictive state, the transition occurs at once; entering Suspended publishes an empty Target Order Book and initiates cancellation of cancellable orders.</p>
+  <p><b>Promotions climb one rung and require dwell.</b> Suspended → Defensive → Active → Stable. Suspended never transitions directly to Active or Stable; Defensive never directly to Stable.</p>
+  <p><b>Unchanged conditions publish nothing.</b> A persisting condition creates no new Market State Version.</p>
+
+  <h4>Promotion Dwell (default 10 seconds each) <span class="ref">§6.4.1</span></h4>
+  <p>Defensive → Active requires, continuously for the dwell: RP Status Valid or Warning; venue Connected; Synchronized or ordinary synchronizing; Recovery Normal or Ready; no suspending override; lifecycle Trading.</p>
+  <p>Active → Stable requires, continuously for the dwell: RP Status Valid; venue Connected and Synchronized; Recovery Normal; no exception requiring Active/Defensive; lifecycle Trading.</p>
+  <p>Any condition requiring the current or a stricter state resets the promotion timer to zero. Dwell progress is recorded but creates no new version until the state changes.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch5"><span class="k">← Previous</span><span class="t">Ch 5 · Quote Construction Engine</span></a>
+    <a class="next" href="#ch7"><span class="k">Next →</span><span class="t">Ch 7 · Event Processing</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 7 ==================== -->
+<section class="page" id="ch7">
+  <div class="pagehead"><div class="eyebrow">Chapter 07</div><h2>Event Processing, Sequencing &amp; Idempotency</h2></div>
+
+  <h3>Event Envelope <span class="ref">§7.1</span></h3>
+  <p>Every event submitted for authoritative processing uses one standard envelope: Event ID; Event Type; Event Schema Version; Event Domain; Source ID; Source Message ID; Idempotency Key; Correlation ID; Causation ID; Security ID, Game ID, Competition ID (as applicable); Provider Sequence; Provider Event Time; InPlay Receive Time; Accepted Event Sequence (assigned only on acceptance); Accepted Time; Configuration Version; Payload; Payload Hash; Trace ID; Audit ID.</p>
+  <p>All authoritative timestamps are UTC, ISO 8601-compatible, with at least millisecond precision; source offsets are preserved for audit. Local time is never authoritative; daylight-saving transitions never alter ordering. Event time, receive time, and processing time remain distinct concepts.</p>
+
+  <h3>Lifecycle <span class="ref">§7.2</span></h3>
+  <ol class="steps">
+    <li>Received</li>
+    <li>Authenticated</li>
+    <li>Schema Validated</li>
+    <li>Business Validated</li>
+    <li>Deduplicated</li>
+    <li>Sequenced</li>
+    <li>Accepted</li>
+    <li>Processed</li>
+    <li>Published</li>
+    <li>Audited</li>
+  </ol>
+  <p>A rejected event receives no Accepted Event Sequence but always receives a rejection audit record.</p>
+
+  <h3>Idempotency <span class="ref">§7.3</span></h3>
+  <p>Event ID identifies one produced record; the Idempotency Key identifies the business occurrence. Two Event IDs may share a key on retransmission; only one business effect is accepted per key within the retention period.</p>
+  <table>
+    <tr><th>Event type</th><th>Idempotency basis</th></tr>
+    <tr><td>Probability Update</td><td>Source ID + Game ID + Provider Sequence</td></tr>
+    <tr><td>Official Result</td><td>Source ID + Game ID + Result Version</td></tr>
+    <tr><td>Execution</td><td>Venue ID + Execution ID</td></tr>
+    <tr><td>Order Acknowledgement</td><td>Venue ID + Order ID + Acknowledgement Sequence</td></tr>
+    <tr><td>Configuration Activation</td><td>Configuration Version</td></tr>
+    <tr><td>Manual Control</td><td>Control Action ID</td></tr>
+    <tr><td>Corporate Action</td><td>Corporate Action ID</td></tr>
+    <tr><td>IPO Allocation</td><td>IPO ID + Allocation Version</td></tr>
+    <tr><td>Checkpoint</td><td>Checkpoint ID</td></tr>
+  </table>
+  <p>Duplicates receive no second Accepted Event Sequence, modify nothing, publish nothing, and generate a Duplicate Event audit record. Conflicting duplicates (same key, different payload) never overwrite the accepted event; they enter exception handling, raise a data-integrity alert, and trigger recovery or suspension when the affected input cannot be trusted. Corrections require a new approved correction identifier or sequence.</p>
+
+  <h3>Accepted Event Sequence <span class="ref">§7.4</span></h3>
+  <p>One Event Sequencer assigns the Accepted Event Sequence: globally unique, strictly increasing, never reused, durably persisted atomically with the event before business processing begins. Sequence values unused due to pre-acceptance failure are never reassigned; replay processes accepted events in increasing order and ignores documented unused values. Assignment occurs only after authentication, schema validation, business validation, and duplicate determination.</p>
+
+  <h3>Quote Cycle <span class="ref">§7.5</span></h3>
+  <p>A Quote Cycle is the deterministic process by which one qualifying trigger may produce a new Target Order Book. It consumes exactly one version each of: Reference Price, Market State, Position, Venue State or Public Order Book (as applicable), Configuration, and one triggering Accepted Event Sequence. A Quote Cycle does not necessarily publish; publication follows §5.8. Stale-commit prevention applies throughout: an older calculation never overwrites newer authoritative state.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch6"><span class="k">← Previous</span><span class="t">Ch 6 · Market State Engine</span></a>
+    <a class="next" href="#ch8"><span class="k">Next →</span><span class="t">Ch 8 · Venue Synchronization</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 8 ==================== -->
+<section class="page" id="ch8">
+  <div class="pagehead"><div class="eyebrow">Chapter 08</div><h2>Venue Synchronization &amp; Order Lifecycle</h2></div>
+
+  <h3>Responsibility <span class="ref">§8.1</span></h3>
+  <p>Only the Venue Synchronization Engine communicates with the venue. It converges the venue toward each published Target Order Book by computing the difference between the target and the confirmed venue book and issuing the minimal set of submit, replace, and cancel instructions. The Quote Construction Engine publishes intent; this engine determines implementation. It owns the working book, the confirmed book, order states, pending exposure (§4.4), and Venue Status, and it emits Execution Events to the Position &amp; Execution Engine.</p>
+
+  <h3>Order States <span class="ref">§8.2</span></h3>
+  <table>
+    <tr><th style="width:9.5rem">State</th><th>Meaning</th></tr>
+    <tr><td><b>Proposed</b></td><td>In the synchronization plan; not yet instructed</td></tr>
+    <tr><td><b>Pending Submit</b></td><td>Submit sent; acknowledgement pending</td></tr>
+    <tr><td><b>Active</b></td><td>Venue acknowledged an open order</td></tr>
+    <tr><td><b>Partially Filled</b></td><td>One or more partial executions; remaining quantity positive</td></tr>
+    <tr><td><b>Pending Replace</b></td><td>Replacement instruction pending</td></tr>
+    <tr><td><b>Pending Cancel</b></td><td>Cancellation instruction pending</td></tr>
+    <tr><td><b>Filled</b></td><td>Remaining quantity zero (terminal)</td></tr>
+    <tr><td><b>Cancelled</b></td><td>Venue confirms no remaining order (terminal)</td></tr>
+    <tr><td><b>Rejected</b></td><td>Submit rejected; no venue order active (terminal)</td></tr>
+    <tr><td><b>Unknown</b></td><td>Authoritative status cannot be established — nonterminal; requires reconciliation</td></tr>
+  </table>
+
+  <h3>Interface Rules Pending ICD <span class="ref">§8.3</span></h3>
+  <div class="callout warn"><span class="tag">Pending the Matching Engine ICD</span>
+  Until the Matching Engine ICD expressly confirms otherwise, Novosapien shall treat every replace as cancel-and-new for queue-priority purposes, and shall not assume priority preservation for quantity-reducing replaces. Instruction timeouts, retry counts and intervals, message-rate limits, and market-data maximum age are OPEN (Chapter 14, items C-4 through C-8) and shall be implemented as configuration with no hard-coded assumptions.</div>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch7"><span class="k">← Previous</span><span class="t">Ch 7 · Event Processing</span></a>
+    <a class="next" href="#ch9"><span class="k">Next →</span><span class="t">Ch 9 · IPO Allocation &amp; Security Lifecycle</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 9 ==================== -->
+<section class="page" id="ch9">
+  <div class="pagehead"><div class="eyebrow">Chapter 09</div><h2>IPO Allocation &amp; Security Lifecycle</h2></div>
+
+  <h3>IPO Process <span class="ref">§9.1</span></h3>
+  <ol class="steps">
+    <li>Configuring</li>
+    <li>IPO Open</li>
+    <li>IPO Closed</li>
+    <li>Allocation</li>
+    <li>Market Maker Allocation</li>
+    <li>Treasury Allocation</li>
+    <li>Reconciliation</li>
+    <li>Complete</li>
+  </ol>
+  <p>Secondary trading never begins before Complete. After IPO Close, no new orders, cancellations, or quantity modifications are accepted, and queue priority is immutable.</p>
+  <p><b>Queue priority:</b> earliest acceptance timestamp, then lowest sequence number, then lowest Order Identifier.</p>
+  <p><b>Oversubscribed:</b> allocate strictly by queue priority until all issued shares are assigned; no investor receives more than requested; unfilled demand expires; no proportional allocation in Version 1.</p>
+  <p><b>Undersubscribed:</b> investor allocations complete first; the remainder becomes Unsold Shares; completed investor allocations are never modified.</p>
+
+  <h3>Market Maker and Treasury Allocation <span class="ref">§9.2</span></h3>
+  <div class="math">
+    <div class="eq"><var>MMAllocation</var> &nbsp;=&nbsp; <span class="fn">floor</span>( 0.85 × <var>UnsoldShares</var> )</div>
+  </div>
+  <div class="math">
+    <div class="eq"><var>TreasuryAllocation</var> &nbsp;=&nbsp; <var>UnsoldShares</var> − <var>MMAllocation</var></div>
+  </div>
+  <p>The Market Maker purchase is automatic, atomic, and at the IPO Price; fractional remainders accrue to Treasury (e.g., 101 unsold → 85 MM, 16 Treasury). Opening Inventory equals exactly the purchased quantity, and the Share Conservation Rule — every issued share has exactly one owner — must hold exactly at all times.</p>
+
+  <h3>Security Lifecycle States <span class="ref">§9.3</span></h3>
+  <p>Configuring, IPO Open, IPO Closed, Allocating, Pre-Open Ready, Trading, Halted, Settlement Pending, Settled, Extinguished, and Recovery. Only Trading permits Market Maker quotation (§6.3); every other lifecycle state forces Suspended.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch8"><span class="k">← Previous</span><span class="t">Ch 8 · Venue Synchronization</span></a>
+    <a class="next" href="#ch10"><span class="k">Next →</span><span class="t">Ch 10 · Recovery, Replay &amp; Audit</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 10 ==================== -->
+<section class="page" id="ch10">
+  <div class="pagehead"><div class="eyebrow">Chapter 10</div><h2>Recovery, Replay &amp; Audit</h2></div>
+
+  <h3>Recovery States <span class="ref">§10.1</span></h3>
+  <table>
+    <tr><th style="width:10rem">State</th><th>Meaning</th></tr>
+    <tr><td><b>Normal</b></td><td>No recovery activity required</td></tr>
+    <tr><td><b>Recovery Required</b></td><td>Integrity loss identified; affected quotation suspended</td></tr>
+    <tr><td><b>Restoring</b></td><td>Authoritative state being reconstructed from checkpoint plus event replay</td></tr>
+    <tr><td><b>Reconciling</b></td><td>Reconstructed state compared with external (venue) state</td></tr>
+    <tr><td><b>Validating</b></td><td>Recovered state under deterministic validation</td></tr>
+    <tr><td><b>Ready</b></td><td>Recovery succeeded; controlled resumption permitted (transitional only)</td></tr>
+    <tr><td><b>Failed</b></td><td>Recovery cannot complete without escalation or approved intervention</td></tr>
+  </table>
+
+  <h3>Recovery Rules <span class="ref">§10.2</span></h3>
+  <p>The path is Recovery Required → Restoring → Reconciling → Validating → Ready; any failure at a stage retries per runbook, falls back one stage, or moves to Failed on exhaustion or unresolvable mismatch.</p>
+  <p>Ready leads only to Defensive Market State (§6.3); controlled resumption creates a post-recovery checkpoint and returns Recovery State to Normal. Recovery never returns directly to Stable.</p>
+  <p>Failed never transitions directly to Ready or Normal; only an approved revised recovery plan restarts the process at Recovery Required. Manual alteration of business state is rejected absent a formal amendment.</p>
+  <p>Recovery cancellation is permitted only before restoration begins and only with independently verified integrity.</p>
+
+  <h3>Checkpoints and Replay <span class="ref">§10.3</span></h3>
+  <p>Checkpoints capture complete authoritative state with version references and integrity hashes at configured intervals and at recovery boundaries. Replay — reprocessing accepted events in Accepted Event Sequence order from a checkpoint — is the authoritative verification mechanism: it must reproduce identical Reference Price Versions, Market State Versions, Target Order Books, position records, and audit identifiers. Replay equality is a certification gate (§13.2).</p>
+
+  <h3>Audit <span class="ref">§10.4</span></h3>
+  <p>Every published authoritative object, every accepted and rejected event, every state transition (with reason code), every instruction, and every manual action produces an immutable audit record with a unique Audit ID. Audit records are never modified or deleted within the retention period. The audit retention period is OPEN (Chapter 14, item E-2).</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch9"><span class="k">← Previous</span><span class="t">Ch 9 · IPO Allocation</span></a>
+    <a class="next" href="#ch11"><span class="k">Next →</span><span class="t">Ch 11 · Challenge Integration &amp; Settlement</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 11 ==================== -->
+<section class="page" id="ch11">
+  <div class="pagehead"><div class="eyebrow">Chapter 11</div><h2>Challenge Integration, Matching &amp; Settlement</h2></div>
+
+  <h3>Boundary <span class="ref">§11.1</span></h3>
+  <p>Version 1 operates in the InPlay Challenge simulated environment: simulated shares, simulated cash, no production clearing or broker-dealer records. All shares obey the Share Conservation Rule at all times. The Market Maker uses a distinct system account, receives no preferential queue priority, never internalizes participant orders outside the matching engine, and never submits participant-owned orders.</p>
+
+  <h3>Matching <span class="ref">§11.2</span></h3>
+  <p>The Challenge Matching Engine matches by strict deterministic price–time priority: better price first (higher for buys, lower for sells); equal prices by earliest priority timestamp. Execution price is always the resting order price, whether the resting order is a participant or the Market Maker. Partial fills are permitted; each execution carries a unique Execution ID, price, quantity, cumulative and remaining quantities, venue sequence, and timestamp. One incoming order may produce multiple executions.</p>
+  <p>Self-trade prevention: the same participant account never trades against itself; all Market Maker instances share one self-trade-prevention group and never trade against each other. A prevented self-trade creates no execution, position change, P&amp;L, or leaderboard effect.</p>
+
+  <h3>Final Settlement <span class="ref">§11.3</span></h3>
+  <div class="math">
+    <div class="eq"><var>FinalSettlementValue</var> &nbsp;=&nbsp; <var>FinalRealizedOnFieldValue</var> + <var>FinalRealizedOffFieldValue</var></div>
+  </div>
+  <p>Final settlement follows the final regular-season game and its off-field publication for each security (§2.5); postseason play never affects settlement. At settlement no expected value remains, all results and off-field amounts are final, and Reference Price Status must be Valid. The settlement value carries a Settlement Version, approval record, effective timestamp, source versions, calculation hash, and audit evidence.</p>
+  <div class="mathgrid">
+    <div class="math">
+      <div class="eq"><var>ParticipantCashEffect</var> &nbsp;=&nbsp; <var>PositionQty</var> × <var>FSV</var></div>
+    </div>
+    <div class="math">
+      <div class="eq"><var>MarketMakerCashEffect</var> &nbsp;=&nbsp; <var>NP</var> × <var>FSV</var></div>
+    </div>
+  </div>
+  <p>Long positions receive settlement value; permitted shorts pay the settlement obligation; all positions go to zero, updating cash, realized P&amp;L, Global P&amp;L, and leaderboard source data.</p>
+  <p>Market Maker settlement enters MM realized P&amp;L and never affects participant prizes except through accepted executions and approved competition metrics.</p>
+  <p>Treasury shares are extinguished without participant cash, prize, or leaderboard effect (unless Competition Rules require a separate Treasury ledger).</p>
+  <p>Each security publishes one authoritative Settlement Record: <code>settlement_id</code>, <code>competition_id</code>, <code>security_id</code>, <code>settlement_version</code>, <code>final_trading_cutoff</code>, <code>final_reference_price_version</code>, final on-field and off-field values, <code>final_settlement_value</code>, results and off-field versions, outstanding participant position, MM net position, treasury shares, <code>settlement_status</code> (PENDING / VALIDATING / APPROVED / SETTLED / CORRECTED / FAILED), <code>approval_id</code>, <code>effective_timestamp</code>, <code>calculation_hash</code>, <code>audit_id</code>.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch10"><span class="k">← Previous</span><span class="t">Ch 10 · Recovery, Replay &amp; Audit</span></a>
+    <a class="next" href="#ch12"><span class="k">Next →</span><span class="t">Ch 12 · Configuration Dictionary</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 12 ==================== -->
+<section class="page" id="ch12">
+  <div class="pagehead"><div class="eyebrow">Chapter 12</div><h2>Configuration Dictionary</h2></div>
+
+  <h3>Governance <span class="ref">§12.1</span></h3>
+  <p>Every configurable value lives here and only here. Configuration is versioned; activation is atomic, validated (including cross-parameter validation), auditable, and reversible by rollback to a prior version. A configuration change creates a new Configuration Version, and every authoritative object records the version under which it was produced. Code never embeds these constants (§1.6-5). Where a default also appears in an algorithm chapter, the chapter is normative for the mechanism and §12.2 is the authoritative registry for the value; any divergence between the two is a document defect resolved in favor of §12.2.</p>
+
+  <h3>Version 1 Defaults <span class="ref">§12.2</span></h3>
+  <p>Values marked <span class="prop">▸</span> are proposed pending InPlay approval (Chapter 14, item A); implement the mechanism as specified.</p>
+  <table>
+    <tr><th>Parameter</th><th>Default</th><th style="width:6rem" class="mid">Governing section</th></tr>
+    <tr><td>Tick size</td><td class="mono">$0.01</td><td class="mid mono">5.3</td></tr>
+    <tr><td>Spread — Stable / Active / Defensive</td><td class="mono">$0.10 / $0.20 / $0.40</td><td class="mid mono">5.2</td></tr>
+    <tr><td>Quote levels — Stable / Active / Defensive</td><td class="mono">3 / 2 / 1</td><td class="mid mono">5.2</td></tr>
+    <tr><td>Ladder offsets — Stable</td><td class="mono">±$0.05, ±$0.10 <span class="prop">▸</span></td><td class="mid mono">5.6</td></tr>
+    <tr><td>Ladder offsets — Active</td><td class="mono">±$0.10 <span class="prop">▸</span></td><td class="mid mono">5.6</td></tr>
+    <tr><td>Base quantities — Stable L1/L2/L3</td><td class="mono">10,000 / 7,500 / 5,000 <span class="prop">▸</span></td><td class="mid mono">5.7.1</td></tr>
+    <tr><td>Base quantities — Active L1/L2</td><td class="mono">7,500 / 5,000 <span class="prop">▸</span></td><td class="mid mono">5.7.1</td></tr>
+    <tr><td>Base quantity — Defensive L1</td><td class="mono">5,000 <span class="prop">▸</span></td><td class="mid mono">5.7.1</td></tr>
+    <tr><td>Inventory Skew Sensitivity S</td><td class="mono">$1.00 <span class="prop">▸</span></td><td class="mid mono">4.5</td></tr>
+    <tr><td>Maximum Inventory Adjustment M</td><td class="mono">$0.25 <span class="prop">▸</span></td><td class="mid mono">4.5</td></tr>
+    <tr><td>Pending-exposure weight</td><td class="mono">0.50</td><td class="mid mono">4.4</td></tr>
+    <tr><td>EPR clamp</td><td class="mono">±0.50</td><td class="mid mono">5.7.2</td></tr>
+    <tr><td>Quantity modifier clamp</td><td class="mono">0.50 – 1.50</td><td class="mid mono">5.7.2</td></tr>
+    <tr><td>Quantity variation range</td><td class="mono">±25%</td><td class="mid mono">5.7.3</td></tr>
+    <tr><td>Quantity increment / min / max per level</td><td class="mono">500 / 1,000 / 15,000 shares</td><td class="mid mono">5.7.3</td></tr>
+    <tr><td>Replenishment threshold</td><td class="mono">50% of target quantity <span class="prop">▸</span></td><td class="mid mono">5.9</td></tr>
+    <tr><td>Replenishment delay</td><td class="mono">15 seconds <span class="prop">▸</span></td><td class="mid mono">5.9</td></tr>
+    <tr><td>Material IA change / material quantity change</td><td class="mono">$0.005 / 500 shares</td><td class="mid mono">5.8</td></tr>
+    <tr><td>Public deviation threshold</td><td class="mono">max($0.50, 10% × RP) <span class="prop">▸</span></td><td class="mid mono">5.5</td></tr>
+    <tr><td>Minimum price</td><td class="mono">$0.01</td><td class="mid mono">5.4</td></tr>
+    <tr><td>Valuation sweep cadence / max normal interval</td><td class="mono">2.0 s / 2.5 s</td><td class="mid mono">3.1.4</td></tr>
+    <tr><td>Live probability freshness bands</td><td class="mono">5 / 10 / 20 seconds</td><td class="mid mono">3.3.1</td></tr>
+    <tr><td>Pregame freshness bands</td><td class="mono">24 h / 6 h / 60 min / 15 min</td><td class="mid mono">3.3.2</td></tr>
+    <tr><td>Status promotion dwell (Degraded→Warning, Warning→Valid)</td><td class="mono">10 s each <span class="prop">▸</span></td><td class="mid mono">3.4.1</td></tr>
+    <tr><td>Market State promotion dwell (Def→Act, Act→Stable)</td><td class="mono">10 s each <span class="prop">▸</span></td><td class="mid mono">6.4.1</td></tr>
+    <tr><td>Confidence deduction schedule</td><td class="mono">Table §3.5 <span class="prop">▸</span></td><td class="mid mono">3.5</td></tr>
+    <tr><td>Game values — win / tie</td><td class="mono">$5.00 / $2.50</td><td class="mid mono">3.1.2</td></tr>
+    <tr><td>Probability sum bands</td><td class="mono">±1e-6 accept; ±1% normalize; else reject</td><td class="mid mono">3.2.1</td></tr>
+    <tr><td>MM IPO allocation fraction</td><td class="mono">floor(85% of unsold shares)</td><td class="mid mono">9.2</td></tr>
+    <tr><td>Off-field pool per game</td><td class="mono">$2.50</td><td class="mid mono">3.6.1</td></tr>
+    <tr><td>Off-field volume window</td><td>Prior game final → game final</td><td class="mid mono">3.6.2</td></tr>
+    <tr><td>Off-field publication cadence</td><td>NFL post-MNF; NCAA post week-final, both game-official</td><td class="mid mono">3.6.4</td></tr>
+    <tr><td>Zero-volume realized split</td><td class="mono">$1.25 / $1.25</td><td class="mid mono">3.6.4</td></tr>
+    <tr><td>BDI clamp</td><td class="mono">0.10 – 10.0 <span class="prop">▸</span></td><td class="mid mono">3.6.5</td></tr>
+    <tr><td>Popularity blend horizon (publications to full volume weighting)</td><td class="mono">4 <span class="prop">▸</span></td><td class="mid mono">3.6.5</td></tr>
+    <tr><td>Capture-share clamp</td><td class="mono">0.20 – 0.80 <span class="prop">▸</span></td><td class="mid mono">3.6.5</td></tr>
+    <tr><td>Security universe</td><td class="mono">32 NFL + 138 NCAA D-I = 170</td><td class="mid mono">2.5</td></tr>
+  </table>
+
+  <h3>Parameters With No Default — External Closure Required <span class="ref">§12.3</span></h3>
+  <p>These parameters intentionally have no value. Implement them as configuration; do not select production values (Chapter 14).</p>
+  <table>
+    <tr><th>Parameter</th><th>Required source</th></tr>
+    <tr><td><code>BOOK.MAX_BOOK_AGE</code></td><td>Matching-engine market-data specification</td></tr>
+    <tr><td><code>VENUE.INSTRUCTION_TIMEOUT</code></td><td>Matching Engine ICD</td></tr>
+    <tr><td><code>VENUE.MAX_RETRY_COUNT / RETRY_INTERVAL</code></td><td>Interface behavior and rate-limit analysis</td></tr>
+    <tr><td><code>VENUE.MESSAGE_RATE_LIMIT</code></td><td>Matching-engine service limits</td></tr>
+    <tr><td><code>EVENT.MAX_CLOCK_SKEW</code></td><td>Provider and matching-engine clock specifications</td></tr>
+    <tr><td><code>EVENT.IDEMPOTENCY_RETENTION</code></td><td>InPlay retention policy</td></tr>
+    <tr><td><code>PERF.ORDER_RATE / EXECUTION_RATE / PROBABILITY_UPDATE_RATE / MAX_OPEN_ORDERS</code></td><td>Approved Challenge load profile</td></tr>
+    <tr><td><code>PERF.RECOVERY_TIME_OBJECTIVE</code></td><td>InPlay operational requirement</td></tr>
+    <tr><td><code>AUDIT.RETENTION_PERIOD</code></td><td>InPlay legal and operational policy</td></tr>
+  </table>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch11"><span class="k">← Previous</span><span class="t">Ch 11 · Settlement</span></a>
+    <a class="next" href="#ch13"><span class="k">Next →</span><span class="t">Ch 13 · Golden Tests &amp; Acceptance</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 13 ==================== -->
+<section class="page" id="ch13">
+  <div class="pagehead"><div class="eyebrow">Chapter 13</div><h2>Golden Tests &amp; Acceptance</h2></div>
+
+  <h3>Test Authority and Comparison Standard <span class="ref">§13.1</span></h3>
+  <p>Golden Tests are the executable definition of correctness. Each test fixes the initial state, configuration version, and accepted event sequence, and asserts field-level equality of every resulting authoritative object — prices, quantities, versions, states, statuses, and hashes. Approximate comparison is not conformance. Tests are independent, order-insensitive, and runnable in any certified environment.</p>
+
+  <h3>Mandatory Coverage <span class="ref">§13.2</span></h3>
+  <p>The suite shall cover, at minimum: IPO allocation (including the 85% floor rule and share conservation); valuation (formula, recalculation, publication rule); probability validation, normalization, duplicates, ordering, and corrections; data quality, freshness, status, and confidence; position accounting including average cost, zero-crossing, and P&amp;L; inventory skew including clamps and sign; quote prices including rounding, lock/cross repair, and boundaries; public-book interaction including deviation threshold, one-sided and crossed books; quantities including modifiers and deterministic variation reproducibility; refresh and replenishment timing; Market State mapping, precedence, dwell, and reset; order and instruction lifecycles; event processing, idempotency, conflicting duplicates, and sequencing; venue synchronization and reconciliation; recovery paths including Failed; configuration activation and rollback; Challenge matching, self-trade prevention, and settlement; audit completeness; and performance under the certified load profile.</p>
+  <p><b>Replay certification:</b> restore from checkpoint, replay the accepted sequence, and compare every authoritative object for exact equality. <b>Failure-injection:</b> venue disconnects, provider gaps, conflicting duplicates, and process restarts at every pipeline stage must produce the specified degraded or suspended behavior, never invented state.</p>
+
+  <h3>Acceptance <span class="ref">§13.3</span></h3>
+  <p>Certification requires: every mandatory Golden Test passing; replay certification passing; interface certification against approved ICDs; settlement certification; performance and resilience certification; a complete Requirements Traceability Matrix mapping every section of Chapters 2–13 to code and tests; retained verification evidence; and a written Novosapien conformance statement. Use or testing is not implied acceptance; InPlay retains final acceptance authority. Tests dependent on OPEN items (Chapter 14) remain Draft until the underlying rule is approved, and no Critical requirement may be Blocked at acceptance.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch12"><span class="k">← Previous</span><span class="t">Ch 12 · Configuration Dictionary</span></a>
+    <a class="next" href="#ch14"><span class="k">Next →</span><span class="t">Ch 14 · Open Decision Register</span></a>
+  </nav>
+</section>
+
+<!-- ==================== CH 14 ==================== -->
+<section class="page" id="ch14">
+  <div class="pagehead"><div class="eyebrow">Chapter 14</div><h2>Open Decision Register — STOP LIST</h2></div>
+
+  <div class="callout danger"><span class="tag">Binding rule</span>
+  Nothing in this chapter may be inferred, defaulted, or selected by Novosapien or any agent. Each item blocks only the work that depends on it; the core architecture of Chapters 2–10 is implementable now. Raise blocking questions in writing; log resolutions as approved Change Orders that amend this document.</div>
+
+  <h3>A · Proposed Defaults Awaiting InPlay Approval</h3>
+  <p>All <span class="prop">▸</span> values in §12.2: skew sensitivity and cap; base quantities and ladder offsets; replenishment threshold and delay; public deviation threshold; confidence deductions; status and Market State dwell periods; and the popularity-model parameters of §3.6.5 (BDI clamp, blend horizon, capture-share clamp).</p>
+
+  <h3>B · InPlay Business Decisions</h3>
+  <table>
+    <tr><th style="width:4rem" class="mid">#</th><th>Decision</th></tr>
+    <tr><td class="mid mono">B-1</td><td>CLOSED (v1.1) — off-field methodology defined in §3.6: $2.50 per-game pool split by counted volume</td></tr>
+    <tr><td class="mid mono">B-2</td><td>CLOSED (v1.1) — ceiling = ScheduledGames × $2.50 (§3.6.7); MEV computable in §5.4</td></tr>
+    <tr><td class="mid mono">B-3</td><td>Participant short selling: allowed or prohibited</td></tr>
+    <tr><td class="mid mono">B-4</td><td>Participant starting cash, maximum order size, and position limits</td></tr>
+    <tr><td class="mid mono">B-5</td><td>Market orders for participants: enabled or disabled</td></tr>
+    <tr><td class="mid mono">B-6</td><td>Treatment of resting participant orders during a halt: cancel or retain</td></tr>
+    <tr><td class="mid mono">B-7</td><td>Simulated transaction fees</td></tr>
+    <tr><td class="mid mono">B-8</td><td>Game P&amp;L measurement window and official leaderboard formulas</td></tr>
+    <tr><td class="mid mono">B-9</td><td>Prize-finality cutoff and settlement-correction materiality</td></tr>
+    <tr><td class="mid mono">B-10</td><td>Final settlement-finality policy</td></tr>
+  </table>
+
+  <h3>C · Matching Engine ICD (provider not yet selected)</h3>
+  <table>
+    <tr><th style="width:4rem" class="mid">#</th><th>Dependency</th></tr>
+    <tr><td class="mid mono">C-1</td><td>Matching-engine provider and the tZERO Challenge role</td></tr>
+    <tr><td class="mid mono">C-2</td><td>Transport protocol and canonical serialization confirmation</td></tr>
+    <tr><td class="mid mono">C-3</td><td>Time-in-Force options for Market Maker and participants</td></tr>
+    <tr><td class="mid mono">C-4</td><td>Replace semantics: identifier behavior and queue-priority effect (until confirmed: cancel-and-new, §8.3)</td></tr>
+    <tr><td class="mid mono">C-5</td><td>Cancel-on-pending behavior</td></tr>
+    <tr><td class="mid mono">C-6</td><td>Instruction timeouts, retry counts and intervals</td></tr>
+    <tr><td class="mid mono">C-7</td><td>Message-rate limits and capacity profile</td></tr>
+    <tr><td class="mid mono">C-8</td><td>Market-data maximum age</td></tr>
+    <tr><td class="mid mono">C-9</td><td>Trade correction and bust rules</td></tr>
+  </table>
+
+  <h3>D · Sports Data ICD</h3>
+  <table>
+    <tr><th style="width:4rem" class="mid">#</th><th>Dependency</th></tr>
+    <tr><td class="mid mono">D-1</td><td>Exact Sportradar product selection and field mapping to §3.2.1 — must supply future-game win/tie/loss probabilities for every scheduled regular-season game of all 170 securities (≈ 2,400 games) within the §3.3.2 freshness bands, from season open</td></tr>
+    <tr><td class="mid mono">D-2</td><td>Provider sequence guarantees and correction semantics</td></tr>
+  </table>
+
+  <h3>E · InPlay Policies</h3>
+  <table>
+    <tr><th style="width:4rem" class="mid">#</th><th>Policy</th></tr>
+    <tr><td class="mid mono">E-1</td><td>Idempotency retention period</td></tr>
+    <tr><td class="mid mono">E-2</td><td>Audit retention period</td></tr>
+    <tr><td class="mid mono">E-3</td><td>Recovery Time Objective</td></tr>
+    <tr><td class="mid mono">E-4</td><td>Certified Challenge load profile (order, execution, and probability-update rates; max open orders)</td></tr>
+  </table>
+
+  <p>When every item above carries an approved resolution, this chapter is replaced by a closure record and the document may be certified implementation-complete.</p>
+
+  <nav class="pagenav">
+    <a class="prev" href="#ch13"><span class="k">← Previous</span><span class="t">Ch 13 · Golden Tests &amp; Acceptance</span></a>
+    <a class="next" href="#cover"><span class="k">Back to start →</span><span class="t">Contents</span></a>
+  </nav>
+</section>
+
+<!-- ==================== COVER (last, for :target trick) ==================== -->
+<section id="cover">
+  <header class="masthead">
+    <div class="eyebrow">InPlay Global &nbsp;·&nbsp; July 2026</div>
+    <h1>InPlay Market Maker<br><span class="thin">Consolidated Build Specification</span></h1>
+    <p class="deck">InPlay Trading Challenge &nbsp;·&nbsp; Novosapien Implementation Edition</p>
+    <div class="meta">
+      <span>VERSION 1.3</span>
+      <span>NOVOSAPIEN IMPLEMENTATION EDITION</span>
+      <span class="hot">RELEASE-FINAL</span>
+    </div>
+  </header>
+
+  <p style="margin-top:1.6rem">This document consolidates and supersedes, for implementation purposes, the InPlay Market Maker Specification v1 and the InPlay Market Maker Engineering Closure Document v1.0. Where this document is silent, no rule exists; see Chapter 14. Version 1.1 closed the off-field value methodology (§3.6); v1.2 closed its edge cases, competition scope, and the quantity-seed canonical encoding; v1.3 adds the symbol table and final editorial hardening. This version is release-final for Novosapien.</p>
+
+  <ul class="toc-grid">
+    <li><a href="#ch1"><span class="n">01</span>Governance, Authority &amp; Rules of Use</a></li>
+    <li><a href="#ch2"><span class="n">02</span>Architecture &amp; Authoritative Objects</a></li>
+    <li><a href="#ch3"><span class="n">03</span>Valuation Engine</a></li>
+    <li><a href="#ch4"><span class="n">04</span>Position, Inventory &amp; Reservation Midpoint</a></li>
+    <li><a href="#ch5"><span class="n">05</span>Quote Construction Engine</a></li>
+    <li><a href="#ch6"><span class="n">06</span>Market State Engine</a></li>
+    <li><a href="#ch7"><span class="n">07</span>Event Processing, Sequencing &amp; Idempotency</a></li>
+    <li><a href="#ch8"><span class="n">08</span>Venue Synchronization &amp; Order Lifecycle</a></li>
+    <li><a href="#ch9"><span class="n">09</span>IPO Allocation &amp; Security Lifecycle</a></li>
+    <li><a href="#ch10"><span class="n">10</span>Recovery, Replay &amp; Audit</a></li>
+    <li><a href="#ch11"><span class="n">11</span>Challenge Integration, Matching &amp; Settlement</a></li>
+    <li><a href="#ch12"><span class="n">12</span>Configuration Dictionary</a></li>
+    <li><a href="#ch13"><span class="n">13</span>Golden Tests &amp; Acceptance</a></li>
+    <li><a href="#ch14"><span class="n">14</span>Open Decision Register — STOP LIST</a></li>
+  </ul>
+
+  <p class="covernote">Verbatim HTML rendering of <code>InPlay_Market_Maker_Build_Specification_v1.3_FINAL.docx</code> — content unchanged; the source document is authoritative.</p>
+
+  <footer>
+    INPLAY MARKET MAKER · CONSOLIDATED BUILD SPECIFICATION — VERSION 1.3<br>
+    INPLAY TRADING CHALLENGE · NOVOSAPIEN IMPLEMENTATION EDITION · INPLAY GLOBAL · JULY 2026
+  </footer>
+</section>
+
+</div>
+</body>
+</html>

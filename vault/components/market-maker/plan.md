@@ -26,6 +26,16 @@
 > a past game in ~4h) instead of waiting for preseason. E11 + E12 still
 > unasked — another MM call expected.
 
+> **Update 24-07 (v1.3 spec + build start):** the **v1.3 Build Spec is the
+> baseline** ([[market-maker/decisions]]) — E11/E12/E1/E5/E14 answered; the
+> open blocking questions are **E17–E19 + S6/S7**. **Build started (George):**
+> new repo **`inplay-market-maker`**, **Python**, we build everything.
+> Working mode: **step by step with George** — every step states what we're
+> writing, why, and which spec sections to read. Order per spec §1.6-4:
+> replay harness first; valuation on mock/replay inputs; venue sync (tZERO)
+> and live SR data integrate later. The phases below predate the spec and
+> are being re-cut collaboratively as the build proceeds.
+
 ## Phase 0 — Unblock (now, parallel)
 
 The build can't start in earnest until these move; none are code.

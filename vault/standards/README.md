@@ -1,5 +1,13 @@
 # InPlay Core Technical Standards
 
+> ⚠️ **SUPERSEDED FOR MM IMPLEMENTATION (2026-07-24).** The **v1.3
+> Consolidated Build Specification** (`MM-build-spec-v1.3.docx` /
+> `MM-build-spec-v1.3.html`, this folder) is now the single authoritative
+> engineering spec for the Market Maker — adopted as baseline in
+> [[market-maker/decisions]]. The CTS/PTS documents below are historical
+> context only. Three spec-vs-call conflicts are held open (E17–E19 in
+> [[market-maker/open-questions]]).
+
 > **Vision:** [[vision]]
 > **Status:** Reference — client-authored authoritative standards
 > **Owner:** InPlay Global, Inc. (Edwin Johnson) — mirrored here for engineering reference

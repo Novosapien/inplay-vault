@@ -9,6 +9,43 @@
 
 ---
 
+## 2026-07-24
+
+- **A written spec can overturn call decisions — the protocol held.** The
+  v1.3 Build Spec contradicted three things Edwin said five days earlier
+  (lifecycle, cadence, probability source). Because the rule is "surface
+  every conflict, never silently adopt", they became E17–E19 instead of
+  silent rewrites. The doc is the baseline; the conflicts stay visible.
+
+- **"Priced" = probabilities published, and SR prices rolling.** A game can
+  be scheduled without being priced; SR attaches probabilities as games
+  approach (NCAA: 70 of ~1,700 today). Consequence: full-season Σ GEV(g) is
+  impossible from SR alone — and since Σ P_win(g) ≡ expected remaining wins,
+  the fix is a source swap for the unpriced tail (SR win-total futures, or
+  InPlay-internal weekly — Edwin's original model), not a formula change.
+
+- **Polling rate ≠ cycle rate.** The probability only moves per play
+  (~30–40 s). The decision cycle reads memory at any speed; the poller polls
+  at the freshness band (~2 s per live game). Edwin's 200 ms and the spec's
+  2 s stop being a fight about polling — the remaining question is purely
+  how fast the *cycle* must react (E18).
+
+- **Derive the quota ask, don't guess it.** Freshness band × concurrent live
+  games × season = the number: per-game polling on the current product ≈
+  2.5M calls/mo at ~20 QPS peak; the v2 product's live-bulk endpoint (all
+  live games, one call) ≈ 200k/mo at 0.5 QPS. The product choice IS the
+  quota ask (S7).
+
+- **Probe the real API before trusting any requirement on it.** Thirty
+  minutes with the trial key found: no tie probability exists (spec requires
+  it, forbids inferring it → S6), NFL's seasons listing is empty but the
+  date-schedule endpoint prices it fine, and 403 means per-product
+  entitlement, not a broken API.
+
+- **Verify golden fixtures on arrival.** The spec's SHA-256 quantity-seed
+  fixture was reproduced locally before adopting anything else in the doc —
+  cheap, and it certifies both the doc's precision and our reading of it.
+
 ## 2026-07-23
 
 - **The v1 lifecycle is simpler than everything we designed (23-07 call).**

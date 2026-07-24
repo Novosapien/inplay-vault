@@ -10,6 +10,82 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-24 — v1.3 Build Spec intake · tZERO confirmed · SR probability probe
+
+> Sources: `InPlay_Market_Maker_Build_Specification_v1.3_FINAL.docx` (InPlay,
+> "release-final for Novosapien"), mirrored at `standards/MM-build-spec-v1.3.docx`
+> + `.html` rendering · live SR API probes (24-07, trial Probabilities key) ·
+> codebase research on `inplay-sportradar-service` + `sportradar-futures`.
+
+- ✂ **The v1.3 Consolidated Build Specification is the working baseline.**
+  It declares itself the single authoritative engineering spec for MM v1 and
+  supersedes the CTS/PTS standards for implementation. Adopted (George, 24-07)
+  with one carve-out: the three spec-vs-call conflicts below are NOT silently
+  adopted — they go to Edwin/InPlay as written blocking questions (E17–E19).
+- ✅ **E11 answered — settlement:** `FSV = realized on-field + realized
+  off-field` (§11.3). $5/win, $2.50/tie, $0/loss over the regular season only;
+  postseason worthless. Longs receive FSV, shorts pay it, positions zero out.
+- ✅ **E12 answered — NCAA in:** 170 securities (32 NFL + 138 NCAA D-I),
+  evaluated 24 h/day (§2.5).
+- ✅ **E1 answered:** $5.00/win both leagues + **new $2.50 tie value**
+  (§3.1.2). InPlay-authored release-final doc = the sign-off.
+- ✂ **Off-field redefined** (supersedes the 23-07 "popularity index ~$14–30"
+  description): **$2.50 per-game pool split by counted trading volume** (§3.6);
+  expected side from the BDI/VMI popularity blend; ceiling = games × $2.50.
+  Confirms the sheet decode: NFL cap $85 + $42.50 = **$127.50**.
+- ✅ **All pricing numbers landed (E5):** spreads $0.10/$0.20/$0.40 by state,
+  levels 3/2/1, sizes 10k/7.5k/5k, skew S=$1.00 · cap M=$0.25 — most marked ▸
+  proposed: mechanism mandatory, value pending InPlay approval (§12.2, Ch 14-A).
+- ✅ **Skew denominator (E14):** Reference Float = issued − treasury (§4.3).
+- ✅ **Venue = tZERO — confirmed by George (24-07)** (spec open item C-1
+  answered on our side). The "Matching Engine ICD" is effectively the tZERO
+  FIX specs mined 23-07 — C-2/C-3/C-4/C-9 already answered there; message-rate
+  limits (C-7 = T2) stay open.
+- ✅ **The reconciler is back:** §8.1 mandates venue sync by diffing the target
+  book against the confirmed book and issuing minimal instructions — the
+  shelved 22-07 reconciler design is now the required shape.
+- ✅ **Replay harness first** (§1.6-4). The §5.7.3 SHA-256 golden fixture was
+  reproduced locally, byte-exact (VF = 1.2433331614).
+- ⚠ **Three conflicts held open — NOT adopted either way (→ E17–E19):**
+  1. §5.9 fill replenishment (top up below 50 % after 15 s) vs Edwin's 23-07
+     "rest until gone, no top-ups ever".
+  2. §3.1.4 2.0 s sweep + 5 s-fresh-is-Current vs Edwin's "~200 ms — a
+     second's too long".
+  3. §1.5 excludes internally-generated probabilities vs Edwin's 23-07
+     "InPlay produces remaining wins internally, weekly" — now with proof the
+     spec's D-1 is unsatisfiable as written (see SR probe below).
+- ✅ **SR probe results (trial key, 24-07):**
+  - The standalone Probabilities product **works on the trial key** (200s) —
+    the 403 story was key placement, not entitlement death. S1 downgraded;
+    production key/quota still needed.
+  - **2-way market only — no tie probability exists** in the product. The spec
+    requires P_tie and forbids inferring it (§3.2.2). → S6.
+  - **Rolling pricing:** NCAA 70 of ~1,700 games priced today; NFL priced via
+    the **date-schedule endpoint** (12 games on 13-09) even though its seasons
+    listing is empty. **Full-season Σ GEV(g) is NOT computable from SR
+    alone.** Resolution options (→ E19): SR season win totals for the unpriced
+    tail (NFL verified; NCAA absent per the 16-07 OC-Futures email), or
+    InPlay-internal weekly (Edwin's original model, needs a §1.5 Change
+    Order), or both.
+  - **Live-bulk endpoint** (all live games, one call) exists in **global AF
+    probabilities v2** — 403 on our key; separate product. Product ask → S7:
+    v2 entitlement (~200k calls/mo, 0.5 QPS) or v1 quota bump (~2.5M/mo,
+    ~20 QPS peak on an NCAA Saturday).
+- ✅ **Probability ingestion architecture:** a dedicated MM poller at the
+  spec's Approved-Data-Sources edge — reuses the SR client + ID bridge from
+  `inplay-sportradar-service` **as a library**, write-through push (Redis +
+  bus), never TTL cache-aside; the valuation/quoting hot path never calls SR.
+  **Polling rate comes from the freshness bands (~2 s per live game), not the
+  decision-cycle rate** — SR's number only moves per play (~30–40 s).
+- ✅ **Sportradar service facts (code-verified):** full-season schedules +
+  results for all 170 teams work today on the core key; game replay works two
+  ways (SR playback host streams real recorded games — no auth, real-time —
+  and local JSONL fast-replay through the same pipeline). **S5 resolved.**
+  Real SR Push (events stream) is itself an unconfirmed add-on entitlement.
+- ✅ **Build start (George, 24-07):** begin now against mock + replay
+  probability inputs — replay harness → valuation engine → position/quote/
+  state engines. Venue sync and live data integrate later.
+
 ## 2026-07-23 — MM follow-up call (Edwin + Troy + team) — [[23-07-2026-market-maker-follow-up]]
 
 > Not the planned deep-dive: **E11 (settlement) and E12 (NCAA) were never
