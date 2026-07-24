@@ -43,6 +43,26 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   variant is deliberately deprioritised behind it (needed ~first week of
   September).
 
+## 2026-07-24 — Gateway status from Hasan (verified against the deployed gateway)
+
+- ✅ **Cancel intake (35=F) + cancel/replace (35=G) are LIVE** — built this
+  week, QA-passed 7/7 against real tZERO at ~11 ms round trips. **The hard
+  prerequisite for any re-quoting is gone.** (Note: not visible on the GitHub
+  `main` we fetched — deployed ahead of the pushed history.)
+- 🟡 **In progress now (Hasan):** dead-man switch (P3; tZERO confirmed to
+  keep DAY orders resting through disconnects) · forward venue
+  `TransactTime` (tag 60) on exec reports (today the gateway stamps its own
+  clock; envelope field already exists) · rejection NAK on invalid
+  `gateway.orders.new` (today log-and-drop; `ORDER_REJECTED` pattern exists
+  to copy).
+- ✅ **JetStream/at-least-once acknowledged as a real gap** (publisher drops
+  on queue overflow) — on the list.
+- ✅ **MM data consumption (George):** the MM subscribes to the gateway's
+  NATS streams (fills, positions, top-of-book, status) — no second tZERO
+  session in v1; the dedicated MM FIX session stays a filed T0 ask. The MM
+  subtracts its own resting orders from the feed to get the §5.5
+  participant-only book.
+
 ## 2026-07-24 — v1.3 Build Spec intake · tZERO confirmed · SR probability probe
 
 > Sources: `InPlay_Market_Maker_Build_Specification_v1.3_FINAL.docx` (InPlay,

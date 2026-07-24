@@ -57,9 +57,10 @@ The build can't start in earnest until these move; none are code.
   script, conformance bar). Bring [[market-maker/parameters]] as the agenda:
   every 🔴 row is a question.
 - [ ] **T0 throughput + bands answers** (T2–T5).
-- [ ] **Gateway cancel system (35=F/35=G)** — committed 22-07, owner Hasan.
-  A hard prerequisite for any re-quoting: without it every replaced quote
-  strands a resting DAY order until 23:59 ET. The MM build queues behind it.
+- [x] **Gateway cancel system (35=F/35=G)** — ✅ **DONE 24-07 (Hasan):** live,
+  QA-passed 7/7 against real tZERO, ~11 ms round trips. Follow-ons in
+  progress: dead-man switch · TransactTime pass-through · rejection NAK ·
+  at-least-once delivery.
 - [ ] **E11 settlement definition + E12 NCAA scope** from Edwin — E11 anchors
   the valuation semantics, E12 decides the load profile and book count.
 - [ ] Draft the **merged profile table** (N2) structure — values are Edwin's.
