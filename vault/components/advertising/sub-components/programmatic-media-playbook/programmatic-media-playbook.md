@@ -226,3 +226,15 @@ The artifact carries per-exchange deep dives (onboarding steps, commercial terms
 **Side-ad wrong-edge bug (Watch Mode QA).** On the Watch page the **side ad defaults to the top of the screen** and gets blocked out by the iPhone notch/window; it should **default to the bottom** (George: "that should be the other way around"). It re-adjusts correctly when the phone is flipped, but it should start bottom-anchored. QA item on the Watch Mode ad surface (see [[advertising/advertising]]).
 
 (Source: standup [[22-07-2026-touchdown]])
+
+---
+
+## Update, 24 Jul 2026 touchdown
+
+**AdMob verification kicked off, first SSP about to serve.** The **App Store ID landed on 23-07** (the gating dependency), and Brett + Troy worked through the AdMob sign-ins and authentications that night. AdMob verification now runs **~24–48h**, after which **at least one SSP is serving**. When the **Android** store goes live, the team grabs that ID/URL and repeats the same process. All the other SSPs likewise need the **app-store IDs and URLs** and sit on **different timelines**. Priority is to **serve from an SSP as soon as possible so the first-party data sets start flowing** (Brett). This directly unblocks the 22-07 "chicken-and-egg" App-Store-URL note.
+
+**Google Tag Manager as the analytics/attribution container (Hasan's task).** Install **Google Tag Manager once** (free) as a container, then **drop in any tags without further app changes**: Google Analytics, HubSpot analytics, an MMP tag, Facebook analytics, cookies, etc. Just needs to be installed and **published**. Cody wants it live so he can share it and **tag content consistently** across the other marketing ventures, influencers, and platforms InPlay is spinning up.
+
+**MMP under evaluation: AppsFlyer vs Kochava.** For mobile-measurement-partner / attribution, the choice is between **AppsFlyer** (the market leader) and **Kochava** (whose own USP is being "AppsFlyer's number-one alternative"). A prospective agency, **Plexus**, already uses **Kochava**, so Cody floated standardising on Kochava for simplicity (single platform), pending Plexus's proposal and Brett's review. No decision yet.
+
+(Source: standup [[24-07-2026-touchdown]])

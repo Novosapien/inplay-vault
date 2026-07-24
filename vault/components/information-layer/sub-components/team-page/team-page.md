@@ -246,6 +246,15 @@ When a live game is in progress, the page should feel energised at the top (live
 
 ---
 
+## Update (24-07-2026): Analyst Prices swipeable page
+
+> Source: [[24-07-2026-touchdown]]. New surface requested by Edwin; sample due Monday (from Edwin).
+
+- Edwin wants **one more swipeable page** on the team surface: alongside the existing schedule/details swipe, add an **"analyst prices"** page showing **guest analysts' prices** for that team, one analyst per view.
+- Model: recruit **4–5 guest analysts** who publish prices in exchange for a **distribution forum** in-app; InPlay hosts one house view plus guest views. First target is **Preferred Walk-Ons** (a college-football creator group, ~200k social base, ~2 months independent after splitting from **PFF**), providing an **NCAA analyst piece**; Cody + Kevin still sourcing an **NFL** equivalent. They can start quickly.
+- **Open build questions (George):** where do analysts **upload** each week, how does InPlay **consume**, **serve**, and **label/attribute** that data. The weekly ingestion pipeline is undefined.
+- Cody will send **subscription packages + pricing** to George since this content is tied to the paid/research offering. **Pricing and the research/subscription module are owned separately** (see [[information-layer/sub-components/research-tab/research-tab]]); this page's product mechanic is captured here, the monetisation is not.
+
 ## Sub-Sub-Components
 
 Leaf node -- no further decomposition needed.

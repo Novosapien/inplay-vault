@@ -24,6 +24,8 @@ A simulated sports equity trading platform where users trade team stocks during 
 
 | Date | What happened |
 |------|--------------|
+| 2026-07-24 | Friday touchdown digested ([[24-07-2026-touchdown]]): AdMob verification kicked off (App Store ID landed 23-07) with the first SSP about to serve; Google Tag Manager + AppsFlyer-vs-Kochava MMP; release governance / OTA caps; Sport Radar media-vs-betting feed speed decision + probabilities-API blockers; trading infra mapped with historical-game simulation testing; payouts/tax-forms fallback; KYC-less app variant deferred to Sept; new Analyst Prices page. |
+| 2026-07-24 | Subscription pricing + research reports folded in from two source docs into [[research-tab]]: a four-tier ladder proposed (Free / Plus $24.99 / Pro $49.99 / Elite $79.99, prices under review) and the first pre-canned report catalog supplied. |
 | 2026-07-24 | Captured Jared Sapirman's written app feedback ([[jared-app-feedback-jul-2026]], 6 items); routed to [[referral/referral]], [[third-space/third-space]], [[frontend-performance]], [[trader-profile]]. Flagged Groups & Leagues, streak system and Dynamic Island as candidates. |
 | 2026-07-23 | tZERO Weekly Tech Sync digested ([[23-07-2026-tZERO-weekly]]): SIM/PROD environment split, production symbology, SIM rate limiting, $1.20/share short fee, and the **IPO direct-mint decision** (bypass the Matching Engine). Aug 6 dry run / Aug 22 sim launch targeted. |
 | 2026-07-22 | Touchdown digested ([[22-07-2026-touchdown]]): **subscription pricing set** ($49.99 Research / $49.99 Watch-Pro-View / $79.99 bundle); W9 tax-automation vendor for cash withdrawals (live by 29 Aug); education AI-clone persona videos; volatility-moment-vs-programmatic and SSP app-store-URL questions raised. |

@@ -2,9 +2,9 @@
 
 > **Project:** [[index]]
 
-## 2026-07-24: Two Meetings + Jared's Feedback Digested
+## 2026-07-24: Meeting-Notes Batch Digested
 
-Processed the 22 Jul touchdown, the 23 Jul tZERO weekly tech sync, and Jared Sapirman's written app feedback into the vault. (The 20 Jul touchdown and 23 Jul market-maker follow-up were already processed and are not repeated here; the market-maker component already owns that material.)
+Processed the 22 Jul touchdown, the 23 Jul tZERO weekly tech sync, the 24 Jul touchdown, Jared Sapirman's written app feedback, and two subscription/research source docs into the vault. (The 20 Jul touchdown and 23 Jul market-maker follow-up were already processed and are not repeated here; the market-maker component already owns that material.)
 
 **Subscriptions priced.** Research and Watch/Pro-View at $49.99/mo each, bundled "Pro Trading Package" at $79.99/mo (ads still run on those surfaces). This resolves the long-open [[research-tab]] pricing question and supersedes the earlier tiered headline. See [[22-07-2026-touchdown]].
 
@@ -13,6 +13,10 @@ Processed the 22 Jul touchdown, the 23 Jul tZERO weekly tech sync, and Jared Sap
 **Also on 22 Jul:** a W9 tax-automation vendor jumps the backlog to be ready for the 29 Aug first games; education adds AI-clone persona videos and an in-app "how to use the app" piece; SSP onboarding is gated on the live App Store URL.
 
 **Jared's feedback folded in** ([[jared-app-feedback-jul-2026]]): contact-permission referral invites, a ~2s cold-start target (down from ~4s), public usernames with anti-impersonation guardrails, and a social-layer direction (Groups & Leagues, influencer-hosted groups, richer streaks) plus a Dynamic Island presence, flagged for a focused session.
+
+**Subscription pricing + research reports** ([[research-tab]]): two source docs fold in a four-tier pricing ladder (Free trial / Plus $24.99 / Pro $49.99 / Elite $79.99) and the first concrete pre-canned report catalog. The tier prices are a proposal under review, not locked: the strategy doc itself calls $29.99 the "optimal" Pro launch price and the middle tier is floated at $34.99–$39.99. Research/subscriptions are not a launch feature (target ~October), though the research piece is wanted within 1–2 weeks so influencers can talk about it.
+
+**24 Jul touchdown** ([[24-07-2026-touchdown]]): ad serving moves to the live path (AdMob verifying now the App Store ID has landed, first SSP imminent, Google Tag Manager + an MMP decision); the Sport Radar feed-speed question is settled by necessity (custom Gamecast runs off the media feed since the betting feed is inaccessible, probabilities-API fixes being chased); trading infra is fully mapped and testable via historical-game simulations; payouts and tax forms get a delay-payout launch fallback; the KYC-less variant is parked to September; and a new guest-analyst "Analyst Prices" page was requested.
 
 ## 2026-05-17 — App Build Complete (Mock Data Phase)
 

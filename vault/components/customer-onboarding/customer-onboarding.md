@@ -51,6 +51,10 @@ The flow is identical for all four audiences. The differences are **acquisition 
 
 > **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_):** **Same initial capital of 100K InPlay$ for all users reconfirmed** (every account is treated equally, Troy). **Payouts/subscriptions processor: Pay.com** is the leading vendor, with a **redundant processor** in discussion for cash-out optionality; requires **no tZERO direction** for launch. (Payout mechanics themselves live in [[components/withdrawal-flow/withdrawal-flow]]; Pay.com is recorded as an integration in [[integrations]].)
 
+> **Update (24-07-2026, _[[24-07-2026-touchdown]]_):** **KYC-less app variant being scoped, but de-prioritised for launch.** George is investigating a **no-KYC version of the app** (the effort/lift, and whether it needs a **fresh Apple review**). Edwin: **not** the highest priority, launch readiness (trading) comes first. Troy: it is **not needed until the first/second week of September**, when the **first academic presentation** runs, so there is roughly **a month** to solve it; the KYC-less path is intended as a **different login route for the academic portion** of the competition. Immediate priority remains getting the **trading functionality pushed, tested, and live for the 22nd** (Aug 22 sim launch, see [[23-07-2026-tZERO-weekly]]).
+
+> **Adoption snapshot (24-07-2026):** on **Wed 22-07 there were 37 first-time downloads** (a reporting lag means 23-07/24-07 are not yet known); running total logged-in ~130. Cody: **83 approved KYCs** (up from 64), so ~19 of the 37 had passed KYC, but some downloads are **already-KYC'd** people (the team, family members), so genuinely-new signups are lower still. A **newsletter goes out 24-07** to re-engage prior signups; Hasan exporting an updated registrations CSV (~25 more via email). Edwin pushing app signups hard (< 1 month to launch).
+
 ---
 
 ## 2. What Needs to Happen?
