@@ -41,6 +41,18 @@ pending InPlay approval (spec Ch 14-A) · 🔴 = no default, external closure
 | Security universe | 32 NFL + 138 NCAA D-I = 170 | ✅ | 2.5 |
 | Venue timeouts / retries / rate limits / book age / clock skew / retention / load profile / RTO | — no defaults; config only | 🔴 §12.3 | 12.3 |
 
+### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)
+
+| Parameter | Meaning | Value | Status | Source |
+|---|---|---|---|---|
+| `probability poll interval` | How often the poller calls SR per live game | **~2 s** — matches the measured median update gap | 🟡 evidence-backed, E18 open | 24-07 measurement |
+| `SR update cadence (observed)` | How often SR's probability actually changes in a live game | median **4 s** · mean 11.5 s · p90 28 s · 64 % ≤5 s · 1,089 updates/game | ✅ measured | Chiefs–Ravens capture 24-07 |
+| `SR acquisition lag` | SR's own delay before publishing | ~5–15 s (media tier) **or** fast (betting tier) — **contradictory sources** | 🔴 S9 — measure in August | SR service research vs Cody |
+| `ClOrdID` | Client order id format | ≤ **20 chars**, **no leading zeroes**, + gateway's MM prefix; replace/cancel carry **two** ids (new + orig), each ≤20 | ✅ venue-verified 24-07 | tZERO OE spec v2.2 |
+| `MaxOrdRate` | tZERO's per-account message allowance | — **not in any document**; per-account OMS setting | 🔴 T2 — ask with T1 | tZERO OE spec (absent) |
+| `gateway MM governor` | Token-bucket throttle on the MM namespace | 50 msg/s — **Hasan's placeholder**, not a venue limit | 🟡 placeholder, cert item | Gateway 24-07 |
+| `dead-man window` | Heartbeat silence before the gateway sweeps our book | 4 s (placeholder) + latched sweep | 🟡 **ours to set** (N15) | Gateway 24-07 |
+
 ---
 
 > ⚠️ **Everything below this line predates the v1.3 spec (24-07).** Kept for

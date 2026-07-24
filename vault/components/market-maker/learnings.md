@@ -9,6 +9,62 @@
 
 ---
 
+## 2026-07-24 (b) — build day + ingestion research
+
+- **Measure the feed; don't reason about it.** We recorded twice that SR
+  probabilities move "per play, ~30–40 s" — plausible, repeated, and wrong by
+  an order of magnitude. Counting gaps in our own captured game gave a
+  **4 s median**, because win probability decays with the game *clock*, not
+  only on plays (~6–7 updates per play). The 2 s conclusion survived, but the
+  *reason* inverted — 2 s matches the median rather than oversampling. Any
+  claim about a feed's behaviour should come with the measurement.
+
+- **"Is there a push feed?" is answerable definitively, and worth answering.**
+  Four independent checks (schema, 414 captured messages, published contract,
+  vendor docs) beat one plausible assumption. Answer: SR has no probabilities
+  push product for **any** sport — pull only. Knowing that is worth more than
+  a faster guess, because it closes an architecture debate permanently.
+
+- **Fan-out planes have contracts; pick the one whose contract you need.**
+  Centrifugo is at-most-once, history off, recovery-by-refetch — perfect for
+  showing a phone the score, disqualifying for a price input whose recovery
+  path must never be "go fetch something". Backend-to-backend belongs on the
+  durable bus. Same layer, same data, wrong contract.
+
+- **A cache is not a feed.** The SR service's Redis probability keys look
+  like a free push source and are actually TTL cache-aside artefacts, written
+  only when a *user* happens to hit the API and refreshed by nothing. "The
+  data is in Redis" says nothing about whether it's current.
+
+- **Placeholders travel as facts unless you label them.** A "50 msg/s"
+  governor from a colleague's message became, in my head, "our budget" — and
+  briefly promoted diff-publishing from optimisation to requirement. It was a
+  placeholder; the venue spec contains **no rate language at all**. Check
+  where a number came from before designing against it.
+
+- **Verify a vendor claim against the vendor's own document.** Two minutes
+  with the tZERO PDF confirmed ClOrdID ≤20/no-leading-zeroes, revealed that
+  replace and cancel each carry **two** such ids, and confirmed the odd
+  `HandlInst` asymmetry (banned on new orders, mandatory on replaces). It
+  also proved a negative — no rate limits documented — which redirected T2
+  from "read the spec" to "ask tZERO with T1".
+
+- **Golden fixtures are cheap certainty.** The spec shipped one worked
+  example for the quantity seed; reproducing it byte-exact before writing
+  anything else validated both the document's precision and our reading of
+  it. Do this first with any spec that ships fixtures.
+
+- **Keep the translator pure and the fetcher separate.** The SR adapter takes
+  parsed data and returns envelopes — no network, no clock. So a captured
+  game is a deterministic test input *and* the live poller inherits an
+  already-proven translation path. The messy part (retries, quota, timing)
+  stays quarantined in the part that can't be unit-tested anyway.
+
+- **Enforce invariants at the border, not in the middle.** Floats are refused
+  by the money/probability constructors, by the payload hasher, *and* by
+  parsing SR's JSON with `parse_float=str`. Three chokepoints mean no code
+  path downstream has to remember the rule.
+
 ## 2026-07-24
 
 - **A written spec can overturn call decisions — the protocol held.** The

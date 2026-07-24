@@ -43,20 +43,101 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   variant is deliberately deprioritised behind it (needed ~first week of
   September).
 
-## 2026-07-24 — Gateway status from Hasan (verified against the deployed gateway)
+## 2026-07-24 — Gateway: everything the MM needs is BUILT (Hasan, second report)
 
-- ✅ **Cancel intake (35=F) + cancel/replace (35=G) are LIVE** — built this
-  week, QA-passed 7/7 against real tZERO at ~11 ms round trips. **The hard
-  prerequisite for any re-quoting is gone.** (Note: not visible on the GitHub
-  `main` we fetched — deployed ahead of the pushed history.)
-- 🟡 **In progress now (Hasan):** dead-man switch (P3; tZERO confirmed to
-  keep DAY orders resting through disconnects) · forward venue
-  `TransactTime` (tag 60) on exec reports (today the gateway stamps its own
-  clock; envelope field already exists) · rejection NAK on invalid
-  `gateway.orders.new` (today log-and-drop; `ORDER_REJECTED` pattern exists
-  to copy).
-- ✅ **JetStream/at-least-once acknowledged as a real gap** (publisher drops
-  on queue overflow) — on the list.
+> Supersedes the earlier same-day entry. All five asks **plus both
+> nice-to-haves** are built and deployed; what remains is a cert pass, not a
+> build. Deployed code runs **ahead of the pushed `origin/main`** we fetched —
+> build to the contract below and reconcile when the code lands.
+
+- ✅ **Cancel (35=F) + cancel/replace (35=G) LIVE** (`33bf32a`), verified
+  against **real tZERO QA**: cancel acked `150=4` solicited ~12 ms, replace
+  acked `150=5` ~11 ms. Intake `gateway.orders.cancel`. The **caller mints
+  the ClOrdID**; the gateway fills 55/54/38 from tracked state (35=F must
+  carry the original OrderQty). Replace publishes `ORDER_REPLACED` on **both**
+  the old and new subjects, so consumers keyed on either id stay consistent.
+  GTD expiry inherited on replace unless overridden. `HandlInst(21)="1"` set
+  on G — the venue requires it there while rejecting it on D (**verified in
+  the OE spec, see below**).
+- ✅ **Dead-man switch built + deployed, OFF** (`MM_ENABLED=false` **until our
+  bot exists — we are now the gating item**). Needed an unlisted
+  prerequisite: a **Redis open-order index**, because after a gateway restart
+  the in-memory tracker is empty and 35=F can't be built without the original
+  OrderQty. Shape: heartbeat silence **4 s** → rate-paced 35=F sweep,
+  `Text(58)="deadman"`, **latched** (a bot down an hour produces one sweep,
+  not one every 4 s), armed at boot so a restart rehydrating orphaned MM
+  quotes is covered. Exercised end-to-end against the mock venue; **not yet
+  against real tZERO** — cert item.
+- ✅ **Tag 60 passthrough LIVE** (`e845721`): `source_timestamp` now carries
+  tZERO's `TransactTime`, parsed across second/milli/micro variants, with the
+  gateway clock as **fallback rather than the answer**. Unit-covered; not yet
+  eyeballed on live venue traffic (cert item). → our envelope's
+  `provider_event_time` is real for venue events.
+- ✅ **Rejection NAK LIVE:** every validation failure on
+  `gateway.orders.new` publishes `ORDER_REJECTED` with `local:true` + reason
+  (`INVALID_CLORDID`, `UNKNOWN_SYMBOL`, `INVALID_SIDE`, `INVALID_QUANTITY`,
+  `INVALID_PRICE`, the GTD/TIF family, `SESSION_DOWN`, `SEND_FAILED`).
+  **No guess-by-timeout.** ⚠ Requests missing `userId`/`clOrdId` remain
+  log-only — no subject exists to reply on.
+- ✅ **MM namespace deployed (off):**
+  `gateway.orders.mm.{new,cancel,replace,heartbeat,cancel_all}` on its own
+  queue group, so MM churn can't starve retail intake. Token-bucket governor
+  + **ClOrdID prefix partitioning enforced both ways** — MM traffic must
+  carry the prefix, retail must not, else the dead-man's notion of "an MM
+  order" isn't trustworthy. Gateway's NATS user already has
+  `subscribe: ["gateway.>"]`; **only our bot's user needs an ACL change**.
+- ✅ **At-least-once ON** for `order.*` / `position.*`: publish-with-ack,
+  `Nats-Msg-Id` dedup, bounded retry, then a **Redis dead-letter rather than
+  a drop**. Verified in production (0 retries, 0 dead-letters, core
+  subscribers unaffected). **Market data deliberately stays on core NATS** —
+  "a stale quote is worthless, a lost fill is a support ticket."
+- ⚠ **Correction to our earlier note:** "the publisher drops on queue
+  overflow" was accurate but incomplete — it also used fire-and-forget
+  `nc.Publish`, so a message could be lost *without* the queue overflowing.
+  The dropped counter never left zero; the real exposure was the un-acked
+  publish.
+- 🟡 **Remaining = cert pass, not build:** does tZERO accept `Text(58)` on
+  35=F · pin the placeholder **50 msg/s governor** and **4 s dead-man
+  window** against tZERO's session-throughput guidance · exercise the sweep
+  against the live venue with a hand-rolled heartbeat publisher.
+
+**Consequences for the MM build (new obligations on us):**
+
+- ✅ **We must publish a heartbeat** on `gateway.orders.mm.heartbeat` faster
+  than the dead-man window, or our own book gets swept. New requirement for
+  the venue-sync engine (spec Ch 8).
+- ✅ **Our ClOrdIDs must carry the MM prefix** (gateway convention) *and* obey
+  the venue's ≤20 chars / no-leading-zeroes. **George 24-07: the ID scheme is
+  fine** — 18 chars after the prefix is ample. Real constraint is that IDs be
+  generated **deterministically**, so replay reproduces the same chain.
+- ✅ **`cancel_all` is our kill-switch mechanism** — spec §6.3 (global kill
+  switch → Suspended → "initiates cancellation of cancellable orders") now
+  has a real implementation to call.
+- ✅ **Duplicate fills are now possible by design** (at-least-once). Our
+  §7.3 execution idempotency (venue + ExecID) moves from speculative to
+  load-bearing.
+- ✅ **Peak messaging is not a concern (George, 24-07)** — the 50 msg/s
+  governor is Hasan's placeholder, not a venue limit; diff-based publishing
+  is an optimisation, not a requirement.
+- ✅ **Heartbeat cadence + dead-man window are OURS to set (George, 24-07)** —
+  "we can update the code ourselves if we need." Decide from the real cycle
+  timing once venue sync exists; don't inherit the 4 s placeholder by default.
+- 🔴 **New ask:** NATS ACL for the MM bot's user (publish on
+  `gateway.orders.mm.>`).
+
+## 2026-07-24 — tZERO OE FIX spec re-verified (against the PDF, not memory)
+
+- ✅ **ClOrdID = max 20 chars, NO LEADING ZEROES** — stated identically on
+  35=D, 35=G and 35=F. ⚠ **Replace and cancel each carry TWO ids** —
+  `ClOrdID` (new) + `OrigClOrdID` (superseded) — **each** capped at 20. Every
+  replace mints a fresh id, so the chain is a sequence of ids, not one id.
+- ✅ **`HandlInst(21)`: "Currently not supported" on 35=D · "Y — value is
+  always 1" on 35=G.** Hasan's handling verified exactly.
+- ⚠ **The OE spec contains NO rate-limit language whatsoever** (no msg/s,
+  throughput, throttle or `MaxOrdRate`). **T2 is therefore unanswerable from
+  documents** — `MaxOrdRate` is a per-account OMS configuration tZERO applies
+  at account creation, so it must be asked **with T1**, in the same
+  conversation.
 - ✅ **MM data consumption (George):** the MM subscribes to the gateway's
   NATS streams (fills, positions, top-of-book, status) — no second tZERO
   session in v1; the dedicated MM FIX session stays a filed T0 ask. The MM
@@ -68,6 +149,85 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   keeps the ask to confirm T0 *detects* out-of-band trades, not just executes
   busts. The public trade stream remains consumed later only for §3.6
   off-field volume counting.
+
+## 2026-07-24 — SR ingestion research (code + live API + SR docs via MCP)
+
+> Question asked: could the MM ride SR's **push stream** (→ worker →
+> Centrifugo) instead of polling, for lowest latency?
+
+- ✂ **There is NO probabilities push feed — for any sport.** Verified four
+  ways: the push message schema carries no probability field; 414 captured
+  push messages across six fixtures contain zero matches for "prob"; the
+  published live contract has none; and SR's own docs list the *only* push
+  products as **Events, Statistics, Draft Picks, Draft Trades, Pulse** (NFL)
+  and **Events, Statistics** (NCAA). Searching **every** SR spec for
+  `subscribe` returns nothing outside the events streams.
+  **Probabilities are REST-pull only. Full stop.**
+- ⚠ **CORRECTION — probability update cadence.** Previously recorded (S5 +
+  the 24-07 entry below) as *"per play, ~30–40 s"*. **That is wrong by an
+  order of magnitude.** Measured from our own captured Chiefs–Ravens
+  timeline: **median gap 4 s**, mean 11.5 s, p90 28 s; **64 % of updates
+  within 5 s**; **1,089 updates across ~160 plays** (≈6–7 per play) because
+  live win probability decays with the game clock, not only on plays; 1,070
+  of 1,088 were genuine value changes, not restamps. **Consequence: a ~2 s
+  poll is justified as *matching the median update interval*, not as
+  oversampling. A 30 s poll would miss ~92 % of the movement.** (Caveat:
+  `last_updated` is SR's own stamp and excludes network lag; the retro
+  timeline is an upper bound on what a live poller can observe.)
+- ✂ **Centrifugo is the wrong plane for pricing** (and carries no
+  probabilities anyway): the `game` namespace runs **history OFF** →
+  at-most-once with **no server-side recovery**; the documented recovery path
+  is "re-fetch the snapshot and compare `seq`" — i.e. a fetch, which the MM
+  hot path forbids. Plus per-user HS256 auth and a user-facing blast radius.
+  **Centrifugo shows users the probability; the bus feeds the pricing.**
+- ✂ **The SR service's Redis probability keys are unusable** — TTL
+  cache-aside artefacts populated only when a user hits the API (3 min single
+  / 30 min bulk), refreshed by nothing. Also: the SR service has **no
+  internal bus at all** (no NATS, no Redis pub/sub) — Centrifugo HTTP publish
+  + Redis writes are its only fan-out.
+- ✅ **Poller architecture confirmed** (corroborates the 24-07 decision
+  below): poller at the Approved-Data-Sources edge, ~2 s per live game,
+  writes MM memory + publishes to the bus; hot path never fetches. Reuse the
+  SR client + the **already-entitled, already-working** ID bridge as a
+  library. Switch to the **v2 bulk live endpoint** the moment S7 lands (all
+  live games in one call — ~0.5 QPS vs ~20 QPS peak per-game on an NCAA
+  Saturday). ⚠ v1 has **no** bulk-live endpoint.
+- 🔴 **Official results have no source today.** Nothing publishes "game X is
+  final" onto any bus, and the §3.1.3 expected→realized swap depends on it.
+  Scope it with the same poller — one worker, two publications. → N15.
+- 🔴 **Two new risks raised (→ S8, S9):** SR's AF Probabilities docs state
+  *"For media use only… prohibited for betting clients"*; and the SR
+  service's own latency research puts Probabilities on the **media** tier
+  (~5–15 s) which **contradicts Cody's 24-07 report** that it rides the
+  betting feed. Both cannot be true, and which holds decides whether users
+  can pick the MM off (S4).
+
+## 2026-07-24 — MM build started (`inplay-market-maker`, Python)
+
+> Working mode: step by step with George — each step states what we're
+> writing, why, and which spec sections to read. Commits on `main`.
+
+- ✅ **Foundations built + tested (48 tests, ruff + mypy --strict clean):**
+  decimal policy rejecting floats at the door (§1.6-3) · the §5.7.3 quantity
+  golden fixture reproduced byte-exact · event envelope (§7.1) with immutable
+  records, canonical UTC-Z, payload hashing · idempotency keys (§7.3) ·
+  append-only fsync'd journal + acceptor (§7.2/§7.4) with dedupe,
+  conflict detection and restart recovery · Reference Price formula (§3.1) ·
+  probability validation bands (§3.2) · valuation engine wiring.
+- ✅ **Replay equality demonstrated on real data** (§10.3): the actual
+  Chiefs–Ravens 2024 opener (1,089 SR probability points) priced end-to-end —
+  kickoff $2.83 → final whistle $5.00, never outside $0–$5 — then rebuilt
+  from the journal alone to an **identical** price stream.
+- ✅ **SR adapter is a pure translator** — it never calls SR. Polling belongs
+  to a separate (unbuilt) poller; the adapter takes parsed data, so file
+  replay and live polling share one proven translation path.
+- ⚠ **Two interim mappings, flagged in code:** `last_updated` stands in for
+  the provider sequence SR doesn't supply (→ D-2; verified 1,089/1,089
+  unique on real data, zero collisions) and `p_tie = 0` treats games as
+  tie-impossible (→ S6). One line each to change on ruling.
+- ⚠ **Float discipline extends to the border:** SR JSON is parsed with
+  `parse_float=str`, so a binary float never exists anywhere in the pipeline.
+  The live poller must use the same parse (not `response.json()`).
 
 ## 2026-07-24 — v1.3 Build Spec intake · tZERO confirmed · SR probability probe
 
@@ -135,7 +295,11 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   `inplay-sportradar-service` **as a library**, write-through push (Redis +
   bus), never TTL cache-aside; the valuation/quoting hot path never calls SR.
   **Polling rate comes from the freshness bands (~2 s per live game), not the
-  decision-cycle rate** — SR's number only moves per play (~30–40 s).
+  decision-cycle rate.** ⚠ The reason originally given here — "SR's number
+  only moves per play (~30–40 s)" — is **WRONG and superseded by the 24-07 SR
+  ingestion research above**: the measured median update gap is **4 s**. The
+  ~2 s conclusion stands; the justification is "matches the median", not
+  "oversamples".
 - ✅ **Sportradar service facts (code-verified):** full-season schedules +
   results for all 170 teams work today on the core key; game replay works two
   ways (SR playback host streams real recorded games — no auth, real-time —

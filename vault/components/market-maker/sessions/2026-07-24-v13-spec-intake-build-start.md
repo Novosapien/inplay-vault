@@ -75,6 +75,46 @@ hot path never fetches) · build starts now on mock/replay inputs · repo
 - **Updated:** S1 downgraded (trial key works) · N14 gated on E17 · T11 spec
   STP tension added · E16 spec-implies-yes.
 
+## Part 2 (same day) — the build itself + ingestion research
+
+**Built** (`inplay-market-maker`, Python, 6 commits, 48 tests, ruff + mypy
+strict clean). Step by step with George, each step explained before writing:
+
+1. Scaffold + decimal policy (§1.6-3) + the §5.7.3 quantity golden fixture
+   reproduced byte-exact.
+2. Event envelope (§7.1) + idempotency keys (§7.3).
+3. Journal (fsync'd, append-only) + acceptor (§7.2/§7.4) — dedupe, conflict
+   detection, restart recovery from the journal alone.
+4. Reference Price formula (§3.1) + probability validation bands (§3.2).
+5. Valuation engine wired end-to-end → price stream, with **replay equality**.
+6. SR adapter + a **real captured game** (Chiefs–Ravens 2024, 1,089
+   probability points): kickoff $2.83 → final whistle $5.00, replayed
+   identically from the journal.
+
+**Researched** (two agents + live API probes + the tZERO PDF):
+
+- **No probabilities push feed exists — any sport.** Pull only. Verified four
+  ways incl. every SR spec on the MCP.
+- **Cadence correction:** median 4 s, not the "per play ~30–40 s" we had
+  recorded twice. ~2 s polling still right, for a different reason.
+- **Centrifugo is the wrong plane** (at-most-once, recovery-by-refetch);
+  the service's Redis probability keys are stale cache-aside artefacts.
+- **tZERO OE spec re-verified:** ClOrdID ≤20/no leading zeroes (two ids on
+  replace + cancel), `HandlInst` asymmetry confirmed, **no rate-limit
+  language anywhere** → T2 must be asked with T1.
+- **Gateway: everything is built.** Cancel + replace live and QA-passed vs
+  real tZERO; dead-man switch, tag-60 passthrough, rejection NAKs, MM
+  namespace and at-least-once all deployed. **We are now the gating item**
+  (`MM_ENABLED=false` until our bot exists).
+
+**Decided (George):** peak messaging is a non-issue · the ClOrdID scheme is
+fine · heartbeat cadence and the dead-man window are ours to set (we can
+change the gateway ourselves) · watchdog/supervision descoped to tZERO.
+
+**Opened:** S8 (SR's "media use only — prohibited for betting clients"
+clause) · S9 (media-tier vs betting-tier contradiction — measure in August) ·
+N15 (heartbeat/dead-man window) · N16 (official results have no bus source).
+
 ## Next
 
 1. **Build step-by-step in `inplay-market-maker`:** scaffold → decimal policy
