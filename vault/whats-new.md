@@ -2,6 +2,18 @@
 
 > **Project:** [[index]]
 
+## 2026-07-24: Two Meetings + Jared's Feedback Digested
+
+Processed the 22 Jul touchdown, the 23 Jul tZERO weekly tech sync, and Jared Sapirman's written app feedback into the vault. (The 20 Jul touchdown and 23 Jul market-maker follow-up were already processed and are not repeated here; the market-maker component already owns that material.)
+
+**Subscriptions priced.** Research and Watch/Pro-View at $49.99/mo each, bundled "Pro Trading Package" at $79.99/mo (ads still run on those surfaces). This resolves the long-open [[research-tab]] pricing question and supersedes the earlier tiered headline. See [[22-07-2026-touchdown]].
+
+**IPO issuance decided.** Bypass the Matching Engine and mint tokens straight to investor wallets via tZERO's transfer-agent workspace (single-price, long-only primary raise); Novo needs minting access. The tZERO environment also splits into SIM (the current one) plus a new PROD, with production symbology decoupled from team names and a $1.20/share short fee. See [[23-07-2026-tZERO-weekly]].
+
+**Also on 22 Jul:** a W9 tax-automation vendor jumps the backlog to be ready for the 29 Aug first games; education adds AI-clone persona videos and an in-app "how to use the app" piece; SSP onboarding is gated on the live App Store URL.
+
+**Jared's feedback folded in** ([[jared-app-feedback-jul-2026]]): contact-permission referral invites, a ~2s cold-start target (down from ~4s), public usernames with anti-impersonation guardrails, and a social-layer direction (Groups & Leagues, influencer-hosted groups, richer streaks) plus a Dynamic Island presence, flagged for a focused session.
+
 ## 2026-05-17 — App Build Complete (Mock Data Phase)
 
 The InPlay Trading Challenge mobile app now has all 20 screens built with full mock data. Every screen described in the vault sub-component specs is implemented, navigable, and styled to production standard. The app is ready for stakeholder review and user testing on-device via Expo Go or EAS builds.

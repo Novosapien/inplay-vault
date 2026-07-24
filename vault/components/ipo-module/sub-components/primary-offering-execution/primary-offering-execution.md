@@ -6,6 +6,8 @@
 > **Owner:** Edwin (client-facing — mechanics) + Troy (T0 / on-chain ledger) + George (engineering)
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]]_
 
+> **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_), issuance path decided:** the group resolved the long-open "how does the issuance ledger work" question. The IPO adopts a **standard primary-issuance model: bypass the Matching Engine (MS) and mint tokens directly to investor wallets** via the **transfer-agent workspace**, treated like a **security with a primary raise**. The offering is **long-only at a single price** (consistent with the static-ask model below). Chris Russell and Rob Colucci weighed using the MS to set prices via buy orders vs. direct minting; consensus landed on the **direct-mint path**. **Blocker/action:** **Novo needs minting access provisioned in the tokenization engine** (transfer-agent workspace) before this can be exercised.
+
 ---
 
 ## 1. What Does This Sub-Component Do?
@@ -16,7 +18,7 @@ Primary Offering Execution is the buy engine of the IPO — the mechanism by whi
 
 The model is intentionally simple, and Edwin specified it precisely. Each team company floats **5,000,000 shares** at a **single static ask price** that does not move. There is no bid — InPlay, acting through the team company's treasury as the issuer of record, is the **only seller**. A user crosses the ask and clicks **buy** (never sell — there is no sell action in this phase), enters a quantity, and that quantity is matched and removed from the float. Edwin's worked example: 100,000 shares at $40; a user buys 1,000 → 99,000 remain; the next buyer takes 10,000 → 89,000 remain; and so on until the float is gone. There is **no per-user limit** — a user may spend their entire 100,000 InPlay$ on one team. InPlay **holds back ~20% (≈1M shares)** of each float to enable shorting on the secondary market without users over-shorting. When the float is exhausted (or the window closes — see [[ipo-scheduling]]), the team stops being buyable at IPO.
 
-Even in the simulated challenge, the shares are **issued by the team company's treasury** and that issuance must be represented on-chain — the buyer's purchase is their first ownership of the security (Troy: _"they're the issuer even in the simulated environment… that has to be represented on the chain"_). Resolving exactly how that ledger works is an open item with the T0 team.
+Even in the simulated challenge, the shares are **issued by the team company's treasury** and that issuance must be represented on-chain, the buyer's purchase is their first ownership of the security (Troy: _"they're the issuer even in the simulated environment… that has to be represented on the chain"_). **Resolved 23-07 (see update note above):** issuance **bypasses the Matching Engine and mints tokens directly to investor wallets via the transfer-agent workspace**, pending Novo being granted minting access in the tokenization engine.
 
 **Entities that interact with it:**
 

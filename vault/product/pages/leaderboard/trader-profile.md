@@ -14,7 +14,7 @@ When a user taps on another trader in the leaderboard, they see that person's pu
 
 ## Key Elements
 
-- **Trader Identity** — display name and avatar
+- **Trader Identity**, public username and avatar (see [[#Public Usernames]])
 - **Current Rank** — position on the leaderboard with movement indicator
 - **Performance Stats:**
   - Total P&L (profit/loss)
@@ -37,6 +37,19 @@ When a user taps on another trader in the leaderboard, they see that person's pu
 
 - **Active trader:** Full stats and recent activity
 - **Inactive trader:** Stats from earlier period, no recent activity shown
+
+---
+
+## Public Usernames
+
+_Added 24-07-2026 from [[jared-app-feedback-jul-2026]] (Jared Sapirman, item 6)._
+
+Every user should be able to **create their own public username**, the display identity shown on this profile, on the leaderboard, and across social surfaces. Guardrails are required:
+
+- **Vulgarity filter**, reject vulgar or offensive names at creation.
+- **Impersonation guardrails**, protections against impersonating other users or public figures.
+
+Public usernames are **foundational to the social features** (Groups & Leagues, influencer-hosted groups, streaks) described in [[third-space]]: friendly competition and shared leagues need a stable public identity to hang off. Open items, username uniqueness/change policy and where creation lives in the flow (profile vs onboarding), are candidates for the social-layer session.
 
 ---
 

@@ -17,3 +17,9 @@ The React Native app runs on user devices. There is no frontend server to scale.
 | **Background/lock screen** | User locks phone or switches to another app. Maintaining WebSocket wastes battery and data. | Drop WebSocket on background event. Reconnect on foreground event. Last-value cache ensures instant catch-up -- no loading spinner, no stale data. |
 | **Memory** | Order book depth for a popular symbol can be large. Holding all symbols in memory is wasteful. | Only hold data for active views in memory. Dispose on navigation. Let Centrifugo's last-value cache re-deliver on return. |
 | **Bundle size** | Large JS bundle = slow first load on web. | Code splitting via Expo Router (lazy-load screens). Target <3MB initial bundle. Subsequent loads cached by browser/CDN. |
+
+## Cold-Start / Launch Time
+
+**Target: ~2 second cold start.** (Requirement raised 24-07-2026 in [[jared-app-feedback-jul-2026]], Jared Sapirman.)
+
+Current cold-start time is **nearly 4 seconds**, versus **Kalshi and Polymarket, which each cold-load in ≤2 seconds**. Benchmark context: **39% of top-100 apps cold-launch in under 2 seconds and 73% within 3 seconds**, InPlay currently falls outside both bands. Launch time should be treated as a **product priority**, targeting **~2 seconds** to be competitive with the reference prediction-market apps. The <3MB initial-bundle target above is one lever; startup work (initial render, data prefetch, splash-to-interface handoff) needs profiling against this target.

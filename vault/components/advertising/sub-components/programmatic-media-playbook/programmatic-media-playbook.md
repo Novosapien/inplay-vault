@@ -214,3 +214,15 @@ The artifact carries per-exchange deep dives (onboarding steps, commercial terms
 **House-ads transition strategy (13-07):** house ads run from day one so users never experience a no-ads→ads flip when programmatic switches on — the swap is InPlay → Coca-Cola, not nothing → ads. House units: a **"What is InPlay?" ad opening the hype video + a referral link** (Edwin: keep it simple — click through to a splash page, watch, click off), and Cody's **education re-entry video ad** (a 15/30s video re-triggers each time the user re-enters the education section — video CPM without in-section bombardment). The Gamecast replay ad (Pepsi placement) was reviewed and **approved as-is** (size + orientation stay). IAB conformance confirmed: creatives **scale up if the aspect ratio is preserved** — exact pixel dimensions are not required (kills the "weird little ad units" worry).
 
 (Source: standups [[13-07-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]])
+
+---
+
+## Update, 22 Jul 2026 touchdown
+
+**SSP onboarding is blocked on the live App Store URL (chicken-and-egg, confirmed).** Several SSPs need the **live App Store URL before they will onboard**; the SSPs that don't require it are progressing, and the URL-gated ones wait on Apple approval. Apple had been silent for over a week; the team agreed to **escalate on Friday** if there is still no response. This reinforces the 15-07 "blocked on the Apple developer URL until App Store acceptance" note.
+
+**Volatility-moment billable-impression question (open).** Edwin: a volatility moment may be **too quick / too short to qualify as a billable impression** at all. George: because volatility moments are **animated** (the unit changes on screen), the IAB likely will **not** allow a **programmatic** ad unit inside one, programmatic demand wants a **static, fixed, aspect-ratio-controlled** placement that stays put. Working assumption: volatility moments are **not programmatic inventory while animated** and instead sell **direct** (a relationship, effectively a described ad unit, not just an API call). Edwin: these are "really valuable," so the open question is how to charge for them and get them out there. Needs research. Consistent with the 17-07 note that if SSPs can't serve the custom volatility-moment shapes, those sell direct. Logged in [[architecture/open-questions]].
+
+**Side-ad wrong-edge bug (Watch Mode QA).** On the Watch page the **side ad defaults to the top of the screen** and gets blocked out by the iPhone notch/window; it should **default to the bottom** (George: "that should be the other way around"). It re-adjusts correctly when the phone is flipped, but it should start bottom-anchored. QA item on the Watch Mode ad surface (see [[advertising/advertising]]).
+
+(Source: standup [[22-07-2026-touchdown]])

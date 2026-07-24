@@ -4,9 +4,10 @@
 > **Date:** 2026-05-09
 > **Updated:** 2026-06-26 — AI Agent Research deep-dive: phased build (pre-canned → saved-custom → AI companion), pricing reset (99c → $14.99 → $49.99), in-app payment decision, background/foreground/multi-agent architecture. From [[26-06-2026-ai-agent-research-component]]
 > **Updated:** 2026-07-13 — v1 pre-canned reports demoed live in-app; ladder refined to four steps (LLM analysis layer inserted before the full AI agent). From [[13-07-2026-touchdown]]
+> **Updated:** 2026-07-22, Subscription pricing set at exec level: Research **$49.99/mo**, Watch / Pro-View **$49.99/mo**, bundle ("Pro Trading Package") **$79.99/mo** (monthly; ads still run). Resolves the research-tab pricing open question. From [[22-07-2026-touchdown]]
 > **Status:** Defined _(Phase 1 scoped; AI companion is Phase 2, still conceptual)_
 > **Owner:** George Westbrook (engineering) + Cody Haugen (product / client-facing)
-> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[13-07-2026-touchdown]]_
+> **Sources:** _[[08-05-2026-component-1-simulation-app]], [[18-05-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[13-07-2026-touchdown]], [[22-07-2026-touchdown]]_
 
 ---
 
@@ -62,6 +63,7 @@ Underneath the three tiers, the original **AI Research Agent** modes still apply
 **Business rules — pricing & access (reset 26-06):**
 
 - **Subscription pricing (trading-challenge iteration):** **99c first month, then $14.99/month.** The 99c is a deliberate **card-capture** hook ("no one cancels that s***"). _This replaces the earlier ~$99.99/mo production placeholder; the $99.99 framing was the production-vs-raw-SR-data argument, see §7._
+- **Pricing reset (22-07, Edwin, exec-level):** everything priced at **$49.99/month**. Two standalone monthly packages, **Research $49.99/mo** and **Watch / Pro-View $49.99/mo**, plus a **bundle ("Pro Trading Package") at $79.99/mo**. All monthly, and **ads still run on these surfaces** (George). Positioned as deliberately cheap: fantasy-sports data runs **$50–75/mo**, betting-pick subscriptions cost hundreds per month, financial-data packages run hundreds to thousands per month, and raw Sport Radar redistribution is **$5–20k/mo** per user. This **supersedes the 26-06 consumer ladder (99c then $14.99, AI tier $49.99)** for the research subscription headline; the free-taste versus grayed-out split still needs defining (Cody and George to do the deep pass on what sits in the free trial versus the graded-out version). The **Watch / Pro-View** package sells the live Watch Mode plus pro charting (SMA/EMA/Bollinger, candlesticks, minute intervals); Cody and Edwin note charting at this granularity is a paid product elsewhere and there is **no other source for this alt-asset data**, so it can be charged for. (Source: [[22-07-2026-touchdown]])
 - **Phase 2 AI companion raises the tier to $49.99/month** ("a smart person that builds reports in seconds, sitting next to you").
 - **Everything in the tab is behind the subscription** for simplicity, **except** a **couple of always-visible pre-canned reports** shown free as a taste (no time-limit — "if you derive value from one free report, good on you," but the rest are grayed out to pull the upgrade).
 - **AI companion is never offered in a free demo.**
