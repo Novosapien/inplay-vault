@@ -82,6 +82,37 @@
   opening auction · T10 one-environment + permanent test symbols.
 - **Still the top two, unasked:** **E11 settlement · E12 NCAA scope.**
 
+## Context for processing incoming Edwin material
+
+Material expected from Edwin (any new doc likely fulfils one of these):
+
+- **The original MM simulation Python files** (E4 — "functional, not a heavy
+  lift"). Read as *his prior working model*: mine for parameter values,
+  formula shapes, and trigger logic — but it predates the v1 decisions above,
+  so nothing in it binds.
+- **The formula write-up** — on the call he said "I'll write the formula…
+  it's fairly simple" (the game-by-game convergence behaviour: with 17 games
+  left the remaining-season term dominates; with 1 game left the live
+  probability dominates, like options converging to expiry).
+- **The Wednesday-drop content** — off-field popularity index + remaining-game
+  win probabilities (format not yet agreed).
+- Possibly **CTS-001 §3** (E10) or an updated standards doc.
+
+Processing protocol for ANY new Edwin document:
+
+1. Read [[market-maker/working-guide]] first, as always.
+2. The 23-07 v1 decisions in [[market-maker/decisions]] are the current
+   truth. A new document does NOT silently supersede them — per the standing
+   ground rule (spoken decisions outrank written docs), every conflict gets
+   surfaced to George and adopted or rejected **explicitly**.
+3. Check each claim against [[market-maker/open-questions]] — does it answer
+   an open question (close it, cite the doc) or contradict a resolution
+   (flag it)?
+4. Numbers go into [[market-maker/parameters]] with a status and the doc as
+   source — nothing becomes ✅ without George's validation.
+5. **Nothing is written to the vault before George validates it in chat**
+   (hard rule from this session).
+
 ## Next
 
 1. **S5 — verify Sport Radar can serve the live win probability the way Edwin
