@@ -62,6 +62,12 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   session in v1; the dedicated MM FIX session stays a filed T0 ask. The MM
   subtracts its own resting orders from the feed to get the §5.5
   participant-only book.
+- ✂ **Watchdog/supervision descoped from the MM (George, 24-07):** trade
+  busting — and its detection — is tZERO's remit; consistent with the v1.3
+  spec, whose six-engine pipeline has no supervision engine. Residual: T4
+  keeps the ask to confirm T0 *detects* out-of-band trades, not just executes
+  busts. The public trade stream remains consumed later only for §3.6
+  off-field volume counting.
 
 ## 2026-07-24 — v1.3 Build Spec intake · tZERO confirmed · SR probability probe
 
