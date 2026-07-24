@@ -112,8 +112,19 @@ fine · heartbeat cadence and the dead-man window are ours to set (we can
 change the gateway ourselves) · watchdog/supervision descoped to tZERO.
 
 **Opened:** S8 (SR's "media use only — prohibited for betting clients"
-clause) · S9 (media-tier vs betting-tier contradiction — measure in August) ·
+clause) · S9 (feed latency — ours to measure in August, not an SR ask) ·
 N15 (heartbeat/dead-man window) · N16 (official results have no bus source).
+
+**Late in the session:** drafted the SR product ask to Cody (sent) — the
+volume case for Global American Football Probabilities: v1 has no bulk live
+endpoint, so per-game polling costs ~8M requests/season (~6M of it NCAA) at
+~20 req/s peak, versus ~1M at 0.5 req/s on v2. Business-language, three
+iterations to strip technical framing. George cut the feed-latency question
+(we measure it) and the commercials line; added two coverage questions —
+does SR price *every* college game, and how far ahead of kickoff. **S6
+reduced**: v2's schema was checked and is also 2-way, so no SR product
+solves ties — and NCAA cannot tie at all (overtime since 1996), leaving only
+NFL's ~0.5 % as an Edwin ruling.
 
 ## Next
 
