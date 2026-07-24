@@ -36,6 +36,16 @@
 > and live SR data integrate later. The phases below predate the spec and
 > are being re-cut collaboratively as the build proceeds.
 
+> **Update 24-07 (Friday touchdown):** **new timeline anchor — trading
+> functionality live for ~Aug 22** (Troy). S4 betting-feed parity partially
+> mitigated: the probabilities API rides SR's betting-side feed (faster than
+> the media feeds; the MM consumes probabilities directly). SR entitlement
+> channel agreed (George's email → SR support + Scott + Cody). MM ops UI
+> phasing set: read-only positions dashboard first, via the same APIs users
+> get ([[market-maker/systems/mm-ops-ui]]). Testing reaffirmed: replay a past
+> game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
+> user's view and the MM's side.
+
 ## Phase 0 — Unblock (now, parallel)
 
 The build can't start in earnest until these move; none are code.

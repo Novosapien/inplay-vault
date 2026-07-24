@@ -10,6 +10,39 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-24 — Friday touchdown (Edwin + Cody + Troy + Kevin + Novo) — [[24-07-2026-touchdown]]
+
+- ✅ **Probabilities ride SR's betting-side feed (Cody).** SR's licensed
+  *media* data feeds power the gamecast; SR's own hosted match-tracker widget
+  runs on *betting* data — faster, but the raw betting feeds are licensed to
+  sportsbooks only and unavailable to InPlay. The **probabilities API is off
+  the betting feed** and updates faster than media events — so the MM (which
+  consumes the probability, not the event) is not disadvantaged: in-app users
+  see events at the same moment the MM does. Edwin's ruling: use the fastest
+  feed available for everything; must never lag the sportsbooks (S4
+  mitigated). Cody lobbying SR for the betting feeds in parallel.
+- ✅ **MM monitoring dashboard — phased, read-only first (Edwin ask).** An
+  InPlay person monitors the market as we near production. Phase 1: see the
+  backend working — positions/holdings ("how many shares it owns of PMX Y"),
+  variables visible but static. Later: changeable variables for an active
+  trade. Explicitly NOT about changing MM logic. George: the MM is just
+  another user — the **same inventory/portfolio APIs that serve users serve
+  the dashboard**. Feeds [[market-maker/systems/mm-ops-ui]].
+- ✅ **SR entitlement channel agreed:** George emails the blocked
+  products/versions to SR support + Scott + Cody (→ S7); Cody drives with
+  Scott + David. Master-key model; call limits + versioning claimed moot at
+  the real-time tier.
+- ✅ **E19 reinforced:** Edwin re-affirmed he builds the remaining-season
+  probability model internally ("I'll come up with a piece that you can
+  pull"); weekly manual input via the MM platform floated. "We'll work that
+  out over the next few days."
+- ✅ **NCAA IPO prices in motion (E3):** Cody delivered the NCAA totals;
+  Edwin pushing updated IPO prices into the app same day.
+- ✅ **Trading launch anchor:** trading functionality live for **~Aug 22**
+  (Troy: "we need to get this live for the 22nd"); the KYC-less academic
+  variant is deliberately deprioritised behind it (needed ~first week of
+  September).
+
 ## 2026-07-24 — v1.3 Build Spec intake · tZERO confirmed · SR probability probe
 
 > Sources: `InPlay_Market_Maker_Build_Specification_v1.3_FINAL.docx` (InPlay,

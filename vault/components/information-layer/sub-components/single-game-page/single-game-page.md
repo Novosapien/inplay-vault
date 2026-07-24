@@ -315,6 +315,8 @@ Data-dense but layered. The game page is the most information-rich screen in the
 
 (Source: standup 2026-07-20)
 
+**Feed source clarified (24-07):** the custom Gamecast runs on the **SR media data feeds** — the tier InPlay has licensed. SR's own hosted match-tracker widget (the "ugly one") is faster because its backend runs on SR's **betting data feeds**, which are licensed to sportsbooks only — InPlay cannot buy them ("no one else in any industry has them" — Cody). Edwin's ruling: **use the fastest feed available for the visual** — it must not lag by a second or two "or users get picked off." Mitigation: the **probabilities API rides the betting-side feed** and updates faster than media events, and the market maker consumes the probability directly — so in-app users see events at the same moment the MM does (parity inside the app; TV viewers may still be ~seconds ahead). Old (non-live) games are a simple API fetch; live games fetch history then stream events as they arrive; the actual event delta (real life → receipt) is unmeasured — George checking whether the API carries event-time vs delivery-time. Cody lobbying SR for the betting feeds in parallel. (Source: standup 2026-07-24)
+
 **Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **T0 price history + SR events + win probability onto the same timeline** — blocked on trading integration (T0 QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
 
 _This section answers Open Question 3 below (landscape rotation): yes — Watch Mode is the landscape experience._

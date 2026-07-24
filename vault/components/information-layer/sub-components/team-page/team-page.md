@@ -246,6 +246,25 @@ When a live game is in progress, the page should feel energised at the top (live
 
 ---
 
+## Analyst Prices (swipeable) — flagged 24-07, needs focused session
+
+> ⚠️ **New surface, not yet scoped.** Edwin (24-07): add one more swipeable
+> panel to the team page — **analyst prices** — where 4–5 guest analysts
+> publish their prices for the team. First analysts: **Preferred Walk-Ons**
+> (college-football podcast/stream, ex-PFF, ~200k reach) — onboard and
+> willing to start quickly; an NFL analyst still being sought (Cody + Kevin).
+> Cody's content shape: **short video clips for the top 25** teams,
+> 2–3-cent text blurbs for the next ~110, refreshed weekly against that
+> week's pricing and matchup; if video can't live in-app it goes to socials
+> instead. Edwin delivering a sample page by Monday (27-07). George's open
+> pipeline questions: where do analysts upload, how do we consume/serve/label
+> the data, weekly cadence mechanics. Ties directly into the **subscription
+> packages** Cody is sending (mid-tier ~$39.99 floated; ~$2M/month
+> subscription-revenue math from 24-07) and the research/subscriptions work
+> Edwin wants inserted "in the next week or two" — same family as the
+> Research Tab paid tiers. **Flagged for a focused session** — not written
+> into requirements here. (Source: standup 2026-07-24)
+
 ## Sub-Sub-Components
 
 Leaf node -- no further decomposition needed.

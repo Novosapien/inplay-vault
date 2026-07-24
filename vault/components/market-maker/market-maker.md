@@ -4,7 +4,7 @@
 > **Date:** 2026-07-20 · restructured 2026-07-21 · v1 model set 2026-07-23
 > **Status:** **v1.3 Build Spec adopted as baseline (24-07)** — supersedes the CTS/PTS standards for implementation (`standards/MM-build-spec-v1.3.html`). E11/E12 answered by the spec; conflicts **E17–E19** + SR items **S6/S7** open with InPlay. **Build started:** `inplay-market-maker` (Python)
 > **Owner:** Kevin Murray (Head Execution Trader) / George Westbrook (engineering) / Edwin (co-build, domain expertise)
-> **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
+> **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]], [[24-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
 
 > ⚠️ **Custom structure.** This component deliberately does NOT follow the
 > standard component/sub-component pattern. It's an internal engineering
