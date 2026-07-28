@@ -9,6 +9,73 @@
 
 ---
 
+## 2026-07-27/28 — reviewing our own build, and the wins insight
+
+- **The tests were shaped like the bug.** Every test ran one side of a game
+  at a time, so the head-on collision between two per-team events sharing a
+  game-level idempotency key never occurred in the suite. There *was* an
+  away-side test — it built the envelopes and checked the probabilities were
+  flipped, but never put them through an acceptor. A passing suite proved
+  the translation right and the architecture wrong. **Ask what shape the
+  tests are, not just whether they pass.**
+
+- **Storing answers instead of ingredients is the root of a whole bug
+  class.** The engine kept each game's computed expected value and a running
+  banked total, not the probabilities and results that produced them. From
+  that single choice came: a corrected official result double-banking (a
+  win corrected to a loss still reads $5.00), a finished game resurrecting
+  when a late probability arrives ($10.00 → $14.50 on a game already over),
+  and configured values that could change without any stored price
+  noticing. §2.5 says it in one line — *"incremental valuation state is
+  prohibited"* — and it turns out to be a bug-prevention rule, not an
+  aesthetic one.
+
+- **A silent skip and a silent failure can be the same code path.** The
+  engine dropped unknown teams deliberately, because NCAA sides play FCS
+  schools with no Team Company. That correct behaviour made a *missing map
+  entry* invisible: an unmapped Chiefs would have looked exactly like a
+  legitimate FCS opponent, priced never, alarmed never. Whenever "ignore
+  this" is correct for one reason, check what else it now hides.
+
+- **Belt-and-braces belongs on the output, not the input.** George asked for
+  a second validation pass as a safety net. Measured, the same triple
+  validated from either side can't disagree — 0 differences over 1,001
+  splits, because addition commutes. The check that *does* earn its place
+  is on the result: the two teams' expected values must sum to exactly
+  $5.00. That catches swapped sides, broken repairs and a wrong payout
+  constant, none of which double-validation would see. **The instinct was
+  right and the mechanism was wrong — worth separating those.**
+
+- **⭐ The per-game breakdown cancels out of the price.** Because every win
+  pays a flat $5, the sum of per-game win probabilities and the total
+  expected wins are the same number times five. Nine months of "we need a
+  probability for all ~2,400 games" turns into "we need 170 numbers." The
+  hard problem was an artefact of how the formula is written, not of what
+  the formula needs. (George.)
+
+- **A betting line is not a forecast.** The over/under is set where the money
+  balances, which makes it the *median* outcome, not the mean — a different
+  number, and worth up to a few dollars a share on a ~$57 share when our
+  whole spread is $0.10. And these particular lines are known to be biased:
+  too high for very strong teams, too low for very weak ones, missing final
+  records by ~2 wins on average (Woodland & Woodland 2013). Using market
+  data is fine; **using it without knowing what object it is** is not.
+
+- **A frozen input can cancel a live one exactly.** Season win totals don't
+  move during a game. Subtract the current live probability from one and the
+  in-game price movement vanishes completely — $60.00 at 60%, $60.00 at 90%.
+  It would have looked like a working system with a dead price. Whenever
+  two terms are derived from overlapping information and one is stale, check
+  whether the update is being subtracted from itself.
+
+- **"Not in the feed" and "doesn't exist" are different findings.** Our
+  16-07 pull proved SR's NCAAFB futures feed has no win totals. A research
+  agent then reported the market is near-universal across all five books SR
+  already sources, and concluded our evidence must be wrong. Both were
+  right — the market exists, SR just isn't carrying it. That distinction
+  turns an impossible ask into a coverage complaint, and it's the difference
+  between building a model for 138 teams and sending an email.
+
 ## 2026-07-24 (b) — build day + ingestion research
 
 - **Measure the feed; don't reason about it.** We recorded twice that SR

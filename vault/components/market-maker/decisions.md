@@ -10,6 +10,58 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-27/28 — Build review + the expected-wins insight (George + Claude)
+
+- ✅ **A probability reading is a fact about a GAME, not a team — one event,
+  both securities.** §7.3 keys a probability update on Source + Game +
+  Provider Sequence with **no team component**, so per-team events collide:
+  same key, different payload, and the acceptor correctly refuses the second
+  as a conflicting duplicate. Proven on the real Chiefs–Ravens timeline —
+  1,089 accepted, **1,089 conflicts, and the Ravens never priced at all**.
+  The adapter now emits one side-neutral envelope per reading and the
+  valuation engine fans it out. ⚠ **Spec tension to raise:** §3.2 describes
+  a probability input record as carrying a single *Team Company ID*, while
+  §7.3 keys the event per game. We implement the §7.3 shape because it is
+  the normative table and the only one that works.
+- ✅ **The pairs identity is a hard invariant, not a comment.**
+  `GEV(home) + GEV(away) = $5.00 × (P_home + P_away + P_tie) = $5.00`,
+  always. Enforced in the engine and checked **before** any state is
+  written. Verified exact across 5,948 normalized triples, so a mismatch is
+  never a rounding artefact — it means swapped sides or a broken §3.2.1
+  repair. §2.3: wrong quotes are worse than no quotes, so it raises.
+  (George's call: he asked for a belt-and-braces check; double-validating
+  the *input* was measured to be a no-op — 0 disagreements over 1,001
+  splits — so the check moved to the *output*, where it catches things
+  double-validation never could.)
+- ✅ **The universe map must be complete or we refuse to start.** A missing
+  team entry was previously indistinguishable from a legitimate non-universe
+  opponent (NCAA sides play FCS schools with no Team Company) — both simply
+  produced no price, silently, forever. Construction now rejects any
+  security the map cannot reach. (George spotted this.)
+- ⭐ **RP needs expected WINS, not per-game probabilities.** Every win pays a
+  flat $5, so `Σ GEV(g) = $5.00 × Σ P_win(g) = $5.00 × expected wins` — the
+  per-fixture breakdown cancels out entirely. Collapses E19's requirement
+  from ~2,400 game probabilities to **170 numbers**. (George's insight.)
+  Sent to Edwin 28-07 as a proposal, not adopted unilaterally: it is
+  arithmetically identical to §3.1.1 but not what §3.1.1 writes.
+- ⚠ **Keep the three-term structure even though it collapses.**
+  `W×$5 + p_live×$5 + tail×$5` is algebraically `$5 × T`, but the first two
+  terms are *facts* and only the third is an estimate. Collapsing it makes
+  the price track the bookmaker's opinion about games we already know the
+  result of, and stops it hardening as the season resolves.
+- ⚠ **The in-play cancellation trap (verified).** Season win totals are
+  futures markets and are never repriced during a game. Subtracting the
+  *current* live probability from a frozen whole-season total cancels the
+  in-game movement exactly — the price sits at $60.00 whether the team is at
+  60% or 90%. **Fix:** at kickoff the game leaves the tail carrying its
+  *pre-game* probability, and the tail freezes for the game's duration.
+- ✅ **HOW-IT-WORKS.md is the explainer, BUILD-LOG.md is the status.**
+  Concepts in one, state in the other, and the boundary is stated in the
+  file so they don't drift into each other and become untrustworthy.
+- ✅ **`inplay-market-maker` now has a remote** —
+  `Novosapien/inplay-market-maker`, private. Two days of work had existed on
+  one disk.
+
 ## 2026-07-24 — Friday touchdown (Edwin + Cody + Troy + Kevin + Novo) — [[24-07-2026-touchdown]]
 
 - ✅ **Probabilities ride SR's betting-side feed (Cody).** SR's licensed
