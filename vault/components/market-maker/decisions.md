@@ -10,6 +10,52 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-28 — Edwin's answers to all six questions ([[standards/MM-edwin-answers-28-07|email]] + code + IPO Supplement)
+
+- ✅ **Expected wins, not per-game probabilities — but never the raw posted
+  line.** De-vig both sides, then `mean = line + σ_mkt × InvNorm(fair over)`.
+  σ_mkt is a league constant: **2.7 NFL, 2.2 NCAA**. Worked example verified
+  against his code to 4 dp.
+- ✅ **`T` is whole-season** — banked wins included — which is exactly why the
+  formula subtracts. The published feed field is the opposite: **remaining
+  games only**. Both, deliberately; his definitions block governs.
+- ✅ **Our double-count fix confirmed, and generalised.**
+  `$5 × (T + Σ(x_g − p_ref(g)))` over **G, a set** of games kicked off since
+  T's timestamp. A game **enters at kickoff and stays until a new T absorbs
+  it** — so the adjustment survives the final whistle. Building it for a
+  single live game (as I first did) loses the win until the next publication.
+- ✂ **Do not smooth the mid** when a new T lands. *"The price change… is a
+  discontinuous repricing reflecting newly available information, not
+  market-maker behavior. Smoothing it would mean quoting a price you know is
+  wrong."* Widen quotes around publication windows instead.
+- ✅ **College is his, not Sportradar's** — MOV-capped Elo, calibrated weekly
+  against SR's posted pregame probabilities; NFL raked so remaining-game
+  probabilities sum exactly to the de-vigged sportsbook total. Published as a
+  **daily 06:00 ET JSON file, all 170 teams every file**, heartbeat even when
+  unchanged, **a missing file is an alarm**. `team_id` is Sportradar's
+  competitor ID — no mapping table. **Closes S10.**
+- ✅ **Ties: price the two-way market as proposed; settle at 0.5 → $2.50.**
+  Closes S6. The ~0.4 % drag is a reserve, not a model.
+- ✅ **IPO: `price = EV − discount`, and RP seeds at EV, not the listed
+  price.** Frozen T-3, full precision, never revised. ⚠ The Supplement (§8,
+  Open Item 10) had this **[OPEN]** and warned it gaps every discounted name
+  1–3 % at the open with the MM as counterparty — the email decides it
+  anyway, so that is now an *accepted* day-one exposure.
+- ⚠ **Conflicts opened, not resolved:** **E20** §9.2's `floor(0.85 × Unsold)`
+  vs the Supplement's MM Primary Mandate (buy *all* remaining, Rounds 1–10,
+  up to 85 M shares) · **E21** his own two IPO implementations disagree on the
+  tie leg, the Bradley-Terry inputs and the discount scaling, and the
+  acceptance test is unrunnable without `teams_config.py` + `odds.csv` ·
+  **E22** issued share count still missing, which blocks all of Chapter 4 ·
+  **E23** his "retained earnings + on-field + ad accrual" composition vs
+  §3.1.1's `ROF + ΣGEV + RAV + EAV`.
+- ⚠ **His code is all `float`.** §1.6-3 makes Decimal authoritative, so
+  `TeamPricer` and `validate_records()` must be **ported, not lifted**,
+  despite the email's "lift it verbatim". Formulas port cleanly; only types
+  change.
+- 📅 **Dates now bind us:** NCAA freeze **19 Aug**, NCAA offering **22–28
+  Aug**, NFL freeze **2 Sep**, NFL offering **5 Sep**.
+
 ## 2026-07-27/28 — Build review + the expected-wins insight (George + Claude)
 
 - ✅ **A probability reading is a fact about a GAME, not a team — one event,

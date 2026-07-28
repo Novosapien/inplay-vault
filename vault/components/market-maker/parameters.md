@@ -41,6 +41,39 @@ pending InPlay approval (spec Ch 14-A) · 🔴 = no default, external closure
 | Security universe | 32 NFL + 138 NCAA D-I = 170 | ✅ | 2.5 |
 | Venue timeouts / retries / rate limits / book age / clock skew / retention / load profile / RTO | — no defaults; config only | 🔴 §12.3 | 12.3 |
 
+### ⭐ Edwin's 28-07 answers + IPO Supplement A v1.3 (24-07) — authoritative
+
+Sources: [[standards/MM-edwin-answers-28-07|Edwin's email, 28-07]] ·
+`standards/IPO_Pricing_Subscription_Supplement_v1.3.docx` ·
+`reference/` (his engine as code). Supplement provisions carry his own
+[DECIDED] / [RECOMMENDED] / [OPEN] markers.
+
+| Parameter | Value | Status | Source |
+|---|---|---|---|
+| **σ_mkt** — de-vig dispersion | **2.7 NFL · 2.2 NCAA** | ✅ confirmed | email item 1 + `engine.py` Parameters tab. ⚠ Replaces the unapproved 2.0–2.5 range; the ONLY sigma used to extract a mean from a posted line |
+| `sigma` (feed field) | schedule dispersion √(Σ p(1−p)) | ✅ | a **different object** — never enters the de-vig step |
+| Tie settlement | **x_g = 0.5 → $2.50/share** | ✅ | email item 5 (SDMM-1) |
+| NFL tie rate | ~0.4 % of games *(email/`ipo.py`)* vs **0.08 per team-season** *(`engine.py`)* | ⚠ **conflict — E21** | $0.17 vs $0.20 per share |
+| Reference-number feed cadence | **daily 06:00 ET**, heartbeat even when unchanged | ✅ | email items 3–4 |
+| Missing feed file | **alarm, never a shrug**; hold last value | ✅ | email item 4 |
+| Correction protocol | same `effective_time`, bumped `revision`, `is_correction=true` | ✅ | email item 4 |
+| Popularity weights | **0.6 Brand · 0.4 PerfIndex** | ✅ | email item 6, Supplement §2.1 |
+| Capture clamp | **[0.20, 0.80]** | ✅ | matches spec §3.6.5 |
+| IPO discount band | **1 % – 3 %**, normalised on contested off-field share **per league** | ✅ [DECIDED] | Supplement §2.2 |
+| No-discount rule | guaranteed accrual **> 20 % of EV** → lists at full EV | ✅ [DECIDED] | Supplement §2.2 |
+| RP seeding at listing | **IPO EV**, not the listed price | ✅ email 28-07 | ⚠ Supplement §8 had this **[OPEN]** and warns every discounted name gaps **1–3 %** at the open with the MM as counterparty |
+| Base allotment | **50,000 sh / team / round** | ✅ [DECIDED] | Supplement §1 — a per-round quantity, **not** a float cap |
+| Guaranteed primary float after Round 10 | **500,000 sh / team** | ✅ [DECIDED] | Supplement §5. ⚠ **A floor on shares SOLD — not the issued count. §4.3 still has no number: E22** |
+| MM max opening inventory | **85,000,000 sh (~$4.26 bn notional)** | ✅ [DECIDED] | Supplement §5 — ⚠ conflicts with spec §9.2's `floor(0.85 × Unsold)`: **E20** |
+| Per-participant cap | **2,500 sh / team / round**; MM exempt | ✅ [DECIDED] | Supplement §5 |
+| Offering window | **1 minute max per team**, sequential, alphabetical R1 | ✅ [DECIDED] | Supplement §3 |
+| Termination | first complete round ≥ 11 with participant fills **< 1 %** of available allotment; MM fills excluded | ✅ [DECIDED] | Supplement §4 |
+| **NCAA price freeze** | **Wed 19 Aug 2026** | ✅ [DECIDED] | Supplement §3.1 |
+| **NCAA offering** | **Sat 22 Aug – Fri 28 Aug 2026** | ✅ [DECIDED] | Supplement §3.1 |
+| **NFL price freeze** | **Wed 2 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
+| **NFL offering** | **Sat 5 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
+| Issued shares per team | — | 🔴 **E22 — blocks Ch 4 entirely** | "the count follows separately" |
+
 ### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)
 
 | Parameter | Meaning | Value | Status | Source |
