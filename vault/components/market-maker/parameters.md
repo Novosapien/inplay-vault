@@ -72,7 +72,14 @@ Sources: [[standards/MM-edwin-answers-28-07|Edwin's email, 28-07]] ·
 | **NCAA offering** | **Sat 22 Aug – Fri 28 Aug 2026** | ✅ [DECIDED] | Supplement §3.1 |
 | **NFL price freeze** | **Wed 2 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
 | **NFL offering** | **Sat 5 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
-| Issued shares per team | — | 🔴 **E22 — blocks Ch 4 entirely** | "the count follows separately" |
+| **Shares per team at IPO** | **875,000 NFL · 1,000,000 NCAA** | ✅ **confirmed 29-07** | Edwin email. Different per league — "identical share count" means identical *within* a league. Total on offer **166,000,000 shares** |
+| Total value at IPO EV / listed | $8.45 bn / $8.27 bn · discount $180.7 m (2.14%) | ✅ derived 29-07 | `reference/ipo-prices-170.csv` × the share counts above |
+| ~~float basis for λ — 5 M~~ | **retired** | ✅ resolved 29-07 | The 875 k in the old note was the NFL share count. The 5 M figure had no source and is withdrawn |
+| Issued vs treasury split | — | 🟡 **E22 reduced** | We have shares *on offer*. §4.3 wants issued minus treasury. Confirm they are the same number |
+| IPO listed-price rounding | **$0.01 tick** *(workbook)* vs **full precision** *(email)* | ⚠ **conflict — ask 29-07** | Parameters sheet says "rounding increment for listed IPO price"; all 170 listed prices are exact pennies. The email says "no rounding anywhere" |
+| NFL expected ties per team | **0.08** → $0.20 a share | ✅ confirmed 29-07 | Workbook Parameters sheet. Settles E21: `engine.py` is right, `inplay_feed/ipo.py` is wrong ($0.17) |
+| IPO discount method | normalised contested off-field share, **per league**, into 1–3 % | ✅ confirmed 29-07 | Workbook Parameters sheet. Settles E21: `engine.py` is right, `ipo.py`'s flat scale is wrong |
+| Bradley-Terry gamma | 1 | ✅ | Workbook Parameters sheet |
 
 ### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)
 
