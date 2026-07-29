@@ -6,6 +6,8 @@
 > **Owner:** Edwin (client-facing — mechanics) + Cody (schedule/dates) + George (engineering)
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]]_
 
+> ⚠️ **Superseded by v2 requirements (29-07-2026, [[ipo-draft-requirements]]):** the single 72-hour all-at-once window described below is replaced by precise per-league schedules. **NCAA:** continuous buy-only offering from 22 Aug 1:00pm ET (price freeze T-3 = 19 Aug), secondary trading shortly after. **NFL:** 18 sequential one-minute windows across two 5-hour sessions on 5 and 6 Sep (price freeze T-3 = 2 Sep), secondary trading 7 Sep 9:30am ET. This doc still describes the old 72h model and needs a re-spec pass against v2. Note: v2 carries internal date inconsistencies (NCAA offering-end and secondary-start dates), flagged in the requirements doc.
+
 ---
 
 ## 1. What Does This Sub-Component Do?

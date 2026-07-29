@@ -8,11 +8,15 @@
 > **Updated:** 2026-07-17 — scope confirmed (all ~138 D1 schools), market-maker warehousing resolves unsold-share handling, timeline pinned (IPO deadline ~Aug 22, secondary trading Aug 29). From [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
 > **Updated:** 2026-07-29, Edwin delivered the **IPO pricing model v1.0** with listed prices for all 32 NFL + 138 NCAA team companies. Captured in [[ipo-pricing-2026]] (source workbook safe-copied to `sources/`).
 > **Pricing (authoritative):** [[ipo-pricing-2026]] holds the latest listed IPO prices, parameters, and methodology.
+> **Requirements (authoritative):** [[ipo-draft-requirements]] (v2, 28-07-2026) specifies the offering-window model, water line, pre-buy book, MM completion sweep, and per-participant cap. **Float updated: NCAA 1,000,000 / NFL 900,000 shares outstanding** (supersedes the 26-05 5,000,000 float + 20% holdback + no-cap model).
+> **Updated:** 2026-07-29, IPO Draft Business Requirements v2 received (Edwin). Captured in [[ipo-draft-requirements]].
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]], [[meetings/15-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]], [[ipo-pricing-2026]]_
 
 ---
 
 ## 1. What Does This Component Do?
+
+> ⚠️ **Superseded mechanics (29-07-2026):** [[ipo-draft-requirements]] (v2) is now the authoritative spec for the primary offering. It replaces the **5,000,000-share float, 20% short holdback, no per-buyer cap, and single 72-hour window** described below and in [[primary-offering-execution]] / [[ipo-scheduling]]. New model in brief: **NCAA 1,000,000** and **NFL 900,000** shares outstanding; NCAA runs a continuous multi-day buy-only offering, NFL runs **18 one-minute windows** (50,000 shares each) with a **pre-buy book**, a **water line** equalising float across teams, an **MM completion sweep** filling each window to exactly 50,000, and a **2,500-share per-participant cap** per team per round. The sections below and those sub-component docs still describe the old model and need a re-spec pass against v2 (which itself carries open inconsistencies, listed in the requirements doc).
 
 **Functional purpose:**
 
@@ -113,7 +117,7 @@ graph TD
 - **Scope confirmed (15-07): all ~138 D1 schools IPO**, not just the power conferences. Troy raised the scope cut over no-demand worries on bottom teams; Edwin overruled — "I want them all" — because the market-maker backstop (below) guarantees fill. (Source: standup 2026-07-15)
 - **Market-maker backstop (15-07):** where a team draws no bid, the **market maker buys unsold float in max clips (~50,000 shares)** and warehouses the inventory — guaranteeing **35% (Edwin may raise to 50%) of every float is consumed** (public + market maker combined) so every asset is tradable on the secondary market. (Source: standup 2026-07-15)
 - **Timeline pinned (15/17-07):** IPO deadline **~Aug 22**; **secondary trading opens Aug 29** after IPO close — tradable in the pre-season gap but with no on-field events yet (UX for that dead zone needs thought). Target **~10,000 users at IPO launch**; iteration continues into the first competition weeks. (Source: standups 2026-07-15 / 2026-07-17)
-- ⚠️ **Float sizing needs reconciling:** Edwin (15-07) cited **~1M shares available per NCAA team and 875,000 per NFL team** — vs the fixed **5M float** documented 26-05. Affects float maths, the 20% holdback, and MM warehousing volumes. Logged in [[open-questions]]. (Source: standup 2026-07-15)
+- ⚠️ **Float sizing resolved (29-07, [[ipo-draft-requirements]] v2):** **NCAA 1,000,000** and **NFL 900,000** shares outstanding per team, all available in the IPO and all shortable in secondary. This replaces the 26-05 5,000,000 float and the 20% holdback. The remaining open variable is not float size but the water-line / MM-mandate mechanics that govern how much of each float sells during the offering.
 
 **Edge cases and error states:**
 
@@ -274,8 +278,8 @@ graph LR
 |--------------|----------|--------|------|
 | Draft Board / Listings | Browse all team companies; Tinder-swipe, list, and conference/division filter views; price + shares-remaining | Defined | [[sub-components/draft-board/draft-board]] |
 | Team IPO Detail | Per-team: expected wins → value, off-field basis, last-season stats, key additions/departures, schedule | Defined | [[sub-components/team-ipo-detail/team-ipo-detail]] |
-| Primary Offering Execution | Static-ask buy-only flow; quantity entry; float decrement; no per-user cap; 20% holdback | Defined | [[sub-components/primary-offering-execution/primary-offering-execution]] |
-| IPO Scheduling & Windows | 72-hour windows; NCAA (~Aug 20) and NFL (~7 days pre-Sept 9) all-at-once sequencing; mixed live/IPO states | Defined | [[sub-components/ipo-scheduling/ipo-scheduling]] |
+| Primary Offering Execution | **v2 (see [[ipo-draft-requirements]]):** listed-price buy-only; 50k-share windows, pre-buy book, water line, MM completion sweep, 2,500-share per-participant cap. _(doc still describes the old static-ask / no-cap / 20% holdback model)_ | Defined _(re-spec needed)_ | [[sub-components/primary-offering-execution/primary-offering-execution]] |
+| IPO Scheduling & Windows | **v2 (see [[ipo-draft-requirements]]):** NCAA continuous 22–26 Aug, NFL 18 one-minute windows across 5–6 Sep, price freeze T-3; mixed live/IPO states. _(doc still describes the old 72h model)_ | Defined _(re-spec needed)_ | [[sub-components/ipo-scheduling/ipo-scheduling]] |
 | Announcement & Countdown | 24–48h pre-alerts across social/push/CRM; go-live notification; navbar takeover | Defined | [[sub-components/announcement-countdown/announcement-countdown]] |
 | Season-End Settlement / Liquidation | Credit longs (shares × settlement), force-close shorts (debit difference), final leaderboard run. Simulation-only | Defined | [[sub-components/season-end-settlement/season-end-settlement]] |
 
@@ -294,7 +298,7 @@ graph LR
 - **Off-field → Earnings Report handoff** — the $250/game mechanic is seeded here but the recurring earnings event is a separate component (next session).
 
 ### Questions for next call
-- Confirm float = 5M and holdback = 20% as final for the challenge iteration.
+- ~~Confirm float = 5M and holdback = 20%~~ **Resolved by [[ipo-draft-requirements]] v2:** float is NCAA 1,000,000 / NFL 900,000, no 20% holdback. Remaining: re-spec [[primary-offering-execution]] and [[ipo-scheduling]] to the v2 window/water-line model, and resolve v2's internal inconsistencies (dates, MM-mandate round range).
 - Confirm IPO dates against the finalised NCAA/NFL schedules (NCAA week-zero Aug 27; NFL Sept 9).
 - Settlement mechanics: confirm the exact settlement-price definition and the short force-close calculation.
 - Does the draft board need a "sold out" secondary signal, or do sold-out teams simply drop off until the secondary market opens?

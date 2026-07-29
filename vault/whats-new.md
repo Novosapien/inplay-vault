@@ -2,6 +2,14 @@
 
 > **Project:** [[index]]
 
+## 2026-07-29: IPO Draft Business Requirements v2
+
+Edwin's **IPO Draft Business Requirements v2** (dated 28 Jul) is stored and processed: [[ipo-draft-requirements]] (source PDF safe-copied to `components/ipo-module/sources/`).
+
+This is the authoritative spec for the primary offering and the transition to secondary, and it **materially changes the IPO module**. Float is now **NCAA 1,000,000 / NFL 900,000** shares per team (all IPO-available, fully shortable in secondary), retiring the earlier 5M float and 20% short holdback. NCAA runs a continuous multi-day buy-only offering from 22 Aug; NFL runs **18 sequential one-minute windows** across 5 and 6 Sep, each offering 50,000 shares, with a **pre-buy book** (binding limit orders at the frozen listed price), a **water line** that equalises float across teams, an **MM completion sweep** that fills every window to exactly 50,000, and a **2,500-share per-participant cap** per team per round. Prices freeze T-3.
+
+Because this supersedes the static-ask / 72-hour / no-cap model, the [[primary-offering-execution]] and [[ipo-scheduling]] sub-components now carry supersession banners and are flagged for a re-spec pass. The float-sizing open question is resolved. I also logged **five internal inconsistencies** in v2 (conflicting NCAA dates, the MM-mandate round range stated as both 1 to 10 and 1 to 16, a mislabeled shorting line, and 8-vs-10 scheduled NFL hours) for a v3 clean-up before build.
+
 ## 2026-07-29: IPO Pricing Model v1.0
 
 Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
