@@ -6,7 +6,9 @@
 > **Status:** Defined
 > **Owner:** Edwin (client-facing — IPO mechanics owner) + George (engineering) + Troy (T0 / on-chain ledger)
 > **Updated:** 2026-07-17 — scope confirmed (all ~138 D1 schools), market-maker warehousing resolves unsold-share handling, timeline pinned (IPO deadline ~Aug 22, secondary trading Aug 29). From [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
-> **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]], [[meetings/15-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]]_
+> **Updated:** 2026-07-29, Edwin delivered the **IPO pricing model v1.0** with listed prices for all 32 NFL + 138 NCAA team companies. Captured in [[ipo-pricing-2026]] (source workbook safe-copied to `sources/`).
+> **Pricing (authoritative):** [[ipo-pricing-2026]] holds the latest listed IPO prices, parameters, and methodology.
+> **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]], [[meetings/15-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]], [[ipo-pricing-2026]]_
 
 ---
 

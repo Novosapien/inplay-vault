@@ -2,6 +2,14 @@
 
 > **Project:** [[index]]
 
+## 2026-07-29: IPO Pricing Model v1.0
+
+Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
+
+It sets the **listed IPO price for every tradeable team company**, all **32 NFL** and **138 NCAA** teams, from a clear formula: **IPO = $5.00 x E[Wins] + $2.50 x E[Ties] (NFL only) + $2.50/game x expected volume-capture share**. The on-field leg comes from devigged BetMGM win totals; the off-field leg from a Popularity Index (0.6 x brand + 0.4 x performance) with Bradley-Terry per-game capture. Prices range from about **$81 (LA Rams)** down to **$21 (Charlotte)**. The doc also captures the parameters, the methodology, and the author's caveats (notably the North Dakota State / Sacramento State non-universe pricing, and that supplying the exact 2026 schedule CSV will move NCAA prices by ~$1 to $2).
+
+This fixes per-share IPO value; the remaining open variable is float size (shares issued per team), tracked in [[open-questions]]. The $5/win, $2.50/tie and $2.50/game accruals are the same [[earnings-report]] settlement mechanics, so the IPO price is the expected sum of every future earnings distribution.
+
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
 Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[t0]] §11).
