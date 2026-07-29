@@ -2,195 +2,249 @@
 
 > **Component:** [[market-maker/market-maker]]
 > **For:** the call with Edwin / InPlay today.
-> **Sources:** Edwin's answers of 28-07 ([[standards/MM-edwin-answers-28-07|email]]) ·
-> the IPO Supplement v1.3 · his code in `reference/` ·
-> `reference/InPlay_IPO_Pricing_2026.xlsx` · his share-count email of 29-07.
+> **Sources:** Edwin's answers of 28-07 · his share-count email of 29-07 ·
+> `InPlay_IPO_Pricing_2026.xlsx` · **IPO Draft Business Requirements v2
+> (28 July)** · the IPO Supplement v1.3 · his code in `reference/`.
 
-**Updated 29-07.** The IPO workbook arrived and answered five of the original
-questions. Those are listed at the bottom so nobody raises them by mistake.
+**Everything in sections 1 to 6 is open.** Answered items are at the bottom,
+with their answers, so nobody raises them by mistake.
 
-**The clock:** today is 29 July. The NCAA price freeze is **19 August**, in 21
-days. The NCAA offering opens **22 August**, in 24 days.
+**The clock has moved.** Secondary trading, not the season, is now the
+deadline.
 
----
-
-## Ask this one first
-
-### 1. Does the market maker need to be live for the offering on 22 August?
-
-The IPO Supplement gives the market maker a **Primary Mandate**. For rounds 1
-to 10 it must buy every share left after participant demand.
-
-**Why it matters.** If the answer is yes, our build order changes today. If
-the platform executes the mandate instead, we have until the season starts.
-This question changes more than any other on the list.
+```
+NCAA secondary trading starts   26 or 27 August   ← 28 days
+NFL  secondary trading starts   7 September
+```
 
 ---
 
-## The IPO block — prices freeze on 19 August
+## 1 · The four that matter most
 
-### 2. Is the listed price rounded to a penny, or full precision?
+### 1.1 When must the market maker be quoting?
 
-Your two sources disagree.
+Requirements v2 says secondary trading starts on **26 August** in one place
+and **27 August** in another. Either way it is four weeks away, and it is
+much earlier than the season.
+
+Also confirm what we must do in the **primary**. v2 says *"InPlay Markets
+will be the exclusive seller of all initial offerings"*, and the market maker
+buys what is left. Is that purchase executed by our engine, or by the
+platform?
+
+**Why it matters.** It sets our build order today.
+
+### 1.2 Is the mandate 10 rounds, 16 rounds, or 18?
+
+Requirements v2 gives all three.
+
+| Section | Says |
+|---|---|
+| §2.2 | "MM completion sweep (Rounds **1-18**)" |
+| §3 | "Rounds **1-16** (MM Primary Mandate in force)" |
+| §4 | "for Rounds **1 through 10**… From Round 11, the mandate expires" |
+
+Section 3 also disagrees with itself: the heading says 1-16, and the same
+bullet ends *"Float equality through Round 10 is exact by construction."*
+
+**Why it matters.** It sets our opening position, and the range is enormous.
+
+```
+10 rounds   85,000,000 shares    $4.26 bn
+16 rounds  136,000,000 shares    $6.82 bn
+18 rounds  153,000,000 shares    $7.67 bn
+```
+
+The document itself quotes $4.26 bn, which only holds for 10 rounds. But
+18 × 50,000 = 900,000, which is exactly the NFL float. That suggests 18 is
+intended and the others are leftovers.
+
+### 1.3 Shorting is new. Please confirm the rules.
+
+v2 allows the full float to be sold short in the secondary market. Neither
+the build spec nor the IPO Supplement mentioned shorting.
+
+Confirm three things:
+
+- §5.2.3 says *"NFL team company has 1,000,000 shares available for
+  shorting"* and §5.2.4 says *"NFL… 900,000"*. Both say NFL. We read 5.2.3 as
+  NCAA. Correct?
+- Is the cap on **total** short interest across all participants, or per
+  participant?
+- Can the market maker itself go short?
+
+**Why it matters.** Shorting doubles what can be sold to us.
+
+```
+shares that can be sold to us  =  float + short interest
+                               =  1,000,000 + 1,000,000  =  2,000,000
+```
+
+So our position can exceed the entire float, and the Position Ratio (§4.3)
+can go above 1.0. The spec has no inventory limit — *"inventory never
+prevents quoting"* (§4.1).
+
+### 1.4 How do we sell the position down?
+
+After the offering we hold a very large position. The spec gives us one tool:
+when we hold a lot, we lower our prices to attract buyers. That is the
+inventory skew.
+
+**The tool is at its limit from the first minute and never moves.**
+
+```
+hold  250,000 shares  →  shade the price down 25 cents
+hold  500,000 shares  →  shade the price down 25 cents
+hold  900,000 shares  →  shade the price down 25 cents
+```
+
+Above a quarter of the float the cap binds and stays bound. Holding the
+entire float looks the same as holding a quarter of it.
+
+Twenty-five cents on a $50 share is half of one percent.
+
+**Three things to ask:**
+
+- Is there an expectation about how quickly we distribute?
+- Should the cap `M` be larger during distribution?
+- Or is distribution not the market maker's job?
+
+---
+
+## 2 · Numbers that disagree across documents
+
+### 2.1 Is the NFL float 875,000 or 900,000?
+
+| Source | NFL | NCAA |
+|---|---|---|
+| Your email, 29 July | **875,000** | 1,000,000 |
+| Requirements v2, §1.2 and §5.1 | **900,000** | 1,000,000 |
+
+NCAA agrees. NFL does not.
+
+### 2.2 When does the NCAA offering end, and when does secondary start?
+
+- §1.1 — offerings end **26 August** 10pm, secondary starts **27 August**.
+- §2.1 — the offering runs to completion on **28 August** 10pm.
+- §5.2 — secondary starts **26 August** 9:30am.
+
+Taken together, secondary trading opens 12 hours before the primary closes.
+
+### 2.3 Is the listed IPO price rounded to a penny, or full precision?
 
 - **Your email:** *"at full precision — no rounding anywhere."*
 - **The workbook Parameters sheet:** *"IPO price tick $0.01 — rounding
   increment for listed IPO price."*
 
-All 170 listed prices in the workbook are exact pennies. So the workbook
+All 170 listed prices in the workbook are exact pennies, so the workbook
 rounds.
 
-**Why it matters.** We must reproduce your prices exactly on day one. A penny
-either way is a penny of day-one mispricing on 166 million shares.
+**Why it matters.** We must reproduce your price exactly on day one.
 
-### 3. Is `inplay_feed/ipo.py` superseded by the workbook?
+### 2.4 Is `inplay_feed/ipo.py` superseded by the workbook?
 
-The workbook settles two of the three differences we found, and `engine.py`
-wins both.
+The workbook settles two differences between your files, and `engine.py` wins
+both.
 
-| | Workbook Parameters sheet | `ipo.py` |
+| | Workbook | `ipo.py` |
 |---|---|---|
-| NFL ties | **0.08 per team** → $0.20 a share | 0.4% of games → $0.17 |
-| Discount | **normalised contested share, per league** | flat scale |
+| NFL ties | **0.08 per team** → $0.20 | 0.4% of games → $0.17 |
+| Discount | **normalised per league** | flat scale |
 
-**Why it matters.** We want to be sure the workbook is the authority and the
-Python rebuild is a reference only. Then we stop reconciling three sources.
+We want the workbook confirmed as the authority, so we stop reconciling three
+sources.
 
-### 4. Washington Commanders is priced off DraftKings. Every other team is BetMGM.
+### 2.5 Two smaller ones in v2
+
+- **§2.2 says the NFL offering is 8 hours.** The table below it shows 5 hours
+  on 5 September and 5 hours on 6 September. That is 10.
+- **18 rounds × 50,000 = 900,000, but an NCAA team has 1,000,000 shares.**
+  100,000 shares per team never reach a window.
+
+### 2.6 Washington Commanders is priced off DraftKings.
 
 ```
 NFL, Washington Commanders, 7.5, -125, 105, DraftKings
 ```
 
-Your email specifies single-book BetMGM at the freeze.
-
-**Why it matters.** One row out of 170 breaks the rule. Either the line is an
-error or the rule has an exception. The price is frozen and never revised.
-
-### 5. Confirm the day-one gap is intended, and that you are content with it.
-
-```
-value of all shares at IPO EV        $8.45 bn
-value at the listed price            $8.27 bn
-the discount                         $180.7 m   (2.14%)
-```
-
-The Reference Price starts at **EV**. Participants buy at the **listed
-price**. So on day one every subscriber can sell to us at a profit.
-
-We do not lose money on this — we bought at the discount too. But the flow is
-one-sided, and it lands on top of the position the Primary Mandate already
-gives us.
-
-Your own Supplement §8 raised this and left it **[OPEN]**. The email decided
-EV. We only want it confirmed, not reopened.
+Every other team of the 170 is BetMGM, which is what your email specifies.
+The price is frozen and never revised.
 
 ---
 
-## The float and the offering
+## 3 · Data we still need
 
-### 6. Does the market maker buy 85% of the unsold shares, or all of them?
+### 3.1 Please send the 2026 schedule.
 
-Two documents give two answers.
-
-- **Spec §9.2:** `floor(0.85 × unsold shares)`.
-- **IPO Supplement §5:** **all** remaining shares, rounds 1 to 10, exempt
-  from the per-participant cap.
-
-Your own Open Item 9 marks this unresolved.
-
-**Why it matters.** This is the market maker's opening position. Every
-inventory rule in Chapters 4 and 5 works from it.
-
-### 7. Can you walk us through the offering process?
-
-We have read the Supplement. We would rather hear it once. Windows, rounds,
-the water line, and where the market maker sits in each.
-
-**Why it matters.** The share counts you sent (875,000 NFL, 1,000,000 NCAA)
-against the Supplement's 50,000 per round for 10 rounds means most of the
-float sells **after** the mandate expires. We want to be sure we read that
-correctly.
-
----
-
-## Data we still need
-
-### 8. Please send the 2026 schedule.
-
-**Why it matters.** Two spec rules need it.
+Two spec rules need it.
 
 - §3.6 splits each game's $2.50 advertising pool between the two teams. We
   must know who plays whom.
 - §2.5 counts regular-season games only. Without the schedule we cannot keep
   postseason games out of the price.
 
-### 9. Confirm the daily feed will carry real Sportradar competitor IDs.
+### 3.2 Will the daily feed carry real Sportradar competitor IDs?
 
-The sample file uses placeholders such as `sr:competitor:nfl0`.
-
-**Why it matters.** Real IDs join your feed to our live probability feed with
-no mapping table.
+The sample file uses placeholders such as `sr:competitor:nfl0`. Real IDs join
+your feed to our live probability feed with no mapping table.
 
 ---
 
-## What we build
+## 4 · What we build
 
-### 10. Do we calculate expected wins, or do we read your number?
+### 4.1 Do we calculate expected wins, or read your number?
 
 **Our de-vig already reproduces yours exactly.** Across all 170 teams the
-largest difference is 8.88 × 10⁻¹⁶, which is floating-point noise. The
-method, both sigma values and the margin removal all agree.
+largest difference is 8.88 × 10⁻¹⁶, which is floating-point noise.
 
-**What we have confirmed:** no Sportradar product carries season win totals
-for college. So the 138 college teams must come from you. For the 32 NFL
-teams we can compute our own from the sportsbook line.
+No Sportradar product carries season win totals for college, so the 138
+college teams must come from you. For the 32 NFL teams we can compute our own
+from the sportsbook line.
 
-**Why it matters.** It decides whether we build a reader or a calculator. We
-would like to run the NFL number as a check against yours.
+We would like to run the NFL number as a check against yours.
 
-### 11. We will build an upload page for the daily file.
+### 4.2 We will build an upload page for the daily file. Are you content?
 
 You upload the file. We validate it on screen. A bad file is rejected
-immediately, with the reason, so you can fix it while you are still at your
-desk. We keep every file, including rejected ones, in perpetuity.
+immediately with the reason, so you can fix it at your desk. We keep every
+file, including rejected ones, in perpetuity.
 
-Confirm you are content. Also confirm you can automate the upload later
-against the same endpoint, so a person is not needed every day at 06:00 ET.
+Confirm you can also automate the upload later against the same endpoint, so
+a person is not needed every day at 06:00 ET.
 
 ---
 
-## Two old ones, if there is time
+## 5 · Two old ones, if there is time
 
-### 12. Quote lifecycle — do orders top up, or rest until gone?
+### 5.1 Quote lifecycle — do orders top up, or rest until gone?
 
 The spec refills an order once it is half eaten, after 15 seconds (§5.9). On
-23 July you said orders rest until completely gone, with no top ups. This is
-**E17**, still unresolved.
+23 July you said orders rest until completely gone. This is **E17**.
 
-### 13. Cadence — 2 seconds or 200 milliseconds?
+### 5.2 Cadence — 2 seconds or 200 milliseconds?
 
-The spec sweeps every 2.0 seconds and calls a 5-second-old probability
-current (§3.1.4, §3.3.1). On the call you said 200 milliseconds, and that a
-second is too long. This is **E18**, still unresolved.
+The spec sweeps every 2.0 seconds (§3.1.4). On the call you said 200
+milliseconds. This is **E18**.
 
-Our own measurement: Sportradar's probabilities move with a **4-second
-median**, and in a live game **88%** of readings move the quote by at least
-one tick.
+Our measurement: Sportradar's probabilities move with a **4-second median**,
+and in a live game **88%** of readings move the quote by at least one tick.
 
-Both questions block Chapter 5, which we reach after Chapter 4.
+Both block Chapter 5.
 
 ---
 
-## Answered — do not raise these
+## 6 · Already answered — do not raise these
 
-| Was | Now |
-|---|---|
-| Send the IPO EV per team | **Have it.** `reference/ipo-prices-170.csv`, all 170 |
-| Send the listed price per team | **Have it.** Same file |
-| How many shares per team? | **875,000 NFL · 1,000,000 NCAA** (email, 29-07). Different per league. **166,000,000 shares in total.** ⚠ Our own note of 5 million was wrong; 875,000 was the NFL figure all along |
-| The 170-team list | **Have it.** `reference/season-win-totals-170.csv` — 138 NCAAF, 32 NFL |
-| `odds.csv` | **Have it.** The same file: team, win total, over price, under price, book |
-| `teams_config.py` | **Not needed, and now redundant.** The workbook carries Brand, Popularity, Avg Capture and OOU Games per team |
-| Do both sides of the over/under come priced? | **Yes.** All 170 rows carry both, and all 170 lines are half-point |
-| Which sigma? | **2.7 NFL, 2.2 NCAA** — confirmed on the Parameters sheet |
+| Question | Answer | Source |
+|---|---|---|
+| Send the IPO EV for each team | **Have it** — all 170, `reference/ipo-prices-170.csv` | IPO workbook |
+| Send the listed price for each team | **Have it** — same file | IPO workbook |
+| The 170-team list | **Have it** — 138 NCAAF + 32 NFL | `season-win-totals-170.csv` |
+| Send `odds.csv` | **Have it** — the same file carries team, win total, over price, under price, book | as above |
+| Send `teams_config.py` | **Not needed.** The workbook already carries Brand, Popularity, Avg Capture and out-of-universe games per team | IPO workbook |
+| Which sigma? | **2.7 NFL · 2.2 NCAA** | workbook Parameters sheet |
+| Do both sides of the over/under come priced? | **Yes.** All 170 rows carry both, and all 170 lines are half-point | `season-win-totals-170.csv` |
+| Does the market maker buy 85% of unsold shares, or all? | **All of them.** *"the MM MUST purchase all shares of the allotment remaining after participant demand"* — this supersedes spec §9.2 | Requirements v2 §4 |
+| Is the market maker the seller in the primary? | **No.** *"InPlay Markets will be the exclusive seller of all initial offerings."* We are a buyer only | Requirements v2 §2 |
+| Can participants sell during the offering? | **No.** *"Participants may buy only… may not sell… may not short"* | Requirements v2 §2 |
+| Shares per team | NCAA **1,000,000** confirmed. NFL is **disputed** — see 2.1 | email vs v2 |
