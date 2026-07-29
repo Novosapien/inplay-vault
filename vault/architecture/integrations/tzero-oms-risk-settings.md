@@ -1,7 +1,7 @@
 # tZERO OMS Risk Settings (IPLY defaults)
 
 > **Integration:** [[t0]] · [[integrations]]
-> **Source:** `tZERO_OMS_Risk_Settings_Matrix_IPLY.xlsx` (Rob Colucci, tZERO), delivered with the [[29-07-2026-tZERO-rob-qa]] Q&A.
+> **Source:** `tZERO_OMS_Risk_Settings_Matrix_IPLY.xlsx` (Rob Colucci, tZERO), delivered with the [[29-07-2026-tZERO-rob-qa]] Q&A. Copied into the vault at `sources/tZERO_OMS_Risk_Settings_Matrix_IPLY.xlsx` (beside this doc).
 > **Status:** Reference. These are the **default OMS risk-flag settings for IPLY** (the placeholder MPID for InPlay) accounts in SIM. Final configuration to be aligned with tZERO.
 
 ---
