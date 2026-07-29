@@ -5,6 +5,7 @@
 > **Date:** 2026-06-18
 > **Status:** Collecting
 > **Owner:** Edwin + Skye (commercial) + Brett (ad-tech / programmatic) + Max (creative units)
+> **ID registry:** [[ad-network-ids]] is the central place for all ad-network account IDs, publisher IDs, app IDs, and ad-unit IDs (AdMob captured; SSP IDs added as issued).
 > **Sources:** _[[meetings/22-05-2026-Advertising-first-meeting]], [[meetings/17-06-2026-touchdown]]_
 
 ---

@@ -2,6 +2,12 @@
 
 > **Project:** [[index]]
 
+## 2026-07-29: AdMob Ad-Unit IDs + Central ID Registry
+
+Captured the AdMob ad-unit IDs and started a **central ID registry** for all ad-monetisation identifiers: [[ad-network-ids]] (source HTML safe-copied to `components/advertising/sources/`).
+
+AdMob is fully populated: publisher `pub-2057484236798641`, the iOS and Android app IDs, and all eight ad units (three Native-advanced sizes, inline / MREC / strip, plus an inline Banner, mirrored per platform), along with the app-ads.txt line. The registry is a living doc: as SSP seat IDs and further ad-unit IDs are issued, they get added here so there is one place to query every publisher, app, ad-unit and SSP ID. Linked from [[advertising]] and the [[programmatic-media-playbook]].
+
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
 Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[t0]] §11).
