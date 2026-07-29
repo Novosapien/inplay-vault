@@ -8,6 +8,8 @@
 
 > **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_), issuance path decided:** the group resolved the long-open "how does the issuance ledger work" question. The IPO adopts a **standard primary-issuance model: bypass the Matching Engine (MS) and mint tokens directly to investor wallets** via the **transfer-agent workspace**, treated like a **security with a primary raise**. The offering is **long-only at a single price** (consistent with the static-ask model below). Chris Russell and Rob Colucci weighed using the MS to set prices via buy orders vs. direct minting; consensus landed on the **direct-mint path**. **Blocker/action:** **Novo needs minting access provisioned in the tokenization engine** (transfer-agent workspace) before this can be exercised.
 
+> **Clarification (29-07-2026, _[[29-07-2026-tZERO-rob-qa]]_), where issuance metrics live:** Rob confirmed the OMS can set a preliminary **IPO Reference Price** for Market Data and Risk Management (set the Previous Close Price, or rest a BUY order at the set price so it becomes eligible for execution), but the OMS is **not** the system of record for **primary-issuance metrics**. To track **total capital raised and shares remaining available**, the challenge should use a **dedicated cap-table management tech stack**. This sits alongside the direct-mint path: mint to wallets on-chain, seed the reference price in the OMS, and track raise/float on the cap table. **New open item:** select or build that cap-table stack (see [[open-questions]]).
+
 ---
 
 ## 1. What Does This Sub-Component Do?

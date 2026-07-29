@@ -2,6 +2,16 @@
 
 > **Project:** [[index]]
 
+## 2026-07-29: tZERO OMS Q&A + Risk Settings
+
+Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[t0]] §11).
+
+**Fixed live in the session:** account-scoped position tracking (positions had been aggregating at the firm level because test accounts used TEST-environment credentials; the credential routing was corrected), and ticker `IPTCCONH` (was missing from OMS SIM, now created).
+
+**Answered:** IPLY accounts carry positions overnight by default; bid/ask is driven by FIX orders with a market maker setting the market (no pre-set price list); UEPR/UEAR are enabled but there is no bulk position query, so EOD reconciliation needs a dedicated session. This also closes two 23-07 open items: the OMS has **Stop Wash Trades ON** (the self-match prevention the market maker needed), and the **risk-settings matrix** Rob owed has been delivered. The matrix's **limit-price-range tiers** give the market maker its OMS-level price band to reconcile against.
+
+**Primary issuance:** the OMS can seed an IPO reference price, but tracking capital raised and shares remaining needs a **dedicated cap-table management tech stack**, which sits alongside the 23-07 direct-mint decision. Selecting that stack is a new open item.
+
 ## 2026-07-24: Meeting-Notes Batch Digested
 
 Processed the 22 Jul touchdown, the 23 Jul tZERO weekly tech sync, the 24 Jul touchdown, Jared Sapirman's written app feedback, and two subscription/research source docs into the vault. (The 20 Jul touchdown and 23 Jul market-maker follow-up were already processed and are not repeated here; the market-maker component already owns that material.)
