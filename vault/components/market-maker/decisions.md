@@ -10,6 +10,49 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-29 — IPO Requirements v2 · the gospel ruling · the deadline moves
+
+- ✅ **Authority ruling (George): IPO Draft Business Requirements v2 (28-07)
+  and `reference/season-win-totals-170.csv` are gospel.** Where either
+  conflicts with an email, a spreadsheet or the IPO Supplement, they win. This
+  settles three things immediately: **NFL float is 900,000** (not the 875,000
+  in Edwin's email of the same day) · **§5.2.3 means NCAA**, 1,000,000 shares
+  available for shorting · the **Washington Commanders DraftKings line
+  stands**, so its IPO price is the price.
+- 📅 **The deadline is secondary trading, not the season.** NCAA secondary
+  opens **26 or 27 August** (v2 disagrees with itself — E25), NFL on
+  **7 September**. The market maker must be quoting from the earlier date,
+  about four weeks out. Every earlier plan assumed the season start.
+- ✅ **The market maker buys ALL remaining shares, not 85%** (v2 §4). This
+  **supersedes spec §9.2**'s `floor(0.85 × UnsoldShares)`. Closes E20.
+- ✅ **InPlay Markets is the exclusive seller in the primary** (v2 §2). The
+  market maker is a **buyer only** during the offering. Participants may buy
+  only — no selling and no shorting until secondary opens.
+- ⚠ **Shorting is new and unbounded** (v2 §1.2, §5.2). The full float may be
+  sold short in the secondary market. So what can be sold to us is float
+  **plus** short interest — 2,000,000 rather than 1,000,000 for an NCAA team.
+  §4.3's Position Ratio can exceed 1.0, and §4.1 imposes no limit. → E26.
+- ⭐ **The reason to distribute is liquidity, not profit or risk (George).**
+  §1.5 excludes profit as a motive and the market maker has unlimited money,
+  so the usual reason to shed inventory does not apply. The real reason is
+  that **a market with no shares in circulation is not a market** —
+  participants have nothing to trade with each other, and §3.6.3 excludes
+  market-maker volume from the off-field value, so our own trading cannot
+  feed the Popularity Index either. **That reframes the inventory skew as our
+  distribution tool rather than our risk tool.**
+- ⚠ **And the skew has no room left.** §4.5 caps it at $0.25, which binds once
+  we hold 25% of the float. After the offering we hold 50–100%. Verified:
+  holding the entire NFL float reads **identically** to holding a quarter of
+  it. The only tool the spec gives us for the thing that actually matters is
+  saturated from the first minute. → N20.
+- ✅ **The fix pass is complete.** All four defects from the 27-07 review are
+  fixed and merged (PRs #1, #2, #3). 63 tests. One new defect (#5, the
+  `GameStatus` coverage flag) is recorded and open.
+- ✅ **Nothing blocks the build.** The spec covers Chapters 3–8 in full. Only
+  §5.9 replenishment is genuinely blocked, because **E17** is a mechanism
+  question and not a value. Two data gaps — the schedule (§3.6, §2.5) and the
+  live feed — do not stop us writing code today.
+
 ## 2026-07-28 — Edwin's answers to all six questions ([[standards/MM-edwin-answers-28-07|email]] + code + IPO Supplement)
 
 - ✅ **Expected wins, not per-game probabilities — but never the raw posted

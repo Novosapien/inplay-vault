@@ -72,7 +72,14 @@ Sources: [[standards/MM-edwin-answers-28-07|Edwin's email, 28-07]] ·
 | **NCAA offering** | **Sat 22 Aug – Fri 28 Aug 2026** | ✅ [DECIDED] | Supplement §3.1 |
 | **NFL price freeze** | **Wed 2 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
 | **NFL offering** | **Sat 5 Sep 2026** | ✅ [DECIDED] | Supplement §3.2 |
-| **Shares per team at IPO** | **875,000 NFL · 1,000,000 NCAA** | ✅ **confirmed 29-07** | Edwin email. Different per league — "identical share count" means identical *within* a league. Total on offer **166,000,000 shares** |
+| **Shares outstanding per team** | **900,000 NFL · 1,000,000 NCAA** | ✅ **gospel 29-07** | IPO Requirements v2 §1.2, §5.1. **Supersedes the 875,000** in Edwin's email of the same day |
+| Shares actually offered | 18 rounds × 50,000 = **900,000** per team | ✅ v2 §1.2 | Exactly the NFL float. Leaves **100,000 NCAA shares per team unoffered** — issued or treasury? → **N21** |
+| Shares available for shorting | **900,000 NFL · 1,000,000 NCAA** — the full float | ✅ v2 §1.2, §5.2 | NEW in v2. Cap is total-or-per-participant unknown → **E26** |
+| Mandate rounds | **10 or 16 or 18** | 🔴 **conflict — E24** | v2 §4 / §3 / §2.2. Max MM inventory 85 M / 136 M / 153 M shares |
+| NCAA offering | opens **22 Aug** 1pm ET · closes **26 or 28 Aug** | 🔴 close date conflicts — E25 | v2 §1.1 vs §2.1 |
+| **NCAA secondary trading** | **26 or 27 Aug** 9:30am ET | 🔴 **conflict — E25. THE DEADLINE** | v2 §5.2 vs §1.1 |
+| NFL offering | **5–6 Sep**, 1–6pm ET, rounds 1-9 then 10-18 | ✅ v2 §1.1, §2.2 | |
+| **NFL secondary trading** | **7 Sep** 9:30am ET | ✅ v2 §1.1, §5.2 | |
 | Total value at IPO EV / listed | $8.45 bn / $8.27 bn · discount $180.7 m (2.14%) | ✅ derived 29-07 | `reference/ipo-prices-170.csv` × the share counts above |
 | ~~float basis for λ — 5 M~~ | **retired** | ✅ resolved 29-07 | The 875 k in the old note was the NFL share count. The 5 M figure had no source and is withdrawn |
 | Issued vs treasury split | — | 🟡 **E22 reduced** | We have shares *on offer*. §4.3 wants issued minus treasury. Confirm they are the same number |
