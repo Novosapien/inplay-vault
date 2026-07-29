@@ -30,6 +30,8 @@ Defines the technology business requirements for the IPO Draft: the initial (pri
 
 This **supersedes** the earlier 5,000,000-share float with a 20% short holdback. New model: NCAA 1,000,000 and NFL 900,000 shares outstanding, with the full outstanding available for shorting in secondary.
 
+> **tZERO confirmation (29-07-2026, [[29-07-2026-tzero-ipo-shares-email]]):** Evangelos Tzoulafis (tZERO) confirmed these shares-outstanding numbers from tZERO's side, framing them as a move to a **production-like level chosen to match a $75m cap**. At the listed prices in [[ipo-pricing-2026]] the top names land near a $74m fully-diluted market cap, so the $75m cap reads as a max market-cap ceiling the shares were sized against (exact definition to confirm on the 30 July call). tZERO also confirmed **NCAA offerings run in parallel, open 5 days**, and wants the **NFL offering to simulate production mechanics** (the sequential-window / water-line model above).
+
 ### Key terms
 
 - **Water Line:** the cumulative per-team sales cap in force for a round.

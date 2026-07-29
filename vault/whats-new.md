@@ -10,6 +10,8 @@ This is the authoritative spec for the primary offering and the transition to se
 
 Because this supersedes the static-ask / 72-hour / no-cap model, the [[primary-offering-execution]] and [[ipo-scheduling]] sub-components now carry supersession banners and are flagged for a re-spec pass. The float-sizing open question is resolved. I also logged **five internal inconsistencies** in v2 (conflicting NCAA dates, the MM-mandate round range stated as both 1 to 10 and 1 to 16, a mislabeled shorting line, and 8-vs-10 scheduled NFL hours) for a v3 clean-up before build.
 
+**tZERO confirmation (29-07).** Evangelos Tzoulafis (tZERO) emailed ahead of the 30 July call confirming the shares-outstanding numbers from tZERO's side (NCAA 1,000,000 / NFL 900,000), framed as a production-like level chosen to match a **$75m cap**, and confirming NCAA offerings run in parallel over 5 days while the NFL offering should simulate production mechanics. Captured in [[29-07-2026-tzero-ipo-shares-email]]; the exact $75m-cap definition is logged for the call.
+
 ## 2026-07-29: IPO Pricing Model v1.0
 
 Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
