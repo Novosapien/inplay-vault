@@ -25,6 +25,8 @@ to sell. It is not a required counterparty: user orders that match each other
 fill directly; the market maker's orders are simply always there alongside
 them. (Source: standup 2026-07-20)
 
+> **Two house agents (from 30-07-2026).** This component now houses two internal, non-user-facing agents: the **Market Maker** (posts resting liquidity, the maker) and the **[[market-maker/systems/synthetic-noise-taker|Synthetic Noise Taker, SNT-1]]** (crosses the spread as a controlled-loser taker so every book trades from IPO onward). Edwin delivered a spec-quality SNT-1 reference implementation. The rest of this doc describes the Market Maker; SNT-1 has its own system doc.
+
 Its jobs, in priority order for the trading challenge (profit-seeking is
 explicitly at the bottom during the challenge):
 
@@ -97,6 +99,7 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 | [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 |
 | [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game |
 | [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last |
+| [[market-maker/systems/synthetic-noise-taker\|Synthetic Noise Taker (SNT-1)]] | Second house agent: a taker-only noise account that crosses the spread so every book trades from IPO onward. A controlled loser by design (spread cost = liquidity subsidy) | Reference impl v1.0 from Edwin 30-07; our side = ExchangeAdapter + hardening |
 
 ## Working Docs
 

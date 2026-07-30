@@ -91,6 +91,29 @@ table → N2 in [[market-maker/open-questions]].
 | `max clip` | Largest single warehouse order | ~50k shares | 🟡 | 15-07 |
 | `fill guarantee` | Share of float MM consumes if unsold | ~35% (up to 50%?) | 🟡 | 15-07 |
 
+## SNT-1 (Synthetic Noise Taker)
+
+All from Edwin's v1.0 reference implementation (30-07). Reference-impl defaults, so 🟡 proposed; `base_orders_per_hour` and the loss budget are the two levers Edwin expects to tune after seeing real books. Full spec: [[market-maker/systems/synthetic-noise-taker]]; code: `sources/snt1_noise_taker.py`.
+
+| Parameter | Meaning | Value | Status | Source |
+|---|---|---|---|---|
+| `base_orders_per_hour` | Arrival rate, OVERNIGHT, weight-1.0 team | **9.0** | 🟡 **lever** (tune on real books) | SNT-1 v1.0 |
+| `state_multiplier` | Intensity by activity state | OVERNIGHT 1x · PRE_KICKOFF 6x · **LIVE 75x** · POST 4x | 🟡 | SNT-1 v1.0 |
+| `team_weight` | Per-team activity weight | range **0.25 to 4.0**, from the EAV / popularity model; default 1.0 | 🟡 (feed TBD) | SNT-1 v1.0 |
+| `size_lognorm_mu` / `sigma` | Log-normal size params | mu **3.4** (median ~30) · sigma **0.9** | 🟡 | SNT-1 v1.0 |
+| `min_size` / `max_size` | Size clip | **5** / **400** shares | 🟡 | SNT-1 v1.0 |
+| `sweep_probability` | Share of orders that sweep (else at-touch IOC) | **0.10** | 🟡 | SNT-1 v1.0 |
+| `max_impact_ticks` | Sweep limit cap through the touch | **3 ticks** | 🟡 | SNT-1 v1.0 |
+| `max_fraction_of_touch` | At-touch qty cap vs displayed | **0.5** | 🟡 | SNT-1 v1.0 |
+| `daily_loss_budget_per_team` | Spread-subsidy governor (cost-vs-mid) | **$100,000** / team / session | 🟡 **lever** | SNT-1 v1.0 |
+| `max_spread_ticks_to_trade` | Skip books wider than this | **8 ticks** | 🟡 | SNT-1 v1.0 |
+| `inventory_soft_cap` | Absolute inventory before flatten bias | **1,500 shares** | 🟡 | SNT-1 v1.0 |
+| `flatten_bias` | P(trade reduces inventory) above the cap | **0.80** | 🟡 | SNT-1 v1.0 |
+| `profit_take_bias_max` | Max P(flatten) when well in profit | **0.65** (from 0.50 base) | 🟡 | SNT-1 v1.0 |
+| `profit_take_full_ticks` | Profit/share for full tilt | **10 ticks** | 🟡 | SNT-1 v1.0 |
+| `tick` | Min price increment | **$0.01** | ✅ | venue-verified (matches MM) |
+| `rng_seed` | Seed for reproducible sims | 20260729 | 🟡 (sim only) | SNT-1 v1.0 |
+
 ## External suggestions — platform doc 22-07 (NOT adopted; inputs to our design, see N9)
 
 The platform team's `sdmm.py` prototype proposed defaults. Noted here because

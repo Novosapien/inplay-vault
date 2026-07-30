@@ -9,6 +9,13 @@
 
 ---
 
+## 2026-07-30
+
+- **A dead book is the real launch risk, and the fix is a house taker, not more makers.** SNT-1 exists because a real exchange with few users looks empty. The MM alone does not solve this: it posts liquidity, but liquidity nobody hits still reads as "no trading." SNT-1 manufactures the *taking* side so prints actually happen. Two house agents, opposite roles: maker (MM) and taker (SNT-1).
+- **Noise is bought, not free.** SNT-1 is a deliberate controlled loser; its cost is literally the spread it crosses, metered against a $100k/team/session budget. That spread cost is the **subsidy that seeds the market** and is largely captured by the MM on the other side. The budget is a spend cap on that subsidy, not a P&L target.
+- **Uninformed-by-construction is the safety property.** The realism (disposition-effect profit-taking) conditions only on SNT-1's own cost basis vs mid, never on book state or participant data. That is what keeps its flow noise rather than a signal participants could reverse-engineer or that could push price toward a target.
+- **The off-field rule already handled this.** Because SNT-1 carries no participant side, its MM-facing prints fall outside the >= 1-participant-side off-field-volume rule automatically. A well-drawn rule needed no amendment for a new agent, worth remembering when the next house agent appears.
+
 ## 2026-07-23
 
 - **The v1 lifecycle is simpler than everything we designed (23-07 call).**

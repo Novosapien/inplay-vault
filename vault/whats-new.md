@@ -2,6 +2,14 @@
 
 > **Project:** [[index]]
 
+## 2026-07-30: SNT-1 Synthetic Noise Taker
+
+Edwin introduced a **second house agent** for the Challenge and sent a spec-quality reference implementation, now processed into the market-maker component: [[market-maker/systems/synthetic-noise-taker]] (code safe-copied to `sources/snt1_noise_taker.py`).
+
+SNT-1 is a **taker-only, non-participant house account** that crosses the bid/ask with random sizes at random times, so **every team book shows real trading from IPO onward, even with no games on**. It is deliberately a **controlled loser**: the spread it pays is the subsidy that seeds an active secondary market. It earns no leaderboard credit, and its prints against the Market Maker carry no participant side, so they fall outside the $2.50 off-field volume split automatically (no spec change needed). The realism layer mimics retail disposition-effect profit-taking, conditioning only on its own cost basis so the flow stays uninformed.
+
+Processed per the market-maker working guide: the [[market-maker/market-maker]] hub now lists two house agents (MM + SNT-1), with decisions, parameters (all proposed, two tuning levers flagged), open questions (E17/E18 for Edwin, N15/N16 for us: the ExchangeAdapter build and five production-hardening tasks), a session note, and glossary/learnings entries all updated. The main open item Edwin flagged is how SNT-1 interacts with the MM's quoting and inventory during the IPO Primary Mandate rounds.
+
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
 Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[t0]] §11).

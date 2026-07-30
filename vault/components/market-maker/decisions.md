@@ -10,6 +10,18 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-30, SNT-1 Synthetic Noise Taker added (Edwin email), [[market-maker/systems/synthetic-noise-taker]]
+
+> Edwin delivered a spec-quality reference implementation (`sources/snt1_noise_taker.py`, ~349 lines) for a **second house agent**. Session note: `sessions/2026-07-30-snt1-noise-taker.md`.
+
+- ✅ **A second house agent, SNT-1, is in scope.** A non-participant, taker-only house account that crosses the spread with random sizes at random times so every team book trades from IPO onward, including with no games on. It complements the MM (maker); SNT-1 is the taker.
+- ✅ **Deliberately a controlled loser.** Its spread cost is the subsidy that seeds an active secondary market. Not trying to move price toward any target; flow is pure noise.
+- ✅ **No off-field-split spec amendment needed.** SNT-1 prints against the MM carry zero participant sides, so they are excluded from the $2.50 off-field volume split under the existing >= 1-participant-side rule. `leaderboard_eligible = false`, so no leaderboard credit.
+- ✅ **Design locked at v1.0** (all numbers in [[market-maker/parameters]], status 🟡): Poisson arrivals, log-normal sizes (5 to 400, median ~30), 50/50 direction, ~90% at-touch IOC (<= 50% of touch) / ~10% sweeps capped at 3 ticks through touch, intensity `base 9/hr x state x team_weight` (LIVE 75x), $100k per-team daily loss governor (metered cost-vs-mid), disposition-effect profit-take tilt (0.50 -> 0.65, losers ride at 50/50), 1,500-share inventory soft cap (80% flatten bias), taker-only, hard guards (no halted/locked/crossed/one-sided/RP-freeze/>8-tick books).
+- ✅ **Account flags on the gateway:** `account_type = HOUSE_SYNTHETIC`, `leaderboard_eligible = false`, `participant_side = false`.
+- ⚠ **Two levers to tune after real books:** `base_orders_per_hour` and the loss budget (Edwin).
+- **Our side (not Edwin's):** implement the `ExchangeAdapter` against the matching engine, plus the five production-hardening tasks (kill switch + logging + per-order notional cap; persist pos/basis across restarts; periodic position reconciliation with halt-on-divergence; IOC limit enforcement as the impact cap; `activity_state()` mapping). See [[market-maker/open-questions]].
+
 ## 2026-07-23 — MM follow-up call (Edwin + Troy + team) — [[23-07-2026-market-maker-follow-up]]
 
 > Not the planned deep-dive: **E11 (settlement) and E12 (NCAA) were never
