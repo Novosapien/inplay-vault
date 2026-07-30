@@ -64,6 +64,8 @@ $/win sign-off. Asked as **questions**.
 | E14 | **Which share count for the skew?** — the MM's skew works off "inventory as a % of the float". Is the float 875k (the sheet) or 5M (the capacity)? The answer changes the skew's strength ~5.7× | Quoting | 🔴 Open |
 | E15 | ~~When a play happens, what moves the price?~~ **✅ RESOLVED 23-07:** just Sport Radar's live win probability, pulled directly — no own event weights in v1 ("you don't have to create it") | Valuation | ✅ Resolved |
 | E16 | **Is trading just… on, all day?** — confirm the product intent: continuous matching all day, every day (apart from the short daily maintenance gap) — no daily opening auction, no open/close ceremony (mirrors T9; opened 23-07) | Market state | 🔴 New |
+| E17 | **SNT-1 x MM interaction during Primary Mandate rounds**, Edwin explicitly invited this: how the noise taker's flow interacts with the MM's quoting and inventory while the MM is absorbing unsold IPO float (completion sweep). Does SNT-1 run during the primary at all, or only once secondary opens? | SNT-1, MM | 🔴 New _(30-07, Edwin)_ |
+| E18 | **SNT-1 tuning + weight feed**, the two levers Edwin expects to tune after real books are `base_orders_per_hour` and the daily loss budget. Also: confirm the per-team `team_weight` (0.25–4.0) feed from the EAV / popularity model | SNT-1 | 🟡 _(30-07, tune post-launch)_ |
 
 ## Owed by / with T0 (Tue + Thu calls)
 
@@ -109,6 +111,8 @@ $/win sign-off. Asked as **questions**.
 | N13 | **What data the MM consumes, and how** — everything arrives pushed and sits in memory; the loop never reads a database. Proposed: the quoting engine needs only the fair price and its own orders; the venue's book feed is for the watchdog and monitoring, not for quoting (MD spec read 23-07 confirms the feed streams updates after one subscribe) | Architecture, supervision | 🟡 Proposed |
 | N12 | ~~How old quotes become new ones each cycle~~ **✅ RESOLVED for v1, 23-07 (Edwin + George):** post the new quotes **without waiting** for cancel confirmations; a momentary self-cross during a price adjustment is acceptable ("on the first iteration… I don't care"). The 22-07 amend-in-place/reconciler analysis is **shelved, preserved in [[market-maker/learnings]]** for the augment-later phase | Quoting engine | ✅ Resolved for v1 |
 | N14 | **Fill-response logic** — "if you get a fill, what do you do next?" e.g. outside games: filled at 6 → maybe leave the bid at 6 and let the ladder fill down (5, 4, 3) rather than instantly re-quoting. Rules to design with Edwin (opened 23-07) | Quoting engine | 🔴 Open — next call |
+| N15 | **Build SNT-1's `ExchangeAdapter`**, implement the four-method adapter (`top_of_book`, `activity_state`, `send_marketable_ioc`, `position`) against the matching engine, and set the gateway account flags (`HOUSE_SYNTHETIC`, `leaderboard_eligible=false`, `participant_side=false`). The agent logic itself is Edwin's reference code | SNT-1 | 🔴 New _(30-07)_ |
+| N16 | **SNT-1 production hardening**, the five items Edwin listed: (1) kill switch + logging + per-order notional cap; (2) persist pos/basis across restarts; (3) periodic position reconciliation vs the engine, halt the book on divergence; (4) rely on IOC limit enforcement as the real impact cap (stale TOB snapshots are fine); (5) `activity_state()` mapping (off-season/overnight → OVERNIGHT, IPO windows → PRE_KICKOFF minimum) | SNT-1 | 🔴 New _(30-07)_ |
 
 ---
 

@@ -20,6 +20,10 @@
 | **Order book** | All live limit orders for one team from everyone (MM + users), sorted by price, two sides. |
 | **Depth / ladder** | The levels beyond the best price. Level 0 = best bid/offer; level 1+ = progressively worse prices with more size. |
 | **Resting liquidity** | Passive orders sitting in the book waiting to be hit (Edwin's phrase for what the MM posts). |
+| **Maker / taker** | Maker posts resting liquidity (the MM); taker crosses the spread to hit it (users, and the Synthetic Noise Taker). |
+| **Synthetic Noise Taker (SNT-1)** | The second house agent: a taker-only, non-participant account that crosses the spread with random noise flow so every book trades from IPO onward. A controlled loser by design. See [[market-maker/systems/synthetic-noise-taker]]. |
+| **Noise flow** | Uninformative order flow (random direction/size/timing) that creates activity without predicting price. SNT-1 manufactures it. |
+| **Disposition effect** | The retail tendency to take profits sooner than losses. SNT-1 mimics it: profit tilts its P(flatten) up to 0.65, losers ride at 50/50. |
 | **Crossing / pricing through** | A limit order priced past the other side's best — executes immediately at the resting prices (bid 11 on a 7-at-8 market → fills at 8, 9, 10). Market-order behaviour without market orders. |
 | **Price-time priority** | Matching rule: best price first; among equal prices, earliest first. |
 | **Locked / crossed market** | Bid = offer (locked) or bid > offer (crossed). Nonsense states — never published. |
