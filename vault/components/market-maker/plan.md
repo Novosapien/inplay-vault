@@ -46,6 +46,58 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 30-07b (two new algorithms · the process fix · Chapter 5 re-cut):**
+> Edwin sent **SNT-1** (a house noise taker) and a **14-file handoff package**
+> containing **ASMM-1**, a complete Avellaneda-Stoikov market maker, plus
+> RPV-1/RPV-2. On the call he accepted it is **not** a drop-in replacement —
+> his `quote()` takes the reference price and the position as **arguments**, so
+> it sits on top of our build rather than instead of it.
+> **Agreed process fix, and the most valuable outcome of the day: Edwin now
+> sends spec-style documents with the equations, not code.** George raised the
+> churn directly — three documents, each superseding the last, with roughly a
+> week spent understanding the first. He delivered the first narrative document
+> the same day.
+> **Chapter 5 is re-cut, not delayed** — see [[market-maker/asmm1-adoption-spec]]
+> for the ruling on each of the six areas. Net effect on the schedule: the
+> **state classifier is no longer needed** (his volatility number replaces it,
+> and N3's thresholds were never built), which removes work. Build order:
+> **volatility number → width → ladder → guards**. `inventory.py` needs **no
+> change**; Chapter 3 needs **no change** and is blocked on **E30** either way.
+> ⚠ **Neither new algorithm can run as sent.** ASMM-1 quotes one-sided past
+> 6,000 shares, which on day one means no bid on any book. SNT-1's order model
+> is IOC, which tZERO does not support, and its 8-tick spread guard is narrower
+> than our narrowest spread. Both are Edwin questions (**E32**), not blockers on
+> our build.
+> 📅 **Status (George): roughly halfway, and 80–90% of the time so far has gone
+> on understanding rather than writing.**
+>
+> **Update 30-07 (Chapter 4 done, Chapter 5 next):** the on-field correction
+> is complete in all three pieces, and **Chapter 4 is built** — `position.py`
+> (§4.1, §4.2), `inventory.py` (§4.3–§4.6) and `position/engine.py`. **171
+> tests**, ruff and mypy strict clean. Built today: the Reference Price now
+> follows Edwin's leg, the daily feed reader parses and validates his file,
+> and the position engine turns fills into positions and skews.
+> **Next: Chapter 5, quote construction.** It consumes exactly what now
+> exists — `RM` in, Target Order Book out — and it is the deadline item,
+> because the market maker must quote from ~26 August. After it: the poller
+> (gated on SR entitlement for live use, buildable against replay now), then
+> Chapter 6 market state and Chapter 8 venue sync.
+> ⚠ Two Chapter 4 inputs have no publisher: the **opening position**
+> (**E27**, now second priority — it is the entire day-one book) and
+> **corporate adjustments** (**E28**, expected never to fire).
+
+> **Update 29-07b (build sequence changed):** the position engine (Ch 4) was
+> next. George found that the Reference Price used the wrong on-field
+> algorithm — `Σ GEV(g)` over "games we happen to hold a probability for"
+> rather than Edwin's `$5 × (T − Σ p_ref + Σ x)`. That correction now runs
+> first, in three pieces: **(1) the formula** ✅ built ·
+> **(2) the engine state** — T, its `effective_time`, and the kickoff→next-T
+> window · **(3) the feed reader** — Edwin's daily 06:00 ET file, which
+> supplies T. Piece 3 also needs the adapter to stop discarding kickoff time
+> (fix-pass step 4), because the G membership test compares kickoff against
+> `effective_time`. **Chapter 4 follows.** It is not blocked either way — it
+> takes RP as an argument and never looks inside it.
+
 ## Phase 0 — Unblock (now, parallel)
 
 The build can't start in earnest until these move; none are code.

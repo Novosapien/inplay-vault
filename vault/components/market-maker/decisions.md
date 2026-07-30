@@ -10,6 +10,346 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-30b — a second market maker arrives · the Edwin call · a process fix
+
+- ⭐ **Edwin will send spec-style documents with the equations, not code
+  (agreed on the call, 30-07).** George raised it directly: three documents so
+  far, each changing things, roughly a week spent understanding the first
+  before the second moved it. Framed as *"we want to move fast, but this is
+  not our area of expertise."* Edwin was fine with it and will rewrite the
+  handoff package as a narrative document. **This is the most valuable outcome
+  of the day** — more valuable to the timeline than any single algorithm change.
+- ✅ **ASMM-1 is not a drop-in replacement, and Edwin accepts it.** His opening
+  position was *"I think I've done the market maker for you… all you need to do
+  is plug the code into T0."* The argument that landed, checkable in one line
+  of each file: **`quote(now, rp, inventory)` takes the reference price and the
+  share count as arguments**, and `RPV2.step(now, fair_value)` takes the fair
+  value. Neither module computes either input. Our build computes both.
+  Everything downstream — Chapter 3, the feed reader, the SR path, positions,
+  the journal, replay — is untouched by his package.
+- ⭐ **Adopt his width equation into Chapter 5.** `width = γσ² + (2/γ)ln(1+γ/k)`
+  plus a seeded 0–3 tick extra. It replaces §5.2's lookup table, which is keyed
+  on a state classifier **we never built** (N3's thresholds are still 🔴). His
+  needs no classifier, no new inputs, works in an empty book, and cannot be
+  gamed by posting orders — it reads only our own Reference Price. ⚠ The
+  `(2/γ)ln(1+γ/k)` term is a **constant, 1.653 ticks**, because γ and k are
+  constants. Compute it once at construction.
+- ⭐ **Volatility scales the width, never the lean (George).** The width is a
+  risk control, so volatility belongs in it. The lean is a **distribution**
+  tool (29-07: §1.5 excludes profit, so the reason to shed inventory is that a
+  market with no shares in circulation is not a market). Vol-scaling a
+  distribution tool means pushing hardest to distribute during a live game and
+  least overnight — backwards — and it reaches the cap sooner, so **it makes
+  N20 worse**.
+- ✅ **Keep our float denominator for the lean; his is wrong for us.** §4.3
+  divides by the Reference Float, which answers *what share of this team do we
+  own?* His divides by **4,000 shares**, which has no relationship to the
+  security. Every extra share moves his lean ~22× further, so his cap arrives
+  ~19× sooner: ours pins at 225,000 shares, his at **12,000**. §4.3–§4.6 stand
+  as built; no change to `inventory.py`.
+- ✂ **Reject his one-sided guard and his drawdown kill.** Past 6,000 shares in
+  a live game ASMM-1 quotes **one side only**; §4.1 says the opposite —
+  *inventory never prevents quoting* — and §4.1 is right precisely because we
+  are the mandated buyer. Run as shipped there would be **no bid on any book**.
+  A $25,000 mark-to-market kill on a book we are mandated to make is a market
+  outage, not a risk control; §1.5 excludes profit, so drawdown is not a signal
+  we should act on. The kill switch we need already exists (§6.3, operator-
+  triggered, through the gateway's `cancel_all`).
+- ✂ **Build none of RPV-1 / RPV-2, pending E30.** Three of its four additions
+  are **invented movement**: a random OU trend worth up to **$0.80**, a
+  continuous random walk, and event jumps. His own header states the purpose —
+  *"the reference price sits still and the noise taker just chops around a
+  fixed anchor… RPV-1 makes RP MOVE… so the whole market breathes."* That is a
+  simulator. ⚠ The event jumps are a substitute for a probability feed **we
+  already have**: `x_g` moves on every play, so adding them double-counts. And
+  the fourth addition — RP responding to net order flow — is the compliance
+  problem, because the house taker does most of the buying on day one.
+- ⚠ **His width has no wide end.** The σ² ceiling of 400 caps it at ~10 ticks
+  plus the random 3 — about **$0.13 on a $65 team, ever**. §5.2 Defensive is
+  $0.40 and the indicated overnight spread is $2.50–$5.00. Worse: **a dead feed
+  produces LOW volatility**, so the equation would quote tight into exactly the
+  case §2.3 calls dangerous. **Recommendation: per-state width floors** off the
+  §3.3/§3.4 freshness ladder, rather than raising the ceiling. → **E31**.
+- ✅ **Take his ladder shape, keep our scale and our seeding.** Adopt the random
+  level count (3–6), the random 1–4 tick step, and the geometric ×0.72 size
+  decay — all of which remove further dependencies on the unbuilt classifier.
+  ✂ Reject his 250-share base size (40× too small) and his `random.Random`
+  jitter: **§5.7.3's seeded SHA-256 scheme is the fixture we reproduced
+  byte-exact and the reason replay works.**
+- ⚠ **His dwell timer must not drive a requote on its own (→ N26).** Redrawing
+  the whole ladder every 3–12 s in a live game means cancel-and-repost with no
+  new information, on 170 securities — a message-budget problem (T2 unanswered)
+  and a lifecycle contradiction, since under rest-until-gone it wipes a
+  partially-filled level for cosmetic reasons. **Rule: §5.8's material-change
+  thresholds remain the gate; the dwell only defines when the shape is allowed
+  to change.**
+- ✂ **His port obligations, restated because they are the same three every
+  time.** All `float` → §1.6-3 makes Decimal authoritative. `time.time()`
+  inside the model → §10.3 requires bit-identical replay, so every `Δt` comes
+  from event timestamps. `random.Random` → seeded SHA-256 only. Decimal has
+  `.exp()` and `.ln()`, so step 2 of the volatility update needs no float.
+- ⚠ **SNT-1 as written cannot run on tZERO.** Its entire order model is
+  marketable **IOC**, and the venue supports **DAY / GTC / GTD only** —
+  verified twice, the platform doc (22-07) and the OE FIX spec (23-07). The
+  workaround (a marketable DAY order plus an immediate cancel) breaks SNT-1's
+  own stated guarantee that it never posts resting liquidity. → **E32**.
+- ⚠ **SNT-1's `max_spread_ticks_to_trade = 8` is narrower than our narrowest
+  spread.** §5.2 Stable is $0.10 = 10 ticks. As configured it would never trade
+  at all — least of all overnight, the state it was built for. Clean evidence
+  the file was never reconciled against the MM spec. → **E32**.
+- ⚠ **SNT-1 does not distribute the float, and it would hide that it doesn't.**
+  Its flow is 50/50 and price-insensitive, so it defeats the only tool we have:
+  a lean works by making our offer attractive, and a counterparty that ignores
+  price does not respond. Volume would read healthy while **N20** is untouched.
+- ⚠ **SNT-1 decides E17.** At LIVE intensity it crosses **~30,000 shares/hr per
+  book** against a 10,000-share L1, and its sweeps cap at 3 ticks while our
+  ladder spacing is $0.05 — so **every order lands on L1 only**. Under
+  rest-until-gone the top level erodes to nothing over ~40 minutes and reloads
+  only when fully consumed. §5.9's replenishment makes it a non-issue.
+  **E17 stops being a preference and becomes a correctness question.**
+- 🔴 **Two house accounts trading with each other, on a FINRA-regulated ATS.**
+  On day one SNT-1's counterparty is overwhelmingly the MM. Common beneficial
+  ownership on both sides is the definition of a wash trade, and the 23-07
+  rulebook decision prohibits exactly this for users. Concrete: the OMS spec
+  has per-account wash-trade blocking, so if T0 treats the two as related the
+  prints are simply rejected. **Compliance read, not an engineering answer** —
+  same class as S8. → **E33** + **T13**.
+- ⚠ **The package disagrees with itself and with its own verification claim.**
+  `HANDOFF.md` §3 says the flow impact is 10 ticks per 1,000 shares;
+  `RPV2Config` says **6.0**. The package is described as clean-room verified.
+- ⚠ **Two findings from his own results, worth reflecting back.** His §7 admits
+  teams priced under ~$50 run **negative median MM P&L** — about half the
+  universe. And his cohort economics put **retail participants at −$6,100 a
+  session** to the house.
+- ⚠ **Correction (George, 30-07): our day-one position is NOT a fixed 500,000
+  shares a team.** The Mandate is *buy whatever participants do not*, so it
+  depends on demand — more or less. 500,000 is the ceiling on the ten-round
+  reading of **E24**, not an expectation. ✅ The argument against ASMM-1's
+  scale does not rest on it: even a **90 % subscribed** offering leaves ~50,000
+  shares a team, still **8×** his one-sided threshold and **4×** his lean cap.
+- 📅 **Build status (George, 30-07): roughly halfway, and 80–90 % of the time
+  so far has gone on understanding rather than writing.** Three documents, each
+  superseding the last. The process fix at the top of this entry is the direct
+  response.
+- ⭐ **The market cannot move the price, and that is arithmetic (George, 30-07b
+  → E34).** A normal market has several **profit-seeking** market makers each
+  guessing fair value, and flow moves the price between them. We have **one**,
+  explicitly **not** profit-seeking (§1.5), quoting a fixed spread around a
+  **model** number. The quote is `RM = RP + IA` and §4.5 bounds `IA` to
+  **±$0.25** — so that $0.50 band is the *entire* range in which market
+  activity can move the price, **0.5% on a $50 share**. The Mandate pins us at
+  the bottom of it on day one: **$0.00 of downward room, $0.25 upward, and only
+  if participants buy our whole holding.**
+  ⭐ **Corroborated independently: Edwin built RPV-2's invented price drift
+  because he noticed his prices did not move.** Two routes, one finding. He
+  fabricated movement; the real problem is that nothing real can create it.
+  ⚠ **The product consequence is the one to lead with:** users watching prices
+  move in the app would be watching our model, not a market — and a participant
+  can never be right *early*, only right *at settlement*.
+  **This reframes N20: it is not a distribution problem, it is the
+  price-discovery problem**, and it is the root cause behind E30 and E35 too.
+  Three ways out, of which (2) and (3) are the same fix: accept it as a
+  fixed-odds product and stop calling it a market · raise `M` substantially ·
+  distribute the float so participants set the price between themselves.
+- ⚠ **Inventory is NOT a clean sentiment channel here (George's correction,
+  30-07b).** I had argued flow reaches the price through inventory → lean. In a
+  normal market maker that works, because accumulating costs money, so the
+  markdown is an inference — *"flow is beating me, my price is wrong."* Ours has
+  unlimited capital and is **required** to buy, so most of our position carries
+  no information about whether our price is right. The mandated position is
+  noise sitting on the signal, and it pins the lean before any voluntary flow
+  can register.
+- 🔴 **The Reference Price definition was reversed and nobody noticed (→ E35).**
+  20-07: *"Reference Price = the mid between best bid and best ask."* The v1.3
+  spec: the model value, `ROF + ΣGEV + RAV + EAV`. We built the spec's version.
+  **The change is recorded nowhere as a decision.** Our recommendation is to
+  keep the fair value pure — this security settles at a known number (§11.3), so
+  sentiment does not change what a share pays, and chasing flow both destroys a
+  correct participant's edge and creates an exploit. ⚠ But that recommendation
+  only holds **if E34 is answered by distributing the float**, so the market has
+  somewhere real to disagree.
+- ✅ **The sentiment-in-RP blend was proposed and WITHDRAWN the same evening
+  (30-07, review under Fable).** The idea: `RP = w × model + (1−w) ×
+  participant-only price (§5.5)`, `w` falling as volume grows. Killed on three
+  findings: (1) the model's forward leg is already **anchored to de-vigged
+  sportsbook lines** — a far deeper crowd than our book will ever be, so the
+  blend dilutes a strong crowd with a weak one; (2) **resting orders are free**,
+  so a §5.5-driven mark is spoofable, and §4.2 marks every portfolio and the
+  leaderboard at RP — with prizes attached, someone will; (3) **§2.3 is
+  therefore deliberate and correct**, not an oversight. Season 1 collects the
+  behavioural tape; any sentiment mechanism is a season-2 question argued from
+  evidence. **E34 is asked as product intent only and blocks no build.**
+- ⚠ **Two of the E34 claims were overstated and are corrected in the filing.**
+  *"A participant can never be right early"* — false: the price moves on every
+  result, probability and daily file, so being right pays as evidence lands.
+  *"A wrong model is never corrected"* — false: banked results correct it at
+  $5 a time, weekly. The true residual claim: **opinion ahead of evidence
+  cannot be monetised, and the app shows a model tracking reality, not a crowd
+  discovering it.**
+- ✅ **The quote assembly is fixed (George, 30-07 evening):**
+  `RP → + lean → centre (RM) → ± width/2 → L1 → ± step → ladder`. The lean
+  moves the pair and never the gap; the odd tick alternates sides per draw.
+  Chapter 5 builds this shape.
+- ✅ **Distribution runs on size and depth, not price (George + review).** While
+  the mandated position is large: more levels and much larger sizes on the
+  offer, fewer and smaller on the bid. Both prices stay fair — no §2.3 issue,
+  no §5.4 issue, works under any E34 answer. Needs three InPlay numbers
+  (→ E31): the §5.7.3 quantity ceiling (15,000 binds first), the §5.7.2
+  modifier range (1.5× is far too small), and §5.2's symmetric level counts
+  relaxed.
+- 🟡 **The split-position lean is proposed, not built.** `traded = NP −
+  OpeningPosition`; sentiment lean on `traded` with a small cap, distribution
+  lean on the mandated part with Edwin's cap. **Blocked on E27** — until the
+  opening position has a publisher, `traded` cannot be computed. §4.5's
+  single-position lean stands in the meantime.
+- ▶ **Full rulings, area by area: [[market-maker/asmm1-adoption-spec]]** —
+  including the new §0 assembly section.
+
+## 2026-07-30 — the spec filter · Chapter 4 built
+
+- ⭐ **The spec's finance is authoritative; its engineering is AI scaffolding
+  (George).** The v1.3 spec was written by a domain expert in finance who does
+  not code, using AI. So: formulas, settlement, the skew mechanics, the
+  de-vig, $5 a win — his own domain, defer to them. Event types, idempotency
+  tables, journal design, replay architecture — generated, so **judge on
+  merits rather than obeying**. ⚠ Judge, not ignore: some scaffolding has
+  proved load-bearing. §7.3's per-game keying exposed the adapter bug that
+  left half the universe unpriced, and §7.2's lifecycle ordering settled
+  where rejection belongs. This filter is narrower than the 22-07
+  platform-doc one and applies to the build spec itself.
+- ✅ **Chapter 4 is built.** `position.py` (§4.1 net position, §4.2 average
+  cost and P&L) · `inventory.py` (§4.3 float and ratio, §4.4 pending
+  exposure, §4.5 the skew, §4.6 Reservation Midpoint) · `position/engine.py`
+  (fills in, positions and skews out). **171 tests**, ruff and mypy strict
+  clean.
+- ⚠ **The Reservation Midpoint goes negative without §4.6's floor.** §4.6
+  says RM "must remain within the price boundaries of §5.4" and that is
+  load-bearing, not decoration: §5.4's floor is $0.01 and the skew reaches
+  −$0.25, so `RP $0.10 + IA −$0.25 = −$0.15`. A team late in a losing season,
+  priced near the floor, with us holding most of its float — not a contrived
+  case. `reservation_midpoint()` clamps, and a clamped RM is worth noticing
+  because it means the skew is asking for something the price cannot deliver.
+- ✅ **The Position Ratio is deliberately NOT clamped to ±1.** v2 lets
+  participants short the full float, so what can be sold to us is float plus
+  short interest, and §4.1 imposes no inventory limit. A ratio above 1.0 is a
+  state the spec permits (**E26**); clamping it would hide exactly the
+  situation we would most want to see.
+- ✅ **A fill for an untracked security RAISES**, deliberately the opposite of
+  the valuation engine's silent skip. An unknown *team* is a legitimate §2.5
+  boundary — NCAA sides play FCS schools with no Team Company. An unknown
+  *fill* has no such story: we only receive execution reports for orders we
+  placed, so it means the universe is wrong or we traded something we cannot
+  price. Either way we hold inventory that never skews.
+- ✂ **`IPO_ALLOCATION` and `CORPORATE_ACTION` are not built (George).** The
+  opening position arrives as a constructor argument instead — same status as
+  the RAV/EAV mocks, and replay still reproduces it. §7.3 reserves both event
+  types but nothing sends either (**E27**, **E28**). Build them when we know
+  what actually arrives rather than guessing. ⚠ I first argued the v2 dates
+  force an overlap between the primary and the secondary; re-reading, §1.1 is
+  clean and the overlap appears only from §2.1 + §5.2 together — drafting
+  sloppiness, not intent. Conceded.
+- ✅ **Realized P&L is emitted per fill and never accumulated.** A running
+  total is derived state — the thing §2.5 prohibits, and the thing that caused
+  the double-banking defect. A consumer sums the records; replay reproduces
+  the total exactly.
+- ⚠ **Average cost is a division, so it recurs.** `$23,000,000 ÷ 450,000`
+  cannot be held exactly, so the unrealized P&L lands 5 x 10⁻²² from a round
+  number. Not a defect — it is why §1.6-3 says round only where the algorithm
+  says to. **Never compare an average cost against a hand-written literal.**
+- ✅ **Comments move to a `# Notes` block at the end of each file (George).**
+  Inline density was making the code unreadable. Short marked line inline,
+  long form at the bottom keyed by a **named** marker — names survive edits,
+  numbers drift. Nothing is deleted when a comment moves; it is relocated.
+  Applied to all ten source files; repo `CLAUDE.md` rewritten so it holds.
+  Tests are the exception — there the comment IS the statement of behaviour.
+- ⭐ **Wins are conserved, and the feed does not conserve them (George).** 32
+  NFL teams x 17 games = 272 games, so the 32 expected-win figures must sum to
+  **272**. Real BetMGM lines sum to **275.00**; after the de-vig, **273.95**.
+  The de-vig removes a third of the excess, but Edwin's rake works per team
+  and nothing enforces the league total. Worth **$0.30 a share**,
+  one-directional — every NFL name slightly high, never low — and we are the
+  mandated buyer of the residual float, so ≈**$8.6 M**. **George's call
+  (30-07): minor, park it as a question (N25) rather than act on it.**
+  ⚠ NFL only — NCAA teams play FCS opponents outside the 170, so their wins
+  legitimately exceed games ÷ 2.
+- 🔴 **Two of §4.1's four inputs have no publisher.** Buys and sells arrive as
+  fills and that path is built and QA'd. The **opening position** (**E27**)
+  and **corporate adjustments** (**E28**) have nothing sending them. E27 is
+  now the second-priority open question: v2 makes us the buyer of all
+  remaining shares, so it is the entire day-one book.
+
+## 2026-07-29b — the on-field leg built · the window is kickoff → the next T
+
+- ✅ **The on-field leg is built.** `on_field_value()` in
+  `mm/valuation/reference_price.py`, with `KickedOffGame`. 70 tests, ruff and
+  mypy strict clean. Edwin's three stated unit tests plus four more: the
+  in-play cancellation trap, the tie as half a win, two games netted, and the
+  two sides of one game cancelling.
+- ✂ **It supersedes §3.1.1's on-field terms** (`ROF + Σ GEV(g)`) with
+  `$5 × (T − Σ p_ref(g) + Σ x_g)`. Authority: this log outranks the spec, and
+  Edwin confirmed the formula on 28-07. **E23** — how his composition maps
+  back to §3.1.1 — stays open. `RAV`/`EAV` are untouched.
+- ⭐ **The adjustment window is kickoff → the next T, NOT kickoff → the final
+  whistle (George's catch).** Verified with numbers: Chiefs T 11.6, p_ref
+  0.566. They win, and if the adjustment stops at the whistle the price
+  **drops $2.17 for winning**, then jumps back when the 06:00 file lands. A
+  sawtooth every Sunday evening. Edwin's unit test (c) exists for exactly
+  this: *"after the final whistle, it holds at banked-plus-expected until the
+  next T arrives."*
+- ✅ **Membership of G is a timestamp comparison, never a judgement.** Compare
+  each game's kickoff time against T's `effective_time`:
+
+  | Game | T holds it as | In G? |
+  |---|---|---|
+  | kicked off **before** T | a banked fact | no |
+  | kicked off **after** T | a probability | **yes** |
+  | not kicked off yet | a probability | no |
+
+- ✅ **An upcoming game needs no adjustment** — it is already inside T, and
+  T's guess is still the best one we have. This is why the adjustment starts
+  at kickoff and not before.
+- ✅ **A played game needs no probability** — `x` is the result: 1, 0.5 or 0.
+  Only a game in play needs a live number. A loss moves the price **down** by
+  `$5 × p_ref`, so a favourite losing costs more than an underdog losing.
+- ✅ **With a healthy feed, G holds 0 or 1 games.** A team plays once every
+  4–7 days and T lands daily. The set form Edwin required is purely the
+  missed-file case — kept, because a missed file otherwise loses a real win
+  from the price silently.
+- 📅 **Kickoff time is now load-bearing.** The G membership test needs it, and
+  the adapter currently discards it. **Fix-pass step 4 is a dependency of
+  pricing, not a tidy-up.**
+- ⚠ **Edwin's definition of `p_ref` disagrees with his own unit test (a), and
+  we build the definition (George, 29-07b).** He defines `p_ref` as the
+  pregame probability *"frozen at the moment T was ingested"* (06:00 ET), but
+  test (a) requires the leg to equal `$5 × T` **at kickoff**, seven hours
+  later, which only holds if `p_ref` is the closing number. Worked example:
+  Chiefs T 11.6, 06:00 probability 0.566, kickoff 0.540 → the definition
+  gives $57.87 and the test expects $58.00, a **13¢** gap. Freezing at
+  kickoff instead leaves that 13¢ of pregame news out of the price until the
+  next file. **Ruling (George): freeze AT KICKOFF — the closing pregame
+  probability.** Edwin's own fallback clause already permits it, it makes his
+  test (a) exact rather than approximate, and it needs no probability held
+  from 06:00. The 13¢ of pregame drift stays inside T until the next file;
+  that is the accepted cost. **Asked anyway → N22.** One line to change on
+  his answer.
+- ✅ **A tie is a terminal state, not a live probability (George).** Sportradar
+  gives a two-way market and no tie probability exists (S6), so `x` is simply
+  the live win probability while the game is in play, and becomes 1, 0.5 or 0
+  once final. The 0.5 appears only at settlement. Do not blend a tie
+  probability into the live number — there is no such number to blend.
+- ✅ **Assume at least one T always exists (George).** T is required at
+  construction rather than optional, so a "no price yet" state cannot occur.
+  Edwin's rule already guarantees it operationally: a missing daily file is an
+  alarm and we hold the last value.
+- ✅ **A stale T is repairable, even weeks later.** Sportradar's timeline
+  endpoint returns a game's whole history, so a pregame probability we failed
+  to capture at kickoff can still be recovered.
+- ✅ **Do not smooth on a new T** (reconfirmed). Edwin: *"a discontinuous
+  repricing reflecting newly available information, not market-maker
+  behavior."* Expect the new T to land near, but not exactly on, our adjusted
+  number — his is the whole season rebuilt from his ratings, so other results
+  moved it too. Widen quotes around the 06:00 window if we want cover.
+
 ## 2026-07-29 — IPO Requirements v2 · the gospel ruling · the deadline moves
 
 - ✅ **Authority ruling (George): IPO Draft Business Requirements v2 (28-07)

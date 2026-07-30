@@ -87,6 +87,57 @@ Sources: [[standards/MM-edwin-answers-28-07|Edwin's email, 28-07]] ·
 | NFL expected ties per team | **0.08** → $0.20 a share | ✅ confirmed 29-07 | Workbook Parameters sheet. Settles E21: `engine.py` is right, `inplay_feed/ipo.py` is wrong ($0.17) |
 | IPO discount method | normalised contested off-field share, **per league**, into 1–3 % | ✅ confirmed 29-07 | Workbook Parameters sheet. Settles E21: `engine.py` is right, `ipo.py`'s flat scale is wrong |
 | Bradley-Terry gamma | 1 | ✅ | Workbook Parameters sheet |
+| **Daily feed fields** | `team_id` · `league` · `effective_time` · `revision` · `is_correction` · `expected_remaining_wins` · `sigma` · `games_remaining` · `methodology_version` | ✅ verified 29-07 | `reference/sample_reference_feed_2026-08-29.json`, 170 records |
+| **T** (whole-season expected wins) | **not published** — `T = banked wins + expected_remaining_wins` | ✅ we compute it | The feed field is remaining games only; Edwin's formula needs the whole-season basis. Both, deliberately — his definitions block governs |
+| **`p_ref(g)`** (pregame probability per game) | **not in the feed** | 🔴 **N22** | We capture Sportradar's last pregame reading at kickoff, or recover it from SR's timeline later. Basis-drift risk vs his Elo/raked numbers |
+| Adjustment window | **kickoff → the next T**, not kickoff → the final whistle | ✅ 29-07b | Dropping it at the whistle costs $2.17 on a Chiefs win, then returns it at 06:00 — a sawtooth. Edwin's unit test (c) |
+| **Reservation Midpoint floor** | **$0.01** — §5.4's price floor, applied to RM | ✅ 30-07 | §4.6 requires RM inside the §5.4 bounds, and it is load-bearing: `RP $0.10 + IA −$0.25 = −$0.15` without it |
+| **Reservation Midpoint ceiling** | **MEV**, per security — season-open NFL $127.50 | ✅ 30-07 | §5.4. Falls as games are played, so it is an argument rather than a constant |
+| Position Ratio bounds | **none — deliberately not clamped to ±1** | ✅ 30-07 | Full-float shorting (v2) plus §4.1's no-inventory-limit means PR can exceed 1.0 legitimately → **E26** |
+| Skew cap binding point | **25% of float** (M $0.25 ÷ S $1.00) | ⚠ **N20** | We will hold 50–100% after the IPO. Holding the whole float reads identically to holding a quarter |
+| **NFL expected-wins conservation** | must sum to **272**; posted lines sum to 275.00, de-vigged 273.95 | 🟡 **N25 — parked** | +$0.30/share, one-directional, ≈$8.6 M across the float. George 30-07: minor, ask when convenient |
+
+### ASMM-1 / SNT-1 (30-07b) — proposed, nothing here is ✅
+
+From `inplay_algo_handoff_george.zip` + the Component Narrative (30-07). Rulings
+area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
+*"launch settings, not truths"*, fitted to **judged** target tape statistics.
+
+| Parameter | Meaning | Value | Status | Notes |
+|---|---|---|---|---|
+| `vol_halflife_s` (`h`) | decay of the variance rate | **20 s** | 🟡 his | The volatility estimator's memory |
+| `vol_horizon_s` (`H`) | window σ² is scaled to | **30 s** | 🟡 his | ⚠ Applied **once**, in step 5. The A-S risk term is `γσ²(T−t)` and the `(T−t)` is already inside — do not multiply again |
+| `var_floor` / `var_ceil` | σ² bounds, ticks² | **0.05 / 400** | 🟡 his | The ceiling binds on any touchdown-sized move |
+| `gamma` (`γ`) | risk aversion in the width | **0.02** | 🔴 **E31** | Book-visible → his remit |
+| `k` | order-flow intensity; larger → tighter | **1.2** | 🔴 **E31** | |
+| `width_const C` | `(2/γ)·ln(1 + γ/k)` | **1.653 ticks** | derived | Constant, because γ and k are. **Compute once at construction** |
+| `width_extra` | random widening above the risk floor | **0–3 ticks**, seeded, held for the dwell | 🟡 | Additive, not `max()` — he changed this deliberately so the risk term always shows |
+| `width_ref_price` · scale bounds | where `extra` is unscaled | **$65.00** · 0.6–1.6× | 🟡 | Keeps bps spread ~uniform across the price ladder |
+| **`width_floor_by_state`** | minimum width, Defensive / Overnight | — | 🔴 **E31** | ⚠ **The gap.** σ² 400 caps the width at ~$0.13 on a $65 team, ever; §5.2 Defensive is $0.40 and overnight was indicated $2.50–$5.00. And a **dead feed produces LOW σ²**, so the equation quotes tight into the §2.3 danger case |
+| `levels_range` | levels per side | **3–6**, drawn per dwell | 🟡 adopt | Removes another dependency on the unbuilt classifier |
+| `level_step_ticks` | gap between levels | **1–4 ticks**, drawn per dwell | 🟡 adopt | |
+| `size_decay` | per-level size multiplier | **0.72** | 🟡 adopt | Extends to any level count, unlike three hard-coded numbers |
+| `base_size` | top-of-book size | **10,000 (ours)** — not his 250 | 🟡 ▸ §5.7.1 | His is 40× too small for a book we must distribute |
+| size jitter | per-level quantity variation | **§5.7.3 seeded SHA-256** — not his `random.Random` ±35% | ✅ ours | The fixture we reproduced byte-exact; replay depends on it |
+| dwell by state | how long a shape holds | LIVE 3–12 s · PRE 8–30 s · POST 10–40 s · OVERNIGHT 20–90 s | 🟡 **gated by N26** | Must not trigger a requote on its own |
+| `inv_ref` | his lean denominator | **4,000 sh** | ✂ **rejected** | Keep §4.3's Reference Float. His pins at 12,000 sh, ours at 225,000 |
+| `max_reservation_ticks` | his lean cap | **30 ticks ($0.30)** | ✂ n/a | Ours is `M` = $0.25 and the live question is **N20**, not this |
+| `live_inv_cap` | one-sided quoting past this | **6,000 sh** | ✂ **rejected** | §4.1: inventory never prevents quoting. Run as shipped = no bid on any book |
+| `kill_drawdown` | halt the book on MTM drawdown | **$25,000** | ✂ **rejected** | §1.5 excludes profit, so drawdown is not a signal. §6.3 is the kill switch we need |
+| requote throttle | min gap / RP move / inventory move | 2.0 s · 2 ticks · 300 sh | ✅ **already ours** | §5.8's material-change thresholds, better specified |
+| **RPV-2 impact** | RP movement per net flow | **10 ticks/1,000 sh** *(HANDOFF §3)* vs **6.0** *(`RPV2Config`)* | ⚠ **conflict** · 🔴 **E30** | Package described as clean-room verified |
+| **RPV-2 trend cap** | invented random drift on the anchor | **80 ticks ($0.80)** | 🔴 **E30** | Not information. Build none of it pending his answer |
+| `q_norm` clamp | his normalized inventory | **clamped ±1** *(HANDOFF §2 + Narrative)* vs **not clamped** *(code)* | ⚠ **conflict** | Second doc-vs-code disagreement. Clamped is *worse* for us — it would saturate at 4,000 sh exactly |
+| `ActivityState` set | market states | **4** *(code)* vs **5, adding DAY** *(Narrative)* | ⚠ **conflict** | Third. Ask which is authoritative |
+| SNT-1 `base_orders_per_hour` | arrival intensity, weight-1.0 team | **9/hr**, LIVE **×75** | 🟡 | ≈ 675 orders/hr ≈ **30,000 sh/hr per book** |
+| SNT-1 `max_spread_ticks_to_trade` | widest book it will trade | **8 ticks** | 🔴 **E32** | **Narrower than §5.2 Stable's 10 ticks** — as configured it never trades |
+| SNT-1 sweep cap | how far through the touch | **2–4 ticks** (v1.1, jittered) | ⚠ | Our ladder spacing is $0.05, so **every order lands on L1 only** → **E17** |
+| SNT-1 `inventory_soft_cap` | before the flatten bias | **1,500 sh** | 🔴 **E32** | Exceeds tZERO's **1,000-sh per-security short reserve**, pre-trade enforced |
+| SNT-1 `daily_loss_budget_per_team` | spread-cost governor | **$100,000/day** | ⚠ decorative | Burns ~$1,500/hr at LIVE — **cannot bind**, even over 24 h |
+| SNT-1 cohort weights | NOISE / MOMENTUM / CONTRARIAN | **0.56 / 0.22 / 0.22** | 🟡 | ⚠ `net_drift_coeff()` exists to **prove the tilts cancel** — so SNT-1 provably exerts **no net directional pressure**, i.e. it cannot distribute the float, by design |
+| SNT-1 `FlowImbalance` band | background buy fraction | **42–58%**, pulled to 50% | 🟡 | v1.1 only. Supersedes v1.0's flat 50/50 |
+| distribution size asymmetry | offer-side size / levels vs bid-side while mandated position is large | — | 🔴 **E31** | The distribution tool (30-07 evening). Needs the §5.7.3 ceiling raised (15,000 binds first), §5.7.2's 1.5× widened, §5.2 symmetric levels relaxed |
+| split-lean `S₂` / `M₂` | skew and cap on the **mandated** part of the position | — | 🔴 proposal, blocked on **E27** | `traded = NP − OpeningPosition`; sentiment lean keeps ~§4.5's cap, distribution lean gets its own. §4.5 single-position lean stands meanwhile |
 
 ### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)
 
