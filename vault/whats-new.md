@@ -9,6 +9,13 @@ Edwin introduced a **second house agent** for the Challenge and sent a spec-qual
 SNT-1 is a **taker-only, non-participant house account** that crosses the bid/ask with random sizes at random times, so **every team book shows real trading from IPO onward, even with no games on**. It is deliberately a **controlled loser**: the spread it pays is the subsidy that seeds an active secondary market. It earns no leaderboard credit, and its prints against the Market Maker carry no participant side, so they fall outside the $2.50 off-field volume split automatically (no spec change needed). The realism layer mimics retail disposition-effect profit-taking, conditioning only on its own cost basis so the flow stays uninformed.
 
 Processed per the market-maker working guide: the [[market-maker/market-maker]] hub now lists two house agents (MM + SNT-1), with decisions, parameters (all proposed, two tuning levers flagged), open questions (E17/E18 for Edwin, N15/N16 for us: the ExchangeAdapter build and five production-hardening tasks), a session note, and glossary/learnings entries all updated. The main open item Edwin flagged is how SNT-1 interacts with the MM's quoting and inventory during the IPO Primary Mandate rounds.
+## 2026-07-29: IPO Pricing Model v1.0
+
+Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
+
+It sets the **listed IPO price for every tradeable team company**, all **32 NFL** and **138 NCAA** teams, from a clear formula: **IPO = $5.00 x E[Wins] + $2.50 x E[Ties] (NFL only) + $2.50/game x expected volume-capture share**. The on-field leg comes from devigged BetMGM win totals; the off-field leg from a Popularity Index (0.6 x brand + 0.4 x performance) with Bradley-Terry per-game capture. Prices range from about **$81 (LA Rams)** down to **$21 (Charlotte)**. The doc also captures the parameters, the methodology, and the author's caveats (notably the North Dakota State / Sacramento State non-universe pricing, and that supplying the exact 2026 schedule CSV will move NCAA prices by ~$1 to $2).
+
+This fixes per-share IPO value; the remaining open variable is float size (shares issued per team), tracked in [[open-questions]]. The $5/win, $2.50/tie and $2.50/game accruals are the same [[earnings-report]] settlement mechanics, so the IPO price is the expected sum of every future earnings distribution.
 
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
