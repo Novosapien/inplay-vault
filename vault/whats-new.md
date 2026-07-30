@@ -7,6 +7,13 @@
 Captured the AdMob ad-unit IDs and started a **central ID registry** for all ad-monetisation identifiers: [[ad-network-ids]] (source HTML safe-copied to `components/advertising/sources/`).
 
 AdMob is fully populated: publisher `pub-2057484236798641`, the iOS and Android app IDs, and all eight ad units (three Native-advanced sizes, inline / MREC / strip, plus an inline Banner, mirrored per platform), along with the app-ads.txt line. The registry is a living doc: as SSP seat IDs and further ad-unit IDs are issued, they get added here so there is one place to query every publisher, app, ad-unit and SSP ID. Linked from [[advertising]] and the [[programmatic-media-playbook]].
+## 2026-07-29: IPO Pricing Model v1.0
+
+Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
+
+It sets the **listed IPO price for every tradeable team company**, all **32 NFL** and **138 NCAA** teams, from a clear formula: **IPO = $5.00 x E[Wins] + $2.50 x E[Ties] (NFL only) + $2.50/game x expected volume-capture share**. The on-field leg comes from devigged BetMGM win totals; the off-field leg from a Popularity Index (0.6 x brand + 0.4 x performance) with Bradley-Terry per-game capture. Prices range from about **$81 (LA Rams)** down to **$21 (Charlotte)**. The doc also captures the parameters, the methodology, and the author's caveats (notably the North Dakota State / Sacramento State non-universe pricing, and that supplying the exact 2026 schedule CSV will move NCAA prices by ~$1 to $2).
+
+This fixes per-share IPO value; the remaining open variable is float size (shares issued per team), tracked in [[open-questions]]. The $5/win, $2.50/tie and $2.50/game accruals are the same [[earnings-report]] settlement mechanics, so the IPO price is the expected sum of every future earnings distribution.
 
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
