@@ -137,6 +137,20 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | SNT-1 cohort weights | NOISE / MOMENTUM / CONTRARIAN | **0.56 / 0.22 / 0.22** | 🟡 | ⚠ `net_drift_coeff()` exists to **prove the tilts cancel** — so SNT-1 provably exerts **no net directional pressure**, i.e. it cannot distribute the float, by design |
 | SNT-1 `FlowImbalance` band | background buy fraction | **42–58%**, pulled to 50% | 🟡 | v1.1 only. Supersedes v1.0's flat 50/50 |
 | distribution size asymmetry | offer-side size / levels vs bid-side while mandated position is large | — | 🔴 **E31** | The distribution tool (30-07 evening). Needs the §5.7.3 ceiling raised (15,000 binds first), §5.7.2's 1.5× widened, §5.2 symmetric levels relaxed |
+
+### Chapter 5 as built (31-07) — the values the code carries today
+
+| Parameter | Value | Status | Notes |
+|---|---|---|---|
+| Cold-start σ² | **the ceiling** — V₀ = ceil ÷ H = 13.33 ticks²/s | 🟡 ours → **E31** | Wide-when-ignorant; every book opens at max width and tightens as movement is measured. Book-visible on day one |
+| Dwell (shape/extra lifetime) | **3–12 s**, seeded per shape | 🟡 interim → E31/N26 | His LIVE row standing in for the four-state table until market states exist. N26's gate is built: expiry only permits, never causes |
+| Odd-tick side | **stateless seeded 50/50** per draw | ✅ ours (remit line) | Strict alternation needs state; the hash bit gives the same fairness, replay-safe. Tagged `[odd-side]` |
+| Width constant C | **derived at import** from γ and k, ≈1.653 | ✅ mechanism | Never a literal — a test enforces `WIDTH_CONST == width_constant()` so a stale C cannot survive an E31 change |
+| §5.8 material thresholds | IA ≥ **$0.005** · quantity ≥ **500 sh** · any price · suspension flip | ✅ spec-fixed | Judged on pre-variation sizes and the held shape — the random draw can never cause a publish |
+| Quote Version | `QV-{n:06d}`, increments **on publish only** | ✅ ours | Every seed keys on it; the replay identity hangs on this |
+| §3.4.1 promotion dwells | Invalid→Degraded: 1 valuation · then **10 s per rung** | 🟡 ▸ spec | Demotions instant; relapse resets the clock |
+| §3.5 deductions | 15/40/25/10/30/20/15/20, floor 0 | 🟡 ▸ spec | Confidence caps status: ≥90 Valid · ≥70 Warning · ≥40 Degraded · else Invalid |
+| MEV | ROF + $5 × remaining + $2.50 × scheduled | ✅ §5.4 formula | In `reference_price.py`; `games_remaining` rides Edwin's daily feed — the engine holds no schedule (§2.5 gap) |
 | split-lean `S₂` / `M₂` | skew and cap on the **mandated** part of the position | — | 🔴 proposal, blocked on **E27** | `traded = NP − OpeningPosition`; sentiment lean keeps ~§4.5's cap, distribution lean gets its own. §4.5 single-position lean stands meanwhile |
 
 ### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)

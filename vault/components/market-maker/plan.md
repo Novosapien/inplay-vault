@@ -46,6 +46,23 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 31-07 (Chapter 5 BUILT · §3.3–§3.5 BUILT · the machine quotes):**
+> All five pieces of the re-cut Chapter 5 landed in one session — volatility
+> → width → ladder → quantities → the assembly — plus §3.3–§3.5 (freshness,
+> RP Status with the recovery ratchet, Confidence) and the §5.4 MEV formula.
+> **171 → 329 tests**, ruff + mypy strict clean; both repos committed and
+> clean. A Reference Price in → a validated, versioned Target Order Book
+> out, and replay reproduces the whole chain byte-identically. Deferred,
+> externally gated: §5.5 (needs Ch 8) · §5.9 (E17). **N26 closed — built as
+> filed.** New for Edwin: the E18 refinement (reaction bound vs visible
+> churn) and E31's cold-start addition.
+> **Next: Chapter 8 — venue sync + the orchestration** (the wiring that runs
+> event → Ch 3 → Ch 4 → Ch 5 in production rather than in tests), then the
+> poller (buildable against replay now), then the Ch 12 config sweep. The
+> thinking half is done; what remains is integration — where the unknowns
+> are operational (S1/S7 entitlement, T1 permissions, **E27 the day-one
+> book**), not intellectual.
+>
 > **Update 30-07b (two new algorithms · the process fix · Chapter 5 re-cut):**
 > Edwin sent **SNT-1** (a house noise taker) and a **14-file handoff package**
 > containing **ASMM-1**, a complete Avellaneda-Stoikov market maker, plus

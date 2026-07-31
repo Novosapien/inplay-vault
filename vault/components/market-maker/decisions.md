@@ -10,6 +10,56 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-31 — Chapter 5 built · §3.3–§3.5 built · the machine quotes
+
+- ✅ **Chapter 5 is built, in the adoption spec's five pieces.**
+  `volatility.py` (σ²) · `width.py` (γσ² + C) · `ladder.py` (§5.3/§5.4/§5.6)
+  · `quantity.py` (§5.7) · `quotes/engine.py` (§5.8/§5.10/§7.5). **329
+  tests**, ruff and mypy strict clean. Mechanisms only — every constant is
+  🟡/🔴 pending E31. Deferred, externally gated: §5.5 (Ch 8) and §5.9 (E17).
+  Headline proof: two fresh engines fed the same six events produce
+  **byte-identical books, version chains and check reports**.
+- ✅ **§3.3–§3.5 are built** — freshness bands, Reference Price Status with
+  the §3.4.1 ratchet (demotions instant, promotions one rung per 10 s dwell,
+  relapse resets), and Confidence with its status ceiling. §5.10's check 1
+  is real whenever a status is supplied. **MEV** (§5.4's ceiling) computed
+  in `reference_price.py` — the last test-supplied quote input gone.
+- ⭐ **Materiality is judged BEFORE the §5.7.3 variation, on the held
+  shape.** Final sizes are drawn with a fresh quote version, so they always
+  differ — comparing them would republish every cycle. The comparison
+  record stores pre-variation sizes; "a different possible random quantity
+  is never a reason to publish" holds by construction.
+- ✅ **The Quote Version increments only on publish**, and every seeded draw
+  (shape, extra, dwell, sizes) is keyed on it — the whole replay result
+  hangs on this. A held cycle consumes nothing.
+- ✅ **N26 implemented as filed and closed.** §5.8's thresholds are the only
+  publish trigger; an expired dwell only permits the next real publish to
+  carry a fresh shape, at zero extra venue messages.
+- ⭐ **An Invalid status gates the cycle BEFORE any state is touched —
+  including σ² (George's dead-feed question).** A dead feed's frozen price
+  reads as CALM to a volatility estimator and would tighten the book into
+  the §2.3 danger case. Same-value-new-timestamp readings are accepted and
+  reset the age — a feed confirming its number is alive; only silence
+  decays trust.
+- ⚠ **Cold starts are wide-when-ignorant, and that is book-visible → E31.**
+  A new security's first σ² reads at the ceiling (V₀ = ceil ÷ H — the
+  ceiling is on σ², not V, George's catch); a new StatusTracker starts
+  Invalid and earns Degraded with its first valuation. Safe direction
+  built, Edwin signs off the values.
+- ✅ **The odd-tick side is a stateless seeded 50/50, not strict
+  alternation** (ours under the remit line, tagged `[odd-side]`). Strict
+  alternation needs "which side was it last time"; the hash bit achieves
+  the same fairness with no state and full replay safety.
+- 📅 **E18 refined into three separate numbers (George's challenge):** the
+  poll rate (~2 s, matches SR's measured 4 s median), the reaction bound
+  (~200 ms, costs nothing — the engine is event-driven), and §3.3's bands
+  (break-detectors a healthy feed never trips). ⚠ Republishing every 200 ms
+  to refresh the randomisation is explicitly forbidden by §5.8 and would
+  cost queue position on every book 5×/second. **New question for Edwin:
+  is 200 ms a reaction bound, or does he want the book visibly moving with
+  no new information?** His RPV-2 instinct suggests the latter; his spec
+  says the former.
+
 ## 2026-07-30b — a second market maker arrives · the Edwin call · a process fix
 
 - ⭐ **Edwin will send spec-style documents with the equations, not code
