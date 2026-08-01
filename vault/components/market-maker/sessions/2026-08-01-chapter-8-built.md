@@ -92,7 +92,12 @@ reconciler exactly per N10/N12.
 
 1. **The poller** — probability ingestion + N16 official results + driving
    the heartbeat; buildable against replay now, live use gated on S1/S7.
+   (George confirmed 01-08: poller first.)
 2. **Fix-pass step 5** — rejection audit records (§7.2 at the door).
 3. **Ch 12 config sweep** — the `CONFIGURED` markers are all placed.
-4. **The NATS adapter** — one Protocol method, when T1 grants the ACL.
+4. **The NATS adapter + the loopback wire test** — deferred by George
+   (01-08): run our stack against the gateway in `LOOPBACK_MODE` with its
+   mock venue + local NATS. Proves the real wire contract (JSON encoding,
+   subjects, ack round trip) without T1 or tZERO. Do this BEFORE any live
+   attempt.
 5. Send the Edwin round: E29–E36 + the E18 refinement.
