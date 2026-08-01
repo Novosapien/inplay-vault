@@ -1,0 +1,1208 @@
+# InPlay Meeting Index — all standups and component sessions
+
+Compiled 31 July 2026 from the 42 transcripts in `vault/meetings/`. One entry
+per meeting: attendees, topics, decisions, commitments, and any reports or
+deliverables promised or delivered.
+
+**Caveats**
+- `20-05-2026-touchdown.md` is a 0-byte file — no transcript content exists.
+- The auto-transcripts mislabel speakers in places (e.g. Troy's lines labelled
+  "Kevin Murray" on 06-05; Brett's labelled "Max Kingaby" on 11-05; a merged
+  "Inplay Global" label on 22-06). Attribution follows who the room addresses.
+- The tZERO first integration call is filed as 14-05 but the transcript header
+  says 15 May.
+- July meetings 01/06/08/10-07 are still marked `status: raw` (undigested);
+  their entries here come straight from the transcripts.
+
+---
+
+## May 2026
+
+### 06-05-2026 — Vision workshop (InPlay Trading Challenge)
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Skye Capazorio, Gary Anderson, Kevin Murray (InPlay). Troy McDonald Kane is addressed by name throughout but the transcript labels his speech as "Kevin Murray", so attribution of those lines is uncertain.
+- **Topics discussed**:
+  - Scope framing: the workshop covers the simulated trading challenge only, not the exchange or production trading.
+  - Product definition: real-life trading experience on sport, path-dependent rather than outcome-dependent pricing.
+  - Season mechanics: IPO per team (expected wins × on-field revenue, plus off-field marketing value), secondary market, liquidating dividend at season close.
+  - Prize structure: minimum $5m pool up to $25m; ~$200–250k distributed per day; three daily verticals (most money made, best risk-adjusted return, comeback trader of the day); weekly, monthly and season prizes; special days such as Thanksgiving.
+  - Target user: 18–55, sports-literate, US and hopefully global; not only students.
+  - Competitor comparison: sports betting hold percentages, Kalshi/Polymarket spreads and liquidity gaps, SEC/SIPC regulatory position.
+  - Revenue model: ~90% marketing and advertising for the challenge, ~70/30 in production, broker referrals at $150 per funded account, ~10% of IPO proceeds plus corporate services; no charge for data in year one.
+  - KYC: age and identity only for the challenge (Persona); full KYC handled by tZERO and brokers in production; accredited/non-accredited status only matters for the primary offering.
+  - Referral engine: dual-sided ($1,000 referrer / $500 referee), referral wallet uncapped, summer pre-launch programme with bonus multiplier days.
+  - Third space, social listening, news feed via Sport Radar/AP, education scope, and a first cut at the component list.
+- **Decisions**:
+  - Keep the sessions to the challenge/simulation, not the exchange or production trading — Brett.
+  - No qualification gate into production trading; fair access is required, though fee reductions may be considered — Edwin.
+  - InPlay will not summarise third-space sentiment for users; users make their own judgement — Edwin.
+  - Education stays at basic level ("40,000 foot"), with the market deciding whether to extend it — Edwin.
+  - Referral dollars can only top the trading wallet back to $100,000, and only once it falls below $25,000; referral balances zero out at the end of the challenge — Edwin.
+  - Data will not be sold in year one, for either the challenge or production — Edwin.
+- **Commitments / action items**:
+  - Brett: move the daily touchdowns to 8:30 Central / 9:30 Eastern, cancel them for the module days, and book the module sessions.
+  - Brett/Rebel: run the session through their models and prepare the modular sessions; possibly add one extra module.
+  - George/Rebel: rough challenge landing page with the feedback mechanism by end of week; begin the InPlay global website.
+  - Edwin (with Cody): finalise the prize payout schedule by the following Friday.
+  - Edwin: provide a breakdown of the revenue model across the board.
+  - Edwin: working on flyer/banner copy, to be shared with the group.
+  - InPlay counsel: contract comments outstanding; support-hours coverage for US peak times needs separate thinking and must be reflected in the app's terms of service.
+- **Reports/deliverables mentioned**:
+  - Vision document being prepared by Rebel Labs for InPlay.
+  - Wireframes (including a game page) already shared into the InPlay Google Drive data dump.
+  - Revenue model detail to be supplied by Edwin.
+
+### 08-05-2026 — Module 1: InPlay simulation app (information layer)
+- **Attendees**: George Westbrook, Brett StClair, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Cody Haugen, Skye Capazorio, Troy McDonald Kane, Kevin Murray (InPlay).
+- **Topics discussed**:
+  - Where to start: the information / "Bloomberg terminal" screens, as the source of the design system and shared components.
+  - Competitor app teardown: Hard Rock (poor), FanDuel, Fanatics, Polymarket, Kalshi — navigation, icon quality, wasted screen real estate, price/probability visibility.
+  - Sport Radar assets: live match tracker (pre-live, in-game, post), HTML5 responsive widgets, 10–15 years of historical data, real-time push and REST APIs, team logos available via a toggle under a fair-use arrangement.
+  - Page structure: discovery/home, game page, team page, personal page, leaderboard; favourites and following.
+  - Advertising as "volatility moments" / micro-moments — 15–20 per game (touchdown, fumble, interception, injury, long plays), advertisers owning the moment; trade confirmation/receipt page as premium sponsored inventory.
+  - Volume modelling: ~2,100 games, ~80 games per week, 200–300 price changes per game, fractional shares, ~100m transactions per weekend.
+  - Ad packaging: game tiers, team adjacency, minutes of engagement, inventory cannibalisation risk.
+  - Theme (dark app vs light website), navigation patterns, search and symbology for ~163 teams, charts, P&L visibility, leaderboard verticals, eye tracking/heat maps.
+- **Decisions**:
+  - Start the build with the information layer/screens — Brett, agreed by Edwin and Cody.
+  - Trading app can be dark; website goes light/white so the price chart with call-outs stands out — Edwin.
+  - Light and dark mode only for MVP; no user-selectable colour themes — George, agreed by Edwin.
+  - Charts are needed for review and pattern-reading, but no trade execution from the chart — Troy, agreed by Edwin.
+  - Daily leaderboard totals count games that start within the 24-hour window, not games that finish in it — Edwin (to be written into the rule book).
+  - No eye-tracking or heat maps in the first iteration; possibly October, and mainly as a data asset for selling inventory — Edwin and Skye.
+  - Language must stay skill-based, not chance-based ("earn up to $25 million", not "win") — Edwin.
+- **Commitments / action items**:
+  - Cody: raise widget logo placement and ad flexibility on the Sport Radar call the following week; upload competitor screenshots and the Sport Radar widget showcase link to the Google Drive dump.
+  - Edwin: send his proposed website copy to Cody for upload.
+  - Skye and Cody: work through the full game spread, tier the games, and set minutes-of-engagement assumptions so inventory can be packaged and priced per game.
+  - Edwin and Troy: settle the daily accrual rule offline for the rule book.
+  - Max: continue the website first draft; add a light-mode option.
+  - Rebel: design a memory/store that joins Sport Radar game moments to tZERO price data for the annotated price chart.
+- **Reports/deliverables mentioned**:
+  - Vision document being packaged for InPlay to read over the weekend.
+  - Google Drive "data dump": competitor screenshots, wireframes, Sport Radar showcase link, Edwin's website copy.
+
+### 11-05-2026 — Modules 2 and 3: trading
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Cody Haugen, Skye Capazorio, Troy McDonald Kane, Gary Anderson (InPlay). Note: several of Brett's lines are labelled "Max Kingaby" in this transcript.
+- **Topics discussed**:
+  - Walkthrough of the InPlay Vault: document annotation, @-mentions, per-module approvers, the screenshot/draw feedback widget, and how it becomes the governing interface for the 15-minute touchdowns.
+  - Automated error tracking and agent-driven bug triage on everything deployed.
+  - Technical architecture: VMs for the low-latency trading path, Kubernetes/containers for everything else, scheduled scale-up ahead of game days, cost comparison (~$15k/month VM vs a few hundred containerised).
+  - Trade entry points: persistent buy/sell across pages, collapsible, modal order ticket, page-based assumptions about which team the user wants.
+  - Order types: tZERO supports limit orders only; market orders are a broker-side synthetic built from best bid/offer with bounds.
+  - Symbology and search, swipe-between-teams, fill notifications, game day page vs team page trade flows.
+  - Advertising philosophy: own the impact moment rather than run static banners; sponsored "you are X places from cashing" alerts.
+- **Decisions**:
+  - Buy on the left, sell on the right — market convention, stated by Edwin.
+  - Limit orders only for the simulation; market orders are not in the MVP — Edwin and Troy, driven by the tZERO constraint.
+  - Buy/sell controls persist across pages with a collapse control, and the order ticket opens as a modal rather than a new page — agreed by George, Edwin and Cody.
+  - Maximum three clicks to place a trade — Cody, agreed by Edwin.
+  - One named InPlay approver per module for vault feedback; anyone can comment — George and Edwin.
+  - Priority order for this module: trading first, advertising second, user experience third — Edwin.
+  - No configurable button placement (top vs bottom) for MVP unless it is trivial — Troy and George.
+- **Commitments / action items**:
+  - George: resend the InPlay Vault invitation links (the first ones expired).
+  - Cody: drop the MetaTrader 5 screenshots into the Google Drive dump.
+  - Troy: arrange the collaboration sessions with tZERO for George on data, schema and APIs.
+  - Kevin: owns the education module, including a module explaining order types — assigned by Edwin.
+  - Brett: reshuffle the module schedule; onboarding is next.
+- **Reports/deliverables mentioned**:
+  - InPlay Vault, with the information-layer component and its sub-component documents already populated; other modules still to come.
+  - Technical architecture document, viewable in the vault.
+
+### 12-05-2026 — Modules 4 and 5: onboarding, referrals, global website
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Cody Haugen, Skye Capazorio, Troy McDonald Kane, Gary Anderson (InPlay).
+- **Topics discussed**:
+  - Signup funnel: search/social → challenge landing page → app download on iOS/Android; desktop visitors captured by email and sent install instructions.
+  - What to capture at registration, given Persona scans a government ID; mobile-versus-desktop split (~75/25 in Cody's experience).
+  - Three wallets: trading (100,000 InPlay dollars), referral, and real cash.
+  - tZERO wallet provisioning lead time (possibly hours to 24 hours) and its effect on the onboarding experience.
+  - Single sign-on ruled out; login credentials created on the tZERO side.
+  - Referral code generation, placement, QR codes, dot cards, campaign and bonus days, guerrilla marketing (t-shirts, viewing parties, campus ambassadors), and a possible university donor/alumni referral bank.
+  - Cash payout eligibility criteria and cyber-security exposure from collecting more personal data.
+  - University curriculum adoption (five signed, including University of Pennsylvania, Cornell, Georgetown) and possible NHL/NBA/MLB playoff simulations running alongside.
+  - Review of the global website v0.01.
+- **Decisions**:
+  - The cash wallet will be created and managed by tZERO rather than a separate payment processor — Troy, agreed by Edwin and Brett; this removes the payment-processing partner Cody and Kevin were evaluating.
+  - Bank/withdrawal (and any crypto wallet) details are collected only at the point of withdrawal, not at signup — Cody, agreed by Edwin.
+  - No single sign-on for the challenge, because tZERO creates the account and credentials — Cody and Troy.
+  - Login is email plus password; no separate username — Cody, confirmed by Troy.
+  - Users can access the app while the digital wallet is pending, with the trade buttons greyed out rather than hidden — Edwin, agreed by Troy and George.
+  - The referral code appears at KYC completion as a popup with a copy button, in the account menu, and on the referral bank page — Cody and Edwin.
+  - Referral value proposition must be stated as "get 1,000 / give 500" front and centre — Skye.
+  - Global website priority: home, about, advertising; newsroom and markets pages hidden for now — Skye, accepted.
+  - No executive team or board section on the website for now — Troy, agreed by Edwin.
+- **Commitments / action items**:
+  - Troy: take to tZERO on Friday — wallet provisioning time, pre-created wallets, cash/bank wallets, and who creates login credentials.
+  - Cody: build a calendar of referral bonus/multiplier days across the summer.
+  - Edwin: chase Marlin (counsel) on global eligibility; define cash-payout eligibility criteria (minimum referrals, location capture).
+  - Max: continue the global site, publish it into George's review tool, and work with Skye on content.
+  - Skye, Cody, Troy and Max: work through the website content offline.
+  - George: test then resend the vault invitation links (Cody has still not received one).
+  - Cody: get Sport Radar to sign off on a press release.
+- **Reports/deliverables mentioned**:
+  - Global website v0.01 demonstrated by Max.
+  - Staged press release plan: tZERO technology agreement, tZERO advertising commitment, Sport Radar agreement, and the Rebel Labs/Novosapien partnership.
+  - Skye's e-Toro screenshots to be sent to George as a reference for social trading features.
+
+### 13-05-2026 — InPlay Digital Touchdown
+- **Attendees**: Brett StClair, George Westbrook, Hasan Mohammed Ahmed (Rebel Labs); Cody Haugen, Skye Capazorio, Troy McDonald Kane (InPlay). Edwin is addressed during the call, but the transcript does not label his lines separately.
+- **Topics discussed**:
+  - Vault access and the review workflow becoming the standard for these calls; three components still being processed by the agents.
+  - Walkthrough of prototype v0.01: home, discover, game page, price chart with lines and candles, volatility moments, order book, trade modal with swipe and semantic colours, review/confirm, share page, filled-order notification, positions, trade history with filters, ranking and leaderboard pages with the cut-off line.
+  - Where ad units go and how soon they are needed for selling.
+  - Order book depth — professional traders want it, casual users only want best bid/offer.
+  - Configurable tile layouts and preset trader profiles.
+  - What the first app release must contain so the app stores do not reject it.
+- **Decisions**:
+  - Ad units are deliberately minimal in the first prototype (one placeholder); a dedicated advertising pass comes next — George and Brett, with Cody pushing to bring it forward.
+  - No user-configurable tile layout for MVP; canned "sports fan / trader / pro trader" profiles are a later option, and InPlay keeps control of the ad space — Cody, agreed by George.
+  - Keep a single line of best bid, best offer and last traded price near the top; the full order book expands on click — Troy and Cody.
+  - The discover page needs more user value (news, embedded Sport Radar game play) before it is right — George.
+- **Commitments / action items**:
+  - Brett: send Troy a set of prepared questions for tZERO ahead of their session; requested an equivalent session with Persona.
+  - Skye: inventory map plus renders by end of the following week, feeding the sales deck she is building.
+  - Skye and Cody: advertising inventory conversation, starting the same day.
+  - George: show onboarding/KYC look and feel, but not by the next day — the exact data required by tZERO and Persona must be settled first.
+  - Max: takes ownership of evolving the prototype.
+- **Reports/deliverables mentioned**:
+  - Prototype v0.01 (demonstrated).
+  - InPlay Vault documentation, open for review and comment.
+  - Inventory map and sales deck (Skye, in progress).
+
+### 14-05-2026 — Modules 6 and 7: education, third space, challenge website
+- **Attendees**: Brett StClair, George Westbrook (Rebel Labs); Edwin Johnson, Cody Haugen, Skye Capazorio (InPlay). Kevin is referenced and given an action.
+- **Topics discussed**:
+  - Global site holding page: strip the current site back to "coming soon", the tagline and the data-capture form, so social posting can begin.
+  - Education: short vertical video modules in a TikTok/Reels style, roughly 15 seconds each, polls and comprehension questions, rewards paid into the referral wallet, hosted via YouTube Shorts infrastructure; brand ownership of the education module; possible partners (Kaplan, Investopedia, CBOE Institute, Tasty Live).
+  - An AI chatbot trained on the education repository to handle first-line support.
+  - Third space: game chat, favourites/team chat, and a private AI research chat over Sport Radar statistics (StatMuse cited as the model).
+  - Chat moderation, abuse policy, scale risk (chat volume in bursts), and storing conversation data for thematic/sentiment packaging.
+  - Challenge website scope: home, how it works, prizes, leaderboard, FAQ; separate URL versus one domain; how much information to give before pushing to the app.
+  - Advertising: game-block packaging with minimums, tiered by game and by day; retroactive ads on replayed game moments.
+- **Decisions**:
+  - Education is video-first and short-form with subtitles, not paragraphs of text — Skye, agreed by Cody and Edwin.
+  - Users answer two or three questions on the content before the reward is granted — Cody, agreed by all.
+  - The third space for now is a chat space only; Discord-style and creator-owned channels are a future state — Skye.
+  - Game chats end when the game ends — Cody.
+  - Use an open-source headless chat platform rather than build one — Brett.
+  - Moderation will be user-reported and AI-assisted, not InPlay-staffed — Brett's recommendation, Cody agreed to develop it further.
+  - The challenge website stays minimal and pushes users to the app; no live match tracker or high-value data on it — Edwin and Cody.
+  - The challenge website sits on its own URL, linked from the global site, for SEO and focus — George, agreed by Skye.
+  - Advertising is sold in blocks of games with tier-based minimums, never single games — Edwin and Skye, with Cody sketching the tiers.
+- **Commitments / action items**:
+  - Brett/Max: build the holding page and get it live the next day, keeping the QR code link and form capture working; Hasan handles deployment and needs domain access.
+  - Skye: verify the presentation QR codes still resolve after the site swap; finalise the information flyer with Edwin and hand content outlines to Rebel for the challenge website.
+  - Edwin and Cody: return the payout schedule by close of business Monday, possibly Tuesday.
+  - Kevin: review Kaplan, Investopedia and CBOE education models and report back — asked by Edwin.
+  - Cody: bring back ideas on chat segmentation and moderation.
+  - George: research short-form video infrastructure (already found it more tractable than expected); get the prototype deployed once Apple approves the developer account.
+  - Rebel: take the prototype to 0.1 with initial ad placements, then run a dedicated advertising session.
+- **Reports/deliverables mentioned**:
+  - Information flyer (Edwin, with Skye finishing design/colour) — becomes the baseline for the challenge website.
+  - Holding page for the global site.
+  - InPlay logo set as SVG plus a quick CI pack prepared by Brett, for Skye to review.
+  - Documentation to be wrapped up the next day for weekend review.
+
+### 14-05-2026 — tZERO and Rebel Labs: first integration call
+- **Note on date**: the file is dated 14-05, but the transcript header says May 15 and the 15-05 touchdown refers to this call as having happened that day.
+- **Attendees**: tZERO — Al Swimmer (chief strategic relationships officer), Alex (president, tZERO Securities and tZERO Digital Asset Securities), Mike Deedrics (sales), Chris Russell (chief information security officer, blockchain), Rob Kaluchi (back-end OMS and matching engine), James Knight (head of brokerage operations), Dinesh (technology), plus a full-stack engineer and a head of project execution. InPlay — Troy McDonald Kane, Edwin Johnson, Skye Capazorio, Kevin Murray, Cody Haugen. Rebel Labs/Novosapien — Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed. Names are transcribed inconsistently in places.
+- **Topics discussed**:
+  - Introductions and a demo of the app prototype by George.
+  - Onboarding and first-time login; where authentication sits.
+  - Reduced KYC for the simulation versus full broker-dealer KYC.
+  - Wallet provisioning: speed (sub-second, batchable), pre-creation in bulk, association with users.
+  - Wallet types: trading, referral, and a cash/stablecoin wallet for real payouts.
+  - Blockchain schema design, what gets written, and querying it for balances and the leaderboard.
+  - FIX 4.2 for orders versus REST for everything else; parallel processing of order bursts.
+  - Staging/dev environments and test runs.
+  - Hosting and latency: tZERO's OMS in Equinix NY4, GCP-to-GCP partner interconnect as a way to avoid a three-month direct-connect application.
+  - Sprint cadence and how the two teams coordinate.
+  - Edwin flagged possible additional simulations (NHL, MLB playoffs) running alongside, with production still targeted for January.
+- **Decisions**:
+  - Rebel Labs owns app authentication and login; tZERO confirms via API that a user is cleared to trade — Dinesh.
+  - Simulation KYC is a reduced check (first name, last name, date of birth, 18+); tZERO must build a "soft check" version of its KYC API — Dinesh, with Chris on the wallet hook-up.
+  - Wallets are pre-provisioned in bulk and assigned at signup; no wait list once the challenge is live — Chris Russell, agreed by all.
+  - Referral balance and buying power are held as a ledger, not tokenised, to avoid unnecessary complexity — Chris Russell's recommendation, accepted by George.
+  - A separate wallet handles real cash payouts, funded with a USD-pegged stablecoin — Chris and Edwin.
+  - Orders go over FIX 4.2; wallet and balance data go over REST in a separate microservice — agreed.
+  - The blockchain schema can evolve over time; data already written cannot be rewritten — Chris.
+  - The two teams meet weekly, with Friday preferred — proposed by Al, cadence to be set by Troy.
+- **Commitments / action items**:
+  - George/Rebel: define what data is passed to tZERO and what must come back, as the first design task; come back early the following week on sprint structure.
+  - Chris Russell: produce the blockchain schema once the data contract is defined; research and recommend the stablecoin (USDC, USDT or similar); size the RPC instance; stand up dev and non-dev nodes.
+  - Dinesh: confirm with his team whether Rebel gets a dedicated staging environment; build the soft-KYC API with Chris.
+  - Troy: schedule the weekly cadence with both teams.
+- **Reports/deliverables mentioned**:
+  - Blockchain data schema (Chris Russell, once inputs are agreed).
+  - Stablecoin recommendation with pros and cons (Chris Russell).
+  - Staging environment for Hasan and the Rebel engineers to integrate against.
+
+### 15-05-2026 — InPlay Digital Touchdown
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Troy McDonald Kane, Cody Haugen (InPlay).
+- **Topics discussed**:
+  - Debrief on the tZERO call: their flexibility, wallet provisioning speed, and willingness to absorb the scale jump from ~30,000 active accounts to millions.
+  - tZERO background: first special-purpose ATS approved in the US for tokenised assets; ICE/NYSE is an investor; possible equity investment in InPlay and an advertising commitment; interest in reusing the app for their own broker-dealer, since they have only a web app.
+  - Admin login problems and the in-app feedback button (screenshot, component select, draw, comment, submit into the admin panel).
+  - Timing for ad units in the prototype; Face ID for login and where it fits in onboarding.
+  - Max's walkthrough of the challenge landing page (countdown, single hero image, form) and the revised global website (home, about, advertising, investor, partner-with-us, light mode).
+  - What "phase two" means; product analytics, finger trails and eye heat maps as inputs to prioritisation.
+  - Slack Connect migration from Rebel Labs to the Novosapien workspace.
+  - Sport Radar documentation quality and simulated data availability.
+- **Decisions**:
+  - Advertiser feedback takes precedence over user feedback when prioritising, unless it requires a major overhaul — Edwin.
+  - No fixed phase-two timeline; scope is driven by user feedback and analytics once live — George.
+  - The investor page stays standalone rather than merging into advertising — Edwin.
+  - Website copy corrected to "the first regulated equity marketplace for sport" — Edwin; Kalshi and Polymarket already hold the unqualified claim.
+  - Weekly tZERO sync on Fridays — Troy, agreed by George.
+- **Commitments / action items**:
+  - Cody: single consolidating submitter/approver for all InPlay feedback in the vault, on a daily internal cycle.
+  - George: deploy the prototype for the team once Apple approves the developer ID (the only blocker); start ad-unit thinking next week; begin pulling live Sport Radar data next week.
+  - Cody and George: schedule a session on Sport Radar data packaging and visualisation next week.
+  - Troy: set the Friday tZERO cadence in calendars; sort the Slack Connect linkage over the weekend.
+  - Max and Skye: align landing page and global site copy that afternoon.
+  - George/Rebel: draw up a must-have versus nice-to-have prioritisation list against the August deadline.
+- **Reports/deliverables mentioned**:
+  - InPlay Vault being finalised for the team to read over the weekend.
+  - Challenge landing page draft and revised global website draft (both shown by Max).
+  - App prototype to be deployed via Apple developer distribution, not the app store.
+
+### 18-05-2026 — InPlay Digital Touchdown
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed (Rebel Labs); Edwin Johnson, Cody Haugen, Troy McDonald Kane, Kevin Murray (InPlay). Gary Anderson is referenced as present.
+- **Topics discussed**:
+  - The landing page is live and Edwin is already using it for outreach (Wasserman, WPP, Octagon, Sport 5); Skye and Georgia flying to the US for an in-person alignment week.
+  - Missing fields on the landing page form and where submissions currently go.
+  - The vault as the working knowledge base, plus a skill being written to flow touchdown decisions into the component documents automatically.
+  - CI/CD, GitHub, IP ownership and rollback.
+  - HubSpot CRM selection and the tag manager / data flow implications in both directions.
+  - App updates over the weekend, driven by a gap analysis against the full Sport Radar documentation: team pages with season stats (offence, defence, special teams), recent results, injury reports, key players and their stats, AP news feed, moments tab with retroactive ads, key moments and game stats.
+  - An AI research agent with three entry modes — manual question, scheduled report, and event-triggered research (for example a star player injury) — all through one chat interface, plus AI-assisted education that renders the relevant video inline.
+  - Research tab monetisation in production (Cody suggested near $99.99/month against Sport Radar's direct $10–20k/month).
+  - This week's architecture work: microservice segmentation, GCP tooling, containers versus VMs, and testing the assumptions against the tZERO API documentation.
+  - Apple and Google developer accounts, TestFlight, and team colour treatment versus the cost of league IP.
+  - Edwin disclosed that a $5.5m debt deal expected on Friday fell through and he is resolving it.
+- **Decisions**:
+  - HubSpot is the chosen CRM, in final contract review, most likely onboarded via a third-party HubSpot partner — Cody.
+  - Every bottom navigation tab gets its own sponsor (leaderboard, referral bank, research, education) — Edwin, agreed by Cody.
+  - The research tab and AI features stay free during the challenge because InPlay cannot charge, then become paid in production — Cody and Edwin.
+  - Landing page form gains last name, phone number, and university or company as an open text field — Troy, accepted by Brett.
+- **Commitments / action items**:
+  - Brett/Rebel: add the missing form fields; route submissions to info@inplayglobal.com as well as the Airtable store, and add a dashboard; deliver the prototype with ad units by end of week; bed down the architecture this week; finish the global site and challenge landing pages this week.
+  - Brett: return the signed contract in the next day or two; Edwin confirmed InPlay will pay at month end regardless.
+  - Cody: follow up Persona, whose legal team is reviewing InPlay's edits; hand over Apple and Google store credentials; have the HubSpot partner supply API documentation and endpoints.
+  - Cody and Skye: pitch the advertising strategy internally this week, then hold the inventory session with Rebel at end of week.
+  - Edwin and Troy: get the Apple developer contract signed — it appears never to have been executed.
+  - George: still waiting on Apple developer approval before the prototype can be distributed.
+  - Brett: wants a session with Persona to understand their APIs.
+- **Reports/deliverables mentioned**:
+  - Vault reviewed by Cody, who confirmed the module documents and flowcharts captured the sessions accurately.
+  - Architecture documentation in progress, to be shown and used to generate the outstanding questions.
+  - Advertising inventory strategy and sales material (Cody and Skye).
+  - Airtable registration store plus dashboard for landing page signups.
+
+### 19-05-2026 — InPlay Digital TouchDown
+- **Attendees**: George Westbrook, Edwin Johnson, Brett StClair, Max Kingaby, Hasan Mohammed Ahmed, Cody Haugen, Troy McDonald Kane, Skye Capazorio
+- **Topics discussed**:
+  - Prototype renders well on iPhone, not yet checked on Android or tablet; Apple developer approval still pending
+  - Need for a recorded/clickable demo to show advertisers on screen-shared calls
+  - Ad placement philosophy: Edwin wants brands ingrained in each screen, not "ad unit here" tiles; volatility-moment treatments
+  - Google Ad Manager cannot serve custom units, per-minute exposures or block-out rules; two alternative platforms under test
+  - Hassan demoed the trading simulation/monitoring tool (trader personas, fill acceptance, latency, bid-ask spread)
+  - Backend status: Sports Radar API, FIX gateway between tZERO and InPlay infrastructure, two websites
+- **Decisions**:
+  - Buy a cheap Android phone for testing (Edwin, seconded by Cody)
+  - No celebration animation on volatility moments — it would annoy anyone short the team (Edwin)
+  - Ads must be integrated per-screen, not retrofitted tiles (Edwin)
+  - Sell persistent ad ownership: the sponsor owns that moment every time a user replays it (George's idea, endorsed by Edwin)
+- **Commitments / action items**:
+  - Brett: 45-minute session with Skye and Cody after tomorrow's standup on the ad-serving architecture
+  - Brett: set up meetings with the two ad technology providers (not self-serve signup)
+  - Brett: build out creative ad-unit concepts within the next couple of days
+  - Cody: screen share on tomorrow's call to show the ad-moment visuals he has in mind
+  - George/team: app polish, Sports Radar live data, FIX gateway, websites, ad tech research
+- **Reports/deliverables mentioned**: Brett recorded a walkthrough demo video during the call and sent it via a Google Drive link by email (too large to attach); Hassan's trading test dashboard, flagged as a future admin panel for InPlay market ops
+
+### 20-05-2026 — InPlay Digital TouchDown
+- **Attendees**: not recorded
+- **Topics discussed**: file is empty (0 bytes) — no transcript content to index
+- **Decisions**: —
+- **Commitments / action items**: —
+- **Reports/deliverables mentioned**: —
+
+### 22-05-2026 — InPlay Advertising (first advertising meeting)
+- **Attendees**: Skye Capazorio, Brett StClair, George Westbrook
+- **Topics discussed**:
+  - Nine sponsorship ownership spaces: title, leaderboard, P&L, trade confirmation, referral, live game tracker, chat, education, buy-filled notification
+  - Impression maths: 18 billion total impressions judged unrealistic; 1,000 impressions/user/week is a new ad every 3 seconds ("spammy")
+  - Alternative model: 15-second impressions, 480/user/week, or move to engagement-minutes as the sold unit
+  - Pricing: $750 per volatility moment, $2,000 per halftime/game summary video, 60% discount across the package
+  - Credibility risk of assuming one million users from day one
+  - Ad unit format — inline with content, not overlay; field/stadium branding; iframe scale considerations
+  - Keville (custom, API-based ad serving) plus Booster (turns commercial propositions into serving rules)
+- **Decisions**:
+  - Cut impression volume sharply (toward half a billion) and raise per-impression price (Skye, to be confirmed with Edwin)
+  - Volatility moments and halftime/endgame videos are 100% allocated across seven sponsors only — education and buy-filled notification get neither (Skye)
+  - Volatility moments cannot be sold by type (e.g. touchdowns only); sell them generically (Skye)
+  - Keep serving simple first — one preloaded field ad unit rather than many small ones (Brett and George)
+  - Use Bank of America as the demo brand, since Edwin wants a bank as title sponsor (Skye)
+- **Commitments / action items**:
+  - Cody: raise the impression-volume concern with Edwin before his call with Brett, and supply the list of pages where ad units go
+  - Brett: run the Keville meeting (George added) and a Booster meeting on Tuesday
+  - Brett/George: build creative concepts for the demo over the coming days
+  - Skye: work out how to stagger the sponsorship amount, tied to engagement minutes, since day-one user numbers cannot be shown
+- **Reports/deliverables mentioned**: Skye and Cody's advertising offering document (nine sponsorships, impression allocations, pricing, discount) — sent by Skye before the meeting and screen-shared by George
+
+### 26-05-2026 — InPlay Digital IPO Module touchdown
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed, Skye Capazorio, Cody Haugen, Troy McDonald Kane, Gary Anderson, Edwin Johnson (joined late)
+- **Topics discussed**:
+  - Global website progress and imagery U-turn
+  - App-store readiness dependencies: Persona KYC contract, referrals module, Sports Radar feed
+  - Infrastructure: VPC landing zone, static IPs for tZERO, Apple developer approval
+  - IPO ("trading challenge draft") mechanics, comms plan, IPO page content
+  - End-of-season settlement, leaderboard behaviour, time decay in final games
+  - Off-field revenue: $250 per game allocated by share of trade volume; earnings reports as tradable events
+  - Edwin's revised ad model: 10 sponsorship "territories" and a sponsor rewards repository
+- **Decisions**:
+  - IPO format (Edwin): ask price only, static; buy-only button with no sell; 5 million shares per team company, whole float, no load balancing this iteration; 72-hour window; no per-user purchase limit
+  - Timing (Edwin): all NCAA IPOs on one day concurrently, opening 20 August (week zero is 27 August); NFL a week before the 9 September opener; four days of secondary trading before the first game
+  - Roughly 20% of shares held back to enable shorting (Edwin, agreed by Troy)
+  - Earnings reports released Tuesday for NFL, Wednesday for NCAA (Edwin)
+  - End of season: longs credited at settlement, shorts forced out and debited the difference (Edwin)
+  - KYC stays in scope — Brett floated dropping it, Skye, Troy and Cody rejected it
+  - Wallets are not needed at launch; the referral bank is a trackable side database, not a wallet (Troy)
+  - IPO takes over the trade tab in the nav bar until trading opens (George)
+  - Build both a Tinder-style swipe view and a list view for browsing IPOs, with conference/division filters (George and Troy, endorsed by Edwin)
+  - Signup page: occupation and phone number become optional; only first name, last name and email required (Troy)
+  - Drop the reward incentive from the sponsor rewards repository — Brett warned it creates an influenced impression that advertisers reject; Edwin accepted
+- **Commitments / action items**:
+  - Troy: Persona has until close of business tomorrow to return the contract or InPlay moves to another provider; Cody to deliver that message
+  - Max: deploy the signup field changes; website review with Skye at 3pm UK tomorrow
+  - George/Hassan: build an Airtable interface over the signups database and send Troy the link this afternoon; Kevin to connect with the Novosapien team on merging his spreadsheet
+  - Brett/team: send tZERO the static IPs from the VPC build, targeted for tomorrow
+  - George: Sports Radar API integrated into the app, real data expected by end of this week
+  - Skye: comms plan to announce IPOs 24–48 hours ahead across social, push and CRM
+  - Troy: raise the issuer/ledger question with tZERO — team company treasuries are the issuer of the 5 million shares, on chain, even in simulation
+  - Target: app out by mid-June, ahead of the 4 July referral push (Troy)
+- **Reports/deliverables mentioned**: website content document (called the "advertising vision document", clarified as website copy) uploaded into the site by Max; Edwin's ad pricing deck prepared over the weekend; Airtable signups interface link; separate session booked for tomorrow on earnings reports
+
+### 27-05-2026 — InPlay Digital Earnings Report
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed, Gary Anderson, Edwin Johnson, Skye Capazorio, Cody Haugen
+- **Topics discussed**:
+  - Ad server rationale: Google Ad Manager only supports standard IAB units, so Keville is the only fit for custom units plus sponsorship and per-minute impressions
+  - Omnicom will not move — agencies want proof points; 20% agency commission for no delivery
+  - Alternative go-to-market: direct sales to AI startups, content creators, crypto and other brands locked out of premium inventory; Brett's AdMob/Africa precedent
+  - Risk of cheapening the platform with low-quality advertisers (Skye)
+  - Selling ads monthly rather than per season or per game, so brands can join once traction is proven
+  - Earnings report experience: Bloomberg-terminal feel, estimate versus actual, favourites and portfolio at top, search and conference filters, historical per-team report pages, chart dots marking earnings events
+- **Decisions**:
+  - Brett to be included in all media agency meetings (Edwin: "You should be in all the meetings")
+  - Earnings reports are free in the trading challenge (Cody)
+  - Two routes to earnings reports only, not more: a dedicated page reached via More, plus a reports button on the team's trade page, each with a trade button on the report itself (Cody, agreed by Edwin and George)
+  - Alphabetical ordering with favourites and portfolio floated to the top (Edwin, refined by Brett)
+  - Edwin prefers George's monthly ad sales idea over Skye's per-game option
+  - Each team company gets its own weekly earnings report page kept for history (Edwin)
+- **Commitments / action items**:
+  - Edwin's team: work up the target brand list today and bring it back tomorrow, not Monday
+  - Brett: reach out to Wayne within the week and press him; set up Richard Mullins at WPP
+  - Skye: give Edwin an update on the meeting she had just finished, after this call
+  - Novosapien: get Keville to demo their platform to the InPlay team
+- **Reports/deliverables mentioned**: Skye's list of target brands shared the previous day; Edwin's ad pricing model sent to Brett
+
+### 27-05-2026 — InPlay Referral programme
+- **Attendees**: Cody Haugen, Brett StClair, Max Kingaby, George Westbrook, Skye Capazorio, Edwin Johnson
+- **Topics discussed**:
+  - Referral event calendar and multipliers: 1.5x every Wednesday ($1,500), 3x on the 21 June event ($3,000), most events run 00:00–23:59 on one day
+  - Two multi-day events: 4 July (Friday 00:00 to Sunday 23:59) and Labor Day weekend (Friday 00:00 to Monday 23:59)
+  - Qualification rule: the referred user must complete signup and KYC by 23:59 to count
+  - PWA fallback if Apple approval slips past the June events
+  - Non-referral earning actions: follow, like, share, education modules, surveys, sharing the trade confirmation page
+  - How agentic AI verification works and whether it scales to millions of users (containers)
+- **Decisions**:
+  - Do not issue wallets at referral time — automate the ledger of who referred whom and when, then top up referral wallets once wallets exist (Cody)
+  - Build a PWA fallback on the same React Native codebase so the 21 June 3x event is not blocked by Apple review (George/Max, agreed)
+  - Use the PWA route for the advertising demo too, so it can be shown on any iPhone (Cody's idea, accepted)
+- **Commitments / action items**:
+  - George/Max: investigate a Next.js server-rendered version for the PWA (React Native is client-rendered); possibly a full rebuild taking a couple of days or longer, run in the background
+  - Brett: run an agentic team that verifies follows and shares where no API exists
+  - Cody/InPlay: still to set the referral dollar value for engagement actions (education, surveys, social)
+  - Max: has chased Apple twice on the developer account, still no response
+- **Reports/deliverables mentioned**: Brett said he would close out the call, publish it and get it into the vault
+
+### 27-05-2026 — tZERO Weekly
+- **Attendees**: Brett StClair listed as participant; George referenced; tZERO side not named. Note: the file header dates this 22 May and the transcript is heavily garbled machine text
+- **Topics discussed**:
+  - Session creation and credentials for API testing; landing zone build
+  - Price improvement on a crossing order — taker versus resting order
+  - Walkthrough of the app for the tZERO side: game moments documented on the chart, branded persistent ads, Tinder-style swiping, AI trade-idea tool, value of the Sports Radar feed
+- **Decisions**:
+  - Price improvement goes to the taker, per equities convention — "We'll take taker on these securities"
+  - Run initial testing over a public endpoint to unblock API testing, then build the proper landing zone
+- **Commitments / action items**:
+  - tZERO: send session details, expected by tomorrow at the latest
+  - Brett: put a cloud architect onto the landing zone build
+- **Reports/deliverables mentioned**: session detail document/credentials to follow from tZERO
+
+### 28-05-2026 — InPlay Digital TouchDown
+- **Attendees**: Edwin Johnson, Cody Haugen, Brett StClair, Skye Capazorio, George Westbrook, Hasan Mohammed Ahmed, Troy McDonald Kane
+- **Topics discussed**:
+  - Northwestern (Scholars of Finance) presentation by Edwin and Troy, about 25 students
+  - Mobile PWA port; 3D stadium progress
+  - FIX gateway built; messaging bus and websocket connections still to deploy; whitelisted IP to go to tZERO; Sports Radar microservice
+  - Adding baseball and soccer to the API pulls so the app stays relevant in July
+  - Whether extra sports dilute the proposition and push users off-app to bet elsewhere
+  - Troy's idea of full tZERO integration or white-labelling the app for everything tZERO lists
+  - Meeting cadence and engineering focus
+- **Decisions**:
+  - Park the 3D stadium; priority is login, KYC and referrals so users are captured up front (George)
+  - Touchdowns move to Monday, Wednesday, Friday for June, with a view to twice weekly in July (Troy, after Brett asked for fewer meetings and more engineering time)
+  - Edwin leaning towards George's position against adding non-tradable sports at launch — not final, Edwin and Troy to chew on it later that day
+- **Commitments / action items**:
+  - George: mobile PWA live by end of today
+  - George/Hassan: deploy messaging bus and websockets, then send whitelisted IPs to tZERO and begin testing
+  - George: get Slack set up — still outstanding
+  - Edwin/Troy: decide on the extra sports data feeds
+- **Reports/deliverables mentioned**: none
+
+### 29-05-2026 — InPlay Digital TouchDown
+- **Attendees**: George Westbrook, Brett StClair, Cody Haugen, Edwin Johnson, Max Kingaby, Hasan Mohammed Ahmed, Skye Capazorio, Troy McDonald Kane
+- **Topics discussed**:
+  - Global website review process, team bios and photos
+  - Positioning the site for two audiences — advertisers/brands (B2B) and users/traders — and what makes an advertiser trust InPlay in diligence
+  - LinkedIn and PR strategy for Edwin and the InPlay brand; countering the "fly by night digital startup" perception
+  - Third-party credibility: white papers, tZERO and Sports Radar partnerships, a regular published metrics report (Brett's AdMob precedent)
+  - Kalshi's American Power Index and prediction-market sentiment as a price input
+  - Feedback on the ad demo and which pages still lack ad placements
+  - Investor/valuation context: offering circular for SEC approval in July, tZERO as a FINRA-approved ATS, a possible raise at year end and an IPO in about 18 months
+- **Decisions**:
+  - Go live with bios first and resolve photography later (Skye); more than two people on the site (Edwin)
+  - Short bios for the wider team, more depth for Edwin and Troy; everyone drafts their own, Skye refines (Troy)
+  - Do not put Wintrust's logo in Monday's demo — hold it back and offer a bespoke mockup later in the conversation (George, agreed by Edwin, against Cody's and Skye's suggestion)
+  - Cancel Tuesday and Thursday touchdowns next week; Monday, Wednesday, Friday only (Troy)
+- **Commitments / action items**:
+  - Max: get the website onto George's review system today
+  - Skye: review website content against the brief over the weekend, then notify Edwin and Troy to sign off
+  - George: add non-intrusive ad placements to the remaining key pages by Monday morning, ahead of Edwin's 2pm Central meeting with Wintrust Bank. Edwin named six premium pages — home, trade, gamecast, leaderboard, chat, order confirmation
+  - Skye: send George brand creative to drop into those placements
+  - Edwin/Troy: run an hour-long team huddle today, go page by page, send George one consolidated feedback submission
+  - George: simplified feedback mechanism for the PWA (gesture capture is a problem), full version on native mobile; Slack still to be set up
+  - Edwin: pay the Novosapien invoice next week
+  - Troy: push Jim Angel on the initial white paper; talk to the University of San Diego professor next week
+- **Reports/deliverables mentioned**:
+  - Two white papers by Prof Jim Angel (Georgetown), intended as downloads from the website; he may also join as an advisor
+  - A post-launch research piece from a University of San Diego professor on prediction markets and engagement with the performance securities
+  - Revised PR proposal from Farren, under review by Skye
+  - Proposed recurring public metrics report (users, engagement minutes) and a live ticker on the site once trading is live
+  - Skye to send Edwin a screenshot of the Kalshi American Power Index
+
+---
+
+## June 2026
+
+### 01-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Brett StClair, Edwin Johnson, Kevin Murray, Gary Anderson, Max Kingaby, George Westbrook, Hasan Mohammed Ahmed, Skye Capazorio, Troy McDonald Kane (Cody Haugen absent — sick children)
+- **Topics discussed**:
+  - Helmet realism — AI-generating realistic helmets for 163 teams (32 NFL + ~130 college) with exact hex codes
+  - Dark-on-dark ad logos (Toyota, Cash App) not visible
+  - Header ad banner: lock at top vs scroll away; "territories"/page-ownership naming (gamecast, information centre, referral bank); homepage takeovers
+  - Review tool working on PWA and web; walkthrough of how to log feedback
+  - Persona KYC status; timeline for the first downloadable app
+- **Decisions**:
+  - Header scrolls away for now; revisit if marketers push back — Edwin
+  - Priority order for experience: trader first, advertiser second, everything else third — Brett, agreed by George
+  - Homepage takeovers parked as exploratory, not immediate — Brett
+- **Commitments / action items**:
+  - Kevin — collect and send team hex codes (NFL + NCAA)
+  - George — fix the black-on-dark logos; send Edwin login details for the review tool
+  - Brett — finish and upload the vault content on his machine that evening (referral and IPO material)
+  - Troy/Kevin — chase Persona, currently with Bowler/Matt
+  - Skye — review early each morning so changes land in the dev day
+- **Reports/deliverables mentioned**:
+  - Vault/content repository upload — Brett, that evening
+  - Admin panel links to be re-shared with the whole group — Brett asked George
+  - Target: first app downloadable in 1–2 weeks, latest 19 June; referral live the week before 4 July
+
+### 03-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Max Kingaby, Kevin Murray, Skye Capazorio, Gary Anderson, Edwin Johnson, George Westbrook, Brett StClair, Cody Haugen, Troy McDonald Kane
+- **Topics discussed**:
+  - Persona contract signed; implementation waiting on intro to their tech engineer
+  - Apple developer account reset to the start (Edwin must approve Troy as signatory); Google Play access granted
+  - Referral mechanisms and QR codes built and tested in isolation; authentication framework still being chosen
+  - VPC stood up and connected to T0; FIX gateway rebuilt for concurrency; Hassan load-testing
+  - Sport Radar API soon linked to the app
+  - Booster demo readout and the upcoming Kevel call
+  - Global website copy/visual state; challenge website content gap
+- **Decisions**:
+  - Booster is too early — an order-management system for greater advertiser scale; 10 advertisers can be managed manually — Brett, supported by Skye
+  - Kevel (or some ad server) still needed for sponsorship serving, rotation and impression tracking — Brett
+  - Feedback ownership split: app → Cody, global website → Skye, challenge website → to be built out — agreed on the call
+  - Run a 1–1.5 hour interview session to capture challenge-website requirements — Brett
+- **Commitments / action items**:
+  - Kevin — NFL hex codes by end of day, NCAA still being fixed
+  - Cody — review the vault/content repository, since build decisions are being made from it
+  - Cody — chase Apple to call/email Edwin for signatory approval
+  - Skye — feedback on the global website that day
+  - Max — websites redeployed for review
+- **Reports/deliverables mentioned**:
+  - App feedback round one — 15–20 items already uploaded by Cody to the admin portal
+
+### 05-06-2026 — InPlay Digital Touchdown (standup + demos)
+- **Attendees**: Max Kingaby, Edwin Johnson, Brett StClair, Troy McDonald Kane, Cody Haugen, Kevin Murray, George Westbrook, Hasan Mohammed Ahmed
+- **Topics discussed**:
+  - Referral system demo — lifetime-unique codes (tested to ~1B), QR page, referrer/referee table, KYC-gated crediting, preset boost windows
+  - Sport Radar data live in the prototype, replaying week 10 of 2024 with real stats; demo data labelled
+  - Global website walkthrough — deck copy verbatim, brand colours, imagery stripped and rebuilt last, CTA form with reason-routing
+  - App advertising placements (Coca-Cola, Gatorade, Pepsi, Visa, Bud Light, FedEx, Amex banner)
+  - Multi-sport live data for other sports; affiliate revenue via a FanDuel-style rev-share; $25M operator raise at the coming conference
+- **Decisions**:
+  - Demo on the mock-data branch, not the incomplete live Sport Radar branch, so it looks production-like — George proposed, Edwin agreed
+  - Multi-sport view-only deferred to version 2.0 after the challenge launches — Edwin, after George's focus objection
+  - First app version scope: referrals, wallet, signup, KYC (required) and some live data — Edwin/Cody/Troy
+- **Commitments / action items**:
+  - Troy — map website signup points to email distribution lists and supply the addresses
+  - Max — consistent headshot framing, thicker/brighter outline font, remove the "Tony" quote, redesign the Amex navbar, push UI changes to George
+  - Max — also send assets to Cody and Troy, not only Skye (Troy's request)
+  - Hassan — add social share buttons with pre-populated images, show the referral screen immediately after KYC, add the code to the profile page
+  - Kevin — chase Persona (Justin) for the API docs
+  - Edwin/Troy — merge Skye's T0 press release draft with tZERO's, target Tuesday
+- **Reports/deliverables mentioned**:
+  - Press release on the T0 partnership — two drafts to be merged, targeted for Tuesday
+  - Max's walkthrough video of the app, shared in chat and by email
+  - Website to be pushed live before the following Tuesday for the conference
+
+### 08-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Brett StClair, George Westbrook, Max Kingaby, Edwin Johnson, Cody Haugen, Skye Capazorio, Troy McDonald Kane, Kevin Murray, Hasan Mohammed Ahmed
+- **Topics discussed**:
+  - Internal creative tooling — a CI-aware deck/creative skill plus an approved-image repository, after Edwin spent ~36 hours on a deck
+  - Agentic outreach at scale (messaging, imagery, email, deck per prospect)
+  - Edwin's market-making algorithm — he has one built for another platform and wants to rebuild it with the team over ~2 months
+  - Onboarding flow built into the app with placeholder KYC, waiting on Persona API keys; Persona speed (~99.5% AI-automated, seconds)
+  - Sport Radar live data fixed to 2025; moments → popup, ~18 per game; team page seasons; injury reports; win probability 403 error
+  - Website publish readiness, careers tab, app-store verification
+- **Decisions**:
+  - Group game moments by quarter rather than one long line — Cody
+  - Team page shows current and previous season only — Cody and Edwin
+  - Demo the sales conference on the mock-data branch with moving data — Cody, agreed by Edwin
+  - Publish the website after Skye and Max's refinement session, with a careers tab added — Troy
+- **Commitments / action items**:
+  - Brett + Max — build the creative system prompt/skill and image repository, plus ~1 hour of training for the InPlay team
+  - Kevin — chase the Persona API keys
+  - Cody — raise a ticket in the Apple developer portal; list the exact Google Play verification items
+  - Troy — complete Google Play verification, send the VP of Technology job posting, supplied the distribution lists
+  - George — recheck win probability under the global American Football API (not the NFL API) and email support@sportradar.com copying Cody if still failing
+  - Hassan — continue the onboarding flow once API keys land
+- **Reports/deliverables mentioned**:
+  - Global website to be published before Tuesday, with a Careers tab for job postings
+
+### 10-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: George Westbrook, Hasan Mohammed Ahmed, Troy McDonald Kane, Skye Capazorio, Brett StClair, Max Kingaby, Edwin Johnson
+- **Topics discussed**:
+  - Compliance incident — an AI agent had put "guaranteed prize money up to $25 million" into the site's legal footer; live roughly 1–1.5 hours, taken down overnight
+  - Page-by-page website review before publishing; stray Verizon brand reference
+  - Legal links and T&Cs — all AI-generated, volume questioned
+  - Mobile optimisation — outline font crowding, clipped hero screenshot
+  - Careers page job descriptions being AI-generated
+  - Persona onboarding demo (signup → KYC → pass/reject, ~2–3s face-scan callback)
+  - Wallet split with T0 and shorting mechanics
+- **Decisions**:
+  - Always "up to $25 million", never "guaranteed" — Edwin ("protect the castle")
+  - Troy is the reviewer and sign-off for go-live, not Skye or Max, since they are too close to it — Brett proposed, Troy accepted
+  - Strip the legal links from the footer for now; keep only the basic email-signature disclaimer — Troy and Edwin
+  - Wallet split resolved: T0 owns the trading wallet; InPlay tracks the referral wallet and builds a synthetic broker for buying power; the cash wallet is still open — Troy
+- **Commitments / action items**:
+  - George — build a pre-deploy agent that checks every sensitive term before anything ships; remove the Verizon reference; remove legal links; mobile fixes (shrink and tilt the phone screenshot, stack the charts); update the WordPress/GoDaddy DB so Kevin regains access
+  - Troy — email Marlin (not Vogler) to get external counsel reviewing the disclaimers; do the final review and give the go-live call
+  - Skye/Max — export the legal copy as a Word document for redlining
+  - Troy + Brian — write the real job descriptions (go-to-market interns and other roles)
+  - Troy — write the business requirements for shorting; discuss synthetic broker, shorting and the primary offering with T0 on Friday
+- **Reports/deliverables mentioned**:
+  - Disclaimer copy as a Word document for counsel redline — Skye/Max to Troy
+  - Business requirements: primary offering (already given to T0), shorting (Troy writing), synthetic broker (not yet started)
+
+### 12-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: George Westbrook, Max Kingaby, Skye Capazorio, Troy McDonald Kane, Kevin Murray, Brett StClair, Gary Anderson (brief)
+- **Topics discussed**:
+  - Challenge website rebuilt on a new template so Google Analytics works; Microsoft Clarity heat-mapping proposed across the sites
+  - Conference readout — Pay.com meeting, three to four interested payment providers, non-exclusive approach
+  - T0 confirmed they hold real-time P&L, resolving the buying-power concern
+  - Market-making algorithm kickoff and prep
+  - Education delivery formats — TikTok-style reels, AI voice + code-generated animation, podcast route, brand-owned modules, programmatic voice ads
+  - Pre-launch app scope; admin panel environment links; meeting cadence
+- **Decisions**:
+  - Kevin Murray leads market making as head execution trader; position-based trading, not high frequency — Troy
+  - Meeting cadence for the following week: Monday 1 hour on the pre-launch app, Wednesday 30 minutes check-in, Friday 1 hour with half on education — Troy, agreed by Brett
+  - Launch referenced as 22 August (college football)
+- **Commitments / action items**:
+  - Troy — send George background pointers/reading before the market-making session
+  - Kevin — dig out his own market-making learning material and share it with the group
+  - Troy + Kevin — sit down this week and produce the first education module to beta test
+  - George — add environment links (production/testing/development) to the admin panel so links stop being shared by email
+  - George — test AI-generated education video and report on time and cost per video
+- **Reports/deliverables mentioned**:
+  - Kevin's beginner education module deck (shown on screen; video, capital-markets content, module quiz)
+  - Press and media page signed off by Troy
+
+### 15-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Skye Capazorio, Kevin Murray, Edwin Johnson, George Westbrook, Max Kingaby, Brett StClair, Troy McDonald Kane, Cody Haugen
+- **Topics discussed**:
+  - Conference readout — Paysafe (low confidence), Pay.com and Teddy Sagi calls, sweepstakes casino advertisers, a $30M-for-20% conversation
+  - Serious concern about zero advertising commitment two months from launch; a university-only fall challenge floated as contingency
+  - Pre-launch app scope — Sport Radar historical data, greyed-out trading, IPO countdown (~22 Aug college, ~2 Sept NFL), 2013-vs-one-year history debate
+  - Synthetic off-field pricing model based on ad spend per game
+  - Earnings report placement and push notifications
+  - Title-sponsor splash screen on app open
+  - Max's AI brand-preview tool for advertisers
+  - Advertiser KPIs — buyers want impressions and CPA/CPM, not engagement minutes
+- **Decisions**:
+  - Pre-launch app contains onboarding/KYC, referrals, education, discover, IPO preview; everything else greyed out (not hidden) with a countdown to IPO day — Cody, George, Edwin
+  - Keep the trade button rather than swapping it for an IPO button — Edwin
+  - Earnings reports live both in their own page under More and as an embedded box on the team page under Discover — Troy proposed the team-page box, Edwin pushed for the standalone page, both adopted
+  - Historical data: one year as the minimum, more only if paired with synthetic pricing data — George and Cody
+  - Do not drop the app for Father's Day; wait until after 4 July pending an advertising decision — Troy
+- **Commitments / action items**:
+  - Edwin — devise the off-field synthetic pricing formula (total league ad spend ÷ games, allocated by trading share)
+  - Cody — chase Terry at Paysafe; end of June is the decision date
+  - Max — extend the brand-preview tool to roughly 10 ad units across the app and put the link in outreach emails
+  - Skye — resend the advertiser benchmarking pages (impressions, CPM, cost breakdown) sourced from Wayne and WPP
+  - George — build the pre-release version; app feedback backlog (~20 items, ~4 weeks old) to be worked
+- **Reports/deliverables mentioned**:
+  - Advertiser benchmarking/metrics pages — Skye to resend to Edwin
+  - Note: the strategic/contingency discussion on this call was parked by the product owner and not written into the vault
+
+### 17-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Edwin Johnson, Skye Capazorio, Brett StClair, Cody Haugen, Hasan Mohammed Ahmed, George Westbrook, Troy McDonald Kane, Kevin Murray, Max Kingaby
+- **Topics discussed**:
+  - Brett's programmatic media playbook — ranked SSP roster, architecture, operating models, ad-ops KPIs, onboarding timelines and payment terms
+  - SSP vs ad server; DSP side (Trade Desk, Amazon, DV360) and where direct buys land
+  - Ad ops as one human plus an AI agent workforce at ~20% margin; 15-minute optimisation loops
+  - Impression modelling argument — Edwin's ~20/minute vs Brett's per-page user-journey view; ~25B+ impressions over the season
+  - Onboarding demo — email code → Persona ID check → IPO page with swipe-to-buy
+  - IPO naming and inventory visibility
+  - Market maker for IPO fill and liquidity; prize pool sizing
+- **Decisions**:
+  - SSP-first stack: AppLovin MAX as ad server and mediator from day one, Kevel deferred to phase two, 8–12 SSPs total — Brett
+  - Name it the "IPO draft" with a "What is an IPO draft?" button linking into the education centre — Edwin, after Troy argued for keeping "draft"
+  - Do not show shares remaining; only surface a number as the IPO nears close, to avoid looking weak — Edwin
+  - IPO page is buy-only, no sell button — Edwin, confirmed by Hassan
+  - Prize pool $21M plus $4M flex, communicated as "up to $25 million" — Edwin, Cody, Troy, Kevin
+  - The Apple developer account is the single biggest launch blocker; target the app in the store by end of June — George and Troy
+- **Commitments / action items**:
+  - Brett — publish and send the playbook to Cody and Edwin; register the anchor SSPs the following week; set up a 90-minute market-maker component session Monday or Tuesday
+  - Cody/Troy — provide a novo@inplayglobal.com address for SSP registration (done same day)
+  - George — pre-launch prototype build ready for the team by Monday or Tuesday
+  - Skye — review all copy for exposure; add prize-pool and legal detail to the challenge website once confirmed
+  - Hassan — remove the baseball athletes from the splash screen; make sure wording says "up to"
+- **Reports/deliverables mentioned**:
+  - Programmatic media playbook — published by Brett, source artifact `Inplay Outreach/ssp-priority-stack.html`, sent to Cody and Edwin after the call
+  - Education session scheduled for 18 June
+
+### 18-06-2026 — InPlay component session, filed as Education (in practice ~90% advertising)
+- **Attendees**: Brett StClair, Skye Capazorio, Cody Haugen, Edwin Johnson, Troy McDonald Kane, Max Kingaby, George Westbrook, Kevin Murray
+- **Topics discussed**:
+  - Programmatic explainer — CPM vs eCPM, fill rates (assume 30% at start), viewability, audience uplifts
+  - Whether InPlay can get programmatic ads at the scale needed before launch
+  - Inventory layering model: 20–30% direct buy, 15–20% premium programmatic, ~5% house ads, the remainder SSP
+  - SSP registration sequencing; premium SSPs taking three to four months
+  - Minutes-to-impressions conversion as the weak point in the model
+  - Sports/betting engagement thesis and the 50M+ "degenerate" addressable cohort
+  - Click behaviour unknown because trading and betting apps carry no ads
+  - Data resale at a $2–5 markup; hiring media salespeople; Skye's role
+- **Decisions**:
+  - Education content tabled to the Monday 22 June session, which is extended to an hour — Troy, agreed by Brett and George
+  - Do not hire media sales people until around 500,000 users — Brett
+  - Skye is better used on user acquisition and brand than on media sales — Brett's recommendation
+  - SSP registration proceeds in parallel with the modelling: AppLovin MAX first, then AdMob, then three more; a test app gets loaded to start seeing ads
+- **Commitments / action items**:
+  - Brett — build the impressions forecast calculator/model, roughly two weeks, then review it with Edwin and Cody
+  - Brett — register the SSPs on the InPlay domain and business
+  - InPlay side — provide domains and LinkedIn account access for the agentic outreach workforce
+- **Reports/deliverables mentioned**:
+  - Impression forecast calculator/model — Brett, ~2 weeks
+  - Julian/Kevel's pre-sales answers referenced as ~90% complete but judged not the right partner for now
+
+### 22-06-2026 — InPlay Digital, Education component deep-dive
+- **Attendees**: Edwin Johnson, Brett StClair, George Westbrook, Max Kingaby, Hasan Mohammed Ahmed, Kevin Murray, Cody Haugen, Troy McDonald Kane, Gary Anderson; Brian referenced. Note: several InPlay speakers appear merged under a single "Inplay Global" transcript label
+- **Topics discussed**:
+  - Commercial update — Fast & Furious producer contact, Hard Rock Digital, Playtech/Teddy Sagi, ExpressVPN, Goldman Sachs meeting
+  - Education structure — 16 beginner, 10 intermediate, 10 expert modules; video plus text plus quiz; 100 InPlay coins per module
+  - Video production format and scale; sponsorship at slide-group level; skippable pre-video ads
+  - Navigation flow, progress display, glossary, certifications and badges
+  - Website FAQ and disclaimers, separate from Education
+  - OG/social card image on the new website
+  - Research module — pricing tiers, premium Sport Radar data resale, AI companion
+  - App walkthrough of the week's changes (floating navbar, new helmets, ad popup pages with video rewards)
+- **Decisions**:
+  - Video format is a simple slideshow or whiteboard with voiceover — "less is more" — Edwin, agreed by Cody and Troy
+  - No sequencing restriction; a user can jump to any module — Edwin
+  - Completed modules are greyed out or collapsed, not removed, so they stay revisitable; rewards are earn-once — Cody
+  - TikTok-style reels dropped for launch in favour of the traditional card/module layout — George
+  - Add a glossary at the end of each module (swipe right) — George proposed, Edwin agreed
+  - Add a Certs section on the profile with badges as clickable entry points into courses — Brett
+  - Videos warehoused on the YouTube channel — Cody/Troy
+  - AI chatbot/companion deferred to phase 2; the research module gets its own dedicated session — Edwin
+  - In-app AI querying not in phase 1; give users the data and let them use their own LLM — Edwin
+- **Commitments / action items**:
+  - Kevin — sent the three education module documents to everyone on the call
+  - George — produce condensed text versions of all 16 beginner modules (roughly a week and a half), plus one or two complete with video and quiz to validate the UI, then replicate
+  - Max — fix the OG/social card image so the InPlay logo shows when links are shared
+  - Kevin + Brian — legal review of the website FAQ and disclaimers before publishing
+  - Brett — schedule the separate research-module session
+- **Reports/deliverables mentioned**:
+  - Three Word documents (beginner, intermediate, expert education modules) — sent by Kevin during the call
+  - Research module wireframes — previously sent by Cody, to be worked in a dedicated session
+
+### 24-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Brett StClair, Cody Haugen, George Westbrook, Max Kingaby, Troy McDonald Kane, Edwin Johnson, Kevin Murray, Hasan Mohammed Ahmed, Skye Capazorio
+- **Topics discussed**:
+  - Advertising shortfall and Edwin's overnight rethink of the prize model; customer-acquisition-cost framing
+  - Participation-gated payouts, daily vs weekly cadence, qualifying criteria, referral leaderboard, multipliers and badging
+  - Referral program now runnable through the challenge website with full KYC
+  - Post-conference debrief on the Omnicom/sports-marketing contact who did not engage
+  - B2B and B2C email infrastructure, domain warm-up, deliverability
+  - On-campus interns and social media revamp
+  - App store status (Apple moving, $99 fee; Android verification stuck)
+  - T0 daily buying-power file
+  - Mastercard, Goldman Sachs; pay.com written off
+- **Decisions**:
+  - Payouts gated on participation, maximum three criteria so it does not become cumbersome — Troy
+  - Weekly payouts as the base with Saturday and Sunday dailies and a Tuesday weekly reset, roughly $25k per day floated — Troy proposed, Edwin agreed
+  - Referrals are not a hard qualifying gate; instead a separate referral leaderboard with its own prize — Troy, over Kevin's 50-referral gate proposal
+  - Keep some daily payout rather than none in month one, distributed wider in smaller amounts — George, accepted by Edwin
+  - Newsletter and referral launch targeted for Tuesday 30 June going into the 4 July weekend — Troy
+  - Cold outreach uses real named mailboxes, not invented avatars — George, over Edwin's suggestion
+- **Commitments / action items**:
+  - George — research B2C transactional vs marketing email deliverability for the 600 existing signups and report back; set up three mailboxes per domain with real names plus domain redirects and warm-up (two to three weeks)
+  - Cody/Troy — send the newsletter to the ~600 signups, split between InPlay Global mailboxes
+  - Troy — clear Android Play verification (organisation website and phone numbers); Apple developer payment being processed
+  - Max — restore the AI brand-preview tool on the advertising page ahead of Cody's Mastercard meeting
+  - Brett — impressions forecast calculator ready for the next touchdown; call T0 to resolve the lightweight-API vs onboarding-API mismatch
+  - Troy — Friday T0 call covers short-selling requirements and the primary offering
+- **Reports/deliverables mentioned**:
+  - Impression forecast calculator — Brett, due at the next touchdown (confirmed to Skye)
+  - Newsletter/first distribution — targeted Tuesday 30 June
+
+### 26-06-2026 — InPlay AI Agent Research component session
+- **Attendees**: George Westbrook, Hasan Mohammed Ahmed, Cody Haugen, Max Kingaby, Troy McDonald Kane, Brett StClair, Edwin Johnson, Kevin Murray, Skye Capazorio, Gary Anderson
+- **Topics discussed**:
+  - T0 architecture explainer — matching engine, buying power vs P&L, the ledger as clearing/settlement and custodial record, synthetic vs real digital wallets
+  - Referral-to-trading-wallet mechanism: daily file vs an API call
+  - Challenge website preview-link permission problem; TestFlight now up
+  - Research tab — pre-canned reports, saved custom reports, data-point catalog, AI companion
+  - Pricing and billing model; credits vs per-report charging
+  - In-app payment vs bouncing out to a PWA
+  - Discovery routes into research — house ads, hyper-personalised prompts, team-page entry
+  - Trade hand-off from a report
+  - Corp dev — Teddy Sagi family office NDA, Goldman Sachs, Kalshi at $40B and perpetual futures needing InPlay as underlying source data
+- **Decisions**:
+  - Phase 1 of the research tab: pre-canned reports plus saved custom reports and the data-point catalog; AI companion is phase 2 — Cody, agreed by George
+  - Pricing: 99c for the first month then $14.99/month (to capture the card), AI tier at $49.99 — Cody
+  - Use in-app payment and accept the up-to-30% store fee rather than bouncing users out — Edwin, decisive; George suggested split-testing it later
+  - Every team named in a report must carry its team id so the trade button knows what to trade; trading is possible from the research page itself — Cody and Edwin
+  - The market-making algorithm needs its own separate session, not this one — Edwin and Troy
+- **Commitments / action items**:
+  - George — draft the referral/buying-power API flow and send it to the T0 team copying Troy (Troy called it more elegant than the FTP file approach)
+  - Cody — supply examples of the pre-canned reports he envisages
+  - Troy — talk to Evangelist about T0's crossed signals; collect everyone's Apple IDs and pass them to the Novo team for TestFlight
+  - George — sort the preview-branch authentication so challenge-site links open without an access request
+  - Troy/Brett — schedule the market-maker session
+- **Reports/deliverables mentioned**:
+  - Two academic white papers planned before trading starts — one confirmed (Jim Angel), Josh's still needs scope, both from Troy and Edwin
+  - Market data captured during the challenge to be offered to prospective production market makers for modelling
+
+### 29-06-2026 — InPlay Digital Touchdown (standup)
+- **Attendees**: Max Kingaby, Cody Haugen, Skye Capazorio, Troy McDonald Kane, Brett StClair, Edwin Johnson, Kevin Murray, George Westbrook
+- **Topics discussed**:
+  - Challenge website legal pages — AI-drafted T&Cs now clickable when they were meant to be placeholders; KYC opt-in wording on the signup page
+  - Challenge site review — hype video embedded in a phone mockup, How It Works page, IPO pricing calculator
+  - Newsletter debate — action-first blast vs a fuller newsletter; community-building framing
+  - App bugs and design confirmations — Visa header cropped, price rounding on mock data, splash arrow/mountain, chat defaulting to the latest message, buy/sell markers on the chart
+  - TestFlight vs PWA build drift; education centre missing from TestFlight
+  - Market-maker session; T0 referral mechanism email; T0 press release
+  - Two-pager for Omnicom's John; templated PowerPoint
+- **Decisions**:
+  - Disable the legal footer link at go-live until counsel has reviewed the documents — Troy, agreed by Skye
+  - Keep the AI-drafted T&Cs as the starting point; Troy, Kevin and Cody review first, then counsel — Troy
+  - Newsletter goes ahead but restructured action-first, leading with the referral and $25M block and dropping regulatory content; the goal is app download then referrals — Edwin, after Troy argued for a fuller newsletter and Brett reframed it as a community channel
+  - Splash screen keeps the arrow only; remove the mountain so it does not read as a climbing contest — Edwin
+  - Chat defaulting to the most recent message confirmed as intended — Cody
+- **Commitments / action items**:
+  - Max — pull the legal pages into one Word document for Troy; fix the cropped Visa header; design the two-pager once copy arrives; build a templated PowerPoint so all decks share one design
+  - Troy, Kevin, Cody — review the T&Cs immediately after the call, then send to counsel (Marlin/Vogler)
+  - Kevin + Skye + Max — rework the newsletter offline, move the referral/$25M block to the top
+  - George — send the T0 referral-mechanism email that morning
+  - George + Edwin — hold the market-maker session; Edwin supplies all the parameters, integration is with the T0 feeds
+  - Skye/Cody — send Brett the existing two-pager so he can pass it to John
+  - Hassan/George — sync the TestFlight and PWA builds so education appears in both
+- **Reports/deliverables mentioned**:
+  - T0 partnership press release — live 8:30 ET the following morning via T0's PR service; Troy to hand the link to Hassan and Kevin for the website and the distribution
+  - Two-pager for Omnicom (John) — existing version judged poor by Edwin, Max to redesign
+  - Templated PowerPoint deck — Max, requested by Cody
+
+---
+
+## July 2026
+
+### 01-07-2026 — InPlay Digital TouchDown (standup)
+- **Attendees**: George Westbrook, Hasan Mohammed Ahmed, Brett StClair, Max Kingaby (Novosapien/Rebel Labs); Cody Haugen, Edwin Johnson, Troy McDonald Kane, Kevin Murray (InPlay Global). Skye Capazorio and Gary Anderson invited, not recorded as speaking.
+- **Topics discussed**:
+  - Landing page navigation fixes (login/signup buttons, spinning shield animation)
+  - Newsletter analytics (~50% open, ~14% CTR; 451 recipients, 5% signup conversion)
+  - Referral dashboard demo, referral multipliers, wallet upload mechanism
+  - Pre-launch app demo: AI stadium images, IPO page upsides/risks, education page, leaderboard placeholder
+  - IPO reload policy, IPO countdown timer, market making / load balancing
+  - Crown Coins Casino demo request and IP security
+  - HubSpot integration (2M marketing contacts), data mapping, update frequency
+  - US social sweepstakes market context; App Store submission timeline and contingency
+- **Decisions**:
+  - Add login/signup to top of mobile trading challenge landing page (Cody Haugen requested, team aligned)
+  - Referral multipliers to match the referral sheet (team)
+  - Include college stadium images in the app (team)
+  - Use AI to research and populate IPO "upsides"/"risks" criteria (George Westbrook proposed, team aligned)
+  - Leaderboard shows alphabetical order until performance data exists (team)
+  - Users may reload if net liquidating value falls below $25,000 (Cody Haugen, Edwin Johnson)
+  - External demos use a TestFlight build with dummy data, not the PWA, for IP protection (team)
+  - Map all available app data into HubSpot rather than pre-select fields (Cody Haugen)
+  - Exclude volatile fields such as P&L from HubSpot (George Westbrook raised, Cody Haugen agreed)
+  - Cap user outreach at twice per week (Cody Haugen)
+  - Web-based trading is the official contingency if the app store rejects the app (George Westbrook)
+- **Commitments / action items**:
+  - George Westbrook: header login/signup buttons; remove spinning shield animation; IPO countdown clock on trade page; fix star/favourite team ordering; prepare TestFlight demo build with dummy data and no ads
+  - Hasan Mohammed Ahmed: correct 2x referral multipliers and missing dates
+  - Max Kingaby: add college stadiums
+  - George Westbrook + Edwin Johnson: schedule market making / IPO pricing session
+  - George Westbrook + Novo: arrange 6-hour integration call with Unlimited
+  - Novo: lead HubSpot data mapping and field definition
+  - Group: define wallet batch-upload process; build AI research data for upsides/risks; secure signed NDA from external partners; audit app before Apple submission
+- **Reports/deliverables mentioned**:
+  - Meeting transcript and recording (Google Docs / Google Drive links in the note)
+  - Corrected referral sheet — Cody Haugen to resend to Hasan Mohammed Ahmed
+  - HubSpot data mapping folder — exists in Google Drive, team has access, Novo to lead
+  - AI-generated research dataset for team upsides/risks — to be loaded into the IPO page
+  - Signed NDA from the external partners (Crown Coins Casino)
+
+### 06-07-2026 — InPlay Digital TouchDown (standup)
+- **Attendees**: George Westbrook, Hasan Mohammed Ahmed, Max Kingaby, Brett StClair (Novosapien/Rebel Labs); Cody Haugen, Troy McDonald Kane, Kevin Murray, Skye Capazorio, Jared Sapirman, Edwin Johnson (InPlay Global). Jared Sapirman newly introduced.
+- **Topics discussed**:
+  - App metrics: 85 referrals, 50 fully verified Persona signups; KYC drop-off
+  - Pre-release app demo (homepage, referral banking, team IPO pages, news, education)
+  - Team stats accuracy, upside/downside criteria from Sports Radar, NFL hex colours
+  - News tagging with player and team IDs
+  - Referral links pointing to the website instead of the App Store
+  - Hard Rock Digital demo strategy and TestFlight IP risk
+  - App Store submission process; Sports Radar probabilities API auth errors
+  - Education module length debate; distribution as social snippets or podcast audio
+  - Chat feature cost; prize pool engagement thresholds; streak mechanic
+- **Decisions**:
+  - Add a nudge feature so referrers can poke pending signups (team, from Troy McDonald Kane's drop-off point)
+  - Use a static data approach for IPO pages with manual criteria setting and verification (George Westbrook)
+  - Ship the Friday release without ads (Kevin Murray confirmed)
+  - Point referral links at the App Store once the app is live (George Westbrook, Hasan)
+  - Implement a daily streak mechanic for retention (Jared Sapirman proposed, team agreed)
+  - Defer in-app chat indefinitely until user volume justifies infrastructure cost (George Westbrook, Kevin Murray)
+  - Decline external partner access to TestFlight builds on IP grounds (recorded as a disagreement; Troy McDonald Kane objected to the risk, Kevin Murray pushed for the Hard Rock demo)
+  - Education module length left open for further evaluation
+- **Commitments / action items**:
+  - George Westbrook: referral nudge push notifications; team colour hex codes (primary/secondary/tertiary); contact Sports Radar support re probabilities API auth; scheduling tab on discover page
+  - Cody Haugen + George Westbrook: meet to define upside/downside data criteria
+  - Jared Sapirman, Troy McDonald Kane, Brett StClair, Tony: review all education video content for brevity, clarity, compliance
+  - Jared Sapirman: survey target demographic on education format and duration
+  - Kevin Murray: present payout structure criteria; complete pending payment to Keen
+  - Skye Capazorio: confirm LinkedIn email accounts and domains with Cody
+  - George Westbrook + Hasan: test in-app trading
+  - George Westbrook + Max Kingaby: UI/UX iterations
+  - Group: shorten education videos and text
+- **Reports/deliverables mentioned**:
+  - Meeting transcript and recording (Google Docs / Google Drive links in the note)
+  - Payout structure criteria — Kevin Murray to present to the group
+  - NFL hex colour codes used for helmet designs — Cody Haugen confirmed InPlay has them
+
+### 08-07-2026 — InPlay Digital TouchDown (standup)
+- **Attendees**: Cody Haugen, Troy McDonald Kane, Jared Sapirman (InPlay Global); George Westbrook, Brett StClair, Hasan Mohammed Ahmed, Max Kingaby (Novosapien/Rebel Labs). Edwin Johnson noted as away.
+- **Topics discussed**:
+  - Investor deck visual alignment with the app palette
+  - House ads as placeholders; SSP registration with AdMob as first exchange
+  - Financial model rebuilt bottom-up; 10% seasonal variance error corrected
+  - Research module scope and phasing
+  - App Store and Play Store submission; simulated-trading language in T&Cs
+  - International student / visa holder eligibility and Persona tax ID failures
+  - Trading competition end date (should align with the final game on 13 January)
+  - Token minting, referral streaks, authenticated SMTP
+  - Education module restructuring; team colours, data uniformity, empty states, splash spinner
+  - Swipe navigation proposal; proprietary market maker documents from Edwin
+- **Decisions**:
+  - Run house ads as placeholders in the app (George Westbrook, Cody Haugen)
+  - Standardise education modules to 1–2 minute clips (team)
+  - Remove gradients on team tiles; flat primary colour with secondary border (team)
+  - Add explicit historical-data notation to distinguish from projected 2025 season data (team)
+  - Show "No injuries reported" in empty fields rather than hiding the module (George Westbrook, Cody Haugen)
+  - Trading competition eligibility (tax ID / visa) left open, marked urgent for this week
+  - Swipe vs vertical scroll navigation left open, InPlay to review internally first
+- **Commitments / action items**:
+  - Cody Haugen: send May 2026 investor deck to George, Brett, Max; send team colours spreadsheet (hex and RGB)
+  - Brett StClair: revise programmatic pricing proposal with industry-standard figures
+  - Hasan Mohammed Ahmed: submit app store information; review T&Cs to remove gambling terminology
+  - Troy McDonald Kane: clarify competition eligibility with Edwin and Vulgler; activate authenticated SMTP for 12 admin accounts; draft outline for shortened education modules; arrange a session with Edwin to explain the market maker documents
+  - George Westbrook: implement flat team colours; standardise research data and label historical vs projected; remove startup loading spinner; deploy trading branch to TestFlight after the current version goes live
+  - Group: review financial and business modelling for the programmatic rollout (Monday, with Edwin); consolidate feedback and present to Jared on Friday
+- **Reports/deliverables mentioned**:
+  - Meeting transcript and recording (Google Docs / Google Drive links in the note)
+  - May 2026 investor deck — Cody Haugen to distribute for rebranding
+  - Programmatic pricing proposal — Brett StClair to revise
+  - Financial model (bottom-up) — Brett StClair, review meeting set for the following Monday
+  - Team colours spreadsheet (hex + RGB) — Cody Haugen / Troy McDonald Kane to send to Novo
+  - Shortened education module outline — Troy McDonald Kane to draft
+  - Proprietary market maker documents (technical and simplified summaries) from Edwin Johnson — feed patent filings, the offering circular, and simulator execution modelling; Edwin to walk the team through them
+
+### 10-07-2026 — InPlay Digital TouchDown (standup)
+- **Attendees**: Edwin Johnson, Kevin Murray, Troy McDonald Kane, Cody Haugen, Skye Capazorio (InPlay Global); George Westbrook, Brett StClair (Novosapien/Rebel Labs).
+- **Topics discussed**:
+  - Pitch decks and the offering circular; influencer and media partner outreach
+  - Ad server ramp-up issues; potential AppLovin connection
+  - In-play analyst feature and broker-dealer licensing
+  - "Coming soon" / beta markers to gauge feature demand
+  - App Store submission status and the 20th campaign target
+  - Team card colours and line styling; Sports Radar trial data approval
+  - IPO price reveal countdown and social strategy
+  - Proprietary derivatives from win probability against in-game events
+  - Synthetic trading dry run and synthetic market maker inventory
+  - Community tab vs Discord; navigation tab customisation
+- **Decisions**:
+  - Secure a broker-dealer licence and maintain a Chinese wall between trading and advisory (Edwin Johnson, after Troy McDonald Kane raised the licensing concern)
+  - Hire four to five influencer analysts to publish their own fair value prices in the app (Edwin Johnson)
+  - Pursue sports media partnerships for distribution (Troy McDonald Kane suggested, team aligned)
+  - Standardise UI line colour and thickness across team cards (team)
+  - Zero out historical records at the top of team pages for forward-looking consistency (team)
+  - Run a public IPO price countdown as a marketing device (Edwin Johnson)
+  - Use a synthetic market maker to hold inventory and provide liquidity at launch (Edwin Johnson)
+  - Explore Discord instead of in-app chat (team, on George Westbrook's cost concern)
+  - Dedicated in-app community tab deferred to next week
+- **Commitments / action items**:
+  - Edwin Johnson: complete offering circular with Marlin; review Hard Rock Digital diligence materials; set up the Chinese wall; appoint a media partner lead
+  - George Westbrook: iterate the AI research report visual design; zero out historical team statistics; retrieve this session's recording
+  - Cody Haugen: get written email approval from Scott at Sports Radar for live trial data; chase Sports Radar on announcement timing; move community to the 5th tab and relocate "more" items to an account button
+  - Troy McDonald Kane: reschedule the Novo market making session for Tuesday or Wednesday
+  - Group: run a friends-and-family IPO dry run to test load and algorithms; devote the next standup to community integration cost and strategy; check Discord terms of service; brainstorm engagement solutions before Monday
+- **Reports/deliverables mentioned**:
+  - Meeting transcript and recording (Google Docs / Google Drive links in the note); George Westbrook also to retrieve the video file for future reference
+  - Offering circular — Edwin Johnson with Marlin, targeted for the weekend
+  - Pitch decks — created by Brett StClair, reviewed by Edwin Johnson, minor refinements needed
+  - Hard Rock Digital diligence request materials — Edwin Johnson to analyse
+  - AI-driven research report — George Westbrook to iterate on presentation
+  - Written Sports Radar data approval email from Scott — Cody Haugen to obtain
+
+### 13-07-2026 — InPlay Digital TouchDown (standup, 44 min)
+- **Attendees**: George Westbrook, Max Kingaby (Novosapien); Skye Capazorio, Jared Sapirman, Kevin Murray, Cody Haugen, Edwin Johnson, Troy McDonald Kane (InPlay Global). Brett StClair absent (daughter's graduation).
+- **Topics discussed**:
+  - Education modules too long, too much scrolling, blank filler panels; regeneration under 2 minutes
+  - Short-form / AI-UGC content routes and social agency search
+  - House ads day one, IAB aspect-ratio scaling, education re-entry video ad, Gamecast/Pepsi ad
+  - Hard Rock Digital meeting outcome (head of sportsbook and COO attended; Rafi Ashkenazi champion)
+  - App Store in review; Play Store gambling classification risk (Apple ~70–80% of users)
+  - Research Tab v1 demo: weekly pre-canned Sports Radar roll-ups, sortable columns, click-in definitions
+  - Watch Mode concept: win probability + Gamecast + share price + trade on one screen
+  - Priorities: trading and ads
+  - Outreach setup (offer, messaging, ICPs), email warm-up
+- **Decisions**:
+  - Regenerate all education videos under 2 minutes; keep content until revised docs arrive (George Westbrook)
+  - Troy McDonald Kane and Kevin Murray to re-slice source docs into subtopics, expecting 3–4x the module count (Troy McDonald Kane)
+  - Let post-launch metrics drive further education cuts; do not over-engineer now (Skye Capazorio)
+  - Defer short-form / AI-UGC content until post-launch metrics (team)
+  - Run house ads from day one to avoid a no-ads to ads flip (George Westbrook, endorsed by Edwin Johnson)
+  - Keep the Gamecast/Pepsi replay ad size and orientation as-is (Edwin Johnson asked, Cody Haugen and team confirmed)
+  - Add a "What is InPlay?" house ad unit linking to the existing hype video plus a referral link (Edwin Johnson, George Westbrook)
+  - Build a landscape Watch Mode (Edwin Johnson set the requirement, George Westbrook proposed the landscape rotate-to-watch design)
+  - Research Tab ladder set at 4 steps: pre-canned, custom, LLM outlier layer, AI agent; resourcing follows usage metrics (George Westbrook)
+  - Trading and ads are the two non-negotiable priorities (George Westbrook)
+- **Commitments / action items**:
+  - George Westbrook: draft outreach offer, messaging, ICPs/personas and send to agents (with Skye Capazorio); research Play Store gambling policy and prep submission to avoid gambling classification; regenerate education videos under 2 minutes once revised docs arrive; implement the "What is InPlay?" video house ad with referral link; evaluate an education-module re-entry video ad and propose the approach to Cody Haugen; design landscape Watch Mode and link market/probability data
+  - Troy McDonald Kane + Kevin Murray: produce revised education documents today and send to George Westbrook
+  - Edwin Johnson: finish market maker material ahead of Wednesday's call; sit with Troy McDonald Kane and Brian tomorrow to build the Hard Rock business model in detail; schedule a working session with Brett StClair on the SSP integration timeline
+  - Cody Haugen: share pre-canned research report ideas with George Westbrook
+  - Brett StClair: redo the programmatic proposal with real numbers on Friday
+- **Reports/deliverables mentioned**:
+  - Fathom recording (44 min): https://fathom.video/share/SyK6Vj3YPVM_tM4dSFkSq9gZGPisLxys
+  - Research Tab v1 pre-canned reports — demoed live in the app; Cody Haugen to send further report ideas
+  - Revised education source documents — Troy McDonald Kane and Kevin Murray to George Westbrook
+  - Brett StClair's programmatic proposal / playbook — to be redone with real numbers Friday (current version described as back-of-napkin math)
+  - Hard Rock Digital detailed business model — Edwin Johnson, Troy McDonald Kane, Brian
+  - InPlay hype video — already on the website, Skye Capazorio to resupply if needed
+  - This note records extraction destinations in its frontmatter: research-tab, research-tab changelog, single-game-page, education, components, programmatic-media-playbook, and architecture/open-questions
+
+### 15-07-2026 — Wednesday touchdown (standup, 66 min)
+- **Attendees**: Edwin Johnson, Troy McDonald Kane, Brett StClair, George Westbrook, Cody Haugen, Kevin Murray, Jared Sapirman, Max Kingaby, Skye Capazorio, Hasan Ahmed
+- **Topics discussed**:
+  - Watch Mode demo — fully custom 3D stadium gamecast, no Sportradar match-tracker module
+  - Premium/subscription debate for Watch Mode vs ad-funded engagement
+  - IPO scope: all ~138 D1 schools vs power conferences only; market maker warehousing unsold float
+  - Off-field revenue corner cases (tradable vs non-tradable opponent, bye weeks)
+  - Brett's media-plan forecast calculator walkthrough (page × persona bottom-up, fill rate, CPM, uplifts)
+  - Apple App Store review feedback on age verification
+  - Fundraise status: offering circular, Hard Rock / pay.com, $30–50M ask
+  - Engagement-decay debate (Troy vs Edwin) on users falling out of prize contention
+- **Decisions**:
+  - Edwin: IPO covers all ~138 D1 schools, not just power conferences
+  - Edwin: market maker inventories 35% (possibly up to 50%) of each team's shares, buying unsold float in ~50k max clips
+  - Edwin: 100% of the $2.50 off-field pool goes to the tradable team when the opponent has no shares offered
+  - Edwin: bye weeks get no off-field allocation
+  - Edwin: park the Watch Mode payment/subscription question — monetize engagement via CPM first; no ad-free paid tier in the first iteration
+  - Brett: do not plan ad load "per minute"; start at 20s rotation, gather a week of data, then test 15s
+  - Brett: only complementary advertisers, no competitors, to protect click-through rate
+- **Commitments / action items**:
+  - George/Hasan — reply to Apple on the age-verification objection and submit the iteration
+  - Brett — share the media-plan calculator with Edwin and Cody; set up a CPM planning session the next morning
+  - Edwin — produce a narrative description of the load-balancing algorithm and the market-making algorithm before the algo call; wire Brett's payment
+  - Edwin — complete the full business model document for Hard Rock by Friday
+  - Troy — recommended the algo call move to Monday 20-07; Brett to reschedule
+  - Cody — arrange time with Brett and Edwin to work through the calculator inputs
+- **Reports/deliverables mentioned**:
+  - Offering circular — filed / to be filed that day, 5pm Eastern
+  - Full detailed business model for Hard Rock (Edwin, target Friday)
+  - Media-plan forecast calculator — Brett's model, shared with Edwin and Cody; no database, values do not persist on close
+  - Narrative description of the load-balancing and market-making algorithms (Edwin, for the Monday call)
+
+### 17-07-2026 — Friday touchdown (standup, 48 min)
+- **Attendees**: Edwin Johnson, Troy McDonald Kane, Brett StClair, George Westbrook, Cody Haugen, Kevin Murray, Jared Sapirman, Max Kingaby, Skye Capazorio, Hasan Ahmed
+- **Topics discussed**:
+  - Ad server choice, Kevel status, Google's 30s minimum refresh, ad placements on the horizontal trading screen
+  - Impression targets and direct-sale pilot construct
+  - Watch Mode feedback: slider conflict with the OS close gesture, P&L display, trade sheet limited to one team
+  - Education modules shipped; App Store and Play Store status
+  - Sportradar futures API returning unauthorized
+  - Market-maker mechanics explained by Edwin (reference price composition, randomization)
+  - Standup cadence and TestFlight build strategy
+- **Decisions**:
+  - Brett recommended and Edwin accepted: AppLovin MAX as the ad server with SSP adapters plugged in; cost comes off ad-serving fees, no upfront budget
+  - Brett: put Kevel on a holding pattern until the first direct deal (1–2 week setup when needed)
+  - Edwin: drop the volatility-moment slider on Watch Mode, keep click-through only
+  - Edwin: add net position, per-game P&L and global P&L to the trading screen
+  - Edwin: no ad-free paid tier in the first iteration (restated)
+  - Troy: Tuesday/Thursday T0 standups added at 4pm London, alongside Monday/Wednesday/Friday
+  - George: build two separate TestFlight versions, one for the IPO and one for trading
+- **Commitments / action items**:
+  - Edwin — send Brett a further set of ad-rule inputs; respond to Kevel; send George a layman's narrative of the market-maker design within the next hour or two
+  - Brett — produce the media plan as PowerPoint decks (moderate and high growth options) so Edwin can edit
+  - George — chase Sportradar via Scott on the unauthorized win-probability endpoint; fix the trade sheet so it swipes both teams; redesign the landscape trade layout
+  - Troy — put Cam and Claybornne (interns) on page-by-page alpha testing from Monday
+  - Troy, Kevin, Jared — work up the P&L requirements in the team huddle and send to George and Hasan
+  - Cody and Kevin — start helping Edwin with ad sales
+- **Reports/deliverables mentioned**:
+  - ~30-page business model document describing projections for hiring and costs (Edwin, for Hard Rock)
+  - Media plan decks as PowerPoint (Brett to Edwin)
+  - Layman's narrative of the market-maker design (Edwin to George, ahead of the Monday deep-dive)
+  - 16 updated education modules, all videos under 2 minutes — shipped, pending another review pass
+- **Timeline anchors stated**: secondary trading opens 29 Aug (since superseded by IPO Requirements v2 — see `vault/drafts/project-status-synthesis-31-07.md`); ~10k users targeted at IPO launch; Edwin committing $1M August + $2M September marketing plus $1–2M prize money
+
+### 20-07-2026 — Monday touchdown (standup, 75 min)
+- **Attendees**: Edwin Johnson (first ~35 min only), Troy McDonald Kane, Brett StClair, George Westbrook, Cody Haugen, Kevin Murray, Max Kingaby, Skye Capazorio, Hasan Ahmed
+- **Topics discussed**:
+  - Market-maker architecture Q&A: resting liquidity in T0's order book, market state, buying power, short-locate exemption, bid/ask offsets and skew, randomizer, limit orders that cross, cancel-replace frequency
+  - Whether CTS1/CTS2 price engines are built or consumed
+  - Market isolation per team and the pairs-trading frame
+  - Event triggers and whether standard, quantitative triggers exist
+  - Synthetic market orders
+  - Price band and quote-bust authority
+  - Watch page UX: right-hand scrollable graph stack with interlaced ads, team-selector ordering
+  - Watchlist vs favourites
+  - App Store silence, Sportradar futures API failures, SSP sequencing
+- **Decisions**:
+  - Edwin: the market maker posts resting liquidity into T0's order book; users can still match each other directly
+  - Edwin: market-maker buying power is unlimited (Troy suggested setting it near $100M; Edwin said nearer $100 billion)
+  - Edwin: everything stays a limit order, including for the market maker — crossing is achieved by pricing through
+  - Edwin: InPlay builds CTS1 and CTS2, not consumed from T0
+  - Edwin: markets are fully isolated per team; intra-game events in one game do not affect another game's pricing
+  - Edwin: the synthetic market order is needed before the first NFL game, priced through several levels; Troy offered to write the logic
+  - Edwin: a price band (~30%, exact figure to be settled) plus quote-bust authority with T0, to maintain orderly markets
+  - Troy: build the desktop version of the app for the market maker first, as the MM operations UI; Kevin likely operator
+  - Troy and Brett: move the market-maker deep-dive to Thursday 23-07, 3–4pm London
+  - Brett: AdMob first, then AppLovin, with AdMob loaded into AppLovin as mediator
+  - George: team selector orders the two teams playing first, then favourites, then alphabetical
+- **Commitments / action items**:
+  - Troy — ask T0 (Tuesday call) to stand up a synthetic market-maker entity with that buying power in the QA environment
+  - Troy — help George write the synthetic-market-order logic
+  - Troy/Kevin — locate Edwin's trigger script from the earlier simulation
+  - Cody — chase Sportradar (David/Scott) on the 403 and top up the probabilities API trial quota; George to reply-all his endpoint email to Cody
+  - George — read through the remaining foundational PTS/CTS documents and map them out
+  - Hasan — escalate Apple for an expedited review
+  - Cody — ask Edwin how to value week zero of college football
+- **Reports/deliverables mentioned**:
+  - Investor deck plus the accompanying "market banker" workbook — approved by Edwin, going out to Hard Rock and the Israeli investor groups that day; Edwin sent it to the group on the call
+  - Max building an app to automate the deck/workbook workflow for Edwin
+  - MM operations dashboard — to be built as a desktop version of the app
+  - Vault-based mapping of the market-maker documents (George)
+
+### 23-07-2026 — Follow up with Market Maker (general, 46 min)
+- **Attendees**: Brett StClair, Cody Haugen, Edwin Johnson, Gary Anderson, George Westbrook, Hasan Ahmed, Jared Sapirman, Kevin Murray, Max Kingaby, Skye Capazorio, Troy McDonald Kane
+- **Topics discussed**:
+  - App Store launch status and OTA update rollout
+  - Referral bonus and Google Play listing
+  - Market-maker quote lifecycle, call cadence, randomization
+  - Price drivers: live win probability, remaining-season wins, off-field popularity index
+  - Crossing markets, cancel-replace, queue position and wash trading
+  - Testing approach using Sportradar simulation games
+  - KYC objection handling and a no-KYC app variant
+- **Decisions**:
+  - Edwin: never top up a partially filled resting order — leave it until fully gone; on a price move, cancel that level and post the remainder at the new price; reload at top of book after a full fill at an unchanged price
+  - Edwin: bifurcate call cadence by game state — roughly 200ms during live games ("a second's too long"), every 30–60s when no game is live, and all ~170 symbols for about 5 minutes during earnings windows (Tuesday NFL, Wednesday NCAA)
+  - Edwin: randomize quantities only; price stays purely algorithmic
+  - Edwin: pull Sportradar's live win probability directly for the in-game driver — do not build an event-weighting algorithm in v1
+  - Edwin: InPlay produces remaining-season win probabilities internally on a weekly basis, since Sportradar does not compute them
+  - Edwin: off-field value comes from his popularity index (~$14 low, ~$30 high; Dallas ~$30, Carolina/Arizona ~$14), static at start and already baked into the NFL IPO prices
+  - Edwin: deliver an updated off-field metric plus remaining-game win probabilities every Wednesday, plugged straight into the algo
+  - Edwin: keep v1 simple and augment over the following months
+  - Edwin: on the first iteration, tolerate crossing if it is needed to adjust price; use cancel-replace
+  - Edwin: accept that cancel-replace loses queue position (Troy confirmed this is standard on nearly every matching engine)
+  - Edwin: handle wash trading by rulebook prohibition plus an order query on high-volume accounts and removal from the event
+  - Edwin: the market maker buys at every IPO where buyers are short or where share balance needs correcting
+- **Commitments / action items**:
+  - Edwin — send George the Python files from the original market-maker simulation; write the pricing formula; supply the weekly Wednesday data drop
+  - George — email his market-maker anchor document to Edwin for review
+  - Cody — secure the betting feeds so probabilities do not lag DraftKings and FanDuel
+  - Troy — check what self-match prevention T0 employs
+  - Troy and George — confirm with T0 whether cancel-replace is natively supported (answered on the call: it is not)
+  - Hasan — supply Google Play screenshots and a frozen build, then hand back to Troy
+  - George — assess feasibility of a no-KYC / non-US app variant
+  - Jared — research how other apps handle KYC objections
+  - Cody — sync with Brett offline on App Store keyword optimization
+  - Kevin — post the social content, reposting to stories per Skye's suggestion
+- **Reports/deliverables mentioned**:
+  - Original market-maker simulation Python files (Edwin to George, by email)
+  - George's market-maker anchor document (George to Edwin, by email, for review)
+  - Weekly Wednesday data drop: off-field metric plus remaining-game win probabilities
+  - App live on the Apple App Store as "InPlay Challenge"; OTA updates covering education videos, IPO prices, colours and house ads
+- **Note**: this was not the planned deep-dive agenda. Settlement definition and NCAA scope were never raised, and Edwin closed with "we didn't get a ton done on the market making" — a further market-maker call is expected.
+
+### 24-07-2026 — Friday touchdown (standup, ~51 min)
+- **Attendees**: Edwin Johnson, Troy McDonald Kane, Cody Haugen, Kevin Murray, Brett StClair, George Westbrook, Max Kingaby, Hasan Ahmed
+- **Topics discussed**:
+  - Ad server progress and the app store ID dependency
+  - Google Tag Manager and the MMP choice (Kochava vs AppsFlyer)
+  - Release governance: scope freeze near launch, app-store push vs capped OTA
+  - Gamecast feed speed: licensed media feeds vs Sportradar's betting-side feed
+  - Sportradar entitlement problems (probabilities in production, v2 bulk endpoint, quotas)
+  - Trading infrastructure readiness and simulation-based testing
+  - Market-maker monitoring dashboard
+  - Remaining-season probability calculation
+  - Download and KYC numbers
+  - Analyst prices on team pages, subscription packages, Preferred Walk-Ons partnership
+- **Decisions**:
+  - Edwin: use the fastest available feed for the gamecast; the probability feed must never lag
+  - Edwin: the market maker consumes the probability directly — no extra event-weighting build needed
+  - Edwin: the MM dashboard is read-only first (positions and holdings), with variables static; he is not asking to change market-maker logic from it
+  - George: the market maker is just another user, so reuse the existing user inventory APIs for the dashboard
+  - Edwin and Troy: the KYC-less variant is not the top priority — trading readiness for the 22nd comes first; the variant is not needed until the first or second week of September
+  - Brett (release governance): expect pushback on scope changes near launch, and staged, scheduled releases because OTA pushes are capped
+  - Edwin: an interim payout method (Zelle or wire) is acceptable if the payment provider is not signed in time
+  - Edwin: insert the research/subscription piece in the next week or two so influencers can talk about it
+- **Commitments / action items**:
+  - George — send Sportradar support, Scott and Cody an email listing the blocked products and versions; send questions on Edwin's spec by Monday; send Edwin a download count over the weekend
+  - Cody — drive the Sportradar entitlement fix with Scott and David; keep lobbying for the betting feeds; send George the subscription packages and pricing
+  - Brett — send the two-pager to John at Omnicom; review Kochava for Cody; work with George on a vault release/cadence dashboard
+  - Hasan — set up Google Tag Manager and share the setup with Cody; export the updated registrations CSV
+  - Edwin — push the NCAA IPO prices into the app that day; build the remaining-season probability model ("a piece you can pull"); send a sample of the analyst-prices page by Monday
+  - Kevin and Cody — find an NFL equivalent to Preferred Walk-Ons for analyst content
+- **Reports/deliverables mentioned**:
+  - Edwin's market-maker spec document sent the previous night (cut down from a 650-page AI-generated draft to roughly 30 pages); George reviewing, questions owed by Monday
+  - Two-pager for John at Omnicom (Brett)
+  - Subscription packages and pricing document (Cody to George; ~$39.99 mid-tier, roughly $2M/month revenue math)
+  - Analyst-prices page sample (Edwin, by Monday)
+  - Vault release/cadence dashboard (Brett and George)
+  - Updated registrations CSV export (Hasan to Cody)
+- **Status numbers stated**: 37 first-time downloads on Wednesday 22-07; 83 approved KYCs, up from 64; trading live for roughly 22 August

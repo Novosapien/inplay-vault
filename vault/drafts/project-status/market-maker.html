@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Market Maker</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html" class="current">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Market maker <span class="pill build">IN BUILD</span></h1>
+<p class="sub">The always-on liquidity engine: two-sided quotes on all 170 names, 24 hours a day</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  The market maker is the most active build in the programme and carries its
+  hardest deadline: <strong>quoting live from the NCAA secondary open
+  (26–27 August)</strong>. The v1.3 Consolidated Build Specification (adopted
+  24 July) is the single engineering baseline, refined by Edwin's follow-up
+  answers (28 July) and the adopted parts of his later algorithms. The
+  foundations are built and proven; quote construction is the current chapter.
+</div>
+
+<h2>Built and proven</h2>
+<ul>
+  <li><strong>Valuation engine</strong> — reference price from win probabilities, the $5-per-win model and the off-field term; probability validation at the door.</li>
+  <li><strong>Position and inventory engine</strong> — net position, average cost, P&amp;L, inventory lean and the reservation midpoint. 235 automated tests pass; static analysis clean.</li>
+  <li><strong>Event backbone</strong> — every input journalled and replayable: a full 2024 NFL game (1,089 probability points) replays from the journal to a byte-identical price stream. This is the audit and debugging backbone for the season.</li>
+  <li>Decimal-exact arithmetic throughout — no floating-point drift in prices or positions.</li>
+  <li>Edwin's spread-width equation (from his ASMM-1 algorithm) assessed and adopted; his inventory guards assessed and rejected with rationale (they would leave books with no bid).</li>
+</ul>
+
+<h2>In build now</h2>
+<ul>
+  <li><strong>Quote construction</strong> — spread width, price ladders, order sizing, seeded randomisation of quantities (prices stay purely algorithmic), cancel-and-replace into tZERO.</li>
+  <li>Then in sequence: the <strong>probability poller</strong> (live win probabilities ~every 2s per live game), <strong>market state</strong> (data-freshness bands and liquidity sessions: in-game ~200ms cadence, 30–60s otherwise, earnings windows), and <strong>venue sync</strong> (reconciling the intended book against tZERO's confirmed book, with the gateway's dead-man heartbeat).</li>
+  <li>Daily reference-feed intake: Edwin's Wednesday drop of expected wins and off-field values for all 170 teams, validated on upload.</li>
+</ul>
+
+<h2>Operating agreements (from the July sessions)</h2>
+<ul>
+  <li>Quotes rest until fully gone; partial fills are never topped up; on a price move, cancel and repost the remainder at the new price.</li>
+  <li>The market maker is a normal participant posting resting limit orders — users can still match each other directly.</li>
+  <li>Buying power effectively unlimited; the MM buys all unsold IPO shares and warehouses the inventory.</li>
+  <li>Profit is explicitly not a season-1 goal; the behavioural dataset recruits production market makers later.</li>
+  <li>Monitoring dashboard is read-only first (positions and holdings), reusing the standard user inventory APIs; parameter changes stay out of v1.</li>
+</ul>
+
+<h2>Open</h2>
+<ul>
+  <li><strong>Opening inventory (E27)</strong> — the IPO runs on the internal primary plane, so tZERO never sees the allocation; InPlay must publish the day-one book per team.</li>
+  <li><strong>tZERO account permissioning (T1)</strong> — the synthetic MM entity in QA, requested via Troy.</li>
+  <li><strong>Quote replenishment discrepancy (E17)</strong> — the written spec and Edwin's spoken instruction differ; a correctness ruling is owed.</li>
+  <li><strong>Reference-price layer question (E30)</strong> — whether Edwin's later layer is the published price or his simulator; the valuation build holds steady until answered.</li>
+  <li><strong>Compliance check (E33)</strong> — two InPlay house accounts interacting on a regulated venue needs the legal read, and tZERO's wash-trade blocking behaviour needs confirming.</li>
+  <li>Remaining parameters: spread floors per state, Edwin's risk constants, venue timeouts and rate limits — tracked in the parameters registry with a status on every number.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Complete quote construction; then poller → market state → venue sync.</li>
+  <li>Dress rehearsal against tZERO QA in the week of 17 August.</li>
+  <li>Synthetic market order in the app before the first NFL game.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

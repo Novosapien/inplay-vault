@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Trading Execution</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html" class="current">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Trading execution (tZERO) <span class="pill build">IN BUILD</span></h1>
+<p class="sub">The launch non-negotiable: live for the NCAA IPO on 22 August</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  The full map of every trading-infrastructure component was completed on
+  23 July. The order path to tZERO's matching engine is standing: a dedicated
+  FIX gateway connected to tZERO's QA environment inside a locked-down private
+  network, load-tested for concurrent volume. The named remaining items on the
+  execution path are <strong>cancel</strong> and <strong>cancel-replace</strong>,
+  plus fill notifications in the app.
+</div>
+
+<h2>Delivered</h2>
+<ul>
+  <li>FIX gateway built, then rebuilt for high concurrency; two of the four tZERO session types (order entry, market data) implemented and exercised against tZERO QA.</li>
+  <li>Private network (VPC) stood up and connected to tZERO; load testing reported fast.</li>
+  <li>Wallet ownership resolved with tZERO: tZERO owns the trading wallet and real-time P&amp;L; InPlay tracks the referral wallet and builds the buying-power ("synthetic broker") layer.</li>
+  <li>Order model settled: everything is a limit order (the venue's constraint); market orders are delivered as a synthetic "price-through" order crossing several levels.</li>
+  <li>Testing approach agreed: Sportradar simulation replays of past games run several times a day, checked from both the user side and the market-maker side — no need to wait for live games.</li>
+</ul>
+
+<h2>In flight</h2>
+<ul>
+  <li><strong>Cancel and cancel-replace</strong> — the two named to-dos from the 23-07 infrastructure map. tZERO does not support cancel-replace natively, so the gateway sequences cancel + new order.</li>
+  <li><strong>Notifications</strong> — fill alerts are part of the launch remainder.</li>
+  <li><strong>Buying-power flow</strong> — API proposal with tZERO for topping up buying power from the referral wallet (in place of a daily file).</li>
+  <li>Remaining gateway sessions (indications-of-interest, drop copy) for full book visibility and independent fill reconciliation.</li>
+</ul>
+
+<h2>Open with tZERO</h2>
+<ul>
+  <li>Scope confirmation: the precise split of what tZERO manages for the simulated challenge — partly resolved (wallets, P&amp;L), formal confirmation outstanding.</li>
+  <li>Market-maker account permissioning in QA (the synthetic entity with effectively unlimited buying power).</li>
+  <li>Self-match prevention behaviour — matters because two InPlay house accounts (IPO seller and market maker) will interact with the same books.</li>
+  <li>Cash-wallet host for real payouts (tZERO or a third party).</li>
+  <li>Shorting mechanics business requirements (with Troy).</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Finish cancel/cancel-replace and notifications.</li>
+  <li>Daily simulation replays as the standing test harness through August.</li>
+  <li>Full-dress rehearsal on tZERO QA in the week of 17 August: IPO → close → inventory hand-off → live quoting.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

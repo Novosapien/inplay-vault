@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Consumer App</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html" class="current">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Consumer app <span class="pill build">IN BUILD — LATE STAGE</span></h1>
+<p class="sub">"InPlay Challenge" — iOS live, web build available, Android listing in progress</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  The app is in the store and receiving weekly improvement at high tempo —
+  over 300 commits in July alone, delivered through an over-the-air update
+  pipeline that avoids repeated store review. All five tabs are functional.
+  The one big substitution still to come: market prices are simulated until
+  the trading service connects, behind a kill switch that shows "TBA"
+  app-wide if needed.
+</div>
+
+<h2>Built and working</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Area</th><th>State</th></tr>
+  <tr><td>Auth + onboarding</td><td>Complete — signup, verification, Persona KYC, team picking, referral intro</td></tr>
+  <tr><td>Home</td><td>Complete — positions, notifications, streak, referral</td></tr>
+  <tr><td>Discover</td><td>Deepest surface — game pages, team and player pages, charts, standings, news, injuries, awards, search, and landscape <strong>Watch Mode</strong> with the custom 3D-stadium Gamecast (InPlay-owned IP, no third-party widget)</td></tr>
+  <tr><td>Trading flows</td><td>All screens built — IPO draft, order entry, confirmation, receipt, cancel, orders, history, portfolio, wallet (execution connects via the trading service)</td></tr>
+  <tr><td>Leaderboard</td><td>Built — rankings, trader profiles, share card</td></tr>
+  <tr><td>More</td><td>Settings, education (16 modules + glossary), research reports, official rules, account deletion, referral</td></tr>
+</table>
+</div>
+<ul>
+  <li>Live backends already wired: the Sportradar service (~35 query domains), the auth/referral broker, and the real-time websocket layer for live game deltas.</li>
+  <li>Store assets, listing metadata and official-rules draft prepared; iOS release pipeline at build 30.</li>
+</ul>
+
+<h2>In flight</h2>
+<ul>
+  <li><strong>Real prices</strong> — the price layer swaps from simulation to the trading service as part of the trading integration (see <a class="cardlink" href="trading.html">Trading</a>).</li>
+  <li><strong>Notifications</strong> — fill alerts and earnings countdowns are part of the launch remainder.</li>
+  <li><strong>P&amp;L display work</strong> — net position, per-game and global P&amp;L on the trading screen (Edwin, 17-07); requirements coming from the InPlay team huddle.</li>
+  <li><strong>Watch Mode on live data</strong> — the visual shell is built; mapping price history, game events and win probability onto one timeline follows the trading integration.</li>
+  <li><strong>Release governance</strong> — scope freeze approaching launch; OTA updates are capped by the stores, so releases are scheduled into buckets and staged (agreed 24-07).</li>
+  <li>Alpha testing: page-by-page pass by InPlay's interns under way.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Connect live trading and retire the simulated price layer.</li>
+  <li>Ship notifications.</li>
+  <li>Complete the Google Play listing.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

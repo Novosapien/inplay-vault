@@ -4,7 +4,7 @@
 >
 > **Purpose:** the single source of truth for how InPlay talks about itself — for the founder, the corporate channels, and every agency or contractor who touches the brand. If copy conflicts with this document, this document wins. All public materials receive legal review (testing-the-waters) before publication.
 >
-> Source file: `InPlay_Messaging_House.docx` (Edwin, via Downloads). Companion: [[website-punch-list|InPlay Website Punch List v1.3]].
+> Source file: `InPlay_Messaging_House.docx` (Edwin, via Downloads). Companion: [[../drafts/website-punch-list|InPlay Website Punch List v1.3]].
 
 ## The Roof — Master Idea
 
