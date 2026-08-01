@@ -10,6 +10,23 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-01 — the working mode splits in two
+
+- ✅ **Integration work is built autonomously; domain work stays step by step
+  (George).** The step-by-step mode existed because the domain concepts were
+  new and every piece needed his ruling. What remains — Ch 8 venue sync, the
+  poller, Ch 12 config — is engineering mechanics under the 22-07 remit line,
+  so Claude builds a full chapter per run: pieces committed separately,
+  BUILD-LOG per step, tests green, review at the chapter boundary against
+  one story-style explainer. **Three stop conditions survive:** anything
+  book-visible (Edwin's remit) · anything contradicting this log · anywhere
+  the gateway's real behaviour differs from its documentation. Recorded in
+  the repo CLAUDE.md.
+- 📅 **Estimate under the new mode: code-complete ~4–6 August** (was 10–12),
+  leaving ~3 weeks to the 26 Aug deadline for QA against the real venue —
+  which is only usable if **T1** and **S1/S7** land. The asks move in
+  parallel now.
+
 ## 2026-07-31 — Chapter 5 built · §3.3–§3.5 built · the machine quotes
 
 - ✅ **Chapter 5 is built, in the adoption spec's five pieces.**
