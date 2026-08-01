@@ -162,8 +162,13 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `SR acquisition lag` | SR's own delay before publishing | ~5–15 s (media tier) **or** fast (betting tier) — **contradictory sources** | 🔴 S9 — measure in August | SR service research vs Cody |
 | `ClOrdID` | Client order id format | ≤ **20 chars**, **no leading zeroes**, + gateway's MM prefix; replace/cancel carry **two** ids (new + orig), each ≤20 | ✅ venue-verified 24-07 | tZERO OE spec v2.2 |
 | `MaxOrdRate` | tZERO's per-account message allowance | — **not in any document**; per-account OMS setting | 🔴 T2 — ask with T1 | tZERO OE spec (absent) |
-| `gateway MM governor` | Token-bucket throttle on the MM namespace | 50 msg/s — **Hasan's placeholder**, not a venue limit | 🟡 placeholder, cert item | Gateway 24-07 |
-| `dead-man window` | Heartbeat silence before the gateway sweeps our book | 4 s (placeholder) + latched sweep | 🟡 **ours to set** (N15) | Gateway 24-07 |
+| `gateway MM governor` | Token-bucket throttle on the MM namespace | 50 msg/s, burst 100 — **Hasan's placeholder**, not a venue limit. ⚠ Over-limit messages are **REJECTED** (`RATE_LIMITED`), never queued | 🟡 placeholder, cert item | Gateway 24-07 · code 01-08 |
+| `dead-man window` | Heartbeat silence before the gateway sweeps our book | 4 s (placeholder) + latched sweep + **30 s boot grace** | 🟡 **ours to set** (N15) | Gateway 24-07 · code 01-08 |
+| `heartbeat interval` | How often the MM beats on `gateway.orders.mm.heartbeat` | **1 s** — tolerates three missed beats against the 4 s window | 🟡 ours (N15), set with the window at cert | Ch 8 build 01-08 |
+| `time-in-force` | TIF on every MM resting order | **DAY (0)** — self-cleaning at tZERO's 23:59 ET boundary; ⚠ nightly book gap → **E36** | 🟡 built as DAY, Edwin rules | Ch 8 build 01-08 |
+| `ClOrdID scheme` | Deterministic order-id minting | **`MM` + 16 hex of SHA-256** over `security\|context\|side\|slot\|config` — 18 of 20 chars, no leading zero, no dots | ✅ ours (replay requirement 24-07) | `mm/venue/reconciler.py` |
+| `MM identity` | `userId` / `botId` on the gateway | `mm1` / `sdmm-1` | 🟡 CONFIGURED, Ch 12 | `mm/venue/transport.py` |
+| `EXECUTION idempotency key` | What names one fill | (venue, **client_order_id**, execution_id) — ⚠ supersedes §7.3's (venue, execution_id): **tZERO recycles ExecIDs** (incident 29-07) | ✅ venue-verified | Gateway `e37cd3d` · `mm/events/idempotency.py` |
 
 ---
 

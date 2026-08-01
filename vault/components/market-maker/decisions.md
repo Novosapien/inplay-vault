@@ -10,6 +10,70 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-01b — Chapter 8 built in one run · two venue facts supersede the spec
+
+First session under the autonomous integration mode, run as designed: four
+commits (`56efd57` · `3b590cc` · `e7bdecb` · `4f12ab6`), 329 → 385 tests,
+ruff + mypy strict clean, review at the chapter boundary. The gateway repo
+was pulled first (6 new commits); two research agents mapped the gateway
+contract and our integration surface before any code was written.
+
+- ⭐ **tZERO recycles ExecIDs — §7.3's EXECUTION key is superseded (venue
+  fact, gospel).** Proven by incident, not inference: on 29-07 the FIX
+  gateway silently discarded both execution reports of a real filled order
+  because ExecIDs 1658/1660 had been seen the previous day on a different
+  symbol (gateway commit `e37cd3d`; the fill reached no part of the
+  platform). Our key is now (venue, **client_order_id**, execution_id); a
+  session gap-fill repeats both, so genuine retransmissions still dedupe.
+- ✅ **DONE_FOR_DAY joins the §8.2 state table (venue fact).** tZERO ends
+  its session at 23:59 ET and every resting DAY order expires as a distinct
+  terminal state. Folding it into Cancelled would blind the morning repost.
+- ⚠ **Time-in-force is DAY, and the consequence is book-visible → E36.**
+  The book vanishes at 23:59 ET nightly and reposts after the boundary.
+  GTC has no gap but leaves a dead bot's quotes resting with only the
+  dead-man as cleanup. Built as DAY behind one CONFIGURED constant;
+  Edwin's call which way it ships.
+- ✅ **The reconciler implements rest-until-gone exactly as ruled (23-07,
+  N10):** a still-wanted price is left alone, never topped up; a price move
+  is one cancel/replace carrying the remainder (`CumQty + LeavesQty` — which
+  satisfies the gateway's quantity-above-fills guard by construction);
+  post-first ordering per N12. §8.3 honoured: no replace ever relies on
+  keeping queue priority. §5.9 stays unbuilt — E17 decides the lifecycle.
+- ✅ **§4.4's PBE/PSE includes Partially Filled (ours, recorded).** The
+  spec's state list omits it; a part-filled order's remainder still rests,
+  and excluding it understates exposure. §4.4 and the Effective Position
+  Ratio are now fed by real venue state — the last test-supplied quote
+  input chain is gone.
+- ✅ **Exposure begins at the decision to send.** Intent is registered with
+  the Venue State Record BEFORE an instruction is published — the gateway
+  never acks that a message reached it (malformed JSON is a silent drop),
+  so register-first is the only order that never understates exposure.
+- ✅ **ClOrdIDs mint deterministically** — MM prefix + 16 hex chars of a
+  SHA-256 over pipe-joined context, the §5.7.3 seed scheme reused. 18 of
+  the venue's 20 chars, no leading zero, no dots (the id becomes a NATS
+  subject token and the gateway does not guard against a dot — we must).
+- ✅ **The §7.5 audit chain closes.** cycle() and the Target Order Book now
+  carry the triggering Accepted Event Sequence — event → RP → book is
+  traceable end to end. §5.10 check 1 is real on every cycle (a
+  StatusTracker status is always supplied).
+- ✅ **Overnight books do not suspend (ours, recorded).** A security with no
+  game live and none imminent reports its probability condition CURRENT —
+  the input is not stale, it is not needed; the price rides T and the
+  off-field values. Marking it Invalid would suspend all 170 books nightly
+  against §2.5's 24 h/day evaluation. Daily-feed staleness is N23's
+  question, unbuilt.
+- 📅 **E27 movement from the gateway log:** the 35=UEPR position-seeding
+  probe drew nothing on 28-07 — but tZERO switched that message family ON
+  later the same day (35=UEAR now answers in 12–17 ms; buying power is
+  settable per account over FIX). **Re-probe UEPR before declaring the
+  venue-side seeding path dead.**
+- ⚠ **Gateway facts worth keeping:** the MM rate governor REJECTS
+  over-limit messages rather than queueing (deliberate — a stale order is
+  worse than a refused one) · `market.book.*` is defined and never
+  published, do not build against it · JetStream durable publish is OFF by
+  default (`NATS_JETSTREAM_PUBLISH=false`) — at-least-once is a deployment
+  property to confirm at cert, not a code fact.
+
 ## 2026-08-01 — the working mode splits in two
 
 - ✅ **Integration work is built autonomously; domain work stays step by step

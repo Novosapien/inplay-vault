@@ -46,6 +46,22 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 01-08 (Chapter 8 BUILT — the loop closes):** first session under
+> the autonomous integration mode, run as designed: the whole chapter in one
+> run, four commits, 329 → 385 tests, review at the chapter boundary.
+> The machine now runs **event → priced → positioned → quoted → diffed
+> against the venue's confirmed book → gateway-shaped instructions out**,
+> with fills and acks flowing back through the real adapter path into
+> §4.4's pending exposure. Replay reproduces byte-identical books THROUGH
+> the venue leg, and two independent stacks emit byte-identical payload
+> streams. Venue facts folded in from the gateway pull (6 new commits):
+> **tZERO recycles ExecIDs** (EXECUTION key superseded), DONE_FOR_DAY is
+> real, no cancel-on-disconnect, UEPR possibly re-enabled (→ E27 re-probe).
+> New Edwin question: **E36** (DAY vs GTC — the nightly book gap).
+> **Remaining before live:** the NATS adapter (one Protocol method, gated
+> on T1's ACL) · the poller · Ch 12 config sweep · §5.5/checks 5+12 (needs
+> the participant book feed) · checkpoints (§10.3).
+>
 > **Update 31-07 (Chapter 5 BUILT · §3.3–§3.5 BUILT · the machine quotes):**
 > All five pieces of the re-cut Chapter 5 landed in one session — volatility
 > → width → ladder → quantities → the assembly — plus §3.3–§3.5 (freshness,
