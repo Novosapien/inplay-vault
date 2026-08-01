@@ -10,6 +10,62 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-01c — the ungated tier lands: step 5 · Chapter 6 · Chapter 12
+
+Third stretch of the day, autonomous integration mode. Three build commits
+(`7c43131` · `2f21d81` · `2d3afd8`), **392 → 434 tests**, ruff + mypy strict
+clean. Story page: "Permission to quote" 🚦.
+
+- ✅ **The §3.2.1 sum check runs at the acceptor's door (§7.2's Business
+  Validated stage), and rejections are audited.** A rejected event gets no
+  Accepted Event Sequence and a `rejected` journal line carrying the
+  reason. Because validation precedes dedup (spec order), a corrected
+  resend under the same key is later accepted, and every re-delivery of a
+  bad reading writes its own record. The engine's silent-drop branch now
+  raises. Closes the last 27-07 review gap — the fix pass is complete.
+- ✅ **Chapter 6 built.** §6.3 in §6.2's precedence; §6.4.1's promotion
+  ceiling separate from the demotion floor (ordinary synchronizing demotes
+  nothing but blocks the last climb to Stable); the tracker demotes
+  instantly and promotes one rung per served 10 s dwell. **Suspended →
+  Defensive is dwell-free (ours, recorded):** §6.4.1 names dwell conditions
+  for the two upper climbs only, mirroring §3.4.1's first-rung grant — so a
+  healthy security quotes on its first trigger rather than 10 s late.
+  Dwell toward one rung never counts toward the next.
+- ✅ **The kill switch is an event.** MANUAL_CONTROL (idempotency: Control
+  Action ID) drives the global kill switch and per-security suspension —
+  journalled, deduplicated, replay-identical. Payload shape is ours pending
+  the ops UI; §6.3's "release requested but unapproved" middle state is an
+  ops-UI workflow and does not exist yet.
+- ✅ **The suspension sweep runs every suspended cycle, quiet by state
+  (ours, recorded).** The flip-gated version had a hole: an order submitted
+  just before the suspension is not yet cancellable, and when its ack
+  landed the flip was spent — it rested through the suspension. Per-cycle
+  sweeping cancels it on the ack's own cycle; already-cancelled orders are
+  PENDING_CANCEL and never re-sent.
+- ✅ **Edwin's four-state dwell table replaced the LIVE-only interim**,
+  keyed on an activity axis (LIVE / PRE_KICKOFF / POST_GAME / OVERNIGHT)
+  derived from the fixture rhythm — deliberately NOT §6.1's Market State,
+  two axes both called "state". ⚠ The window boundaries (1 h before
+  kickoff, 1 h after the final) are ours as interims under **N4**; the
+  pre-hour mirrors §3.3.2's tightest band.
+- ⚠ **The spec disagrees with itself on Recovery Ready → E37.** §6.3 maps
+  Ready → Defensive; §6.4.1 permits the Defensive → Active climb with
+  "Normal or Ready" — unreachable under the §6.3 row. Both implemented
+  literally, the stricter wins; cannot bite until §10 recovery exists.
+- ✅ **Chapter 12 built — the registry and the sweep.** Every configurable
+  value lives in `mm/config/dictionary.py` with its status; §12.3's
+  no-default parameters are None slots awaiting their named sources (T2,
+  the ICD, InPlay policy); cross-parameter validation runs at construction.
+  Fifteen modules alias their constants from it; the CONFIGURED-marker
+  convention is retired and a test fails if it reappears. Deliberately
+  absent: the superseded §5.2/§5.6/§5.7.1 tables, §9.2's 85 % (E20), and
+  §3.6's unbuilt rows. Runtime activation/rollback stays unbuilt.
+- ✅ **Active and Defensive quote identically for now** — their parameter
+  widening is E31's per-state width floor; the slot exists in `width.py`
+  and wires in one call-site when Edwin's values land. Suspension is the
+  only enforceable state effect today, which §3.4's effects column already
+  demanded.
+
 ## 2026-08-01b — Chapter 8 built in one run · two venue facts supersede the spec
 
 First session under the autonomous integration mode, run as designed: four

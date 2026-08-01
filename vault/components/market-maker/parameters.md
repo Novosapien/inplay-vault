@@ -143,7 +143,7 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | Parameter | Value | Status | Notes |
 |---|---|---|---|
 | Cold-start σ² | **the ceiling** — V₀ = ceil ÷ H = 13.33 ticks²/s | 🟡 ours → **E31** | Wide-when-ignorant; every book opens at max width and tightens as movement is measured. Book-visible on day one |
-| Dwell (shape/extra lifetime) | **3–12 s**, seeded per shape | 🟡 interim → E31/N26 | His LIVE row standing in for the four-state table until market states exist. N26's gate is built: expiry only permits, never causes |
+| Dwell (shape/extra lifetime) | **his four-row table, built 01-08c**: LIVE 3–12 s · PRE_KICKOFF 8–30 s · POST_GAME 10–40 s · OVERNIGHT 20–90 s, keyed on the activity axis | 🟡 his values → E31/N26 | Replaced the LIVE-only interim. N26's gate stands: expiry only permits, never causes |
 | Odd-tick side | **stateless seeded 50/50** per draw | ✅ ours (remit line) | Strict alternation needs state; the hash bit gives the same fairness, replay-safe. Tagged `[odd-side]` |
 | Width constant C | **derived at import** from γ and k, ≈1.653 | ✅ mechanism | Never a literal — a test enforces `WIDTH_CONST == width_constant()` so a stale C cannot survive an E31 change |
 | §5.8 material thresholds | IA ≥ **$0.005** · quantity ≥ **500 sh** · any price · suspension flip | ✅ spec-fixed | Judged on pre-variation sizes and the held shape — the random draw can never cause a publish |
@@ -152,6 +152,17 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | §3.5 deductions | 15/40/25/10/30/20/15/20, floor 0 | 🟡 ▸ spec | Confidence caps status: ≥90 Valid · ≥70 Warning · ≥40 Degraded · else Invalid |
 | MEV | ROF + $5 × remaining + $2.50 × scheduled | ✅ §5.4 formula | In `reference_price.py`; `games_remaining` rides Edwin's daily feed — the engine holds no schedule (§2.5 gap) |
 | split-lean `S₂` / `M₂` | skew and cap on the **mandated** part of the position | — | 🔴 proposal, blocked on **E27** | `traded = NP − OpeningPosition`; sentiment lean keeps ~§4.5's cap, distribution lean gets its own. §4.5 single-position lean stands meanwhile |
+
+### Chapter 6 as built (01-08c) — market state
+
+| Parameter | Value | Status | Notes |
+|---|---|---|---|
+| §6.4.1 promotion dwell | **10 s per rung**, Defensive→Active and Active→Stable; **Suspended→Defensive dwell-free** (mirrors §3.4.1's first-rung grant) | 🟡 ▸ spec | Demotions instant; dwell toward one rung never counts toward the next; versions mint on change only |
+| Activity windows | PRE_KICKOFF = **1 h before kickoff** · POST_GAME = **1 h after the final** | 🟡 ours, interim → **N4** | The dwell table's boundaries. Pre window mirrors §3.3.2's tightest freshness band; Edwin defines the real session boundaries |
+| Tracker start | **Suspended**; first healthy evaluation earns Defensive | ✅ ours (remit line) | Wide-when-ignorant's Ch 6 twin |
+| Venue sync axis | derived from the Venue State Record: UNKNOWN order → Suspended · pending intents → synchronizing (blocks only the climb to Stable) | ✅ ours | `VenueEngine.sync_state()` |
+| Venue connection axis | **runtime-supplied**; CONNECTED by construction for in-process transports | 🟡 NATS adapter owes real transitions | `Orchestrator.set_venue_connection()` |
+| ⚠ §6.3 vs §6.4.1 on Recovery Ready | §6.3: Ready → Defensive · §6.4.1: Defensive→Active permitted with "Normal **or Ready**" | 🔴 spec defect — **E37** | Both literal, stricter wins; cannot bite until §10 exists |
 
 ### Ingestion + venue-interface numbers (not in the spec — ours or the venue's)
 
@@ -167,7 +178,7 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `heartbeat interval` | How often the MM beats on `gateway.orders.mm.heartbeat` | **1 s** — tolerates three missed beats against the 4 s window | 🟡 ours (N15), set with the window at cert | Ch 8 build 01-08 |
 | `time-in-force` | TIF on every MM resting order | **DAY (0)** — self-cleaning at tZERO's 23:59 ET boundary; ⚠ nightly book gap → **E36** | 🟡 built as DAY, Edwin rules | Ch 8 build 01-08 |
 | `ClOrdID scheme` | Deterministic order-id minting | **`MM` + 16 hex of SHA-256** over `security\|context\|side\|slot\|config` — 18 of 20 chars, no leading zero, no dots | ✅ ours (replay requirement 24-07) | `mm/venue/reconciler.py` |
-| `MM identity` | `userId` / `botId` on the gateway | `mm1` / `sdmm-1` | 🟡 CONFIGURED, Ch 12 | `mm/venue/transport.py` |
+| `MM identity` | `userId` / `botId` on the gateway | `mm1` / `sdmm-1` | 🟡 via the Configuration Dictionary (Ch 12 built 01-08c) | `mm/config/dictionary.py` |
 | `EXECUTION idempotency key` | What names one fill | (venue, **client_order_id**, execution_id) — ⚠ supersedes §7.3's (venue, execution_id): **tZERO recycles ExecIDs** (incident 29-07) | ✅ venue-verified | Gateway `e37cd3d` · `mm/events/idempotency.py` |
 
 ---
@@ -199,7 +210,7 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 |---|---|---|---|---|
 | `sessions` | Liquidity session set | in-game / around-game / overnight | ✅ | 20-07 (Troy) |
 | `overnight spread` | Deliberate wide spread outside games | ~$2.5–5 | 🟡 indicative | 20-07 (Troy) |
-| `session boundaries` | When each session starts/ends | — | 🔴 TBD | N4 |
+| `session boundaries` | When each session starts/ends | interim built 01-08c: 1 h pre-kickoff / 1 h post-final windows on the activity axis | 🔴 TBD — Edwin's; interims tagged N4 in the Configuration Dictionary | N4 |
 | `condition classes` | Health classifier outputs | Normal / Degraded / Protective / Recovery / Emergency | ✅ (doc) | CTS-002 |
 | `classifier thresholds` | Staleness/latency limits per class | — | 🔴 TBD | N3 |
 | `RP publication` | Reference price identity | RP = ESV (mid) · frozen on feed failure | ✅ | CTS-002 + 20-07 |

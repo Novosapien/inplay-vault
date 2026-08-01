@@ -46,6 +46,21 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 01-08c (the ungated tier LANDS — step 5 · Ch 6 · Ch 12):** third
+> stretch of the day. Rejection audit records close the fix pass (§3.2.1 at
+> the acceptor's door, §7.2's order honoured). **Chapter 6 built** — the
+> four states wired into every cycle: instant demotions, one earned rung
+> per 10 s dwell (Suspended→Defensive free), the kill switch as a
+> journalled MANUAL_CONTROL event, the suspended sweep per cycle, Edwin's
+> four-row dwell table on a derived activity axis (1 h windows = N4
+> interims). **Chapter 12 built** — every configurable value in one
+> validated registry, the CONFIGURED convention retired and test-enforced,
+> §12.3 slots awaiting T2/ICD/policy. New: **E37** (§6.3 vs §6.4.1 on
+> Recovery Ready — spec defect, low urgency). 392 → 434 tests.
+> **Remaining ungated:** the NATS adapter + loopback wire test (before any
+> live attempt) · §10.3 checkpoints · poller game discovery. Everything
+> else gates on T1/T2 · S1/S7 · the unsent Edwin round E29–E37.
+>
 > **Update 01-08b (the POLLER built · N16 closed):** one worker, three
 > publications — probabilities, official results, the gateway heartbeat.
 > The poller holds no seen-state (the acceptor's idempotency is the
