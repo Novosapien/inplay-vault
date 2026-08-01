@@ -46,6 +46,18 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 01-08b (the POLLER built · N16 closed):** one worker, three
+> publications — probabilities, official results, the gateway heartbeat.
+> The poller holds no seen-state (the acceptor's idempotency is the
+> memory, restart-proven); the real Chiefs–Ravens game flows FileSource →
+> all engines → gateway payloads and its final whistle publishes the
+> result. Validated against SR's OpenAPI specs: the v1 product we use
+> matches exactly; ⚠ the S7-gated v2 product nests timeline entries under
+> `market` — switching is a one-function adapter change, never silent.
+> 385 → 392 tests. **Remaining:** fix-pass step 5 · Ch 12 sweep · the NATS
+> adapter + loopback wire test (deferred by George) · live HTTP source
+> (S1/S7).
+>
 > **Update 01-08 (Chapter 8 BUILT — the loop closes):** first session under
 > the autonomous integration mode, run as designed: the whole chapter in one
 > run, four commits, 329 → 385 tests, review at the chapter boundary.
