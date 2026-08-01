@@ -4,7 +4,7 @@
 >
 > **Scope:** inplayglobal.com and inplaytradingchallenge.com. Each item carries an owner tag — [DEV] developer, [COUNSEL] legal review or drafting, [EDWIN] founder, [POLICY] standing rule — and a priority: P0 same-day, P1 this week's dev sprint, P2 travels in the counsel package, P3 before kickoff. Copy in quoted blocks is final and pastes verbatim.
 >
-> Source file: `InPlay_Website_Punch_List_1.docx` (Edwin, via Downloads). Companion document: [[../brand/messaging-house|InPlay Messaging House v2.0]], which governs all language.
+> Source file: `InPlay_Website_Punch_List_1.docx` (Edwin, via Downloads). Companion document: [[messaging-house|InPlay Messaging House v2.0]], which governs all language.
 >
 > Repos: `inplay-global-website` (inplayglobal.com) · `Trading-Challenge-` (inplaytradingchallenge.com).
 
