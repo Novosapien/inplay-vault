@@ -2,7 +2,7 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-07-20 · restructured 2026-07-21 · v1 model set 2026-07-23
-> **Status:** **v1.3 Build Spec adopted as baseline (24-07)** — supersedes the CTS/PTS standards for implementation (`standards/MM-build-spec-v1.3.html`). E11/E12 answered by the spec; conflicts **E17–E19** + SR items **S6/S7** open with InPlay. **Build started:** `inplay-market-maker` (Python)
+> **Status (02-08): the venue side is BUILD-COMPLETE for live and wire-proven.** Chapters 3–8 + 12 built, 443 tests, and the loopback wire test passes all five phases against the real FIX gateway over real NATS. Remaining blockers are permissions and answers, not code: **T1** (MM account + ACL) · **S1/S7** (SR entitlement) · **E27** (the opening position) · the unsent Edwin round **E29–E37**. Season-scale build still owed: §3.6 off-field · Ch 9 IPO · Ch 11 settlement · §10.3 checkpoints · the production runtime loop. Baseline: the **v1.3 Build Spec** (24-07), superseded where [[market-maker/decisions]] says so. Repo: `inplay-market-maker` (Python), branch `feat/position-engine`
 > **Owner:** Kevin Murray (Head Execution Trader) / George Westbrook (engineering) / Edwin (co-build, domain expertise)
 > **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]], [[24-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
 
@@ -91,12 +91,12 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 | System | What it does | Status |
 |--------|--------------|--------|
-| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value (ESV) from win probabilities + the revenue model | Inputs resolved 23-07 (SR live pull + Wednesday drop) · $5/win sign-off + E11 pending |
-| [[market-maker/systems/market-state\|Market State]] | Publishes the Reference Price; classifies market condition; selects profile + liquidity session | Shape known · classifier ours to design |
-| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: decision cycle, reservation prices, ladders, inventory skew, randomizer, cancel-replace | v1 model set 23-07 (rest-until-gone · bifurcated cadence) · numbers owed |
-| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 |
-| [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game |
-| [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last |
+| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value from win probabilities + Edwin's daily T | ✅ **Built** (Edwin's on-field leg, freshness/status/confidence §3.3–§3.5, replay-proven on the real Chiefs–Ravens game) · off-field §3.6 still mocked |
+| [[market-maker/systems/market-state\|Market State]] | Permission to quote: Stable/Active/Defensive/Suspended per security, kill switch, promotion ladder | ✅ **Built 01-08** (Ch 6; classifier superseded by σ² — decisions 30-07b) · Active/Defensive widening awaits E31 |
+| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: σ² → width → ladder → sizes → publish-or-hold → reconcile → gateway | ✅ **Built + wire-proven 02-08** (loopback test 5/5 vs the real gateway) · values 🟡 pending E31 · §5.5/§5.9 gated (Ch 8 book feed / E17) |
+| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 (T3–T5) · busts currently refuse-and-raise (T4) |
+| [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game — not ours to build in the MM repo |
+| [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last · will own CONFIGURATION_ACTIVATION + the N19 upload page |
 
 ## Working Docs
 
