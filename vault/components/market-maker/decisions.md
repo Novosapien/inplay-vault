@@ -10,6 +10,41 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-02b — George triages the open questions: eight closed, three slimmed
+
+Housekeeping pass on [[market-maker/open-questions]] (resolved rows had
+already moved below the fold earlier today). **64 open → 56 open.**
+
+- ✂ **E4 closed** — the old simulation code is superseded by the 30-07
+  ASMM-1 handoff package.
+- ✂ **E6 closed** — week-zero mismatch openers are not a question: pricing
+  rides SR probabilities + Edwin's T; a mismatch is just a lopsided number.
+- ✂ **E7 closed** — "how strictly do the standards bind" was answered by
+  the v1.3 spec adoption (24-07): the spec is the bar, deviations ride
+  this log.
+- ✅ **E8 resolved** — deliberate price-moving is "not in v1", agreed when
+  filed.
+- ✂ **E10 closed** — the v1.3 spec Ch 3 carries the full valuation math;
+  the missing CTS-001 chapter is historical.
+- ✅ **E16 resolved with a residual** — trading is continuous, no sessions
+  or auctions; the one gap is the venue boundary. Hard fact: the FIX
+  session runs **00:01–23:59 ET** (gateway config; DAY expiry at 23:59
+  venue-verified). ⚠ George recalls **~30 min** of nightly downtime — the
+  venue-side window's true length now rides **T9/T10** for the next T0
+  call. Do not record the half hour as fact until T0 confirms.
+- ✅ **E22 resolved** — shares outstanding are **900,000 NFL / 1,000,000
+  NCAA** (IPO Requirements v2 §1.2/§5.1, gospel). The unoffered-100k
+  question lives on as N21.
+- ✅ **E23 resolved** — Edwin's price composition was answered in practice
+  by the 28-07 email: his exact on-field formula is built and his unit
+  tests pass; the off-field terms are §3.6's own build.
+- 📝 **E18, E21, E24 slimmed to their single remaining asks** (E18's full
+  refinement stays in the 31-07 entry; E24 now carries the leading
+  reading — §4 governs per E20's ruling → Rounds 1–10 → 85 M max — one
+  line from Edwin confirms it).
+- ⭐ **E26 marked priority (George):** *is the MM itself ever going to
+  short?* Ask in the Edwin round.
+
 ## 2026-08-02 — first contact: the wire test passes against the real gateway
 
 The loopback wire test — George's precondition for any live attempt —
