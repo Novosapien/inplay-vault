@@ -46,6 +46,19 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 02-08 (FIRST CONTACT — the loopback wire test passes):** the
+> real NATS transport is built and the whole stack ran against the real
+> gateway binary (LOOPBACK_MODE + MM namespace + dead-man live, in
+> docker) — all five phases pass: heartbeat, post, move, the kill
+> switch, the dead-man sweep. Three wire-only findings fixed (topic-named
+> events · cross-subject timestamp jitter → per-security cycle-clock
+> floor · cancel_all reposts unless the bot's own Ch 6 kill switch
+> engages first). Game discovery built (schedule → game list, same S1
+> entitlement as the timeline). §10.3 checkpoints deferred as a full
+> session, recorded. 434 → 443 tests. **The venue side is build-complete
+> for live; the remaining blockers are permissions (T1/T2 · S1/S7) and
+> the unsent Edwin round E29–E37.**
+>
 > **Update 01-08c (the ungated tier LANDS — step 5 · Ch 6 · Ch 12):** third
 > stretch of the day. Rejection audit records close the fix pass (§3.2.1 at
 > the acceptor's door, §7.2's order honoured). **Chapter 6 built** — the

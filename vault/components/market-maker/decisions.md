@@ -10,6 +10,50 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-02 — first contact: the wire test passes against the real gateway
+
+The loopback wire test — George's precondition for any live attempt —
+**passes all five phases** (heartbeat · post · move · kill switch ·
+dead-man) against the real gateway binary in LOOPBACK_MODE over real NATS,
+343 order events consumed on the passing run. Commits `abd8b2a` ·
+`c477713` · `7b510ea`, 434 → 443 tests. Story page: "First contact" 📡.
+
+- ✅ **The NATS transport exists** (`venue/nats_transport.py`) — one queue,
+  one writer task, strict FIFO so post-first ordering survives onto the
+  wire; a dead writer raises on the next publish, never silently.
+  `nats-py` is the repo's first runtime dependency, confined to the edge.
+- ⭐ **Three wire-only findings, each fixed where it belongs (gateway
+  facts = gospel, 22-07 filter):**
+  1. The gateway's LOCAL publish paths (loopback accepts; every cancel it
+     resolves itself, dead-man and cancel_all sweeps included) put **no
+     order id in the payload** — the subject `order.{user}.{clOrdId}` is
+     the only name. The adapter falls back to the topic's last segment.
+  2. The gateway's **eight publisher workers do not preserve timestamp
+     order across subjects** — two acks for one security arrived 10 µs
+     reversed and tripped the volatility engine's backward-clock guard.
+     The orchestrator now floors each security's cycle clock at its
+     high-water mark; deterministic on replay, absorbs only µs jitter.
+  3. **cancel_all is a hammer, not a stop.** Fired alone, it swept 48
+     orders and the live bot correctly treated the empty venue as
+     divergence and REPOSTED. The stop is Ch 6's kill switch; the drill
+     now proves suspend-then-sweep holds and nothing reposts.
+- ✅ **Game discovery built** (`poller/discovery.py`) — the Sport Schedule
+  endpoint on the SAME v1 product as the timeline (one S1 entitlement
+  covers both) → the games touching our universe, membership via the
+  valuation engine's own team map; replaced events skipped;
+  `ensure_game()` idempotent.
+- ✅ **§10.3 checkpoints deliberately deferred as a full session** —
+  complete-state snapshots + integrity hashes + replay-from-checkpoint
+  equality across eight engines is not a fill-in item. Recorded, not
+  squeezed.
+- 📅 **For Hasan:** the gateway Dockerfile pins golang:1.23 while go.mod
+  requires ≥ 1.26 — the image no longer builds as committed (we built with
+  an override). And the local publish paths omitting clOrdId (finding 1)
+  are worth aligning with the real-venue path, which includes it.
+- **Where this leaves the build: everything the venue side needs before
+  live now exists and is wire-proven. What remains is permission —
+  T1/T2, S1/S7 — and the unsent Edwin round E29–E37.**
+
 ## 2026-08-01c — the ungated tier lands: step 5 · Chapter 6 · Chapter 12
 
 Third stretch of the day, autonomous integration mode. Three build commits
