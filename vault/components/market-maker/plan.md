@@ -49,9 +49,11 @@
 > **Update 03-08 (DEPLOYMENT ARCHITECTURE — N7 answered):** design
 > session, no code. The machine's shape is settled: **one stateful engine
 > plus one stateless panel, joined by NATS.** The MM engine gets its own
-> VM at `10.0.0.5` beside NATS (`10.0.0.3`) and the gateway (`10.0.0.2`) —
-> not Cloud Run (single-writer journal), not the gateway VM (that host is
-> the SPOF holding the whitelisted IP). Auto-restart with a rate limit;
+> VM in the same subnet as NATS — not Cloud Run (single-writer journal),
+> not the gateway VM (that host is the SPOF holding the whitelisted IP).
+> ⚠ **Addresses TBC: the vault's `VPC Setup.md` does not match the live
+> config** (gateway `10.0.1.2`, NATS `10.0.2.2`) → **N30**, for Hasan.
+> Auto-restart with a rate limit;
 > journal on a dedicated persistent disk with hourly snapshots. Edwin's
 > daily file: **the bucket holds the file, the database holds the parsed
 > rows**, the row carries the object's hash — which collapses the
@@ -64,11 +66,20 @@
 > orchestrator reads no wall clock, so a clock-driven sweep has no legal
 > `at`. Resolved by making the scheduler a **producer** outside the
 > deterministic core; needs a tenth event type (**N28**, ask with N23).
-> **New/changed: N7 ✅ resolved · N19 store decided, the 06:00 hand-off
-> still open · N28 + N29 opened.** ⚠ **For Hasan: the MM VM needs Cloud
-> NAT** to reach Sportradar (`VPC Setup.md:660` — documented, not created).
-> **Next: George's call on N29** (admin panel vs a new desktop shell —
-> days against weeks), then build `mm/runtime/`.
+> **N29 ✅ answered (03-08b): the MM panel is
+> `Novosapien/inplay-admin-panel-trading`** — the trading QA/monitoring
+> panel, not the internal-operations `inplay-admin-panel`. It already
+> runs an in-VPC Python `proxy/` that speaks NATS, so the MM panel is
+> **new pages plus new proxy endpoints, no new deployment unit**.
+> ⚠ It queries no database, so live monitoring reads live and only the
+> file history needs a store; **Redis is already in the proxy** and is the
+> better home for the live projection.
+> **New/changed: N7 ✅ resolved · N29 ✅ resolved · N19 store decided, the
+> 06:00 hand-off still open · N28 + N30 opened.** ⚠ **For Hasan, one
+> message: the real VPC layout (N30) and Cloud NAT** for the MM VM to
+> reach Sportradar (`VPC Setup.md:660`).
+> **Next: the panel-side build** (bucket · file-history store · ingest
+> handler · proxy endpoints · MM pages), then `mm/runtime/`.
 >
 > **Update 02-08 (FIRST CONTACT — the loopback wire test passes):** the
 > real NATS transport is built and the whole stack ran against the real

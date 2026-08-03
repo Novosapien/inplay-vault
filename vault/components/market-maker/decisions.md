@@ -10,6 +10,75 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-03b — N29 answered · ⚠ the vault's VPC addresses are wrong
+
+Same session, after George pointed at the right panel repo. Two findings,
+one of which corrects the entry below.
+
+- ✅ **N29 answered — the MM panel is `inplay-admin-panel-trading`**
+  (`Novosapien/inplay-admin-panel-trading`, "QA test bench and
+  monitoring", TypeScript, last pushed 30-07). **Not**
+  `inplay-admin-panel`, which is the internal-operations panel where the
+  vault and the CI assets are surfaced. Cloned locally 03-08.
+  - It already carries the shape the MM needs: routes for `tzero`,
+    `trading`, `market-data`, `health`, `vpc`, `test-bench`,
+    `simulations`, `loadtest`, `resilience`; API routes for `gateway`,
+    `nats`, `orders`, `positions`, `market`, `centrifugo`.
+  - **The pattern is already built.** `proxy/` is a Python FastAPI
+    service running INSIDE the VPC holding `nats_client.py`,
+    `centrifugo_client.py`, `vpc_topology.py`. The Next.js routes sit
+    outside and call it (`proxyFetch("/nats/monitor")`). So the MM panel
+    is new pages plus new `proxy/main.py` endpoints — **no new
+    deployment unit for monitoring**.
+  - Stack: Next.js 16 · React 19 · Chakra + shadcn · deployed on Vercel
+    (`ALLOWED_ORIGINS` names `inplay-admin-panel-trading.vercel.app`).
+  - ⚠ **The panel queries no database.** Every route goes through the
+    proxy, whose dependencies are `nats-py`, `redis`, `httpx` — no
+    Postgres client. The one exception is `api/tzero`, which calls an
+    `ONBOARDING_URL` service directly. Cloud SQL exists (PostgreSQL 15,
+    database `inplay`, plus `inplay-trading-db` and `zitadel`) and the
+    panel displays its **health**, but does not read from it.
+  - ⚠ **Access control matters here.** This panel carries destructive
+    controls — `/loadtest`, `/stress-test`, `/resilience`, and a
+    `nats/purge` endpoint. The MM kill switch and
+    `CONFIGURATION_ACTIVATION` would sit beside them. Roles exist (an
+    `(auth)` group; commit `7eab0ad` "allow viewer role to see Market
+    Data"). Confirm which role gates what before the MM control surface
+    lands.
+- ✂ **CORRECTION to 03-08 below: the VPC addresses in
+  `vault/drafts/VPC Setup.md` do not match the live configuration.**
+  `proxy/.env.example` is the deployed truth:
+
+  | | `VPC Setup.md` (vault draft) | `proxy/.env.example` (live) |
+  |---|---|---|
+  | FIX gateway | `10.0.0.2` | `10.0.1.2` |
+  | NATS | `10.0.0.3` | `10.0.2.2` |
+  | Redis | — | `10.78.64.3` |
+  | Cloud SQL | — | `10.78.65.3` |
+  | Subnet | `10.0.0.0/24` | not a single /24 |
+
+  So **`10.0.0.5` and `nats://10.0.0.3:4222` in the 03-08 entry are
+  wrong** and have been struck there. The **shape** of N7 is unaffected —
+  own VM, same subnet as NATS, one writer — only the addresses are
+  unknown. This is the MM working mode's third stop condition (reality
+  does not match the docs), so it is flagged rather than guessed.
+  📅 **For Hasan, one message:** confirm the real subnet layout and the
+  MM VM's address, alongside the Cloud NAT question.
+- ⭐ **New fact worth carrying: Redis is already in the stack and already
+  in the proxy** (`10.78.64.3`, TLS). For the MM's **live** projection
+  that is a better home than Postgres, and it adds no dependency.
+- ✂ **Refines 03-08's "projector → database → panel".** That was written
+  before the panel's real data path was known, and it was too broad.
+  Split it by question type:
+  - **Live monitoring** (positions, market state, resting book, poll
+    counters) — read live through the proxy, following the panel's
+    existing grain. No projector, no SQL.
+  - **Historical and relational** (Edwin's file rows, the accepted and
+    rejected history, revision diffs) — still needs the bucket plus a
+    queryable store, because a live read cannot answer "diff revision 1
+    against revision 2". The bucket/database split stands **for the
+    file**; it does not generalise to the whole MM state.
+
 ## 2026-08-03 — deployment architecture: N7 answered
 
 Design session with George, no code. Settles where the machine runs, where
@@ -23,10 +92,10 @@ three-clock addendum: `sessions/2026-08-03-deployment-architecture.md`.
   us-east4), inter-VM latency under 1 ms.
 - ✅ **N7 answered — one stateful engine plus one stateless panel, joined
   by NATS.** They share no disk and never call each other.
-  - **MM engine** — its own VM at `10.0.0.5`, `e2-medium`, same subnet.
-    One writer. `NATS_URL=nats://10.0.0.3:4222`.
-  - **MM panel** — dashboard plus upload page. Cloud Run, no state. Reads
-    the database, writes the bucket.
+  - **MM engine** — its own VM, `e2-medium`, in the same subnet as NATS.
+    One writer. ⚠ **Address TBC — see the 03-08b correction below.**
+  - **MM panel** — new pages in `inplay-admin-panel-trading` (N29), plus
+    new endpoints in its in-VPC `proxy/`. No new deployment unit.
 - ✅ **Not Cloud Run for the engine, and not the gateway VM.** The engine
   is one long-lived single-writer process with an fsync-per-event journal;
   `journal.py`'s `[second-writer]` note makes a second writer a stop

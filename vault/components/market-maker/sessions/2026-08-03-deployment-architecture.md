@@ -59,13 +59,47 @@ written outside ASD-STE100 and George asked for it again in the standard.
 - **N29 opened** — does the MM panel live in the existing admin panel, or
   in a new desktop app shell?
 
+---
+
+## ✂ Correction, same session (03-08b) — read this before the above
+
+George pointed at the right panel repo, and two things above are wrong.
+
+1. **The panel is `Novosapien/inplay-admin-panel-trading`**, not
+   `inplay-admin-panel`. **N29 resolved.** The trading panel already has
+   the shape the MM needs: an in-VPC Python `proxy/` holding
+   `nats_client.py`, with Next.js routes calling it from outside. So the
+   MM panel is new pages plus new proxy endpoints — no new deployment
+   unit.
+2. ⚠ **The VPC addresses above are wrong.** `vault/drafts/VPC Setup.md`
+   does not match the deployed `proxy/.env.example`:
+
+   | | Vault draft | Live |
+   |---|---|---|
+   | FIX gateway | `10.0.0.2` | `10.0.1.2` |
+   | NATS | `10.0.0.3` | `10.0.2.2` |
+   | Redis | — | `10.78.64.3` |
+   | Cloud SQL | — | `10.78.65.3` |
+
+   So **`10.0.0.5` is not a real address** and the MM VM's address is
+   unknown. The **shape** of N7 holds; only the addresses are open →
+   **N30**, for Hasan, with the Cloud NAT question.
+3. **The panel queries no database** — every route goes through the
+   proxy (`nats-py`, `redis`, `httpx`). So "projector → database →
+   panel" was too broad. **Live monitoring reads live through the
+   proxy. Only the file history needs the bucket plus a queryable
+   store.** Redis is already in the proxy and is the better home for the
+   live projection.
+
 ## Next
 
-1. **George's call on N29** — it decides whether the panel is days or
-   weeks of work.
-2. **Build `mm/runtime/`** — the three clocks below, once N28 has a
-   provisional event type.
-3. Ask N28 + N23 as one question in the Edwin round (E29–E37, still
+1. **Ask Hasan** — the real VPC layout (**N30**) and Cloud NAT, one
+   message.
+2. **The panel-side build** — the bucket, the file-history store, the
+   ingest handler, the proxy endpoints, the MM pages.
+3. **Build `mm/runtime/`** — the three clocks below, once N28 has a
+   provisional event type. George: work the deployment thread first.
+4. Ask N28 + N23 as one question in the Edwin round (E29–E37, still
    unsent).
 
 ---
