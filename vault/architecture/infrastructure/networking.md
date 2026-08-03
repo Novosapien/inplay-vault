@@ -20,8 +20,40 @@ document disagrees with this table, this table wins.
 | FIX gateway | `10.0.1.2` | health endpoint on `:8080/health` |
 | NATS | `10.0.2.2` | `:4222`. Users `trading-service` and `admin` |
 | Redis | `10.78.64.3` | `:6378`, **TLS** (`rediss://`) |
-| Cloud SQL — `inplay-postgres` | `10.78.65.3` | PostgreSQL 15. Databases `inplay` and `zitadel` |
-| Cloud SQL — `inplay-trading-db` | — | second instance; address not yet captured |
+| Cloud SQL — `inplay-postgres` | `10.78.65.3` | PostgreSQL 15, port `5432`. Databases `inplay` and `zitadel`. App user `inplay_app` |
+| Cloud SQL — `inplay-trading-db` | `10.78.65.8` | second instance (`proxy/vpc_topology.py:163`) |
+| Redis — `inplay-redis` | `10.78.64.3` | as above |
+
+**The data stores** (verified 03-08):
+
+| Store | What it is | Used by |
+|---|---|---|
+| Cloud SQL `inplay` | PostgreSQL 15 on `inplay-postgres` | `inplay-onboarding-referral` (`asyncpg`) |
+| Cloud SQL `inplay-trading-db` | second instance, contents not yet verified | the trading side |
+| `zitadel` | identity provider, own database on `inplay-postgres` | auth |
+| Supabase | a separate hosted Postgres (`supabase.co`) — **NOT Cloud SQL, and NOT on the trading path** | see the scope note below |
+
+⚠ **Supabase scope — do not overstate it (checked 03-08 after George
+challenged an earlier, looser claim).** Supabase is **absent from the
+whole trading path**: nothing in `inplay-admin-panel-trading`, its
+`proxy/`, either FIX gateway repo, or `inplay-market-maker` references it.
+Where it genuinely is:
+
+- **`inplay-admin-api`** — real. `src/app/config.py` carries
+  `supabase_url`, `supabase_jwt_secret`, `supabase_anon_key` and
+  `supabase_service_role_key`. This is the **internal-operations** admin
+  API, not the trading one.
+- **`inplay-admin-panel`** — real. `@supabase/supabase-js` +
+  `@supabase/ssr`, used in `src/middleware.ts` for auth. Again the
+  internal-operations panel.
+- **`inplay-app`** — the PWA. Its own `CLAUDE.md` states *"PWA login
+  (Supabase) requires the admin API"*, so sign-in rides it. A feedback
+  integration exists but is **commented out** in `.env.example`.
+- **`inplay-global-website`, `inplay-website`** — the dependency is
+  present in `package.json`; usage not verified.
+
+**Conclusion: Supabase is internal-operations tooling plus PWA login. It
+is not part of trading, and the market maker should not plan around it.**
 
 Also confirmed:
 
