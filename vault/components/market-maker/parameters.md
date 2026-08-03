@@ -183,6 +183,24 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `gateway local-event naming` | Which field names the order on gateway-originated events | **The subject alone** (`order.{user}.{clOrdId}`) — loopback accepts and resolved cancels (dead-man/cancel_all sweeps) carry NO clOrdId in data; adapter falls back to the topic segment | ✅ wire-verified 02-08 | Loopback wire test · `[topic-fallback]` |
 | `gateway event ordering` | Cross-subject timestamp order of order events | **Not guaranteed** — 8 publisher workers; acks for one security observed 10 µs reversed. Handled: per-security cycle-clock floor `[monotonic-at]` | ✅ wire-verified 02-08 | Loopback wire test |
 
+### Runtime clocks (03-08 design session — `mm/runtime/` is UNBUILT)
+
+The engine is event-driven: a book updates when an accepted fact arrives,
+never on a timer (§5.8). "Every 200 ms" and "every 4–5 s" are **not** one
+loop speed — they are three separate clocks the runtime owns. Full
+reasoning: `sessions/2026-08-03-deployment-architecture.md`.
+
+| Parameter | Meaning | Value | Status | Source |
+|---|---|---|---|---|
+| `runtime tick` | The loop's base rate: beat → drain inbound → due polls → due sweeps | **1 s**, fixed, unconditional | 🟡 ours (ties to N15's heartbeat interval) | 03-08 design |
+| `poll tier — LIVE` | SR poll per live game | **~2 s** — E18's evidenced rate; a 200 ms poll re-reads unchanged values against SR's 4 s median gap | 🟡 evidence-backed, E18 open | 03-08 design |
+| `poll tier — PRE_KICKOFF` | SR poll within 1 h of kickoff | **~10–30 s** — lines move pregame | 🔴 **CONFIGURED interim to add** | 03-08 design |
+| `poll tier — POST_GAME / OVERNIGHT` | SR poll between games | **None** — daily schedule discovery only; the price rides T and off-field | 🟡 ours | 03-08 design |
+| `earnings burst` | Tue/Wed ~07:30 window | Edwin's daily file → **burst-evaluate all 170** | ✅ the 23-07 ruling | 03-08 design |
+| `peak SR call rate` | Worst case, NCAA Saturday | 30–40 live games → **15–20 calls/s** — this is the **S7** quota ask. Engine compute ~2 ms per reading, so the ceiling is venue messages (**T2**), never CPU | 🟡 derived | 03-08 design |
+| `sweep emission` | When the §3.1.4 sweep writes a journal event | **On effect, not on tick** — the scheduler ticks at §3.1.4's 2.0 s in memory and journals only when a sweep would change something. 170 securities at 0.5/s would otherwise write **85 events/s**, all kept under §10.4 | 🟡 ours — needs the **N28** event type | 03-08 design |
+| `reaction bound` | Accepted reading → published book, in process | **single-digit ms** (measured, real-game tests). §5.8's "200 ms" is a **bound, not a timer** — the budget is spent waiting for SR, not for us | ✅ measured | Real-game tests · 03-08 |
+
 ---
 
 > ⚠️ **Everything below this line predates the v1.3 spec (24-07).** Kept for

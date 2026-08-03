@@ -10,6 +10,87 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-03 — deployment architecture: N7 answered
+
+Design session with George, no code. Settles where the machine runs, where
+its data lives, and how the MM panel reads it. Full reasoning and the
+three-clock addendum: `sessions/2026-08-03-deployment-architecture.md`.
+
+- ⚠ **Correction to a standing assumption.** NATS does NOT run on the FIX
+  gateway VM. Per `vault/drafts/VPC Setup.md`: gateway `10.0.0.2` (static
+  public IP, tZERO-whitelisted) · NATS JetStream `10.0.0.3` (no public IP)
+  · Centrifugo `10.0.0.4`, all in `inplay-subnet` (`10.0.0.0/24`,
+  us-east4), inter-VM latency under 1 ms.
+- ✅ **N7 answered — one stateful engine plus one stateless panel, joined
+  by NATS.** They share no disk and never call each other.
+  - **MM engine** — its own VM at `10.0.0.5`, `e2-medium`, same subnet.
+    One writer. `NATS_URL=nats://10.0.0.3:4222`.
+  - **MM panel** — dashboard plus upload page. Cloud Run, no state. Reads
+    the database, writes the bucket.
+- ✅ **Not Cloud Run for the engine, and not the gateway VM.** The engine
+  is one long-lived single-writer process with an fsync-per-event journal;
+  `journal.py`'s `[second-writer]` note makes a second writer a stop
+  condition, so scale-to-zero and container recycling are disqualifying.
+  The gateway VM is the single point of failure that holds the whitelisted
+  IP — adding load there buys nothing at under 1 ms.
+- ⚠ **The MM VM needs Cloud NAT** (or its own public IP, which is worse).
+  The poller calls Sportradar over the public internet; Private Google
+  Access covers GCP APIs only. `VPC Setup.md:660` documents the fix and
+  marks it as not yet created. **For Hasan — confirm before the VM exists.**
+- ✅ **Restart posture: auto-restart with a rate limit** (systemd
+  `Restart=always`, roughly 5 in 60 s then stay down), alarm on repeats.
+  Journal replay makes restart safe. Between death and restart the
+  gateway's 4 s dead-man clears the book, so no stale quotes rest.
+- ✅ **The journal lives on a dedicated persistent disk**, never the boot
+  disk, with hourly snapshots. §10.4's retention period is still an
+  unfilled §12.3 slot (InPlay policy).
+- ✅ **Edwin's daily file: the bucket stores the file, the database stores
+  the parsed rows.** They are not the same data twice.
+  - The **bucket** holds the file exactly as sent — the evidence.
+    Rejected files land here too, with the reason in object metadata
+    (N19's perpetuity ruling: a rejection is evidence).
+  - The **database** holds the parsed rows — about 30,000 per season. The
+    real questions are relational (T for one team on one date; revision 1
+    against revision 2; every correction).
+  - The row carries the object's path and hash. **The test of the split:
+    the database can always be rebuilt from the bucket, and the bucket can
+    never be rebuilt from the database.**
+  - ⚠ The bucket is chosen for §10.4, **not for size** — the file is
+    50–100 KB. A retention lock makes deletion impossible even for an
+    administrator; a database row is editable and an `UPDATE` leaves no
+    trace without audit triggers. Absent §10.4 one store would be simpler.
+  - ⚠ **Do not apply the retention lock yet** — the period is unset and a
+    lock is irreversible. Enable versioning now, lock when the number lands.
+  - ⚠ **Write the object first, then the row.** An orphan object is
+    harmless; a row pointing at a missing object is not.
+  - **This also collapses the interim question:** Edwin drops the object
+    now, the upload page writes the object later, and the engine watches
+    the bucket either way. One path, built once.
+- ✅ **The MM panel never reads the journal.** The journal is
+  single-writer, fsync'd, replay-critical, and its format is internal. The
+  engine publishes state to NATS; a projector writes that state to the
+  database; the panel reads the database. This matches the 24-07 phasing
+  (read-only first, the same APIs users get).
+  - ⚠ **The panel is a projection, not the truth.** Expect it to lag the
+    venue. Say so before someone reports the lag as a bug.
+  - Phase 2 control runs the other way: the panel publishes
+    `MANUAL_CONTROL` / `CONFIGURATION_ACTIVATION` to NATS and the engine
+    journals it. Ch 6's kill switch already proves that path.
+- ✅ **The §3.1.4 sweep scheduler is a PRODUCER, outside the deterministic
+  core (ours, recorded).** The real constraint is not §7.3's type list: the
+  orchestrator reads **no wall clock** (`[clock-stays-put]`) and §3.3's
+  ages are differences of event timestamps (`[ages]`), so a clock-driven
+  sweep has no legal `at`. Constraining sweeps to demotions does not help —
+  a demotion changes the book as surely as a promotion.
+  The scheduler therefore sits beside the poller, emits a journalled event,
+  and the engine stays purely event-driven. Replay consumes the emitted
+  events and never re-runs the scheduler.
+  **Volume control: emit on effect, not on tick** — 170 securities at
+  0.5/s would write 85 events per second and §10.4 keeps them all.
+  Needs a tenth event type → **N28**, basis `security_id + scheduled_time`.
+- 📅 **Still George's call: N29** — does the MM panel live in the existing
+  admin panel, or in a new desktop app shell? Days against weeks.
+
 ## 2026-08-02b — George triages the open questions: eight closed, three slimmed
 
 Housekeeping pass on [[market-maker/open-questions]] (resolved rows had

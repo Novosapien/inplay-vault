@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tZERO Integration — Plain English Guide</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --val:#0e5a6a; --val-deep:#0a4350; --val-soft:#dfecef; --val-ghost:#edf4f5;
+    --mkt:#a83a2c; --mkt-deep:#7f2b20; --mkt-soft:#f5e4df;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --conf:#0e6a4c; --conf-soft:#e0eee5;
+    --new:#5b3f8f; --new-soft:#ece5f5;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:.5rem 1rem}
+  .stripe b{color:#9fd4c4;font-weight:600}
+  .topnav{position:sticky;top:0;z-index:10;background:var(--paper-deep);border-bottom:1px solid var(--rule-strong);padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;box-shadow:0 2px 8px rgba(60,50,25,.08)}
+  .topnav a{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s}
+  .topnav a:hover{border-color:var(--val);color:var(--val-deep);background:var(--val-ghost)}
+  .wrap{max-width:50rem;margin:0 auto;padding:0 1.4rem 5rem}
+
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--val);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--mkt);color:var(--mkt)}
+  .meta span.go{border-color:var(--conf);color:var(--conf)}
+  .meta span.nw{border-color:var(--new);color:var(--new)}
+
+  section{padding:2.6rem 0 0}
+  h2{font-size:1.55rem;letter-spacing:-.01em;padding-top:1rem;border-top:1px solid var(--rule);display:flex;gap:.7rem;align-items:baseline}
+  h2 .n{font-family:var(--mono);font-size:.8rem;color:var(--val);letter-spacing:.1em}
+  h3{font-size:1.08rem;margin-top:1.7rem;color:var(--val-deep)}
+  h4{font-size:.95rem;margin-top:1.2rem;font-family:var(--mono);letter-spacing:.02em;color:var(--ink-soft);text-transform:uppercase;font-size:.68rem;letter-spacing:.16em}
+  p{margin-top:.85rem;max-width:46rem}
+  p.lead{font-size:1.08rem}
+  ul,ol{margin:.85rem 0 0 1.3rem;max-width:44rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--val)}
+  b{font-weight:700}
+  em{color:var(--ink-soft)}
+  code{font-family:var(--mono);font-size:.82em;background:rgba(255,255,255,.6);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+
+  .pull{margin:1.4rem 0 0;padding:1rem 1.3rem;border-left:4px solid var(--val);background:var(--val-ghost);font-size:1.06rem;font-style:italic}
+  .pull b{font-style:normal}
+
+  .callout{margin:1.4rem 0 0;border:1px solid var(--rule-strong);border-radius:10px;padding:1rem 1.2rem;background:rgba(255,255,255,.5)}
+  .callout .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;display:inline-block;margin-bottom:.4rem}
+  .callout.touchdown{border-color:var(--conf);background:var(--conf-soft)}
+  .callout.touchdown .tag{color:var(--conf)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.warn .tag{color:var(--amber)}
+  .callout.stop{border-color:var(--mkt);background:var(--mkt-soft)}
+  .callout.stop .tag{color:var(--mkt)}
+  .callout.nw{border-color:var(--new);background:var(--new-soft)}
+  .callout.nw .tag{color:var(--new)}
+  .callout p{margin-top:.35rem}
+  .callout p:first-of-type{margin-top:.2rem}
+
+  .formula{margin:1.3rem 0 0;background:#20241f;color:#cfe8d8;border-radius:10px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.82rem;line-height:1.85;overflow-x:auto;white-space:pre}
+  .formula .c{color:#7fa08c}
+  .formula b{color:#9fe8c4;font-weight:600}
+  .formula i{color:#e8c98f;font-style:normal}
+
+  .tablewrap{overflow-x:auto;margin-top:1.2rem}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:32rem}
+  th{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong);vertical-align:bottom}
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{font-weight:700}
+  table.tags td:first-child{white-space:nowrap;font-family:var(--mono);font-size:.82rem;color:var(--val-deep)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.35)}
+
+  .chain{margin:1.4rem auto 0;max-width:30rem;text-align:center;font-family:var(--mono)}
+  .chain .box{border:1.5px solid var(--rule-strong);background:rgba(255,255,255,.6);border-radius:8px;padding:.5rem .8rem;font-size:.78rem}
+  .chain .box b{display:block;font-size:.85rem;color:var(--val-deep)}
+  .chain .box small{color:var(--ink-soft);font-family:var(--serif);font-style:italic;font-size:.78rem}
+  .chain .arr{color:var(--val);font-size:.8rem;padding:.15rem 0}
+  .chain .box.mkt b{color:var(--mkt-deep)}
+  .chain .box.mkt{border-style:dashed}
+
+  .rulelist{counter-reset:rule;list-style:none;margin-left:0}
+  .rulelist li{counter-increment:rule;position:relative;padding-left:2.6rem;margin-top:1rem}
+  .rulelist li::before{content:counter(rule,decimal-leading-zero);position:absolute;left:0;top:.1rem;font-family:var(--mono);font-size:.72rem;color:var(--val);border:1px solid var(--rule-strong);border-radius:6px;padding:.1rem .3rem;background:rgba(255,255,255,.6)}
+  .rulelist.q li::before{color:var(--mkt);border-color:var(--mkt)}
+
+  footer{margin-top:4rem;border-top:3px double var(--rule-strong);padding-top:1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+</style>
+</head>
+<body>
+
+<div class="stripe">InPlay Trading · tZERO integration · derived explainer · <b>the tZERO PDFs win over this document</b> · trade secret of InPlay Global, Inc.</div>
+<nav class="topnav">
+  <a href="#thirty">30-sec</a><a href="#docs">1 · The 5 docs</a><a href="#fix">2 · FIX basics</a><a href="#pipes">3 · The 3 pipes</a><a href="#order">4 · Life of an order</a><a href="#money">5 · Accounts &amp; money</a><a href="#risk">6 · Risk controls</a><a href="#closes">7 · Gaps closed</a><a href="#questions">8 · Questions for tZERO</a><a href="#cheat">9 · Cheat sheet</a>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Trading component · tZERO (T0) integration · in plain english</div>
+  <h1>The tZERO Integration <span class="thin">— what the specs actually say</span></h1>
+  <p class="deck">For someone who has to build, spec, or make decisions about InPlay trading, and who does not want to read 50 pages of FIX tag tables to do it. Everything here comes from the five tZERO documents plus <code>t0.md</code>.</p>
+  <div class="meta">
+    <span class="nw">★ New spec found — Account &amp; Position v3</span>
+    <span class="go">✓ 4 tZERO PDFs read in full</span>
+    <span class="hot">12 open questions for tZERO</span>
+    <span>companion: architecture/integrations/t0.md</span>
+  </div>
+</header>
+
+<section id="thirty">
+  <h2><span class="n">◎</span>The 30-second version</h2>
+  <p class="lead">tZERO is the exchange. InPlay does not run a matching engine. We open a small number of permanent network connections to tZERO, speak a 1990s messaging protocol called <b>FIX 4.2</b> down them, and fan the results out to a million users. Everything InPlay does in trading is one of three jobs: <b>read prices</b>, <b>send orders</b>, or <b>manage accounts and money</b>.</p>
+
+  <div class="chain">
+    <div class="box"><b>tZERO ATS</b><small>the matching engine — not ours</small></div>
+    <div class="arr">↓ 3–4 permanent FIX sessions</div>
+    <div class="box"><b>InPlay FIX Gateway</b><small>translates FIX → normal events</small></div>
+    <div class="arr">↓ publishes</div>
+    <div class="box"><b>Message bus (NATS)</b><small>decouples 1 upstream from 1M downstream</small></div>
+    <div class="arr">↓ subscribes</div>
+    <div class="box"><b>WebSocket gateway (Centrifugo)</b><small>one connection per user</small></div>
+    <div class="arr">↓</div>
+    <div class="box mkt"><b>The app</b><small>prices, orders, positions, P&amp;L</small></div>
+  </div>
+
+  <div class="pull"><b>The single most important thing to understand:</b> a FIX session is a permanent, stateful, numbered conversation — not a request/response API. Every message carries a sequence number. If a number is missed, the conversation is broken until it is repaired. This is why the gateway is the hardest part of the build, and why it is a single point of failure that needs care.</p></div>
+
+  <p>Three more facts that shape every decision downstream:</p>
+  <ul>
+    <li><b>tZERO has no market orders.</b> Only limit orders exist (<code>OrdType=2</code>). Everything else — market orders, stops, iceberg orders — is either built by InPlay in the UI layer or does not exist.</li>
+    <li><b>tZERO does not encrypt FIX.</b> The Order Entry spec states this plainly. All security comes from the network layer. This is why the VPC and the direct connect to tZERO matter.</li>
+    <li><b>tZERO holds the account, the cash, and the identity.</b> The Account and Position spec shows tZERO owning KYC status, bank links, cash balances, buying power, deposits, and withdrawals. InPlay sends instructions and reads state back.</li>
+  </ul>
+</section>
+
+<section id="docs">
+  <h2><span class="n">§1</span>The five documents, and what each one is for</h2>
+  <p>Four are tZERO's specifications of their own system. One is InPlay's request to tZERO. They do not overlap much — each answers a different question.</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Document</th><th>Ver / date</th><th>Answers the question</th><th>In <code>t0.md</code>?</th></tr>
+    <tr>
+      <td>IOI Market Data Specification</td>
+      <td>v1.2 · 20 Dec 2025 · 8pp</td>
+      <td>"What is <em>every</em> symbol doing right now?" — the all-symbols ticker.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>FIX Market Data Specification</td>
+      <td>v8 · 20 Dec 2025 · 13pp</td>
+      <td>"What is <em>this one</em> symbol doing, in detail?" — depth, halts, auctions, session phase.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Order Entry Specification FIX 4.2</td>
+      <td>v2.2 · 17pp</td>
+      <td>"How do I place, cancel and change orders, and what comes back?"</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td><b>Account and Position FIX Specification</b></td>
+      <td>v3 · March 2026 · 12pp</td>
+      <td>"Who is the customer, where is their money, and what are they allowed to do?"</td>
+      <td><b>No — not referenced</b></td>
+    </tr>
+    <tr>
+      <td>InPlay Blockchain Schema <em>(ours, not theirs)</em></td>
+      <td>Draft · 15 May 2026 · 9pp</td>
+      <td>"Here is how we want the tokens and settlement to work. Can your chain do it?"</td>
+      <td>No</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="callout nw"><span class="tag">★ the important find</span>
+    <p><b>The Account and Position spec is new to the vault.</b> <code>t0.md</code> lists exactly three source specifications and this is not one of them. It is also the newest document tZERO has given us — Version 3, prepared March 2026, three months newer than the other two dated specs.</p>
+    <p>It is the single largest unexploited source we hold. It contains the answers to several questions the vault currently records as open, including account-level trade limits, KYC status handling, how buying power is expressed, and how deposits and withdrawals work. Section 5 and Section 6 below are built almost entirely from it.</p>
+    <p><b>Filename caution:</b> the file is named <code>tZERO_FIX_AccountPosition_20251015.pdf</code>, but the document's own title page says Version 3, March 2026. Trust the title page. Confirm with tZERO that this is the current version.</p>
+  </div>
+
+  <div class="callout touchdown"><span class="tag">✓ t0.md checks out</span>
+    <p>Where <code>t0.md</code> covers the three market-data and order-entry specs, it is accurate. Spot checks against the PDFs on session parameters, state transitions, reject codes, and field-to-screen mapping all hold. The version numbers and dates it cites match the PDFs exactly. Treat <code>t0.md</code> as reliable for those three specs — its gap is scope, not correctness.</p>
+  </div>
+</section>
+
+<section id="fix">
+  <h2><span class="n">§2</span>FIX in plain English</h2>
+  <p>FIX is the messaging language that trading systems use to talk to each other. tZERO uses FIX 4.2, a version from 1998. It is not modern and it is not friendly, but it is universal, and it is what the exchange speaks.</p>
+
+  <h3>A FIX message is a string of numbered fields</h3>
+  <p>Every field is a number, an equals sign, and a value. The number is called a <b>tag</b>. Tag <code>55</code> means "symbol". Tag <code>44</code> means "price". You never see field names on the wire — only numbers. This is why every conversation about FIX is full of numbers, and why a tag reference is essential.</p>
+
+  <div class="formula"><span class="c"># A buy order for 500 Green Bay shares at $3.55, as it goes on the wire</span>
+<b>8</b>=FIX.4.2  <b>9</b>=178  <b>35</b>=D  <b>49</b>=INPLAY  <b>56</b>=TZERO  <b>34</b>=4711
+<b>52</b>=20260911-23:15:42  <b>11</b>=IP20260911A0001  <b>100</b>=STX  <b>55</b>=IPTCPACK
+<b>54</b>=1  <b>38</b>=500  <b>40</b>=2  <b>44</b>=3.5500  <b>59</b>=0  <b>60</b>=20260911-23:15:42  <b>10</b>=093
+
+<span class="c"># the same thing in English</span>
+<i>FIX 4.2</i> · <i>New Order Single</i> · from INPLAY to TZERO · message no. 4711
+order id <i>IP20260911A0001</i> · route to <i>STX</i> · symbol <i>IPTCPACK</i>
+<i>Buy</i> · <i>500</i> shares · <i>Limit</i> order · at <i>3.5500</i> · good for <i>today only</i></div>
+
+  <h3>Three structural rules that never change</h3>
+  <ul>
+    <li><b>Every message has a header, a body and a trailer.</b> The header always starts with tags 8, 9 and 35 in that exact order. The trailer is always tag 10, a checksum, last.</li>
+    <li><b>Every message is numbered</b> (<code>MsgSeqNum</code>, tag 34). Both sides count. If InPlay receives message 4712 when it expected 4711, a message was lost and the gateway must repair the gap before continuing.</li>
+    <li><b>Silence is treated as failure.</b> Both sides agree a heartbeat interval at logon (<code>HeartBtInt</code>, tag 108). If nothing arrives in that window, you send a Test Request and the other side must answer with a Heartbeat. No answer means the connection is dead.</li>
+  </ul>
+
+  <h3>The session is the unit, not the request</h3>
+  <p>A FIX session is opened once and held open. It is identified by two names that tZERO assigns: <code>SenderCompID</code> (tag 49) and <code>TargetCompID</code> (tag 56). These are the login. There is no token, no API key, and no per-request authentication. Whoever holds the session is the client.</p>
+
+  <div class="callout warn"><span class="tag">⚠ security consequence</span>
+    <p>The Order Entry spec states: <em>"tZERO does not support encryption of FIX messages."</em> All three market-data and order sessions set <code>EncryptMethod=0</code>, meaning no encryption. Order flow, account numbers and execution details cross the wire in clear text.</p>
+    <p>Every protection therefore has to come from the network: private connectivity, IP allowlisting, and the VPC. This is not a gap in the InPlay design — it is a constraint tZERO imposes. It does mean the network path is a compliance artefact, not just an infrastructure choice.</p>
+  </div>
+
+  <h3>The administrative messages — the same on all sessions</h3>
+  <p>Six messages exist purely to keep the conversation alive. They are identical across all three tZERO sessions and carry no trading information.</p>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>MsgType</th><th>Name</th><th>What it does</th></tr>
+    <tr><td>0</td><td>Heartbeat</td><td>"I am still here." Sent on a timer, or in reply to a Test Request.</td></tr>
+    <tr><td>A</td><td>Logon</td><td>Opens the session. Sets the heartbeat interval.</td></tr>
+    <tr><td>1</td><td>Test Request</td><td>"Are you still there?" Forces the other side to prove it.</td></tr>
+    <tr><td>2</td><td>Resend Request</td><td>"Send me messages 4711 to 4715 again." Repairs a sequence gap.</td></tr>
+    <tr><td>3</td><td>Reject</td><td>"That message was malformed." Session level, not a trading rejection.</td></tr>
+    <tr><td>4</td><td>Sequence Reset</td><td>"Skip ahead to message 4716." Used to fill a gap without resending.</td></tr>
+    <tr><td>5</td><td>Logout</td><td>Closes the session politely.</td></tr>
+  </table>
+  </div>
+  <p>Note the distinction between a <b>Reject</b> (MsgType 3) and an <b>Order Reject</b>. A Reject means the message itself was broken. An Order Reject is a normal, well-formed execution report saying the exchange declined the order. The user must never see the first one.</p>
+</section>
+
+<section id="pipes">
+  <h2><span class="n">§3</span>The three pipes</h2>
+  <p>tZERO exposes four session types. InPlay uses three, with a fourth (Drop Copy, a read-only echo of execution reports) available and worth negotiating for. Each pipe is a separate TCP connection with its own logon, its own sequence numbers, and its own recovery rules.</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th></th><th>IOI Market Data v1.2</th><th>FIX Market Data v8</th><th>Order Entry v2.2</th></tr>
+    <tr><td>Job</td><td>Every symbol, at a glance</td><td>One symbol, in depth</td><td>My orders and my fills</td></tr>
+    <tr><td>Feeds the screen</td><td>Watchlist, leaderboard, team tiles</td><td>Symbol detail, order book ladder, halt badges</td><td>Order blotter, positions, P&amp;L</td></tr>
+    <tr><td>You send</td><td><code>V</code> once</td><td><code>V</code> per symbol, plus <code>g</code> and <code>e</code></td><td><code>D</code>, <code>F</code>, <code>G</code></td></tr>
+    <tr><td>You receive</td><td><code>3</code> (IOI), <code>W</code> (snapshot)</td><td><code>W</code>, <code>X</code>, <code>Y</code>, <code>f</code>, <code>h</code></td><td><code>8</code> (exec report), <code>9</code> (cancel reject)</td></tr>
+    <tr><td>Subscription</td><td>Subscribe once, streams forever. No unsubscribe.</td><td>Per symbol. Can unsubscribe (<code>SubscriptionRequestType=2</code>).</td><td>Not applicable</td></tr>
+    <tr><td>On disconnect</td><td>Server drops all subscriptions and replays the entire book on reconnect, "as if it were the client's first time connecting"</td><td>Server drops all subscriptions. You must re-request everything. Session recovery is <b>not supported</b>.</td><td>Standard FIX gap recovery applies</td></tr>
+    <tr><td><code>ResetSeqNumFlag</code> (141)</td><td>Optional</td><td><b>Required = Y.</b> Omitting it causes immediate logout.</td><td>Not present in the Logon spec</td></tr>
+    <tr><td>Timestamp precision</td><td>Milliseconds (<code>.sss</code>)</td><td>Seconds</td><td>Seconds</td></tr>
+    <tr><td>Concurrency</td><td>"a single client connection at a time"</td><td>Not stated</td><td>Not stated</td></tr>
+  </table>
+  </div>
+
+  <h3>Pipe 1 — IOI: the ticker</h3>
+  <p>An <b>IOI</b> is an Indication of Interest: one line saying "someone will buy 500 of IPTCPACK at 3.55". Stack all the IOIs for a symbol and you have the order book. The IOI feed sends these for every active symbol at once.</p>
+  <p>The flow is simple. Log on, send one Market Data Request, and tZERO sends the current state of the whole market. When it has finished, it sends a heartbeat carrying the text <code>IOI REFRESH COMPLETE</code> — that string is the signal that the initial load is done. After that, updates stream automatically and forever. You never ask again.</p>
+  <p>Each IOI carries an <code>IOItransType</code> (tag 28): <code>N</code> for new, <code>C</code> for cancel, <code>R</code> for replace. The gateway applies these to its in-memory book. Alongside them, Market Data Snapshots (MsgType <code>W</code>) carry trades and the open, high, low, close and previous close for each symbol.</p>
+
+  <h3>Pipe 2 — FIX Market Data: the detail view</h3>
+  <p>This feed is per-symbol and lazy. You subscribe only when a user opens a symbol, and unsubscribe when they leave. It gives you everything the IOI feed does not:</p>
+  <ul>
+    <li><b>Full book depth</b> — aggregated one entry per price level per side, with <code>NumberOfOrders</code> (tag 346) telling you how many orders sit behind each level.</li>
+    <li><b>Incremental refreshes</b> (MsgType <code>X</code>) — "the bid at 3.55 changed to size 300", rather than resending the whole book.</li>
+    <li><b>Halts and status</b> (MsgType <code>f</code>) — is this symbol trading, halted, in auction, or unavailable, and why.</li>
+    <li><b>Session phase</b> (MsgType <code>h</code>) — PRE, OPNX, CORE, POST, plus the three market-wide circuit breaker price thresholds.</li>
+    <li><b>Auction data</b> — order imbalance (<code>MDEntryType=A</code>, with <code>TradeCondition</code> P for more buyers, Q for more sellers) and theoretical opening price (<code>MDEntryType=y</code>). Directly relevant to the IPO module.</li>
+    <li><b>Trade busts</b> — a delete on a trade entry with <code>DeleteReason</code> (tag 285) of 0 (cancel/bust) or 1 (error).</li>
+  </ul>
+  <p>A large book is split across several snapshot messages. <code>LastFragment</code> (tag 893) marks the final one. Do not render a partial book as if it were complete.</p>
+
+  <h3>Pipe 3 — Order Entry: the only pipe that changes anything</h3>
+  <p>The other two pipes are read-only. This one places, cancels and changes orders, and returns every execution report. Section 4 covers it in full.</p>
+
+  <div class="callout warn"><span class="tag">⚠ spec bug worth reporting</span>
+    <p>In the IOI v1.2 spec, tag 264 <code>MarketDepth</code> lists exactly one valid value: <em>"1 = Snapshot + Updates (Subscribe)"</em>. That description belongs to tag 263 <code>SubscriptionRequestType</code>, one row above. It has been copy-pasted into the wrong row.</p>
+    <p>In the FIX v8 spec the same tag is defined properly: <code>0</code> = Full Book, <code>1</code> = Top of Book. The IOI feed almost certainly means Top of Book, and <code>t0.md</code> assumes exactly that. It is an assumption, not a documented fact. Ask tZERO to confirm and to correct the PDF.</p>
+  </div>
+</section>
+
+<section id="order">
+  <h2><span class="n">§4</span>The life of an order</h2>
+  <p>Three messages go out. Everything that comes back is an execution report, MsgType <code>8</code>, distinguished by two fields: <code>ExecType</code> (tag 150) says what just happened, <code>OrdStatus</code> (tag 39) says where the order now stands.</p>
+
+  <h3>What you send</h3>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>MsgType</th><th>Name</th><th>Meaning</th></tr>
+    <tr><td>D</td><td>New Order Single</td><td>Place an order.</td></tr>
+    <tr><td>F</td><td>Order Cancel Request</td><td>Withdraw a live order. References it by <code>OrigClOrdID</code>.</td></tr>
+    <tr><td>G</td><td>Order Cancel/Replace</td><td>Change price or quantity. The old order dies, a new one takes its place, atomically.</td></tr>
+  </table>
+  </div>
+
+  <h4>The fields that matter on a New Order Single</h4>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Field</th><th>Rule</th></tr>
+    <tr><td>11</td><td>ClOrdID</td><td><b>Maximum 20 characters. No leading zeroes.</b> Our ID for the order. tZERO rejects violations.</td></tr>
+    <tr><td>100</td><td>ExDestination</td><td>Always the literal string <code>STX</code>. Required.</td></tr>
+    <tr><td>55</td><td>Symbol</td><td>The team ticker.</td></tr>
+    <tr><td>54</td><td>Side</td><td><code>1</code> = Buy, <code>2</code> = Sell. Only these two.</td></tr>
+    <tr><td>38</td><td>OrderQty</td><td>Number of shares.</td></tr>
+    <tr><td>40</td><td>OrdType</td><td><b>Always <code>2</code> (Limit).</b> No other value is listed as valid.</td></tr>
+    <tr><td>44</td><td>Price</td><td>Required on every order. Carried to <b>4 decimal places</b>.</td></tr>
+    <tr><td>59</td><td>TimeInForce</td><td>Absent or <code>0</code> = Day. <code>1</code> = GTC. <code>6</code> = GTD.</td></tr>
+    <tr><td>126</td><td>ExpireTime</td><td>Required when TimeInForce is GTD.</td></tr>
+    <tr><td>9303</td><td>RoutingInst</td><td><code>DNRI</code> ("do not reduce/increase"). Required for GTC and GTD orders.</td></tr>
+    <tr><td>1</td><td>Account</td><td>The tZERO account number. Optional in the spec, but this is how orders attach to a user.</td></tr>
+    <tr><td>583</td><td>ClOrdLinkID</td><td>Parent order ID. Use to place a child order.</td></tr>
+  </table>
+  </div>
+
+  <div class="callout stop"><span class="tag">✕ explicitly not supported</span>
+    <p>The Order Entry spec marks these fields "currently not supported": <code>HandlInst</code> (21), <code>ExecInst</code> (18), <code>MinQty</code> (110), <code>MaxFloor</code> (111), <code>IDSource</code> (22), <code>SecurityID</code> (48), <code>StopPx</code> (99).</p>
+    <p>In product terms: <b>no market orders, no stop orders, no stop-loss, no take-profit, no iceberg or reserve orders, and no minimum fill quantity.</b> Everything the app offers beyond a plain limit order has to be constructed by InPlay out of limit orders. This is exactly why the synthetic market order (price-through) is InPlay's build, and why the education module has to teach limit orders properly.</p>
+  </div>
+
+  <h3>What comes back</h3>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>ExecType (150)</th><th>Name</th><th>What it means for the user</th></tr>
+    <tr><td>0</td><td>Order Accepted</td><td>Your order is live on the book. Store tZERO's <code>OrderID</code> (tag 37) now.</td></tr>
+    <tr><td>8</td><td>Order Rejected</td><td>Refused. It never went live. See the reason codes below.</td></tr>
+    <tr><td>1</td><td>Partially Filled</td><td>Some shares matched. The rest are still working.</td></tr>
+    <tr><td>2</td><td>Filled</td><td>All shares matched. Order complete.</td></tr>
+    <tr><td>4</td><td>Cancelled</td><td>Removed from the book. Either you asked, or the system did it.</td></tr>
+    <tr><td>5</td><td>Replaced</td><td>Old order dead, new order live with the new price or quantity.</td></tr>
+    <tr><td>3</td><td>Done for Day</td><td>The trading day ended and the unfilled portion expired.</td></tr>
+    <tr><td>6</td><td>Pending Cancel / Replace</td><td>Acknowledgement that a cancel or replace is in flight. <b>Suppressed by default</b> — expect to jump straight to 4 or 5.</td></tr>
+    <tr><td>H</td><td>Execution Busted</td><td>A previous fill is reversed. Position and P&amp;L are recalculated.</td></tr>
+    <tr><td>G</td><td>Execution Corrected</td><td>A previous fill's price or size is adjusted, not reversed.</td></tr>
+  </table>
+  </div>
+
+  <p>A fill also carries the numbers the blotter needs: <code>LastShares</code> (32) and <code>LastPx</code> (31) for this fill, <code>CumQty</code> (14) and <code>AvgPx</code> (6) for the order so far, <code>LeavesQty</code> (151) for what is still working, plus <code>ExecBroker</code> (76), <code>ContraBroker</code> (375) and <code>MatchID</code> (9902) for clearing and reconciliation.</p>
+
+  <h4>Why busts and corrections need their own state</h4>
+  <p>One order can produce many fills. Each fill has its own <code>ExecID</code> (tag 17) and its own life. A bust or a correction arrives later, carrying <code>ExecRefID</code> (tag 19) that points back at the original <code>ExecID</code>. The order may already be complete. The fill is what changes.</p>
+  <p>This matters directly for the market maker's quote-bust control: a fill outside the price band can be reversed by the exchange after the fact. The app must be able to un-do a fill in the user's history and P&amp;L, not just append a correction.</p>
+
+  <div class="callout touchdown"><span class="tag">✓ closes a vault gap · reject reasons</span>
+    <p><code>trading.md</code> records the open question <em>"What happens when tZERO rejects an order?"</em> Here is the complete answer. <code>OrdRejReason</code> (tag 103) has exactly seven values, and <code>Text</code> (tag 58) carries up to 256 characters of explanation.</p>
+    <div class="tablewrap">
+    <table class="tags">
+      <tr><th>Code</th><th>Reason</th><th>Plain-English message to show</th></tr>
+      <tr><td>0</td><td>Broker option</td><td>"This order was declined. Please try again."</td></tr>
+      <tr><td>1</td><td>Unknown symbol</td><td>"That team isn't tradeable right now."</td></tr>
+      <tr><td>2</td><td>Exchange closed</td><td>"The market is closed. Trading opens at …"</td></tr>
+      <tr><td>3</td><td>Order exceeds limit</td><td>"This order is larger than your limit." — see §6.</td></tr>
+      <tr><td>4</td><td>Too late to enter</td><td>"The market closed before this order arrived."</td></tr>
+      <tr><td>5</td><td>Unknown order</td><td>Internal fault. Never surface this wording.</td></tr>
+      <tr><td>6</td><td>Duplicate order</td><td>Internal fault — a repeated <code>ClOrdID</code>. Never surface.</td></tr>
+    </table>
+    </div>
+    <p>Cancel and replace rejections use a different message (MsgType <code>9</code>) and a much shorter list. <code>CxlRejReason</code> (tag 102): <code>0</code> = too late to cancel, <code>1</code> = unknown order. In practice a user sees only one thing — "that order already filled" — which is a genuinely common race and needs a designed UI state.</p>
+  </div>
+
+  <div class="callout warn"><span class="tag">⚠ product decision hiding in a protocol field</span>
+    <p><b>Day orders die every night.</b> <code>TimeInForce=0</code> (Day) is the default when the field is absent, and <code>ExecType=3</code> Done for Day expires the unfilled portion at the close. A user who leaves a limit order on the Bears overnight will find it gone in the morning, with no action from them.</p>
+    <p>For a season-long game this is a significant behaviour. The alternative is GTC (<code>TimeInForce=1</code>), which needs <code>RoutingInst=DNRI</code> and survives across days. The vault has no decision on this either way — <code>trading.md</code> does not mention time-in-force at all. It needs one before launch, and the education content needs to match it.</p>
+  </div>
+</section>
+
+<section id="money">
+  <h2><span class="n">§5</span>Accounts, identity and money — the new spec</h2>
+  <p>The Account and Position specification covers everything the other three do not: who the customer is, what tZERO knows about them, where their cash sits, and how it moves. It uses a different message style to the rest of FIX.</p>
+
+  <h3>The pattern: request, then accept or reject</h3>
+  <p>Every message in this spec is a four-letter custom type with a consistent suffix convention. Send <code>UAAR</code> to add an account. You get back <code>UAARa</code> if it was accepted, or <code>UAARx</code> if it was rejected, with <code>Text</code> (tag 58) explaining why. That <code>a</code> / <code>x</code> pattern holds for every message family in the document.</p>
+  <p>Two fields appear on all of them: <code>ClOrdID</code> (tag 11) identifies the request, and <code>Account</code> (tag 1) identifies the OMS account. Messages can also arrive <b>unsolicited</b> — if a back-office operator edits something at tZERO's end, InPlay receives the update with no <code>ClOrdID</code>. The gateway has to handle updates it did not ask for.</p>
+
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Message</th><th>Family</th><th>What it does</th></tr>
+    <tr><td>UAAR / UEAR</td><td>Account</td><td>Add or edit an account. Carries the initial cash, the buying power, and ~150 risk-control fields.</td></tr>
+    <tr><td>UDAR</td><td>Account</td><td>Delete an account.</td></tr>
+    <tr><td>UEAP</td><td>Identity</td><td>Edit account PII — account type, broker status, domicile, accreditation.</td></tr>
+    <tr><td>UETR</td><td>Identity</td><td>Edit the TIN record — the full KYC identity payload. <b>KYC status lives here.</b></td></tr>
+    <tr><td>UABR / UEBR</td><td>Banking</td><td>Add or edit a linked bank account. ACH and wire routing, Plaid token, approval state.</td></tr>
+    <tr><td>UBT</td><td>Money</td><td>Balance transfer — a deposit or a withdrawal.</td></tr>
+    <tr><td>UPT</td><td>Positions</td><td>Position transfer — move shares in or out of an account.</td></tr>
+    <tr><td>UEPR</td><td>Positions</td><td>Edit a position directly.</td></tr>
+    <tr><td>UAU</td><td>Account</td><td>Account update — the running cash, buying power and P&amp;L picture. <em>Being retired in favour of <code>UAARa</code>.</em></td></tr>
+  </table>
+  </div>
+
+  <h3>tZERO holds the KYC record, not just a flag</h3>
+  <p>The TIN message (<code>UETR</code>) carries the complete identity file: legal name, date of birth, SSN or EIN with type, citizenship and country codes, physical and mailing addresses, phone numbers, email, employment status, occupation, employer, stated investment purpose, and a trusted contact with their own full address. It also carries <code>LegalEntityId</code> (9390) and <code>LargeTraderId</code> (9391) for SEC CAIS reporting.</p>
+  <p><b><code>KycStatus</code> (tag 9369)</b> takes three values: <code>1</code> = Pending, <code>2</code> = Approved, <code>3</code> = Declined. This is the field that gates trading. <code>BrkAccStat</code> (9304) is separate — <code>1</code> = Active, <code>2</code> = Disabled — with <code>BrkAccStatRsn</code> (9305) for the reason.</p>
+  <p>Roles are explicit. <code>TinRole</code> (9315): Primary (one per account), Joint, Beneficiary, Beneficial Owner, Entity. Entity accounts carry company name, country and state of formation, formation date, and institution type. InPlay's users will be Primary individuals; the market maker will be an Entity.</p>
+
+  <div class="callout touchdown"><span class="tag">✓ closes a vault open question</span>
+    <p>The vault's long-running question is <em>"what does tZERO manage?"</em> — still marked blocking in the 31-07 status synthesis. This spec answers a large part of it. tZERO manages: the account record, the KYC identity file and its status, linked bank accounts, cash balances, buying power, deposits, withdrawals, positions, cost basis, and realised and unrealised P&amp;L.</p>
+    <p>That does not settle the ownership question — InPlay may still hold its own copy of much of this — but it removes the "we do not know what they store" part. The tables exist and the fields are named.</p>
+  </div>
+
+  <h3>Money: cash, buying power and debits</h3>
+  <p>The account update carries the running money picture. These are the fields the wallet UI and the buying-power logic depend on.</p>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Field</th><th>Meaning</th></tr>
+    <tr><td>9255</td><td>CASHo</td><td>Initial cash balance — set when the account is created or edited.</td></tr>
+    <tr><td>9258</td><td>CASH</td><td>Current cash balance. tZERO's number, not ours.</td></tr>
+    <tr><td>9253</td><td>DTBPo</td><td>Initial day-trading buying power.</td></tr>
+    <tr><td>9256</td><td>DTBP</td><td>Current day-trading buying power.</td></tr>
+    <tr><td>9259</td><td>RPNL</td><td>Realised profit and loss across the account.</td></tr>
+    <tr><td>9260</td><td>TotalDebit</td><td>Current total debit.</td></tr>
+    <tr><td>9261</td><td>LivOrdDebit</td><td>Debit from live orders resting on the street — money committed but not yet spent.</td></tr>
+    <tr><td>12</td><td>Commission</td><td>Running commission across all account orders.</td></tr>
+    <tr><td>9266</td><td>UpdateTyp</td><td>Why this update fired: <code>RFR</code> initial refresh, <code>NEW</code>, <code>EDT</code>, <code>TRD</code> trading activity. Diagnostic only.</td></tr>
+  </table>
+  </div>
+
+  <div class="callout nw"><span class="tag">★ this is the buying-power API George was drafting</span>
+    <p>The 24-06 and 26-06 touchdowns record the problem: to let a user move funds from the referral wallet into the trading wallet, InPlay must tell tZERO the account's new buying power. The agreed interim answer was a <b>start-of-day file</b>. George proposed <em>"a more elegant API mechanism"</em> instead, Troy endorsed it, and George was drafting the proposal to tZERO.</p>
+    <p><b>That mechanism already exists in this specification.</b> <code>UEAR</code> (Edit Account Request) carries <code>CASHo</code> (9255) and <code>DTBPo</code> (9253) and returns <code>UEARa</code> on acceptance. <code>UBT</code> (Balance Transfer) moves cash in or out with immediate effect. Either is a live FIX message on the same session, not an FTP drop.</p>
+    <p>This does not decide which one is correct — that is a question for tZERO (see §8). It does mean the "elegant API" is a choice between two documented messages, not a feature request.</p>
+  </div>
+
+  <h4>Deposits and withdrawals — <code>UBT</code></h4>
+  <p>One message covers both. <code>TxfrAmnt</code> (9262) is positive for a deposit and negative for a withdrawal, and must be non-zero. <code>BalTxfrTyp</code> (9550) is <code>1</code> ACH, <code>2</code> domestic wire, <code>3</code> international wire. <code>BankIDN</code> (9501) names which linked bank account to use — an account can have many.</p>
+  <p>The asymmetry matters for the withdrawal flow. The spec is explicit: <b>a withdrawal debits the account immediately</b>, and is rejected if funds are not available. <b>A deposit is not credited until the bank confirms it.</b> Confirmation runs through <code>ConfirmTyp</code> (9551): 0 unconfirmed, 1 margin confirmed, 2 transfer confirmed, 3 bank confirm pending, 4 bank confirmed.</p>
+  <p>Bank linking (<code>UABR</code>) supports <b>Plaid</b> directly — <code>ApprovedMethod</code> (9516) and <code>PlaidAccessTok</code> (9517) are named fields. That is relevant to the payouts work, which the 24-07 touchdown flags as the launch blind spot.</p>
+
+  <h3>Positions and P&amp;L</h3>
+  <p>Position fields arrive two ways: on every execution report, and on position messages. Both use the same tags.</p>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Order Entry v2.2 name</th><th>Account &amp; Position v3 name</th><th>Meaning</th></tr>
+    <tr><td>9383</td><td>PosSIZ</td><td>Qt</td><td>Current position quantity</td></tr>
+    <tr><td>9384</td><td>PosCOST</td><td>Et</td><td>Current cost basis</td></tr>
+    <tr><td>9385</td><td>PosRpnl</td><td>Rpnl</td><td>Realised profit and loss</td></tr>
+    <tr><td>9389</td><td>PosUpnl</td><td>Upnl</td><td>Unrealised profit and loss</td></tr>
+    <tr><td>9381</td><td>—</td><td>Qto</td><td>Initial quantity</td></tr>
+    <tr><td>9382</td><td>—</td><td>Eto</td><td>Initial cost basis</td></tr>
+    <tr><td>9388</td><td>—</td><td>SecTyp</td><td><code>EQT</code> equity, <code>OPT</code> option, <code>DAS</code> digital asset, <code>DES</code> digitally enhanced</td></tr>
+  </table>
+  </div>
+
+  <div class="callout warn"><span class="tag">⚠ naming trap</span>
+    <p><b>The same four tags have two different names in two tZERO documents.</b> Order Entry v2.2 calls 9383 <code>PosSIZ</code>. Account and Position v3 calls it <code>Qt</code>. They are the same field carrying the same number.</p>
+    <p><code>t0.md</code> and <code>trading.md</code> both use the Order Entry names throughout, which is correct for execution reports. Anyone reading the newer spec alongside them will see four unfamiliar names and reasonably assume they are new fields. <b>Map by tag number, never by field name.</b> Add both names to any internal field dictionary.</p>
+  </div>
+
+  <p>tZERO recalculates these on every fill, bust and correction. The 12-06 touchdown confirmed tZERO handles real-time P&amp;L, and this spec is consistent with that. InPlay does not need to compute unrealised P&amp;L — it needs to receive, store and display it.</p>
+</section>
+
+<section id="risk">
+  <h2><span class="n">§6</span>The risk controls — a whole layer the vault has not used</h2>
+  <p>Roughly 150 of the Account spec's fields are risk and compliance controls, set per account by whoever administers it. They are pre-trade — tZERO enforces them at the matching engine and rejects violating orders with <code>OrdRejReason=3</code> (order exceeds limit). They are not advisory.</p>
+
+  <div class="callout touchdown"><span class="tag">✓ closes two vault gaps</span>
+    <p><code>trading.md</code> lists as open: <em>"Any maximum order size? Any per-user position limits? Not discussed."</em> The answer is that these are account-level settings on tZERO, and InPlay must decide the values and send them. They are not something to build.</p>
+  </div>
+
+  <h4>Size and exposure caps</h4>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Field</th><th>Caps</th></tr>
+    <tr><td>9290</td><td>MaxOpenOrds</td><td>Open orders at once</td></tr>
+    <tr><td>9291</td><td>MaxOpenPos</td><td>Open positions at once</td></tr>
+    <tr><td>9292</td><td>MaxPosSize</td><td>Size of any single position</td></tr>
+    <tr><td>9293 / 9294</td><td>MaxQtyAbs / MaxCostAbs</td><td>Absolute quantity and cost</td></tr>
+    <tr><td>9295 / 9296</td><td>MaxQtyExt / MaxCostExt</td><td>Quantity and cost that <em>extend</em> a position</td></tr>
+    <tr><td>9297 / 9298</td><td>MaxLossAcc / MaxLossPos</td><td>Loss per account and per position</td></tr>
+    <tr><td>8921–8923</td><td>MaxConsdOrd / Pos / Acc</td><td>Maximum consideration (cash value) per order, position, account</td></tr>
+  </table>
+  </div>
+
+  <h4>Rate limits — the touchdown-spike control</h4>
+  <p><code>MaxOrdRate</code> (8935) and <code>MaxDupOrdRate</code> (8936) cap orders per unit time and repeated identical orders. The vault's own architecture estimates roughly 250,000 orders in two seconds at a touchdown spike, and names tZERO as the throughput bottleneck. <b>These two fields are where that limit is actually set.</b> They also apply to the market maker, which needs to cancel and replace quotes 5–10 times per second across every active symbol.</p>
+
+  <h4>Price bands — the quote-bust mechanism</h4>
+  <p><code>LmtPercCoreSes0</code> to <code>3</code> (8926–8929) and <code>LmtPercPrePost0</code> to <code>3</code> (8930–8933) set limit-price percentage bands for core and pre/post sessions. <code>LmtCents</code> (8934) sets a maximum limit-price range in cents. <code>Rmo_LmtPerc</code> (8995) and <code>Rmo_LmtCents</code> (8996) switch enforcement on.</p>
+  <p>The 20-07 market-maker note records a <em>"price band (~30% correction, TBD)"</em> beyond which fills can be quote-busted. These fields are almost certainly how that band is configured. Confirm the mapping with tZERO before treating the 30% figure as settled.</p>
+
+  <h4>Market-abuse controls</h4>
+  <p>tZERO enforces anti-spoofing (<code>SpoofAdvCutoff</code> 8908, <code>SpoofNumOrds</code> 8909, <code>SpoofPricePct</code> 8910), anti-layering (<code>LayeringLmt</code> 8911, <code>LayeringLmtExg</code> 8912), and wash-trade prevention (<code>Rmo_StopWashTrades</code> 8985). ADV-based limits (8913–8917) gate activity against average daily volume.</p>
+  <p><b>Wash trades matter for the market maker.</b> If the MM posts both sides of a book and a user's order crosses between them, or if the MM's own quotes ever cross, that can trip wash-trade detection. This needs raising explicitly.</p>
+
+  <h4>Behaviour switches</h4>
+  <p>Around 60 boolean <code>Rmo_*</code> flags turn individual behaviours on or off. The ones that matter here:</p>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Flag</th><th>Effect</th></tr>
+    <tr><td>8940 / 8941</td><td>Rmo_AllowAll / Rmo_StopAll</td><td>Master open and master kill switch for the account.</td></tr>
+    <tr><td>8943</td><td>Rmo_EnforceDTBP</td><td>Enforce day-trading buying power. Off = unlimited buying power.</td></tr>
+    <tr><td>8946</td><td>Rmo_LiquidateOnly</td><td>Account may only reduce positions, never open new ones.</td></tr>
+    <tr><td>8966</td><td>Rmo_ZeroBuyPower</td><td>Zero the buying power on carryover between days.</td></tr>
+    <tr><td>8950</td><td>Rmo_StopSSX</td><td>Block short-sell-exempt orders.</td></tr>
+    <tr><td>8953 / 8960</td><td>Rmo_EnabDigitalLocate / Rmo_AllowPrimeLocate</td><td>Digital locate and prime locate for short sales.</td></tr>
+    <tr><td>8955</td><td>Rmo_PreventCrossMarket</td><td>Reject orders that would cross the market.</td></tr>
+    <tr><td>8991 / 8920</td><td>Rmo_AutoCxlThresh / AutoCxlThresh</td><td>Automatically cancel orders past a threshold.</td></tr>
+  </table>
+  </div>
+
+  <div class="callout nw"><span class="tag">★ the market maker is a configuration, not a build</span>
+    <p>The 20-07 session defines the market maker as <em>"a synthetic tZERO entity (unlimited buying power, short-locate exemption)"</em>. Read against this spec, that description resolves into a specific account configuration to request from tZERO:</p>
+    <ul>
+      <li><code>Rmo_EnforceDTBP</code> = 0 and <code>Rmo_ZeroBuyPower</code> = 0 — the unlimited buying power.</li>
+      <li><code>Rmo_StopSSX</code> = 0, with <code>Rmo_EnabDigitalLocate</code> or <code>Rmo_AllowPrimeLocate</code> = 1 — the short-locate exemption.</li>
+      <li><code>MaxOpenOrds</code> and <code>MaxOrdRate</code> set high enough for two-sided quotes on every active symbol at 5–10 requotes per second.</li>
+      <li><code>Rmo_StopWashTrades</code> — needs an explicit decision, because a two-sided quoter is the obvious false-positive case.</li>
+      <li><code>TinRole</code> = 5 (Entity), with company formation details.</li>
+    </ul>
+    <p>Treat this as a proposal to put to tZERO, not as settled fact. It is the concrete version of the ask that already exists in the vault as prose.</p>
+  </div>
+</section>
+
+<section id="closes">
+  <h2><span class="n">§7</span>What these documents close in the vault</h2>
+  <p>Every row below is an item currently recorded as an open gap or question in <code>trading.md</code> or the architecture open-questions file, that the specifications answer directly.</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Vault gap</th><th>What the specs say</th><th>Still to decide</th></tr>
+    <tr>
+      <td>"What happens when tZERO rejects an order?"</td>
+      <td>Seven <code>OrdRejReason</code> codes plus 256 characters of free text. Cancel rejects have two codes.</td>
+      <td>The wording and UI treatment for each.</td>
+    </tr>
+    <tr>
+      <td>"Can users cancel pending limit orders? Modify open orders?"</td>
+      <td>Yes to both. MsgType <code>F</code> cancels, <code>G</code> replaces atomically. Pending acknowledgements are suppressed by default.</td>
+      <td>Nothing at protocol level. The 24-07 to-do list already names cancel and cancel-replace as remaining work.</td>
+    </tr>
+    <tr>
+      <td>"Any maximum order size? Any per-user position limits?"</td>
+      <td>Account-level fields on tZERO: <code>MaxPosSize</code>, <code>MaxOpenOrds</code>, <code>MaxQtyAbs</code>, <code>MaxConsdOrd</code> and more.</td>
+      <td>The actual numbers. This is a business decision, and it needs one before launch.</td>
+    </tr>
+    <tr>
+      <td>"What are the trading hours?"</td>
+      <td>The protocol exposes five phases — PRE, OPNX, CORE, POST, UNKNWN — and five session statuses, streamed live on MsgType <code>h</code>.</td>
+      <td>What hours InPlay actually wants, and whether tZERO's calendar can follow the NFL schedule.</td>
+    </tr>
+    <tr>
+      <td>"What happens during a trading halt on a team stock?"</td>
+      <td>Per-symbol status on MsgType <code>f</code>, with eleven halt reasons including LULD volatility pauses and three circuit-breaker levels. Orders are accepted during a halt but not matched.</td>
+      <td>The UI treatment. A halted team needs a visible state.</td>
+    </tr>
+    <tr>
+      <td>"What data does tZERO store vs InPlay?"</td>
+      <td>tZERO stores accounts, KYC identity, bank links, cash, buying power, positions, cost basis, realised and unrealised P&amp;L.</td>
+      <td>Whether InPlay duplicates any of it, and how the two reconcile. Also whether a REST query interface exists — the FIX specs are streaming only.</td>
+    </tr>
+    <tr>
+      <td>"Buying power — how do we tell tZERO?"</td>
+      <td><code>UEAR</code> carries <code>CASHo</code> and <code>DTBPo</code>. <code>UBT</code> moves cash directly. Both are live FIX messages.</td>
+      <td>Which one tZERO wants us to use, and whether it can run intraday. See §8.</td>
+    </tr>
+    <tr>
+      <td>"FIX 4.2 or 4.4?"</td>
+      <td><b>All four specifications say FIX 4.2, unanimously.</b> <code>BeginString</code> is the literal <code>FIX.4.2</code> in every one.</td>
+      <td>Why the online documentation says 4.4. Ask, but build to 4.2.</td>
+    </tr>
+    <tr>
+      <td>"Deposits and withdrawals"</td>
+      <td><code>UBT</code>, with Plaid-based bank linking, ACH and wire. Withdrawals debit immediately; deposits wait for bank confirmation.</td>
+      <td>Whether InPlay uses this rail at all, given the unsigned payment-provider deal.</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="callout warn"><span class="tag">⚠ a number in t0.md that should be corrected</span>
+    <p><code>t0.md</code>'s throughput model assumes <em>"~500 symbols · tZERO symbol universe"</em> and derives 25,000 messages per second from it. The blockchain schema states the real universe: <b>164 team tokens</b>, all prefixed <code>IPTC</code>, plus two currency tokens.</p>
+    <p>The estimate is therefore roughly three times too high. That is the safe direction to be wrong in, and <code>t0.md</code> already flags the whole figure as estimated and unconfirmed. Correct the symbol count when the file is next touched, and keep the headroom.</p>
+  </div>
+</section>
+
+<section id="questions">
+  <h2><span class="n">§8</span>Twelve questions for tZERO</h2>
+  <p>Each of these comes from a specific contradiction, ambiguity or silence in the documents. They are ordered roughly by how much they block.</p>
+
+  <ol class="rulelist q">
+    <li><b>Is the Account and Position spec v3 (March 2026) current, and does it apply to InPlay?</b> The filename says <code>20251015</code> and the title page says March 2026. Confirm the version, and confirm which of its message families are enabled for our account.</li>
+
+    <li><b>Which mechanism should InPlay use to update buying power — <code>UEAR</code> or <code>UBT</code>?</b> The vault's interim plan is a start-of-day file with no intraday rebalancing. Both messages appear to allow live updates. Can either run intraday, and is there a rate limit?</li>
+
+    <li><b>Does tZERO calculate buying power for InPlay, or not?</b> The 10-06 touchdown records that tZERO does <em>not</em> calculate buying power outside production broker mode, which drove the "InPlay synthetic broker" workstream. But <code>DTBP</code> (9256) and <code>DTBPo</code> (9253) are first-class fields with an <code>Rmo_EnforceDTBP</code> switch. Resolve which is true for our configuration.</li>
+
+    <li><b>Confirm the market-maker account configuration.</b> Put the flag list in §6 to tZERO directly: <code>Rmo_EnforceDTBP</code>, <code>Rmo_ZeroBuyPower</code>, <code>Rmo_StopSSX</code>, the locate flags, and the rate limits needed for 5–10 requotes per second.</li>
+
+    <li><b>Will a two-sided market maker trip wash-trade or spoofing detection?</b> <code>Rmo_StopWashTrades</code>, the spoofing controls and the layering limits all target patterns a legitimate quoter can produce. What exemption applies?</li>
+
+    <li><b>How are the price bands configured, and do they map to the ~30% quote-bust correction?</b> Specifically <code>LmtPercCoreSes0–3</code>, <code>LmtPercPrePost0–3</code> and <code>LmtCents</code>. What are the defaults, and who can change them?</li>
+
+    <li><b>What are <code>MaxOrdRate</code> and <code>MaxDupOrdRate</code> set to?</b> The touchdown-spike model estimates ~250,000 orders in two seconds. Ask for the real ceiling and the behaviour when it is hit — rejection, throttling, or disconnect.</li>
+
+    <li><b>Correct the IOI v1.2 <code>MarketDepth</code> definition.</b> Tag 264 lists the description belonging to tag 263. Confirm the IOI feed means Top of Book (value 1), as the FIX v8 spec defines it.</li>
+
+    <li><b>Resolve the deposit-confirmation value.</b> The UBT prose says deposits are credited once "Bank confirmed (9551=3)", but the value table gives 3 = Bank confirm <em>pending</em> and 4 = Bank <em>confirmed</em>. Which value releases the funds?</li>
+
+    <li><b>Is there a query interface, or is FIX the only route?</b> All four specifications are streaming. There is no documented way to ask "what were this account's positions yesterday?" If a REST API exists, InPlay needs it. If it does not, InPlay must persist everything.</li>
+
+    <li><b>How many simultaneous sessions may InPlay hold?</b> The IOI spec says "a single client connection at a time". The other specs are silent, and the online documentation states no limits. Confirm the number per session type, and whether Drop Copy is available as a fourth.</li>
+
+    <li><b>How do the tokenised currencies map to <code>Currency=USD</code> (tag 15)?</b> The account, transfer and position messages carry USD only. The blockchain schema defines <code>INPLAY_USD_TRADING</code> and <code>INPLAY_USD_REFERRAL</code>. Related: does <code>SecTyp</code> (9388) treat team tokens as <code>DAS</code> (digital asset) or <code>DES</code> (digitally enhanced)?</li>
+  </ol>
+
+  <div class="callout stop"><span class="tag">✕ separately outstanding</span>
+    <p>The InPlay Blockchain Schema is dated <b>15 May 2026</b> and still carries the status <em>"Draft — pending tZERO review"</em>. It ends with seven questions to tZERO covering atomic delivery-versus-payment, burn functions, two-contract deployment, admin mint and burn access, automated season-end burns, reconciliation queries, and a testnet.</p>
+    <p>Nothing in the vault records answers to those seven. With launch targeted for around 22 August, their status needs establishing — they gate settlement, not just a nice-to-have.</p>
+  </div>
+</section>
+
+<section id="cheat">
+  <h2><span class="n">§9</span>Cheat sheet</h2>
+
+  <h3>The tags you will meet every day</h3>
+  <div class="tablewrap">
+  <table class="tags">
+    <tr><th>Tag</th><th>Name</th><th>Meaning</th></tr>
+    <tr><td>35</td><td>MsgType</td><td>What kind of message this is</td></tr>
+    <tr><td>34</td><td>MsgSeqNum</td><td>Message number — gaps must be repaired</td></tr>
+    <tr><td>11</td><td>ClOrdID</td><td>Our order ID. Max 20 chars, no leading zeroes</td></tr>
+    <tr><td>41</td><td>OrigClOrdID</td><td>The order being cancelled or replaced</td></tr>
+    <tr><td>37</td><td>OrderID</td><td>tZERO's internal order ID</td></tr>
+    <tr><td>17 / 19</td><td>ExecID / ExecRefID</td><td>This fill / the fill being busted or corrected</td></tr>
+    <tr><td>150 / 39</td><td>ExecType / OrdStatus</td><td>What happened / where the order now stands</td></tr>
+    <tr><td>55 / 54</td><td>Symbol / Side</td><td>Which team / 1 buy, 2 sell</td></tr>
+    <tr><td>38 / 44</td><td>OrderQty / Price</td><td>How many / at what price (4 dp)</td></tr>
+    <tr><td>40 / 59</td><td>OrdType / TimeInForce</td><td>Always 2 (Limit) / 0 Day, 1 GTC, 6 GTD</td></tr>
+    <tr><td>32 / 31</td><td>LastShares / LastPx</td><td>This fill's quantity and price</td></tr>
+    <tr><td>14 / 6 / 151</td><td>CumQty / AvgPx / LeavesQty</td><td>Filled so far / average price / still working</td></tr>
+    <tr><td>103 / 102</td><td>OrdRejReason / CxlRejReason</td><td>Why the order or the cancel was refused</td></tr>
+    <tr><td>269 / 270 / 271</td><td>MDEntryType / Px / Size</td><td>Market data: what kind, what price, what size</td></tr>
+    <tr><td>326 / 327</td><td>SecurityTradingStatus / HaltReason</td><td>Is this symbol trading, and if not why</td></tr>
+    <tr><td>336 / 340</td><td>TradingSessionID / TradSesStatus</td><td>Which phase of the day, and its status</td></tr>
+    <tr><td>1 / 15</td><td>Account / Currency</td><td>tZERO account number / always USD</td></tr>
+    <tr><td>9258 / 9256</td><td>CASH / DTBP</td><td>Cash balance / buying power</td></tr>
+    <tr><td>9383 / 9384</td><td>PosSIZ (Qt) / PosCOST (Et)</td><td>Position size / cost basis</td></tr>
+    <tr><td>9385 / 9389</td><td>PosRpnl (Rpnl) / PosUpnl (Upnl)</td><td>Realised / unrealised P&amp;L</td></tr>
+    <tr><td>9369</td><td>KycStatus</td><td>1 Pending, 2 Approved, 3 Declined</td></tr>
+  </table>
+  </div>
+
+  <h3>MDEntryType (269) — what a market-data entry is</h3>
+  <p><code>0</code> Bid · <code>1</code> Offer · <code>2</code> Trade · <code>4</code> Open · <code>5</code> Close · <code>7</code> High · <code>8</code> Low · <code>A</code> Order Imbalance · <code>y</code> Theoretical Opening Price. Values 4, 5, 7, 8, A and y are tZERO extensions, not standard FIX 4.2.</p>
+
+  <h3>The five things to remember</h3>
+  <ol class="rulelist">
+    <li><b>Limit orders only.</b> Everything else is built by InPlay on top, or does not exist.</li>
+    <li><b>Sessions are stateful and numbered.</b> A dropped connection is not a retry — it is a recovery procedure, and it differs per feed.</li>
+    <li><b>tZERO owns the money and the identity.</b> Accounts, KYC, cash, buying power, positions and P&amp;L all live there. InPlay instructs and reads back.</li>
+    <li><b>Trade limits are configuration, not code.</b> Order size, position size, loss caps and rate limits are account fields InPlay must specify to tZERO.</li>
+    <li><b>Map by tag number, never by field name.</b> Two tZERO documents give the same four position tags different names.</li>
+  </ol>
+</section>
+
+<footer>
+  <span>InPlay Global, Inc. · trade secret</span>
+  <span>derived from tZERO IOI v1.2 · FIX MD v8 · Order Entry v2.2 · Account &amp; Position v3 · InPlay Blockchain Schema draft</span>
+  <span>companion to architecture/integrations/t0.md</span>
+</footer>
+
+</div>
+</body>
+</html>
