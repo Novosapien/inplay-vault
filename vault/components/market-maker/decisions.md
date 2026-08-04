@@ -10,6 +10,32 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-04b — three items closed, nothing blocks the build
+
+George's rulings at the end of the design thread.
+
+- ✂ **No new database. Dropped (George).** It was proposed for the
+  *panel* — so a person could query Edwin's file history and diff
+  revisions. **The engine never needs it:** it reads the file, holds `T`
+  in memory, and the journal records the event. **The bucket plus the
+  journal covers everything we run.** Revisit only when the panel earns
+  it. The bucket half of the 03-08 storage split stands unchanged.
+- ✅ **Cloud NAT exists (George).** The MM VM can reach Sportradar. The
+  concern raised on 03-08 is closed. **N30's remaining half is only the
+  subnet layout**, which is a deployment-time question, not a blocker.
+- ✅ **Secrets: Terraform surfaces them initially (George).** The panel
+  handles updates later. Closes the "secrets" design item.
+- 📝 **Supervised-test mode needs no design.** T10 is a fact, not a
+  choice: tZERO gives us one environment for everything.
+- ✅ **"What the engine publishes" is PARKED** until the panel matters.
+  It is the contract between the engine and the panel — which subjects
+  carry positions, prices and market states. Today nothing leaves the
+  process except orders, so the only way to see what the MM did is to
+  read the journal by hand. Not a blocker; nothing consumes it yet.
+- ⭐ **Boot and death is NOT a separate design item — it is the runtime's
+  boot sequence and shutdown.** Building `mm/runtime/` answers it.
+- **Nothing blocks the build. Next: `mm/runtime/`.**
+
 ## 2026-08-04 — the 200 ms constraint is a CAPABILITY requirement (George)
 
 Design session, continuing the deployment thread. George settled a
