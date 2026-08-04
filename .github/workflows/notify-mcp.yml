@@ -1,0 +1,32 @@
+name: Notify the vault MCP server
+
+# The cross-repository hop: a push to main here triggers a rebuild and redeploy of
+# novosapien/inplay-vault-mcp, so the client-facing MCP server tracks this vault.
+#
+# Needs the MCP_DISPATCH_TOKEN secret — a fine-grained PAT with `contents: write`
+# on novosapien/inplay-vault-mcp. The default GITHUB_TOKEN cannot dispatch across
+# repositories. Until the secret is set, this workflow skips with a warning and the
+# MCP server stays a frozen snapshot.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the MCP server build
+        env:
+          GH_TOKEN: ${{ secrets.MCP_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::MCP_DISPATCH_TOKEN is not set. The MCP server was NOT rebuilt; it serves a stale vault snapshot."
+            exit 0
+          fi
+          gh api repos/novosapien/inplay-vault-mcp/dispatches \
+            --method POST \
+            -f event_type=vault-updated \
+            -F "client_payload[sha]=${GITHUB_SHA}" \
+            -F "client_payload[pushed_at]=$(date -u +%Y-%m-%dT%H:%M:%SZ)"

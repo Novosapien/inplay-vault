@@ -1,0 +1,89 @@
+# .vault-mcp/deny.yml — visibility policy for the Vault MCP server.
+#
+# This file controls what the client-facing MCP server (novosapien/inplay-vault-mcp)
+# ships. The vault owner controls what their client sees, so the policy lives with
+# the content it governs.
+#
+# ---------------------------------------------------------------------------
+# How it works
+# ---------------------------------------------------------------------------
+# Default-ALLOW with a deny list. Everything under <vault-repo>/vault/ reaches the
+# client unless a pattern here excludes it. Denied files are removed at BUILD time,
+# so they are not on the container's disk at all — a path-traversal bug in a tool
+# leaks nothing.
+#
+# Patterns are `pathspec` gitwildmatch globs, matched against paths relative to the
+# payload root (<vault-repo>/vault/). Directory-subtree semantics apply: `drafts/**`
+# sweeps everything beneath drafts/.
+#
+# NOTE these are a different dialect from the `glob` MCP tool, deliberately. Gitignore
+# semantics are right for exclusion and wrong for search — under gitwildmatch,
+# `**/market-maker*` matches the DIRECTORY components/market-maker and therefore every
+# file beneath it. Do not unify the two.
+#
+# ---------------------------------------------------------------------------
+# The build FAILS CLOSED on all of these
+# ---------------------------------------------------------------------------
+#   - this file missing
+#   - this file empty
+#   - malformed YAML
+#   - no `deny:` key
+#   - `deny: []` without `allow_empty: true`
+#   - any unknown top-level key
+#   - a deny pattern matching ZERO files (evaluated against the tree BEFORE
+#     classification, so a pattern matching only images or junk still counts)
+#
+# A pattern that matches nothing is almost always a typo, and a typo in a deny list
+# is a document reaching a client who should not see it. Hence: loud, not silent.
+#
+# The build runs from a GIT CHECKOUT, so only COMMITTED files count. A pattern that
+# matches only untracked local files (for example vault/.obsidian/) matches zero
+# files in CI and fails the build.
+#
+# ---------------------------------------------------------------------------
+# What needs NO entry
+# ---------------------------------------------------------------------------
+# The payload root is <vault-repo>/vault/, so anything at the repository root is
+# already outside it: .claude/, .agents/, AGENTS.md, CLAUDE.md, education/, quartz/,
+# test.txt. Do not add entries for them — a pattern matching zero files fails the build.
+#
+# .obsidian/ is untracked in this repository, so it needs no entry either. If it is
+# ever committed, add "**/.obsidian/**" here.
+#
+# Secret-bearing filenames (.env, *.pem, *.key, id_rsa*, *credentials*.json, *.tfstate
+# and friends) are excluded unconditionally by the classifier, before this list is even
+# consulted, and every match is named in the build report. A vault should not hold them;
+# if one does, it must not reach the client's agent.
+#
+# Images and build junk (.png, .jpg, .pyc, .DS_Store, .lock ...) are excluded by the
+# classifier too. They need no entry here.
+#
+# ---------------------------------------------------------------------------
+# Keeping this aligned with the client portal
+# ---------------------------------------------------------------------------
+# The client portal defines its OWN visibility through `brandConfig.vault.excludeDirs`
+# in inplay-admin-panel/scripts/sync-vault.ts:101 — a folder list. This file is a path
+# glob list, which is the right shape here because sensitivity nests inside otherwise
+# shareable components (components/<name>/sessions/ is three levels down).
+#
+# THE TWO CAN DRIFT, AND NOTHING DETECTS IT AUTOMATICALLY.
+# Owner: whoever changes either one reconciles both. Check excludeDirs in
+# inplay-admin-panel before editing this file.
+
+deny:
+  # Work in progress the client should not see.
+  - drafts/**
+
+# Optional. Default false. Set true ONLY to ship an intentionally empty deny list —
+# it exists so "I meant to allow everything" is distinguishable from "I deleted the
+# patterns by accident". Ignored when `deny:` is non-empty.
+allow_empty: false
+
+# ---------------------------------------------------------------------------
+# Deliberately NOT denied — recorded as decisions, not oversights
+# ---------------------------------------------------------------------------
+# meetings/                     — George confirmed clients may see meeting notes.
+# components/**/sessions/       — call notes nested inside otherwise shareable
+#                                 components. Same reasoning as meetings/.
+# Default-allow reaches both outcomes without an entry. These lines are comments so
+# that a later reader does not "fix" an apparent omission.
