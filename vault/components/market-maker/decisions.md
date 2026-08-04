@@ -65,6 +65,37 @@ architecture constraint rather than a config value.
   as "its own session"; that parking is now **promoted to required before
   the season**. ⚠ **A hot standby is not available** — two processes means
   two writers, which the journal forbids by design (`[second-writer]`).
+- 📅 **Direction, parked: Python carries season 1, then port to Go**
+  (George, 04-08). Go is already in-house (`inplay-fix-gateway-go`). ⚠ Not
+  for now — the MM must quote from ~26 Aug (**E25**), which is 22 days,
+  with the runtime, group commit, checkpoints and the panel all unbuilt.
+  **The port cannot land inside that, so the live question is whether
+  Python holds the 200 ms ceiling for season 1 — measurable, not
+  arguable.**
+  - ⚠ **The hard part is not writing Go, it is replay byte-equality.**
+    Four hazards: (1) **decimal arithmetic** — Go has no built-in decimal,
+    so rounding mode and precision must match exactly or prices diverge at
+    the penny; (2) **canonical JSON** — Go's `encoding/json` escapes HTML
+    by default, so every payload hash changes unless deliberately matched;
+    (3) **map iteration order** — Python dicts are insertion-ordered, Go
+    maps are deliberately randomised, so any order-dependent iteration
+    diverges *silently*; (4) **seeded randomness** — ✅ already safe,
+    because §5.7.3 uses seeded **SHA-256** rather than a language PRNG.
+    That choice was made for replay and it now pays for the port.
+  - ✅ **The mitigation exists already:** differential replay — the same
+    journal through both implementations, compared byte-for-byte. Ch 8
+    already proved two independent stacks emit byte-identical payload
+    streams.
+  - ⭐ **Cheap thing to do now (recorded):** **keep every journal.** A
+    season of real journals is a far better equivalence oracle than a test
+    suite, because it exercises the divergence paths no written test would
+    think to construct. §10.4 already requires this, so it is free, and
+    the port gets easier every week we run.
+  - **Free-if-done-now hygiene:** treat the canonical JSON spelling as a
+    spec item; never iterate a dict where order affects output; pin
+    decimal precision and rounding mode in the Configuration Dictionary so
+    Go has a spec to match; point conformance tests at journals and
+    payloads rather than Python internals.
 - 📝 **Edwin's daily file — structure IS settled and built** (George could
   not recall; verified against the code). One JSON file, all 170 teams,
   06:00 ET daily, published even when unchanged. Per team:
