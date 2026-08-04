@@ -46,6 +46,31 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 04/05-08 (the RUNTIME lands · quiet ≠ dead):** **N28 built** —
+> `VALUATION_SWEEP` is the tenth event type, minted by the new
+> **`mm/runtime/`** loop (1 s tick: beat → drain → due polls → due
+> sweep; fixed slots; a stall emits ONE sweep with the missed count).
+> ✂ The sweep is **portfolio-wide** (0.5 events/s — the 03-08 "85/s +
+> emit-on-effect" note was a per-security misreading, dropped).
+> ⭐ **The observation-age deviation (E38):** SR sends no heartbeat and
+> halftime is a measured **2,862 s** gap, so §3.3.1 as written suspends
+> every book through halftime. Built instead (George, corrected to final
+> form 05-08): **a successful fetch confirms the number** — the live
+> bands run on time-since-last-successful-fetch; fetches landing →
+> CURRENT at full status through every stoppage; **20 s of true silence
+> suspends**. Feed health rides the sweep's journalled `observations`
+> map, so replay reproduces the same suspensions. Band values untouched
+> — E38 takes the intent + values to Edwin with the measurement.
+> Also this stretch: the **200 ms capability ruling** (build capable,
+> choose the rate later; compute measured at 6.3 ms per 70-security pass
+> — 22× better than estimated; the journal fsync ceiling is **N31**,
+> unmeasurable off the Mac) · Python-then-Go **parked** (everything in
+> Python now) · no new database · secrets via Terraform · Cloud NAT
+> exists. **443 → 474 tests.**
+> **Next: tiered polling** (needs the 🔴 pre-kickoff number) → the
+> composition script → §10.3 checkpoints (its own session) → **send the
+> Edwin round E29–E38 + N23/N28**.
+>
 > **Update 03-08 (DEPLOYMENT ARCHITECTURE — N7 answered):** design
 > session, no code. The machine's shape is settled: **one stateful engine
 > plus one stateless panel, joined by NATS.** The MM engine gets its own

@@ -10,6 +10,91 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-05 — a quiet game is not a dead feed: the observation-age deviation
+
+Built across 04/05-08 (`de33ebb` · `6a79c9f` · `48b648d`), corrected
+twice by George before it settled. **The final rule, stated once:**
+
+> **A successful fetch confirms the number. Only silence from the source
+> suspends the book.** §3.3.1's live bands (5/10/20 s, values untouched,
+> Edwin's) run on **OBSERVATION age** — time since our last successful
+> fetch — wherever the liveness signal exists. Fetches landing every
+> ~2 s → CURRENT, full status, full confidence, **through halftime and
+> every stoppage**. Fetches silent 20 s → Invalid → suspend.
+
+- ⭐ **The measurement that forced it** (real Chiefs–Ravens timeline,
+  1,089 readings): SR sends **no heartbeat** — `last_updated` advances
+  only when the number MOVES (98 % of entries change it). Gaps: median
+  4 s · mean 16.3 s · p90 28 s · **max 2,862 s = halftime**. §3.3.1 as
+  written suspends every book for all of halftime and on ~1 update in 6
+  of a healthy game. Reading age cannot distinguish quiet from dead.
+- ✂ **Supersedes the first cut recorded 04-08** ("old reading from a live
+  source → Degraded"). George: a confirmed number is not a weaker form of
+  fresh — the source is actively serving "the probability is still X",
+  our copy matches it with zero lag, there is nothing to discount.
+  **CURRENT, not Degraded.**
+- ✅ **The plumbing: feed health rides the SWEEP** (`observations` map,
+  game → last successful fetch time, journalled → replay reproduces the
+  same suspensions). It cannot ride the probability key on the pull
+  path: the poller re-fetches the whole timeline every ~2 s and §7.3
+  dedup is what discards the 1,088 known readings — a fetch-time key
+  component would re-mint the game's whole history every poll, and a
+  fetch-time in the payload alone would CONFLICT-alarm every 2 s. ⚠ On
+  the future SR-service push path the fetch stamp CAN live in the
+  message key (one stamp per publish; redeliveries share it) — George's
+  design, in its right home.
+- ✅ **The liveness window = 20 s** (ours, Ch 12 `source_liveness_window_s`),
+  deliberately §3.3.1's Invalid bound: "no successful observation for
+  20 s" suspends on exactly the spec's timing, applied to the right fact.
+- ⚠ **Deliberate residues:** pregame stays on reading age (no polling
+  outside the pre-kickoff window → a frozen stamp would mis-suspend a
+  healthy overnight book) · no-observation-ever → the spec's rule
+  unchanged (nothing regresses before the producer runs live) · the
+  Invalid+confirmed-live→Degraded rescue stays as a backstop only.
+- 📅 **Edwin's half is E38:** confirm quote-through-halftime is the
+  product he wants, and the 5/10/20 band values, measurement attached.
+- Code markers: `[quiet-is-not-dead]` `[invalid-cost]` (freshness) ·
+  `[liveness]` `[observation-age]` (orchestrator) · `[observations]`
+  (runtime).
+
+## 2026-08-04c — N28 and the runtime BUILT · the sweep is portfolio-wide
+
+Build session (`2eaa27b` · `cd6cf21`), **443 → 463 tests** at this point
+(474 by end of 05-08), ruff + `mypy --strict` clean.
+
+- ✅ **N28 built: `VALUATION_SWEEP` is the tenth event type.** Key = the
+  scheduled instant alone (a late sweep is still the sweep due then, so
+  redeliveries dedupe and replay reproduces the sequence).
+  `missed_intervals` is producer-stamped — recomputing it in the engine
+  would need a clock read. §3.1.4's thresholds now actually reach §3.4
+  status and §3.5 confidence: both were wired but nothing ever produced
+  the number. ⚠ The type stays unblessed — §7.3 fixes nine. Ask with N23.
+- ✂ **Correction to 03-08: the sweep is PORTFOLIO-WIDE, not
+  per-security** (§3.1.4 + §2.5: complete recalculation of the full
+  universe each sweep). One event per 2.0 s slot covers all 170 —
+  **0.5 events/s, not 85** — so the emit-on-effect volume control is
+  unnecessary and DROPPED. N28's row is corrected.
+- ✅ **`mm/runtime/` built — the loop that owns the clocks, in one file.**
+  Everything else stays a pure function of its events; `runtime/loop.py`
+  is the single module that reads a clock, deliberately, so a second
+  clock-reader cannot creep in unseen. The 1 s tick: beat FIRST (inside
+  the poller — a slow source can never delay the dead-man), drain, due
+  polls, due sweep. `SweepScheduler`: fixed slots (a late tick does not
+  push later slots back) · a stall emits ONE sweep carrying the missed
+  count, never a backlog (§3.1.4's own wording; a backlog would recompute
+  identical universes and publish nothing per §3.1.5) · the first call
+  anchors and owes nothing. `run()` cannot overlap ticks; a slow tick
+  shortens the next wait rather than drifting.
+- ⚠ **Boot order recorded in `[boot]`:** connect → beat → replay →
+  reconcile → tick. Replay is synchronous inside the gateway's **30 s
+  boot grace**, and the journal grows all season — which is exactly why
+  §10.3 checkpoints are REQUIRED before the season (every deploy is a
+  restart). Until then boot time is a number to watch.
+- 📝 Still unwired in the runtime: **tiered polling** (one interval for
+  every game today; the 03-08 tier table needs the 🔴 pre-kickoff number)
+  and the **composition script** (transport → boot → reconcile → run; the
+  wire test remains the prototype).
+
 ## 2026-08-04b — three items closed, nothing blocks the build
 
 George's rulings at the end of the design thread.
