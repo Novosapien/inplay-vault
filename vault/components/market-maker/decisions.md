@@ -86,67 +86,17 @@ architecture constraint rather than a config value.
   as "its own session"; that parking is now **promoted to required before
   the season**. ⚠ **A hot standby is not available** — two processes means
   two writers, which the journal forbids by design (`[second-writer]`).
-- ⭐ **DIRECTION CHANGED, same session (George, 04-08): real trading starts
-  on GO, not Python.** Python tests a little, then we port "as soon as
-  possible" and Go is what goes live. This supersedes the earlier
-  "Python carries season 1" reading recorded minutes before.
-  - **Python's job is now the executable specification and the equality
-    oracle** — 443 tests encoding the spec section by section, plus
-    realistic journals with byte-exact expected outputs to test Go
-    against. Not a throwaway; it is most of why the port is tractable.
-  - ⚠ **Date collision, named and unresolved:** the MM must quote from
-    ~26 Aug (**E25**, the hardest deadline we have) — 22 days from today —
-    and the Go implementation does not exist. George did not move the
-    date when asked. **Treat the port as the critical path.**
-  - ✅ **Organising principle adopted: design the CONTRACTS now, defer the
-    OPERATIONS to Go.** Contracts survive the port; implementations do not.
-    - **Do now in Python (contracts Go must copy exactly):** **N28** the
-      sweep event type (adds a tenth type and new journal lines) · §10.3
-      **checkpoints** (checkpoint records live in the journal) · **what
-      the engine publishes** (the NATS subjects are a wire contract, and
-      the panel depends on them) · **`mm/runtime/` minimal** (needed to
-      test at all, and to generate the oracle journals).
-    - **Defer to Go (building them in Python is building them twice):**
-      the VM · Cloud NAT · secrets · supervised-test mode · deployment.
-    - ✂ **N31 moves to the Go side.** Correction: group commit does **not**
-      change the journal format, only *when* a line becomes durable —
-      replay reads identical lines either way. So it is an implementation
-      concern, not a contract, and Go does it better natively. **Off the
-      Python critical path.**
-  - ⚠ **The oracle journals must be REALISTIC** — a full simulated game
-    day, not fixtures — which argues for `mm/runtime/` sooner rather than
-    more completely.
-  - ⚠ **§13.2 certification follows the thing that trades.** If Go trades,
-    Go is certified; Python's suite does not certify Go. Only differential
-    replay does, and that needs journals we have not generated yet.
-  - ⚠ **T10 — no sandbox.** Whatever Python proves against the venue, Go
-    must re-prove on the wire before it trades. The loopback rig survives
-    (docker, NATS, the real gateway binary); the script does not, because
-    it is Python driving the Python stack.
-  - ⚠ **The hard part is not writing Go, it is replay byte-equality.**
-    Four hazards: (1) **decimal arithmetic** — Go has no built-in decimal,
-    so rounding mode and precision must match exactly or prices diverge at
-    the penny; (2) **canonical JSON** — Go's `encoding/json` escapes HTML
-    by default, so every payload hash changes unless deliberately matched;
-    (3) **map iteration order** — Python dicts are insertion-ordered, Go
-    maps are deliberately randomised, so any order-dependent iteration
-    diverges *silently*; (4) **seeded randomness** — ✅ already safe,
-    because §5.7.3 uses seeded **SHA-256** rather than a language PRNG.
-    That choice was made for replay and it now pays for the port.
-  - ✅ **The mitigation exists already:** differential replay — the same
-    journal through both implementations, compared byte-for-byte. Ch 8
-    already proved two independent stacks emit byte-identical payload
-    streams.
-  - ⭐ **Cheap thing to do now (recorded):** **keep every journal.** A
-    season of real journals is a far better equivalence oracle than a test
-    suite, because it exercises the divergence paths no written test would
-    think to construct. §10.4 already requires this, so it is free, and
-    the port gets easier every week we run.
-  - **Free-if-done-now hygiene:** treat the canonical JSON spelling as a
-    spec item; never iterate a dict where order affects output; pin
-    decimal precision and rounding mode in the Configuration Dictionary so
-    Go has a spec to match; point conformance tests at journals and
-    payloads rather than Python internals.
+- 📝 **A Go port was discussed and DROPPED (George, 04-08). Everything is
+  built in Python — treat Go as out of scope.** Two intermediate readings
+  were recorded earlier in this session and both are superseded: "Python
+  carries season 1, then port" and "real trading starts on Go". Neither
+  stands. **Do not re-open this without George raising it first.**
+  - The only durable note worth keeping: **if a port ever happens, the
+    journal format is what must match.** Preserving Python's journals for
+    that purpose is explicitly **not** required (George).
+  - Nothing moved off the Python critical path as a result. The VM, Cloud
+    NAT, secrets, supervised-test mode, deployment and **N31** are all
+    live Python items again.
 - 📝 **Edwin's daily file — structure IS settled and built** (George could
   not recall; verified against the code). One JSON file, all 170 teams,
   06:00 ET daily, published even when unchanged. Per team:
