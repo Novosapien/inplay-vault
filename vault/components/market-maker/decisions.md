@@ -10,6 +10,73 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-04 — the 200 ms constraint is a CAPABILITY requirement (George)
+
+Design session, continuing the deployment thread. George settled a
+question this log had been treating as open, and the consequence is an
+architecture constraint rather than a config value.
+
+- ✅ **The machine must be BUILT CAPABLE of republishing every live
+  security every 200 ms during games. George, agreed with Edwin.**
+  Running slower is acceptable; being unable to run that fast is not.
+  ⚠ **This is a capability requirement, not a cadence decision** — nothing
+  in the design may assume slow. **Stop relitigating E18 as a build
+  blocker**; E18 remains the question of what rate we actually choose.
+  ⚠ Note the §5.8 tension is real and unchanged: §5.8 forbids
+  republishing without material change, and SR's measured median update
+  gap is 4 s, so a forced 200 ms republish is mostly the same prices with
+  newly randomised quantities. That is a product choice for Edwin, not an
+  engineering objection. **The build must support it either way.**
+- ⭐ **Priced at the ceiling** — NCAA Saturday, 35 games, 70 hot
+  securities, 6 orders each, full republish every 200 ms:
+
+  | Limit | At the ceiling | Verdict |
+  |---|---|---|
+  | Engine compute | ~2 ms/reading × 70 = **~140 ms** per pass | Fits in 200 ms, little headroom. Single-threaded. Measure it |
+  | **The journal** | 2,100 orders/s → ~2,100 acks/s → **one `fsync` each** | ⚠ **The binding constraint** |
+  | The venue | 2,100 msg/s vs a 50 msg/s gateway governor, `MaxOrdRate` unknown | **T2** — not ours |
+
+- ⚠ **NEW, and the most important finding: the journal is the throughput
+  ceiling, not the engines.** `journal.py` flushes and `fsync`s on EVERY
+  accepted event — that is what makes it durable before anything reacts
+  (§7.4). An `fsync` on a GCP SSD is roughly 0.3–1 ms, so a single writer
+  tops out near 1,000–3,000 events/s. The 200 ms ceiling sits exactly on
+  that line. **Resolution: design group commit** — batch events arriving
+  in the same moment into one `fsync`, with nothing counted as accepted
+  until its batch is on disk. Durability semantics survive. Filed as
+  **N31**. Far cheaper now than retrofitted, which is George's whole point.
+- ✅ **Polling efficiency: press the S7 live-bulk endpoint.** George asked
+  for a more efficient poll; the answer already exists as the *preferred*
+  S7 ask — Sportradar's global AF probabilities v2 carries a live-bulk
+  endpoint returning every live game in ONE call. On an NCAA Saturday that
+  is 1 call instead of 35, i.e. ~0.5/s instead of ~17/s. Separate product,
+  **Cody-gated** commercially. **Press it — it is now a capability
+  prerequisite, not an optimisation.**
+- ✅ **Quiet-day polling: keep polling, but N24 decides whether there is
+  anything to poll.** The probabilities API is per-game and in-play, so
+  with no game running SR has no probability for a team. Whether SR
+  publishes **pregame** movement is **N24**, open — our one captured game's
+  first reading sits exactly at kickoff. **Ours to measure in August.**
+  What genuinely moves on a quiet day is Edwin's daily file and the
+  off-field values.
+- ✅ **Every deploy is a restart (George agreed) — so §10.3 checkpoints
+  stop being optional.** Restart time is dominated by journal replay,
+  which grows all season. Checkpoints bound it. They were parked on 02-08
+  as "its own session"; that parking is now **promoted to required before
+  the season**. ⚠ **A hot standby is not available** — two processes means
+  two writers, which the journal forbids by design (`[second-writer]`).
+- 📝 **Edwin's daily file — structure IS settled and built** (George could
+  not recall; verified against the code). One JSON file, all 170 teams,
+  06:00 ET daily, published even when unchanged. Per team:
+  `expected_remaining_wins`, `sigma`, `games_remaining`, `effective_time`,
+  `revision`, `is_correction`, `methodology_version`. Corrections resend
+  the same `effective_time` with a bumped `revision`. It supplies **T**,
+  the whole-season expected wins, from which the on-field leg is built —
+  `$5 × (T − Σ p_ref + Σ x)`. Without T a team has no price and the code
+  refuses to construct one. Reader: `src/mm/adapters/reference_feed.py`,
+  which returns EVERY violation at once. **Open is the delivery on the day
+  and the §7.3 event type (N19, N23) — not the schema.**
+
 ## 2026-08-03b — N29 answered · ⚠ the vault's VPC addresses are wrong
 
 Same session, after George pointed at the right panel repo. Two findings,
