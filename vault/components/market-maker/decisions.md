@@ -86,17 +86,39 @@ architecture constraint rather than a config value.
   as "its own session"; that parking is now **promoted to required before
   the season**. ⚠ **A hot standby is not available** — two processes means
   two writers, which the journal forbids by design (`[second-writer]`).
-- 📝 **A Go port was discussed and DROPPED (George, 04-08). Everything is
-  built in Python — treat Go as out of scope.** Two intermediate readings
-  were recorded earlier in this session and both are superseded: "Python
-  carries season 1, then port" and "real trading starts on Go". Neither
-  stands. **Do not re-open this without George raising it first.**
-  - The only durable note worth keeping: **if a port ever happens, the
-    journal format is what must match.** Preserving Python's journals for
-    that purpose is explicitly **not** required (George).
-  - Nothing moved off the Python critical path as a result. The VM, Cloud
-    NAT, secrets, supervised-test mode, deployment and **N31** are all
-    live Python items again.
+- 📅 **Direction, PARKED — build the whole thing in Python, get it
+  working, then port to Go** (George, 04-08). The port is real and still
+  intended; it is simply **not this session's concern and changes nothing
+  about what we build now**. ⚠ Two intermediate readings recorded earlier
+  in this session are superseded: "Python carries season 1" and "real
+  trading starts on Go, Python is only the oracle". **Everything is built
+  in Python, in its entirety, and nothing moves off the Python critical
+  path** — the VM, Cloud NAT, secrets, supervised-test mode, deployment
+  and **N31** are all live Python items.
+  - ⚠ **The hard part of a port is not writing Go — it is replay
+    byte-equality.** Four hazards, recorded now so the port day is a
+    checklist rather than a discovery:
+    1. **Decimal arithmetic** — Go has no built-in decimal. Rounding mode
+       and precision must match exactly or prices diverge at the penny.
+    2. **Canonical JSON** — the payload hash is `sort_keys=True`,
+       `separators=(",",":")`, `ensure_ascii=False`. Go's `encoding/json`
+       escapes HTML by default, so every hash changes unless matched.
+    3. **Map iteration order** — Python dicts are insertion-ordered, Go
+       maps are deliberately randomised. Order-dependent iteration
+       diverges *silently*, the worst failure mode.
+    4. **Seeded randomness** — ✅ **already safe.** §5.7.3 seeds from
+       **SHA-256**, not a language PRNG. Chosen for replay; it happens to
+       pay for the port too.
+  - ✅ **The mitigation already exists: differential replay** — the same
+    journal through both implementations, compared byte-for-byte. Ch 8
+    already proved two independent stacks emit byte-identical payload
+    streams.
+  - 📝 **Preserving Python's journals as a port oracle is NOT required**
+    (George, explicit). The journal **format** is what must match.
+  - 📝 The port-friendly hygiene (sort before iterating, pinned decimal
+    contexts, canonical JSON) is **already required by §1.6-4's
+    determinism rule** and is honoured in the code today. It is not new
+    work and was not adopted because of Go.
 - 📝 **Edwin's daily file — structure IS settled and built** (George could
   not recall; verified against the code). One JSON file, all 170 teams,
   06:00 ET daily, published even when unchanged. Per team:
