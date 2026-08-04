@@ -27,14 +27,35 @@ architecture constraint rather than a config value.
   gap is 4 s, so a forced 200 ms republish is mostly the same prices with
   newly randomised quantities. That is a product choice for Edwin, not an
   engineering objection. **The build must support it either way.**
-- ⭐ **Priced at the ceiling** — NCAA Saturday, 35 games, 70 hot
-  securities, 6 orders each, full republish every 200 ms:
+- ⭐ **Priced at the ceiling, THEN MEASURED** — NCAA Saturday, 35 games,
+  70 hot securities, 6 orders each, full republish every 200 ms:
 
-  | Limit | At the ceiling | Verdict |
-  |---|---|---|
-  | Engine compute | ~2 ms/reading × 70 = **~140 ms** per pass | Fits in 200 ms, little headroom. Single-threaded. Measure it |
-  | **The journal** | 2,100 orders/s → ~2,100 acks/s → **one `fsync` each** | ⚠ **The binding constraint** |
-  | The venue | 2,100 msg/s vs a 50 msg/s gateway governor, `MaxOrdRate` unknown | **T2** — not ours |
+  | Limit | Estimated | **Measured 04-08** | Verdict |
+  |---|---|---|---|
+  | Engine compute | ~140 ms per pass | **6.30 ms** median, 9.53 ms worst (0.17 ms per event) | ✅ **FITS — 3 % of budget.** The estimate was **22× pessimistic** |
+  | The journal | ~1,000–3,000 events/s | 35,637/s on a Mac — **not credible** | 🟡 **UNMEASURED.** See the caveat |
+  | The venue | 2,100 msg/s vs a 50 msg/s gateway governor, `MaxOrdRate` unknown | not ours to measure | 🔴 **T2** |
+
+  - ✂ **Correction: "Python cannot hold 200 ms on compute" is wrong.** The
+    ~2 ms-per-reading figure was carried from a parameters note and did not
+    survive measurement. Real cost is **0.17 ms per event**, so a full pass
+    over 70 hot securities is **6.3 ms**. ⚠ That number excludes the sync
+    driver's diff, payload serialisation, the NATS publish, inbound ack
+    processing, and the §3.1.4 sweep over all 170 — it is the engine core
+    only. But 22× headroom absorbs a great deal of unmeasured work.
+  - ⚠ **The journal figure is invalid, not favourable.** On macOS
+    `os.fsync()` does **not** force the drive to flush its write cache
+    (that needs `F_FULLFSYNC`), so 0.028 ms per append measures the OS
+    buffer rather than durability. On GCP persistent disk a real `fsync`
+    is plausibly 10–30× slower; at 30× we would sit near 1,200 events/s
+    against a 2,100/s need, i.e. **under**. **N31 stays open until the
+    number comes off the real VM.**
+  - 📉 **Consequence for the Go port: the performance argument is much
+    weaker.** Concurrency for the I/O-heavy runtime and matching the
+    gateway's language remain real reasons. *"Python is too slow to
+    quote"* is not one.
+  - Benchmark script kept in the session scratchpad; re-run it on the MM
+    VM once N30 lands.
 
 - ⚠ **NEW, and the most important finding: the journal is the throughput
   ceiling, not the engines.** `journal.py` flushes and `fsync`s on EVERY
@@ -65,13 +86,43 @@ architecture constraint rather than a config value.
   as "its own session"; that parking is now **promoted to required before
   the season**. ⚠ **A hot standby is not available** — two processes means
   two writers, which the journal forbids by design (`[second-writer]`).
-- 📅 **Direction, parked: Python carries season 1, then port to Go**
-  (George, 04-08). Go is already in-house (`inplay-fix-gateway-go`). ⚠ Not
-  for now — the MM must quote from ~26 Aug (**E25**), which is 22 days,
-  with the runtime, group commit, checkpoints and the panel all unbuilt.
-  **The port cannot land inside that, so the live question is whether
-  Python holds the 200 ms ceiling for season 1 — measurable, not
-  arguable.**
+- ⭐ **DIRECTION CHANGED, same session (George, 04-08): real trading starts
+  on GO, not Python.** Python tests a little, then we port "as soon as
+  possible" and Go is what goes live. This supersedes the earlier
+  "Python carries season 1" reading recorded minutes before.
+  - **Python's job is now the executable specification and the equality
+    oracle** — 443 tests encoding the spec section by section, plus
+    realistic journals with byte-exact expected outputs to test Go
+    against. Not a throwaway; it is most of why the port is tractable.
+  - ⚠ **Date collision, named and unresolved:** the MM must quote from
+    ~26 Aug (**E25**, the hardest deadline we have) — 22 days from today —
+    and the Go implementation does not exist. George did not move the
+    date when asked. **Treat the port as the critical path.**
+  - ✅ **Organising principle adopted: design the CONTRACTS now, defer the
+    OPERATIONS to Go.** Contracts survive the port; implementations do not.
+    - **Do now in Python (contracts Go must copy exactly):** **N28** the
+      sweep event type (adds a tenth type and new journal lines) · §10.3
+      **checkpoints** (checkpoint records live in the journal) · **what
+      the engine publishes** (the NATS subjects are a wire contract, and
+      the panel depends on them) · **`mm/runtime/` minimal** (needed to
+      test at all, and to generate the oracle journals).
+    - **Defer to Go (building them in Python is building them twice):**
+      the VM · Cloud NAT · secrets · supervised-test mode · deployment.
+    - ✂ **N31 moves to the Go side.** Correction: group commit does **not**
+      change the journal format, only *when* a line becomes durable —
+      replay reads identical lines either way. So it is an implementation
+      concern, not a contract, and Go does it better natively. **Off the
+      Python critical path.**
+  - ⚠ **The oracle journals must be REALISTIC** — a full simulated game
+    day, not fixtures — which argues for `mm/runtime/` sooner rather than
+    more completely.
+  - ⚠ **§13.2 certification follows the thing that trades.** If Go trades,
+    Go is certified; Python's suite does not certify Go. Only differential
+    replay does, and that needs journals we have not generated yet.
+  - ⚠ **T10 — no sandbox.** Whatever Python proves against the venue, Go
+    must re-prove on the wire before it trades. The loopback rig survives
+    (docker, NATS, the real gateway binary); the script does not, because
+    it is Python driving the Python stack.
   - ⚠ **The hard part is not writing Go, it is replay byte-equality.**
     Four hazards: (1) **decimal arithmetic** — Go has no built-in decimal,
     so rounding mode and precision must match exactly or prices diverge at
