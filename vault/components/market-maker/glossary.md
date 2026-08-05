@@ -1,3 +1,7 @@
+---
+description: "Plain-English definitions for every market-maker term and equation symbol used across the standards, systems docs and calls"
+---
+
 # Market Maker — Glossary
 
 > **Component:** [[market-maker/market-maker]]

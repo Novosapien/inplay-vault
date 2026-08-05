@@ -1,3 +1,7 @@
+---
+description: "The project to-do list — open IA, leaderboard, data and integration questions, each linked to its component doc"
+---
+
 # InPlay Trading Challenge -- To-Dos
 
 > **Project:** [[index]]

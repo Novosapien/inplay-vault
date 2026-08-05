@@ -1,3 +1,7 @@
+---
+description: "Live register of unresolved architecture questions — impact, owner and status for each, from tZERO integration through wallets to the market-maker algo"
+---
+
 # Open Questions
 
 > **Architecture:** [[architecture]]

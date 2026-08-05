@@ -1,3 +1,7 @@
+---
+description: "Hop-by-hop latency budget for market data, tZERO to user screen — <56ms typical, <100ms p99, with per-data-type delivery targets"
+---
+
 # Latency Budget
 
 > **Architecture:** [[architecture]]
