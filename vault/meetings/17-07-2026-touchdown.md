@@ -15,6 +15,7 @@ extracted-to:
   - "[[components/components]]"
   - "[[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-07-17 InPlay touchdown — AppLovin MAX as ad server, Kevel on hold, Edwin's market-maker reference-price mechanics, and Watch Mode fixes"
 ---
 
 ## Post-Call Analysis

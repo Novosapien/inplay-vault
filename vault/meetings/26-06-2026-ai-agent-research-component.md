@@ -8,6 +8,7 @@ extracted-to:
   - "[[information-layer/sub-components/research-tab/research-tab]]"
   - "[[information-layer/sub-components/research-tab/changelog]]"
   - "[[components/components]]"
+description: "Transcript of the 2026-06-26 InPlay Research Tab session — 3-tier build plan, 99c/$14.99/$49.99 pricing, in-app payments, and a tZERO buying-power explainer"
 ---
 
 ## Post-Call Analysis

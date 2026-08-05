@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the IPO Draft Board — swipe, list and conference/division filter views of team listings, with journeys, data needs and risks"
+---
+
 # InPlay Trading Challenge — Draft Board / Listings
 
 > **Component:** [[ipo-module]]

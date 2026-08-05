@@ -1,3 +1,7 @@
+---
+description: "IPLY default OMS risk-flag settings from tZERO — which flags are ON/OFF (Stop Wash Trades, overnight carry), the four-tier price band, and open items"
+---
+
 # tZERO OMS Risk Settings (IPLY defaults)
 
 > **Integration:** [[tzero]] · [[integrations]]

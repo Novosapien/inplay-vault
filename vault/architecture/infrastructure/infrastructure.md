@@ -1,3 +1,7 @@
+---
+description: "GCP deployment map — every Cloud Run service, job, VM and managed service (NATS, Redis, Cloud SQL), with domain routing and game-day scaling triggers"
+---
+
 # GCP Infrastructure Overview
 
 > **Architecture:** [[architecture]]

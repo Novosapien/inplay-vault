@@ -1,3 +1,7 @@
+---
+description: "Auth Service spec — signup, login, JWT issuance and the Persona KYC flow that gates the 100K InPlay-dollar credit, with endpoints and scaling profile"
+---
+
 # Auth Service
 
 > **Architecture:** [[architecture]]

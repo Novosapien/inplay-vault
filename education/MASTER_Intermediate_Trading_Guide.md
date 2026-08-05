@@ -1,3 +1,7 @@
+---
+description: "Master copy of the 10-module intermediate trading guide — technical analysis, Kelly sizing, microstructure, multi-horizon strategy and drawdown management"
+---
+
 __INPLAY GLOBAL__
 
 __Intermediate Trading__

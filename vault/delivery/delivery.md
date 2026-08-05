@@ -1,3 +1,7 @@
+---
+description: "Delivery hub for the InPlay app flight plan — the Novosapien/InPlay working agreement — with committed snapshots, structure conventions and key launch dates"
+---
+
 # Delivery · InPlay App Flight Plan
 
 > **Status:** Living · updated per working session

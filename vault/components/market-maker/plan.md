@@ -1,3 +1,7 @@
+---
+description: "MM build plan — Phase 0 unblockers through ops UI and calibration, exit tests per phase, and the mid-August launch anchors"
+---
+
 # Market Maker — Build Plan
 
 > **Component:** [[market-maker/market-maker]]

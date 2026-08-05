@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-11 InPlay call — vault review-tool demo, then a trading-module workshop: entry points, persistent buy/sell, limit-only tZERO orders"
+---
+
 **
 
 May 11, 2026

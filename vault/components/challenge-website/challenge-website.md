@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Challenge Website — the pre-app funnel that pushes visitors to app download: holding page, main-site pages, form-to-CRM bridge, updates"
+---
+
 # InPlay Trading Challenge -- Challenge Website
 
 > **Vision:** [[vision]]

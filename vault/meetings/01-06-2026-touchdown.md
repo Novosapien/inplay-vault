@@ -4,6 +4,7 @@ type: standup
 status: extracted
 extracted-to:
   - "[[digests/touchdowns-01-10-jun-2026]]"
+description: "Transcript of the 2026-06-01 touchdown call — realistic helmet art for 163 teams, header lock vs scroll for ads, the PWA review tool, and launch timing"
 ---
 
 ## Post-Call Analysis

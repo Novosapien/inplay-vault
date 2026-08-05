@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the IPO hype layer — 24–48h pre-alerts, go-live push across channels, and the in-app countdown that hands to the navbar takeover"
+---
+
 # InPlay Trading Challenge — Announcement & Countdown
 
 > **Component:** [[ipo-module]]

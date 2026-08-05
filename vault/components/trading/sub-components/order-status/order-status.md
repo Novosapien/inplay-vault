@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the open-orders blotter — order states, cancel flow with tZERO race conditions, entity journeys, data feeds and launch priority"
+---
+
 # InPlay Trading Challenge -- Order Status
 
 > **Component:** [[trading]]

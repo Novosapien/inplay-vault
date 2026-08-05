@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Settings Hub, the More tab's main menu — profile summary plus links to the Referral Program, Education Hub and Settings pages"
+---
+
 # Settings Hub
 
 > **Tab:** More

@@ -1,3 +1,7 @@
+---
+description: "Session log, 2026-07-30 — intake of Edwin's SNT-1 Synthetic Noise Taker: a taker-only controlled loser that subsidises liquidity, its config and open questions"
+---
+
 # 2026-07-30, SNT-1 Synthetic Noise Taker intake
 
 > **Who:** Novosapien (AI session) processing Edwin's email

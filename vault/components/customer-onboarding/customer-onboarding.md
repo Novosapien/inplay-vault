@@ -1,3 +1,7 @@
+---
+description: "Component doc for the onboarding journey — discovery, Persona KYC, tZERO wallet provisioning, holding state and returning login, with the 3-clicks-to-trade rule"
+---
+
 # InPlay Trading Challenge — Customer Onboarding
 
 > **Vision:** [[vision]]

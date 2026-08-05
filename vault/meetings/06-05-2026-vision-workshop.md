@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-06 InPlay vision workshop — trading challenge concept, target users, prize and referral mechanics, revenue model and app modules"
+---
+
 **
 
 May 6, 2026

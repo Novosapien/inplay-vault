@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Discovery/Home page — game cards, ticker, search across ~163 teams, featured games, with journeys, data needs and open questions"
+---
+
 # InPlay Trading Challenge -- Discovery / Home
 
 > **Component:** [[information-layer]]

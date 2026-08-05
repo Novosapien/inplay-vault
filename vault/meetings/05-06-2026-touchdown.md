@@ -9,6 +9,7 @@ extracted-to:
   - "[[inplay-global-website/inplay-global-website]]"
   - "[[trading/trading]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-05 touchdown call — referral system demo, live Sportradar data in the prototype, website redesign walkthrough, and in-app ad mockups"
 ---
 
 ## Post-Call Analysis

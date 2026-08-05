@@ -13,6 +13,7 @@ extracted-to:
   - "[[integrations]]"
   - "[[primary-offering-execution]]"
   - "[[customer-onboarding]]"
+description: "Digest of the 2026-07-23 tZERO weekly tech sync — SIM/PROD split, production symbology, stock-loan fee, and the IPO direct-mint-to-wallet decision"
 ---
 
 ## Post-Call Analysis

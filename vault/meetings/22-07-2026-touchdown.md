@@ -15,6 +15,7 @@ extracted-to:
   - "[[withdrawal-flow/withdrawal-flow]]"
   - "[[education/education]]"
   - "[[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]"
+description: "Extraction digest of the 2026-07-22 touchdown standup — $49.99 subscription pricing set, W9 tax-automation vendor, AI-clone education videos and SSP blockers"
 ---
 
 ## Post-Call Analysis

@@ -1,3 +1,7 @@
+---
+description: "Session log, 2026-07-22 — the MM workstream foundation: standards decoded, vault component built, decision-cycle pseudocode, build sizing and working process"
+---
+
 # 2026-07-22 — MM workstream foundation: standards → understanding → structure → process
 
 > **Who:** George + Claude

@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the off-field earnings engine — the model that computes weekly EST/ACT figures from the $250/game pool allocated by matchup trade volume"
+---
+
 # InPlay Trading Challenge — Off-Field Earnings Engine
 
 > **Component:** [[earnings-report]]

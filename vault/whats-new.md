@@ -1,3 +1,7 @@
+---
+description: "Rolling changelog — dated entries for every major vault update, from the vision workshop through SNT-1, IPO pricing v1.0 and the tZERO OMS Q&A"
+---
+
 # InPlay Trading Challenge -- What's New
 
 > **Project:** [[index]]

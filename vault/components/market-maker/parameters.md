@@ -1,3 +1,7 @@
+---
+description: "Registry of every tunable MM number with value, status and source — valuation, sessions, quoting, supervision, SNT-1 defaults and profile multipliers"
+---
+
 # Market Maker — Parameters Registry
 
 > **Component:** [[market-maker/market-maker]]

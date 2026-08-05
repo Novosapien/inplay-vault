@@ -1,3 +1,7 @@
+---
+description: "The orderly-markets function — price bands, halts, and trade busting, who can bust what with tZERO, and the v1 detector-plus-human build shape"
+---
+
 # Market Supervision
 
 > **Component:** [[market-maker/market-maker]]

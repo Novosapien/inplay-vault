@@ -1,3 +1,7 @@
+---
+description: "Trading Service spec — the hot-path order flow from validation to NATS handoff to the FIX Gateway, wallet rules, and the 125K orders/sec capacity math"
+---
+
 # Trading Service
 
 > **Architecture:** [[architecture]]

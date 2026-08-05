@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-18 InPlay touchdown — landing-page feedback, HubSpot CRM choice, Sportradar-fed team pages demo, and the AI research-companion idea"
+---
+
 **
 
 May 18, 2026

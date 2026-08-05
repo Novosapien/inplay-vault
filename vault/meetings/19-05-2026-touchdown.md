@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-19 touchdown — demo video for advertiser pitches, native ad-moment design, ad-server platform tests, Hasan's trading-sim dashboard"
+---
+
 **
 
 May 19, 2026

@@ -1,3 +1,7 @@
+---
+description: "Client-side performance plan — render throttling, reconnection, subscription and memory tactics, plus the ~2s cold-start target versus Kalshi and Polymarket"
+---
+
 # Frontend Performance
 
 > **Architecture:** [[architecture]]

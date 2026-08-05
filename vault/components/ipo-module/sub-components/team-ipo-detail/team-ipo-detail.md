@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the per-team IPO assessment page — expected wins, off-field value basis, stats, roster moves and schedule behind the buy decision"
+---
+
 # InPlay Trading Challenge — Team IPO Detail
 
 > **Component:** [[ipo-module]]

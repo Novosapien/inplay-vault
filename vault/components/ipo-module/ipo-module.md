@@ -1,3 +1,7 @@
+---
+description: "IPO Module component doc — the Trading Challenge Draft: draft board UX, buy-only static-ask offering, float and holdback rules, and season-end settlement"
+---
+
 # InPlay Trading Challenge — IPO Module
 
 > **Vision:** [[vision]]

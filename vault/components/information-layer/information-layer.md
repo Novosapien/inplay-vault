@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Information Layer — discovery, game and team pages, leaderboard, research tab — with SR/tZERO sourcing, build-vs-buy calls and open gaps"
+---
+
 # InPlay Trading Challenge -- Information Layer
 
 > **Vision:** [[vision]]

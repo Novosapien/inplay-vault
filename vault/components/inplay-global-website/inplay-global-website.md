@@ -1,3 +1,7 @@
+---
+description: "Component doc for the InPlay Global corporate site — page map, design decisions, action list, launch status and the $25M guarantee compliance incident"
+---
+
 # InPlay Trading Challenge — InPlay Global Website
 
 > **Vision:** [[vision]]

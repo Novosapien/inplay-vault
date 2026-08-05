@@ -1,3 +1,7 @@
+---
+description: "The SDMM bot — turns Reference Price plus profile into two-sided ladders in tZERO, ~200ms live cadence, inventory skew, and the 23-07 v1 quote-lifecycle rules"
+---
+
 # Quoting Engine (SDMM)
 
 > **Component:** [[market-maker/market-maker]]

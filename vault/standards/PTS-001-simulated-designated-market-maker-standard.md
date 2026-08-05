@@ -1,3 +1,7 @@
+---
+description: "InPlay's authoritative PTS-001 standard (v1.0, PDF-converted) — SDMM engine architecture, decision cycle, pricing profiles, and deterministic replay rules"
+---
+
 ## JULY 2, 2026 
 
 # INPLAY CORE TECHNICAL STANDARDS PTS-001 SIMULATED DESIGNATED MARKET MAKER STANDARD (SDMM-1) 

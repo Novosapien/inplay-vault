@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-15 InPlay touchdown call — tZERO debrief and GCP direct connect, in-app feedback flow, website demos, and Sportradar data plans"
+---
+
 **
 
 May 15, 2026

@@ -1,3 +1,7 @@
+---
+description: "Digest of the 15–29 May 2026 touchdown syncs — tZERO confirmed as ATS, the AI Research Agent, HubSpot as CRM, and the multi-sport expansion decision"
+---
+
 # Touchdown Sweep — 15–29 May 2026
 
 > **Type:** Consolidated digest of touchdown (sync) meetings

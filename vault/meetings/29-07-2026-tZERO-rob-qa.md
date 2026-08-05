@@ -14,6 +14,7 @@ extracted-to:
   - "[[primary-offering-execution]]"
   - "[[integrations]]"
   - "[[open-questions]]"
+description: "Written Q&A from Rob Colucci (tZERO) after Hasan's QA session — primary issuance, overnight position carryover, account-scoping fixes, and OMS risk settings"
 ---
 
 ## Post-Call Analysis

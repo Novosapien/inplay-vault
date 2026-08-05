@@ -1,3 +1,7 @@
+---
+description: "Kevin's raw 10-module expert guide — statistical edge, systematic strategy, execution, reflexivity, portfolio and regime theory, with quizzes and glossary"
+---
+
 # Expert Trading Guide (Source Content)
 
 > **Component:** [[education]]

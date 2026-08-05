@@ -3,6 +3,7 @@ date: 2026-07-06
 type: standup
 status: raw
 extracted-to:
+description: "Gemini notes from the 2026-07-06 InPlay touchdown call — pre-launch app demo and metrics, referral nudges, education video length debate, and chat postponed"
 ---
 
 Jul 6, 2026

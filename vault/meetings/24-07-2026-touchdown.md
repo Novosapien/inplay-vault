@@ -22,6 +22,7 @@ extracted-to:
   - "[[trading/trading]]"
   - "[[information-layer/sub-components/team-page/team-page]]"
   - "[[information-layer/sub-components/single-game-page/single-game-page]]"
+description: "Digest of the 2026-07-24 InPlay touchdown — AdMob/SSP go-live, OTA release caps, Sportradar probabilities-API issues, and the payouts blind spot"
 ---
 
 ## Post-Call Analysis

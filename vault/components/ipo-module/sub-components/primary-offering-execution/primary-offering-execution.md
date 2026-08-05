@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the IPO buy engine — static-ask buy-only mechanics, 5M float with 20% holdback, direct-mint issuance via the transfer-agent workspace"
+---
+
 # InPlay Trading Challenge — Primary Offering Execution
 
 > **Component:** [[ipo-module]]

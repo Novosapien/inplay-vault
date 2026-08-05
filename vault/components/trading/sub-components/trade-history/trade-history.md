@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the completed-trades ledger — trade list, realised P&L, win-rate stats, bust-correction rules, journeys, and open P&L-method questions"
+---
+
 # InPlay Trading Challenge -- Trade History
 
 > **Component:** [[trading]]

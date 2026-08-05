@@ -1,3 +1,7 @@
+---
+description: "2026-05-09 draft architecture for the Trading Challenge — system diagrams, tech decisions with rejected alternatives, scaling, ad serving, and open questions"
+---
+
 # InPlay Trading Challenge -- Technical Architecture
 
 **Status:** Draft

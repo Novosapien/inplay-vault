@@ -7,6 +7,7 @@ status: extracted
 extracted-to:
   - "[[digests/touchdowns-18-29-jun-2026]]"
   - "[[components/components]]"
+description: "Transcript of the 2026-06-18 call — mislabeled Education; Brett walks Edwin through SSP registration, eCPM economics and the minutes-to-impressions forecast"
 ---
 
 ## Post-Call Analysis

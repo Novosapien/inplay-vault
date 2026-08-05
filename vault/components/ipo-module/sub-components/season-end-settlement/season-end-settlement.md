@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for season-end settlement of the trading challenge — longs credited, shorts force-closed per league, then the final leaderboard run"
+---
+
 # InPlay Trading Challenge — Season-End Settlement / Liquidation
 
 > **Component:** [[ipo-module]]

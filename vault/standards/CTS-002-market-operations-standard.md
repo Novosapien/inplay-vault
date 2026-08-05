@@ -1,3 +1,7 @@
+---
+description: "CTS-002 master draft — market lifecycles, Reference Price publication, operating conditions and profiles, order matching rules and quote construction math"
+---
+
 ## JULY 2, 2026 
 
 # INPLAY CORE TECHNICAL STANDARDS CTS-002 MARKET OPERATIONS STANDARD (MOS-1 MASTER DRAFT) 

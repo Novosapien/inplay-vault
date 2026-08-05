@@ -1,3 +1,7 @@
+---
+description: "Sub-component doc for Game Day Overview — the live multi-game monitoring page: time-slot grouping, aggregate P&L, journeys, data needs and open IA questions"
+---
+
 # InPlay Trading Challenge -- Game Day Overview
 
 > **Component:** [[information-layer]]

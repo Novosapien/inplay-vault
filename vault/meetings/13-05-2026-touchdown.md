@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-13 touchdown — demo of the v0.01 trading app prototype, order book and ad placement debate, and the KYC-only first app drop"
+---
+
 **
 
 May 13, 2026

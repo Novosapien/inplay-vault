@@ -9,6 +9,7 @@ extracted-to:
   - "[[components/components]]"
   - "[[vision]]"
   - "[[architecture/open-questions]]"
+description: "Transcript and extraction table for the 2026-06-22 InPlay education component call — 36-module card-based redesign, rewards, badges and the paid research tab"
 ---
 
 ## Post-Call Analysis

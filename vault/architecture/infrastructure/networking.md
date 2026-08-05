@@ -1,3 +1,7 @@
+---
+description: "Network layout — the five inplay.com domains and their targets, internal GCP paths, tZERO co-location (<1ms FIX link), and SSL termination points"
+---
+
 # Networking
 
 > **Architecture:** [[architecture]]

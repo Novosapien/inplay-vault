@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-08 module 1 deep-dive — simulation-app information screens, Sportradar match tracker, competitor app review, volatility-moment ads"
+---
+
 **
 
 May 8, 2026

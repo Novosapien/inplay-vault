@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Research Tab — pre-canned and saved custom reports, the Phase-2 AI companion, subscription tiers and pricing, journeys and phasing"
+---
+
 # InPlay Trading Challenge -- Research Tab
 
 > **Component:** [[information-layer]]

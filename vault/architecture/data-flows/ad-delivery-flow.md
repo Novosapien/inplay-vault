@@ -1,3 +1,7 @@
+---
+description: "Ad-delivery flow in two phases — client-side Google Ad Manager at launch, then moment-based sponsor ads via pre-computed Redis segments and Centrifugo in ~100ms"
+---
+
 # Data Flow: Ad Delivery
 
 > **Architecture:** [[architecture]]

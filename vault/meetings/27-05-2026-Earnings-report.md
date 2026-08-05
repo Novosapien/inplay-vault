@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-27 InPlay earnings-report call — ad-sales pivot after the Omnicom setback, Bloomberg-style earnings page, and Kalshi/Sagi updates"
+---
+
 **
 
 May 27, 2026

@@ -3,6 +3,7 @@ date: 2026-07-01
 type: standup
 status: raw
 extracted-to:
+description: "Gemini notes for the 2026-07-01 touchdown call — referral dashboard demo, HubSpot data mapping, Test Flight demo strategy, and app-store launch contingency"
 ---
 
 Jul 1, 2026

@@ -1,3 +1,7 @@
+---
+description: "Canonical record of the InPlay Challenge AdMob account — publisher and app IDs, all 8 live ad-unit IDs per platform, the app-ads.txt line and integration notes"
+---
+
 # AdMob Account & Ad Units
 
 Canonical record of the Google AdMob account and the live ad units for InPlay Challenge. Mirrors the AdMob section of the SSP ad-unit tracker at `Programming/inplay/ssp-ad-units/` (shared copy: `shared/inplay/media-planning/publisher/InPlay SSP Ad Units 2026-08-04-1140.html`). All 8 units created as of 29 July 2026. Last updated: 4 August 2026.

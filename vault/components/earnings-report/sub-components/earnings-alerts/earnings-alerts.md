@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for earnings-release push alerts and in-app countdown — journeys, cadence rules, Push/CRM handoff, data needs and launch priority"
+---
+
 # InPlay Trading Challenge — Earnings Alerts & Countdown
 
 > **Component:** [[earnings-report]]

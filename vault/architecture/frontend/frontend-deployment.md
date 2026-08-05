@@ -1,3 +1,7 @@
+---
+description: "Deploy paths for iOS, Android and web builds — EAS submit flows, OTA update rules and store caps, release governance, and the pre-launch submission timeline"
+---
+
 # Frontend Deployment
 
 > **Architecture:** [[architecture]]

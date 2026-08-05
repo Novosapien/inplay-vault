@@ -1,3 +1,7 @@
+---
+description: "Plain-English companion to CTS-002 — how the market runs around the Reference Price, with the 20-07 call updates and a map of Novosapien vs tZERO ownership"
+---
+
 # CTS-002 in Plain English — Market Operations (how the market runs)
 
 > **Companion to:** [[standards/CTS-002-market-operations-standard]] (the authoritative source)

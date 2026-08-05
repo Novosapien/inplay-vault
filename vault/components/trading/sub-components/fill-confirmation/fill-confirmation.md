@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for fill alerts and trade receipts — real-time banners, push, partial fills, busts, and the fill-then-follow-up-order loop"
+---
+
 # InPlay Trading Challenge -- Fill Confirmation
 
 > **Component:** [[trading]]

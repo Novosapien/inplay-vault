@@ -1,3 +1,7 @@
+---
+description: "Running log of distilled MM understanding — why SNT-1 exists, the rest-until-gone v1 lifecycle, hot-path and event-log design, and the Edwin remit line"
+---
+
 # Market Maker — Learnings
 
 > **Component:** [[market-maker/market-maker]]

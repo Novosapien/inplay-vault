@@ -8,6 +8,7 @@ extracted-to:
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[trading/trading]]"
   - "[[components/components]]"
+description: "Transcript and analysis of the 2026-06-29 touchdown — challenge-site legal/T&C review, newsletter-vs-action-first email debate, and tZERO press release"
 ---
 
 ## Post-Call Analysis

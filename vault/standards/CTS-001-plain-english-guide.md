@@ -1,3 +1,7 @@
+---
+description: "Plain-English companion to CTS-001 — the ESV valuation system explained, plus Edwin's actual formula from the 20-07 call and the season-1 build reality"
+---
+
 # CTS-001 in Plain English — The Valuation System (what a team is worth)
 
 > **Companion to:** [[standards/CTS-001-financial-valuation-standard]] (the authoritative source)

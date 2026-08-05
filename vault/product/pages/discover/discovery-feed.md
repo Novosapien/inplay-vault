@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Discover feed — game ticker, game cards with sparklines, featured game, NFL/NCAA toggle and team search, with navigation paths and states"
+---
+
 # Discovery Feed
 
 > **Tab:** Discover

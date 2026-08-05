@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Single Game Page, the core trading screen — match tracker, annotated price chart, order book, buy/sell and news across pre/live/post states"
+---
+
 # Single Game Page
 
 > **Tab:** Discover

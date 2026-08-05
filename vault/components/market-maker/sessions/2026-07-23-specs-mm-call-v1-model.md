@@ -1,3 +1,7 @@
+---
+description: "Session log, 2026-07-23 — tZERO FIX specs read end-to-end, the 23-07 MM call extracted, and Edwin's simpler v1 lifecycle reworked into all the MM docs"
+---
+
 # 2026-07-23 — tZERO specs read · MM call · the v1 model lands
 
 > **Who:** George + Claude (one continuous working session, 22-07 evening → 23-07)
