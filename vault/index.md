@@ -19,6 +19,7 @@ A simulated sports equity trading platform where users trade team stocks during 
 | [[whats-new]] | Latest updates and changes | Rolling |
 | [[product/pages/PAGES\|App Pages]] | All 21 screens — what users see, navigation flows | Living |
 | [[todos]] | Open items and checklist | Rolling |
+| [[delivery/delivery\|Delivery flight plan]] | The Novosapien delivery flight plan -- launch build, quarterly slots, live risks | Living |
 
 ## Recent Activity
 

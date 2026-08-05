@@ -281,6 +281,7 @@ sequenceDiagram
 ### Frontend
 - [[frontend-architecture]] -- React Native (Expo), no server, runs on device
 - [[frontend-deployment]] -- App Store, Play Store, Web/CDN, OTA updates
+- [[app-store-accounts]] -- developer account emails, live store URLs and app identifiers
 - [[frontend-performance]] -- Client-side throttling, subscriptions, reconnection
 
 ### Integrations

@@ -23,5 +23,8 @@ There are two complementary revenue motions:
 | Sub-Component | Overview | Status | Link |
 |--------------|----------|--------|------|
 | Programmatic Media Playbook | The SSP roster, the AppLovin MAX architecture, and the 1-human + AI-agent ad-ops operating model for the programmatic/generalised inventory | Reference | [[sub-components/programmatic-media-playbook/programmatic-media-playbook]] |
+| AdMob Account & Ad Units | The live AdMob account (publisher ID, App IDs, app review status) and all 8 production ad-unit IDs, iOS + Android | Reference | [[admob-account]] |
+| Unity LevelPlay Account | The LevelPlay SSP account: app keys per platform, ironSource platform IDs, registered store apps, ad units to follow | Reference | [[unity-levelplay-account]] |
+| Vungle Account | The Vungle (Liftoff Monetize) SSP account: account ID, Android app ID, registered store apps, ad units to follow | Reference | [[vungle-account]] |
 
 > **Note (18 June 2026):** Advertising was promoted from a pure cross-cutting note into this directory so the **programmatic media playbook** (Brett, 17-06) could be captured as a buildable sub-component. The specialist-sponsorship-territory detail still lives in [[components/components#Cross-Cutting Concerns]] and is the next candidate to extract into its own sub-component here.
