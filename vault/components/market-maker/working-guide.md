@@ -116,7 +116,7 @@ honest and fast — 10 minutes max:
 Converge on the **build plan** and start executing:
 
 1. Close the Phase-0 blockers ([[market-maker/plan]]) — Thursday deep-dive
-   (E-items, esp. **E11 settlement definition**, **E12 NCAA scope**), T0 asks
+   (E-items, esp. **E11 settlement definition**, **E12 NCAA scope**), tZERO asks
    (T-items), Sport Radar feed.
 2. Make the N9 adopt-or-redesign calls — our from-scratch MM design vs the
    platform doc's suggestions.

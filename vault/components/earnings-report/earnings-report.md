@@ -119,21 +119,21 @@ graph TD
 | Capability | Build / Buy / Access | Provider / Approach | Rationale |
 |-----------|---------------------|-------------------|-----------|
 | Off-field earnings calculation (EST + ACT) | Build | InPlay model | Proprietary mechanic (½ on-field winner, $250/game volume-allocated); core IP |
-| Trade-volume input (for allocation) | Access | T0 / trading data | Allocation depends on each team's share of matchup trade volume |
+| Trade-volume input (for allocation) | Access | tZERO / trading data | Allocation depends on each team's share of matchup trade volume |
 | On-field earnings / result input | Access | Sport Radar + InPlay model | The off-field figure is pegged to the on-field winner's earnings |
 | Live batched feed (pop-to-top at release) | Build | InPlay app | No off-the-shelf equivalent for this event UX; must handle release burst |
-| Trade-from-report | Build + Access | InPlay app + T0 trading | Embedded trade button reuses the Trading execution path |
+| Trade-from-report | Build + Access | InPlay app + tZERO trading | Embedded trade button reuses the Trading execution path |
 | Chart dot annotation | Build | InPlay app (Information Layer charts) | Cross-component feature on the price chart |
 | Push + countdown | Build + Access | In-app + Push/CRM | Reuses Push/CRM cross-cutting infrastructure |
 | Ad insertion into earnings page | Access | Ad server (Advertising cross-cutting) | Edwin wants marketing partners on this high-traffic page |
 
 ```mermaid
 graph LR
-    VOL[Trade volume - T0] -->|allocation basis| ENG[Off-Field Earnings Engine]
+    VOL[Trade volume - tZERO] -->|allocation basis| ENG[Off-Field Earnings Engine]
     ONF[On-field result/earnings - SR + model] -->|peg| ENG
     ENG -->|EST week prior| FEED[Earnings Feed]
     ENG -->|ACT release day| FEED
-    FEED -->|trade button| TR[Trading / T0]
+    FEED -->|trade button| TR[Trading / tZERO]
     FEED -->|archive + dot| INFO[Information Layer charts]
     FEED -->|alerts| PUSH[Push/CRM]
 ```
@@ -144,7 +144,7 @@ graph LR
 
 | Data | Direction | Source / Destination | Notes |
 |------|-----------|---------------------|-------|
-| Trade volume per team per matchup | In | T0 / trading data | Allocation basis for the $250/game off-field pool |
+| Trade volume per team per matchup | In | tZERO / trading data | Allocation basis for the $250/game off-field pool |
 | On-field result / winner earnings | In | Sport Radar + InPlay model | Off-field total = ½ on-field winner earnings |
 | Estimate (EST) | Out / Stored | InPlay model | Published the week prior |
 | Actual (ACT) | Out / Stored | InPlay model | Released on the day, batched |
@@ -183,7 +183,7 @@ graph LR
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
 | [[ipo-module]] | The off-field value mechanic ($250/game, volume-allocated) seeded at IPO | Yes (conceptual basis) |
-| T0 / trading data | Per-team trade volume for allocation | Yes |
+| tZERO / trading data | Per-team trade volume for allocation | Yes |
 | Sport Radar + InPlay model | On-field result / winner earnings | Yes |
 | Trading | Execution path for the embedded trade button | Yes |
 | [[information-layer]] | Price charts (for the earnings dot) + favourites/portfolio | No — can ship feed first, annotate later |
@@ -199,7 +199,7 @@ graph LR
 ```mermaid
 graph LR
     IPO[IPO Module] -->|off-field mechanic| ER[Earnings Report]
-    T0[T0 trade volume] --> ER
+    tZERO[tZERO trade volume] --> ER
     SR[Sport Radar result] --> ER
     ER -->|trade button| TR[Trading]
     ER -->|chart dot| INFO[Information Layer]
@@ -226,7 +226,7 @@ graph LR
 **Data risks:**
 - **EST/ACT integrity** — a wrong earnings number directly mis-prices the market and erodes trust (echoes Edwin's Polymarket $900 horror story).
 - **Stale/blank actuals** — a failed or late ACT shown silently misleads traders mid-event.
-- **Volume-data quality** from T0 feeding the allocation.
+- **Volume-data quality** from tZERO feeding the allocation.
 
 **Compliance:**
 - Even simulated, this is an "earnings release" mechanic; the EST/ACT and its market impact should be clearly framed as a game construct, not investment guidance — InPlay does not advise (vision-level constraint).

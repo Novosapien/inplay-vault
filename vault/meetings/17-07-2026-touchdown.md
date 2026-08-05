@@ -19,7 +19,7 @@ extracted-to:
 
 ## Post-Call Analysis
 
-> Friday touchdown (48 min). Two decision-heavy threads: **ad serving** (AppLovin MAX confirmed as ad server, Kevel on hold, Google's 30s minimum refresh kills the 15s rotation plan, watch-screen targets ~720 impressions/game, $50k–250k direct pilot construct) and the **market-maker mechanics finally revealed** (reference price = today's-game probability + season-long probability price + off-field projection, quoted around with randomization; deep-dive moved to Mon 20-07). Watch Mode iterated (slider killed, P&L on-screen, trade sheet swipes both teams). Education's 16 sub-2-min modules shipped. Cadence: Tue/Thu T0 standups added — daily standups until launch. Timeline anchor: trading opens Aug 29; Edwin commits $1M Aug + $2M Sept marketing, +$1–2M prize money.
+> Friday touchdown (48 min). Two decision-heavy threads: **ad serving** (AppLovin MAX confirmed as ad server, Kevel on hold, Google's 30s minimum refresh kills the 15s rotation plan, watch-screen targets ~720 impressions/game, $50k–250k direct pilot construct) and the **market-maker mechanics finally revealed** (reference price = today's-game probability + season-long probability price + off-field projection, quoted around with randomization; deep-dive moved to Mon 20-07). Watch Mode iterated (slider killed, P&L on-screen, trade sheet swipes both teams). Education's 16 sub-2-min modules shipped. Cadence: Tue/Thu tZERO standups added — daily standups until launch. Timeline anchor: trading opens Aug 29; Edwin commits $1M Aug + $2M Sept marketing, +$1–2M prize money.
 
 | Finding | Destination | Action |
 |---------|-------------|--------|
@@ -29,7 +29,7 @@ extracted-to:
 | **Watch Mode iteration** — slider killed (OS-gesture conflict), click-through stays; net position + per-game P&L + global P&L on-screen; trade sheet must swipe both teams; expandable event cards = direct-sale ad space; landscape trade layout redesign | [[information-layer/sub-components/single-game-page/single-game-page]] §9 | Updated |
 | **Education shipped** — 16 updated modules live, all videos under 2 min; next review pass + Troy/Kevin revised docs pending | [[education/education]] | Noted in §2 |
 | **Timeline** — secondary trading opens Aug 29 post-IPO (pre-season dead zone UX needs thought); ~10k users targeted at IPO launch | [[ipo-module/ipo-module]] | Business rules updated |
-| **Process** — Tue/Thu T0 standups added at 4pm London (daily standups to launch); interns Cam + Claybornne alpha-testing page-by-page; dual TestFlight builds planned (IPO + trading); T0 visibility via Chris's platform | Post-call analysis | Noted — no doc change |
+| **Process** — Tue/Thu tZERO standups added at 4pm London (daily standups to launch); interns Cam + Claybornne alpha-testing page-by-page; dual TestFlight builds planned (IPO + trading); tZERO visibility via Chris's platform | Post-call analysis | Noted — no doc change |
 | **Marketing commitment** — Edwin: $1M Aug + $2M Sept user acquisition, +$1–2M prize money; break-even on season one = win if acquisition funnel clicks; NBA challenge late Oct | — | Parked — commercial |
 | Futures API (Cody's) — win-probability endpoint returns unauthorized on trial tier; escalating via Scott/support | Post-call analysis | Action item |
 
@@ -88,11 +88,11 @@ Troy McDonald Kane: And I know um George and Hassan will be on shortly.
 
 Jared Sapirman: Great.
 
-Troy McDonald Kane: They had to do one more setup with uh T0 and then they'll be on.
+Troy McDonald Kane: They had to do one more setup with uh tZERO and then they'll be on.
 
 Edwin Johnson: All right, cool.
 
-Troy McDonald Kane: Um while we're waiting for them, Brett, I do after that call. What I would like to recommend going forward until we launch is right now we have our Monday, Wednesday, Friday standups. I'm going to recommend that we do Tuesday, Thursdays as T0 standups. So then every other day we're we have a standup.
+Troy McDonald Kane: Um while we're waiting for them, Brett, I do after that call. What I would like to recommend going forward until we launch is right now we have our Monday, Wednesday, Friday standups. I'm going to recommend that we do Tuesday, Thursdays as tZERO standups. So then every other day we're we have a standup.
 
 Brett StClair: Doing the same
 

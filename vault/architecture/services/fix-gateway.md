@@ -2,7 +2,7 @@
 
 > **Architecture:** [[architecture]]
 > **Service Overview:** [[services-overview]]
-> **T0 Integration Spec:** [[t0]]
+> **tZERO Integration Spec:** [[tzero|tZERO]]
 > **Status:** Draft
 
 ## Overview
@@ -42,7 +42,7 @@ FIX 4.2 requires persistent TCP sessions with heartbeats, sequence numbers, and 
 │  │  SESSION MANAGER                                  │    │
 │  │  Manages logon, heartbeats, sequence numbers      │    │
 │  │  Stores seq nums in Redis for failover            │    │
-│  │  Handles disconnect/reconnect per T0 spec DFAs    │    │
+│  │  Handles disconnect/reconnect per tZERO spec DFAs    │    │
 │  └──────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────┐ ┌────────────────┐ ┌──────────────┐  │
@@ -108,7 +108,7 @@ Orders scale with users but the architecture absorbs spikes at the Cloud Run Tra
 
 ## State Machines
 
-All state machines (DFAs) are fully specified in the [[t0]] integration document:
+All state machines (DFAs) are fully specified in the [[tzero|tZERO]] integration document:
 - IOI Feed Session DFA (Section 3.1)
 - FIX Market Data Session DFA (Section 3.2)
 - Per-Symbol Subscription DFA (Section 3.3)

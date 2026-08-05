@@ -20,7 +20,7 @@ extracted-to:
 | **Prize model → participation-gated payouts** (Sat/Sun dailies + Tue weekly ~$25k/day; ~3 criteria; referrals NOT a hard gate; referral leaderboard + separate prize; multiplier/badging) | [[referral/referral]] + [[architecture/open-questions]] | Changelog row + open-question flagged |
 | **Referral program LIVE via challenge website + KYC** (launch ~July 4; 600 signups emailed) | [[referral/referral]], [[challenge-website/challenge-website]], [[customer-onboarding/customer-onboarding]] | Noted |
 | App-store status (Apple moving / $99 fee; Android Play verification stuck — owner access) | [[customer-onboarding/customer-onboarding]] | Update block |
-| T0 daily buying-power file (referral→trading moves; no intraday rebalance) | [[trading/trading]] | Update block |
+| tZERO daily buying-power file (referral→trading moves; no intraday rebalance) | [[trading/trading]] | Update block |
 | B2B/B2C email infra (3 mailboxes/domain, redirects, warm-up) + interns (60-70 on-campus) + social revamp | [[components/components]] (Push/CRM) | Note added |
 | Impression-forecast calculator due next touchdown | [[components/components]] (Advertising) | Status |
 | Payments (Mastercard/Anna, Goldman, pay.com dead) | — | Parked — commercial |
@@ -1518,7 +1518,7 @@ Troy McDonald Kane: All right.
 
 George Westbrook: I think I think Is that everything? I think so.
 
-Brett StClair: Um just on a T0 um do we want
+Brett StClair: Um just on a tZERO um do we want
 
 Kevin Murray: Yeah.
 
@@ -1531,7 +1531,7 @@ Brett StClair: to set up a call with the guys today just to talk through like I'
 
   
 
-Brett StClair: And there seems to be it feels like a disconnect between the lightweight API and changing the existing API for the onboarding. And we want to make sure that that's all integrated when we launch the preame pre-launch app. need to make sure that's all tied up and working well. And I we're just talking about it today that in the Slack chat there's a bit of a miscommunication. I'm just thinking let's jump on a call today, get that agreed and tidied up and make sure there isn't any inconsistencies. I just don't want the T0 thing to be a week delay between each decision. And as soon as we spot something, we just get on top of it. Is it okay if we do a recharge, Troy, and and sort out get on a call with
+Brett StClair: And there seems to be it feels like a disconnect between the lightweight API and changing the existing API for the onboarding. And we want to make sure that that's all integrated when we launch the preame pre-launch app. need to make sure that's all tied up and working well. And I we're just talking about it today that in the Slack chat there's a bit of a miscommunication. I'm just thinking let's jump on a call today, get that agreed and tidied up and make sure there isn't any inconsistencies. I just don't want the tZERO thing to be a week delay between each decision. And as soon as we spot something, we just get on top of it. Is it okay if we do a recharge, Troy, and and sort out get on a call with
 
 Troy McDonald Kane: Yeah. No, they said to Yeah, please reach out. They said reach out at any time. uh for Friday's session,
 

@@ -20,9 +20,9 @@ extracted-to:
 | Finding | Destination | Action |
 |---------|-------------|--------|
 | Challenge Website rebuilt on a new template for **Google Analytics**; **Microsoft Clarity** heat-mapping to be added across sites | [[challenge-website/challenge-website]] / [[inplay-global-website/inplay-global-website]] / [[components/components]] (Analytics) | Update blocks + Analytics note |
-| **T0 real-time P&L** confirmed (resolves a buying-power concern) | [[trading/trading]] | Update note |
+| **tZERO real-time P&L** confirmed (resolves a buying-power concern) | [[trading/trading]] | Update note |
 | **Market-making** kickoff — Kevin Murray (Head Execution Trader) leading, position-based not HFT | [[trading/trading]] / [[architecture/open-questions]] | Note + open-question row |
-| **Persona effectively done**; T0 wallet allocation = grab-from-pool; details call next week | [[customer-onboarding/customer-onboarding]] | Update note |
+| **Persona effectively done**; tZERO wallet allocation = grab-from-pool; details call next week | [[customer-onboarding/customer-onboarding]] | Update note |
 | **Education delivery debate** — TikTok + AI voice + code-gen animation + podcast; brand-owned modules | [[education/education]] | Update note |
 | Press / media page signed off; main site needs app screenshots later | [[inplay-global-website/inplay-global-website]] | Update note |
 | Launch referenced as **August 22nd** (College Football IPO) | [[ipo-module/ipo-module]] | Folded into 17-06 dates note |
@@ -603,7 +603,7 @@ Troy McDonald Kane: Um, all right. Is there anything else that we needed to touc
 
 Brett StClair: Yeah.
 
-George Westbrook: I think I think just going back to the the T0 call because I think one of our one of our concerns going into it was what maybe the interpretation we got last week where we would be holding the buying power. We're a bit like a that might be because obviously the the amount the price and the actual value of their holdings both like you saying Troy realized and unrealized more the unrealized that's going to be changing so much that not panic but we were kind of like okay this is this is something that we might not have considered but the fact that they said that they're going to be handing that is that's
+George Westbrook: I think I think just going back to the the tZERO call because I think one of our one of our concerns going into it was what maybe the interpretation we got last week where we would be holding the buying power. We're a bit like a that might be because obviously the the amount the price and the actual value of their holdings both like you saying Troy realized and unrealized more the unrealized that's going to be changing so much that not panic but we were kind of like okay this is this is something that we might not have considered but the fact that they said that they're going to be handing that is that's
 
   
   
@@ -1031,7 +1031,7 @@ Kevin Murray: Awesome.
 
 Troy McDonald Kane: cool.
 
-George Westbrook: on T0 side and wallet allocation which from what we said it's just there's a pool of IDs and we just grab one and allocate. Um so that should be touch wood pretty straightforward.
+George Westbrook: on tZERO side and wallet allocation which from what we said it's just there's a pool of IDs and we just grab one and allocate. Um so that should be touch wood pretty straightforward.
 
 Troy McDonald Kane: Okay,
 

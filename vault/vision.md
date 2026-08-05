@@ -186,7 +186,7 @@
 
 **Scope boundary:**
 - **This IS:** The InPlay Trading Challenge a simulated trading environment with no real money at risk, real cash prizes funded from a prize pool, running for the NFL/college football regular season.
-- **This is NOT:** The production trading exchange (live trading with real money through broker partners and T0 as ATS). Production is the downstream destination; the challenge is the funnel into it.
+- **This is NOT:** The production trading exchange (live trading with real money through broker partners and tZERO as ATS). Production is the downstream destination; the challenge is the funnel into it.
 - **This is NOT:** Sports betting. There are no odds, no bookmaker, no house edge. Users trade against each other on a secondary market, not against InPlay.
 - **This is NOT:** A prediction market. Outcomes are not binary. Pricing is continuous across the season, path-dependent, and driven by market forces not game outcomes alone.
 
@@ -438,7 +438,7 @@ Four audiences (full descriptions in [[audiences]]):
      - Brokerage partners see $150 CAC as "very very cheap"
 
   3. **IPO extraction:**
-     - InPlay Markets acts as manager of the ATS (through T0)
+     - InPlay Markets acts as manager of the ATS (through tZERO)
      - Extracts ~10% of money raised during IPOs
      - Also extracts fees for corporate services to team companies
      - Edwin: "we're going to extract roughly 10% of the money that's raised during the IPOs"
@@ -482,7 +482,7 @@ Four audiences (full descriptions in [[audiences]]):
   - Challenge is simulation only production trading is a separate future phase
 
 - **Technology dependencies:**
-  - T0 ATS (Alternative Trading System) partner, manages the trading venue
+  - tZERO ATS (Alternative Trading System) partner, manages the trading venue
   - Sport Radar real-time in-game data + historical data for all D1 college and NFL games
   - Persona KYC/identity verification (age, identity, bot prevention)
   - Brokerage partners (Robinhood, Webull, Schwab) production trading accounts (future state)
@@ -524,7 +524,7 @@ Four audiences (full descriptions in [[audiences]]):
 - **Existing systems / platforms:**
   - Previous trading simulations have been run (users traded 4+ hours straight real behavioural data exists) ⚠️ unclear what platform/system these simulations were run on, need to clarify with Edwin
   - Cody built a market data platform with tiered access, historical data, and backtesting capability (deferred to year 2+ for monetization)
-  - T0 partnership in place for ATS infrastructure
+  - tZERO partnership in place for ATS infrastructure
   - Sport Radar licensing deal in place for real-time + historical data
   - Persona selected for KYC
 
@@ -642,7 +642,7 @@ Four audiences (full descriptions in [[audiences]]):
 | **[[components/ipo-module/ipo-module\|IPO Module]]** | "Trading Challenge Draft" — issues every tradeable asset (5M float, static-ask buy-only, 72h window) before secondary trading; owns season-end liquidation. 6 sub-components decomposed | Defined |
 | **[[components/earnings-report/earnings-report\|Earnings Report]]** | Recurring tradable event — weekly off-field earnings (EST vs ACT) re-price each team's stock; built on the IPO off-field mechanic. 5 sub-components decomposed | Defined |
 | **[[components/trading/trading\|Trading]]** | Trade execution and portfolio management | Collecting |
-| **[[components/market-maker/market-maker\|Market Maker]]** | Internal liquidity provider — synthetic T0 entity posting two-sided resting liquidity, guaranteeing IPO fill, maintaining orderly markets. Not user-facing | Collecting |
+| **[[components/market-maker/market-maker\|Market Maker]]** | Internal liquidity provider — synthetic tZERO entity posting two-sided resting liquidity, guaranteeing IPO fill, maintaining orderly markets. Not user-facing | Collecting |
 | **[[components/referral/referral\|Referral]]** | Growth engine — viral referral mechanics, reward system, cash eligibility tracking | Defined |
 | **[[components/third-space/third-space\|Third Space]]** | Community and social layer — Game Day Chat + Team Chat + Research AI Chat. Stickiness, not core product. InPlay does NOT curate sentiment | Defined |
 | **[[components/education/education\|Education]]** | Card-based trading education (slideshow/whiteboard video + text + quiz), 36 modules across 3 tiers, 100-coin referral rewards, tier certifications, slide-group sponsorship. AI chatbot is Phase 2 | Defined |

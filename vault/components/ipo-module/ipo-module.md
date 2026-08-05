@@ -4,7 +4,7 @@
 > **Audiences:** [[audiences]]
 > **Date:** 2026-05-26
 > **Status:** Defined
-> **Owner:** Edwin (client-facing — IPO mechanics owner) + George (engineering) + Troy (T0 / on-chain ledger)
+> **Owner:** Edwin (client-facing — IPO mechanics owner) + George (engineering) + Troy (tZERO / on-chain ledger)
 > **Updated:** 2026-07-17 — scope confirmed (all ~138 D1 schools), market-maker warehousing resolves unsold-share handling, timeline pinned (IPO deadline ~Aug 22, secondary trading Aug 29). From [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
 > **Updated:** 2026-07-29, Edwin delivered the **IPO pricing model v1.0** with listed prices for all 32 NFL + 138 NCAA team companies. Captured in [[ipo-pricing-2026]] (source workbook safe-copied to `sources/`).
 > **Pricing (authoritative):** [[ipo-pricing-2026]] holds the latest listed IPO prices, parameters, and methodology.
@@ -121,7 +121,7 @@ graph TD
 - **User tries to sell during IPO** → not possible (no sell action exists in this phase).
 - **Window straddles two leagues** → user can trade NCAA secondary while NFL is still in its IPO window; the app must handle mixed states (some assets "IPO", some "live").
 - **Unsold shares at window close — RESOLVED (15-07):** the **market maker buys them** in max clips (~50k) and warehouses the inventory (35%, possibly up to 50%, of every float consumed either by the public or the MM), so no asset reaches the secondary market untradable. (Source: standup 2026-07-15)
-- ⚠️ **Open:** Concurrency on the last shares of a float — two users buying the final block simultaneously; how is the partial fill / race resolved on the T0 ledger?
+- ⚠️ **Open:** Concurrency on the last shares of a float — two users buying the final block simultaneously; how is the partial fill / race resolved on the tZERO ledger?
 
 ---
 
@@ -147,8 +147,8 @@ graph TD
 
 | Capability | Build / Buy / Access | Provider / Approach | Rationale |
 |-----------|---------------------|-------------------|-----------|
-| Primary-offering matching engine (static ask, float decrement) | Access + Build | T0 ATS (ledger) + InPlay app layer | T0 is the trading venue; the IPO is a constrained single-sided order type against a treasury-issued float. Troy: must "figure out how that ledger is going to work." |
-| On-chain share issuance | Access | T0 / chain | Team treasuries are the issuer of record; first ownership must be represented on-chain even in simulation |
+| Primary-offering matching engine (static ask, float decrement) | Access + Build | tZERO ATS (ledger) + InPlay app layer | tZERO is the trading venue; the IPO is a constrained single-sided order type against a treasury-issued float. Troy: must "figure out how that ledger is going to work." |
+| On-chain share issuance | Access | tZERO / chain | Team treasuries are the issuer of record; first ownership must be represented on-chain even in simulation |
 | Forward-looking price derivation (on-field + off-field) | Build | InPlay model | Expected wins × value/win, plus $250/game off-field allocation by trade-volume share — InPlay-proprietary valuation logic |
 | Team fundamentals (stats, roster, schedule) | Access | Sport Radar | Last-season per-game stats, schedule, and roster (additions/departures) sourced from the existing SR licensing deal |
 | Draft-board UI (Tinder + list + filters) | Build | InPlay app (George's team) | Core differentiated experience; no off-the-shelf equivalent |
@@ -158,9 +158,9 @@ graph TD
 graph LR
     SR[Sport Radar] -->|stats · roster · schedule| APP[IPO Module]
     MODEL[InPlay valuation model] -->|expected wins · off-field| APP
-    APP -->|buy orders| T0[T0 ATS ledger]
-    TREAS[Team company treasury] -->|issues 5M shares| T0
-    T0 -->|float state · fills| APP
+    APP -->|buy orders| tZERO[tZERO ATS ledger]
+    TREAS[Team company treasury] -->|issues 5M shares| tZERO
+    tZERO -->|float state · fills| APP
     APP -->|window close| SEC[Secondary market<br/>Trading + Information Layer]
 ```
 
@@ -175,10 +175,10 @@ graph LR
 | Last-season per-game stats | In | Sport Radar | Shown on team detail; "easy win" pre-live-data value-add |
 | Key additions / departures | In | Sport Radar / roster data | Edwin: the **most valuable** signal, especially NCAA (star QB leaving) |
 | Team schedule | In | Sport Radar | Lets users time entries against expected game volatility |
-| Float state (shares issued / remaining) | Stored / Out | T0 ledger → app | Real-time decrement; sold-out state |
-| Share issuance & ownership records | Stored | On-chain (T0) | Treasury = issuer; buyers' first ownership |
-| Buy orders (team, quantity, price, user) | In / Stored | App → T0 ledger | Static ask price; no cap |
-| Settlement prices (season end) | In | InPlay / T0 | Used to credit longs and force-close shorts |
+| Float state (shares issued / remaining) | Stored / Out | tZERO ledger → app | Real-time decrement; sold-out state |
+| Share issuance & ownership records | Stored | On-chain (tZERO) | Treasury = issuer; buyers' first ownership |
+| Buy orders (team, quantity, price, user) | In / Stored | App → tZERO ledger | Static ask price; no cap |
+| Settlement prices (season end) | In | InPlay / tZERO | Used to credit longs and force-close shorts |
 | IPO schedule / window state per league | Stored | InPlay | Open/closed/upcoming per asset; drives navbar + countdown |
 
 ---
@@ -213,7 +213,7 @@ graph LR
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
 | [[components/customer-onboarding/customer-onboarding\|Customer Onboarding]] (KYC + wallet) | Funded trading wallet to buy | Yes |
-| T0 ATS | Ledger + on-chain issuance + primary-offering order handling | Yes |
+| tZERO ATS | Ledger + on-chain issuance + primary-offering order handling | Yes |
 | Sport Radar | Stats, roster (additions/departures), schedule for detail pages | No — can mock with placeholder fundamentals initially |
 | InPlay valuation model | Expected wins + off-field allocation to set IPO price | Yes (need a price to list) |
 | Push / CRM (cross-cutting) | Cross-channel countdown + go-live alerts | No |
@@ -227,7 +227,7 @@ graph LR
 ```mermaid
 graph LR
     ONB[Customer Onboarding] -->|funded wallet| IPO[IPO Module]
-    T0[T0 ATS] -->|ledger / issuance| IPO
+    tZERO[tZERO ATS] -->|ledger / issuance| IPO
     SR[Sport Radar] -->|fundamentals| IPO
     IPO -->|tradeable assets| TR[Trading]
     IPO -->|tradeable assets| INFO[Information Layer]
@@ -241,7 +241,7 @@ graph LR
 
 **Must-have at launch?** **Yes — and first.** The IPO is the gating event for the entire season: no asset exists on the secondary market until it has been through the draft. It must ship before any trading functionality is usable.
 
-**Sequencing rationale:** The IPO window precedes secondary trading by design (NCAA ~Aug 20, NFL ~7 days before Sept 9). However, Edwin explicitly scoped engineering effort: the experience _"is only going to last for 3 days,"_ so the team should build a clean, correct, beautiful-enough v1 and **iterate later in the fall** rather than over-engineer. The hard dependency is correctness of issuance and float accounting (T0 ledger), not breadth of features. Season-end settlement is needed only at season close, so it can be built after the opening IPO ships.
+**Sequencing rationale:** The IPO window precedes secondary trading by design (NCAA ~Aug 20, NFL ~7 days before Sept 9). However, Edwin explicitly scoped engineering effort: the experience _"is only going to last for 3 days,"_ so the team should build a clean, correct, beautiful-enough v1 and **iterate later in the fall** rather than over-engineer. The hard dependency is correctness of issuance and float accounting (tZERO ledger), not breadth of features. Season-end settlement is needed only at season close, so it can be built after the opening IPO ships.
 
 ---
 
@@ -255,13 +255,13 @@ graph LR
 **Data risks:**
 - **Mispriced IPOs:** the opening price depends on the expected-wins model; a bad projection lists an asset far from fair value and damages trust on day one.
 - **Stale/incorrect roster data** (additions/departures) — Edwin called this the most valuable signal, so errors here directly mislead buyers.
-- **Float-accounting drift** between the app's shares-remaining counter and the T0 ledger during high-concurrency buying.
+- **Float-accounting drift** between the app's shares-remaining counter and the tZERO ledger during high-concurrency buying.
 
 **Compliance:**
 - Even simulated, shares are **issued by team-company treasuries as issuer of record** and represented on-chain — the issuance + ownership ledger must be defensible. Production carries SEC/primary-offering weight (accredited vs non-accredited on primary offering per the vision); the simulation must not blur that line.
 
 **Controls needed:**
-- Authoritative float state on the T0 ledger with the app reading from it (single source of truth for shares remaining).
+- Authoritative float state on the tZERO ledger with the app reading from it (single source of truth for shares remaining).
 - Clear sold-out and window-closed states; idempotent buy handling for last-block races.
 - A reviewable settlement run (audit trail) for end-of-season credits/debits.
 - Consider (open question) a soft concentration limit or disclosure if cornering becomes a problem.
@@ -287,7 +287,7 @@ graph LR
 
 ### Gaps
 - **Unsold shares at window close** — roll into secondary float, cancel, or retain in treasury? Undecided.
-- **Last-block concurrency** — how partial fills / races on the final shares are resolved on the T0 ledger.
+- **Last-block concurrency** — how partial fills / races on the final shares are resolved on the tZERO ledger.
 - **Expected-wins model ownership** — who produces the projections that set IPO prices, and how are they sense-checked?
 - **Pre-KYC visibility** — can users browse the draft board before KYC/funding as a teaser, or is it fully gated?
 - **Look-and-feel** — only the Tinder/list direction is set; no mockups or design system applied yet.

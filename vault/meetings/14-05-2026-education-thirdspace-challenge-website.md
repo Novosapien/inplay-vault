@@ -425,7 +425,7 @@ Skye Capazorio: Where I see this slightly differently is that embedment embeddin
    
 George Westbrook: Mhm.  
 Skye Capazorio: create the content in this space in a way that is almost brandowned by them that lives in our ecosystem. So we're saying we have an opportunity to educate people about how you go through the trading process in short um social style content base with polls that brand could take over ownership in terms of actually creating that content themselves. that that is probably the first place that I would start is giving them the opportunity to go each education module has to we'd obviously collaborate on what needs to be included in from a scripting perspective and the actual education portion of it but there's a lot that could be taken on from an ownership perspective of a brand directly in that so I get what you're saying about that and maybe that is something that we look to do in the future but I would say for this I would definitely want to sell that as a space that a brand could own holistically and also they take ownership potentially of of creating that content and embedding their brand and their  
-Edwin Johnson: You know, it's actually it's actually very valuable with our partnership with T0 because  
+Edwin Johnson: You know, it's actually it's actually very valuable with our partnership with tZERO because  
    
  
 

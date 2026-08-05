@@ -5,7 +5,7 @@ description: "Hop-by-hop latency budget for market data, tZERO to user screen â€
 # Latency Budget
 
 > **Architecture:** [[architecture]]
-> **Source:** T0 Integration Spec
+> **Source:** tZERO Integration Spec
 > **Status:** Draft
 
 ## End-to-End Target: <100ms from tZERO to User Screen

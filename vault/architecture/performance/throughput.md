@@ -5,7 +5,7 @@ description: "Throughput estimates for the market-data pipeline — ~25K msg/sec
 # Throughput Estimates
 
 > **Architecture:** [[architecture]]
-> **Source:** T0 Integration Spec
+> **Source:** tZERO Integration Spec
 > **Status:** Draft
 
 ## Upstream from tZERO

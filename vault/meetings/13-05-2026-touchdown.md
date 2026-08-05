@@ -517,7 +517,7 @@ Skye Capazorio: 100%.
 Troy McDonald Kane: like?  
 Skye Capazorio: The only thing is that in a way we're kind of having to do elements of the vision down the road so that we can get selling the media space which we need that to be able to do it before before getting into the exact what it's going to look like just for the first phase.  
 Troy McDonald Kane: Okay.  
-George Westbrook: Yeah, we'll we'll it I'd be alive if I said tomorrow. We we'll have it by tomorrow if I'm being honest. Um but we can get a we can get a look and feel for the on boarding flow. Um we it be more look and feel. We just need because we need to finally nail down the exact data that we need from uh or we need to give to say T0 and for Persona. Um, so it'll be more like a a a mock a mock flow rather than what the actual flow will look  
+George Westbrook: Yeah, we'll we'll it I'd be alive if I said tomorrow. We we'll have it by tomorrow if I'm being honest. Um but we can get a we can get a look and feel for the on boarding flow. Um we it be more look and feel. We just need because we need to finally nail down the exact data that we need from uh or we need to give to say tZERO and for Persona. Um, so it'll be more like a a a mock a mock flow rather than what the actual flow will look  
    
  
 

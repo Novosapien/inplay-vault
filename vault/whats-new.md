@@ -19,7 +19,7 @@ This fixes per-share IPO value; the remaining open variable is float size (share
 
 ## 2026-07-29: tZERO OMS Q&A + Risk Settings
 
-Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[t0]] §11).
+Processed Rob Colucci's (tZERO) written answers from a QA testing session, plus the IPLY OMS risk-settings spreadsheet, into the vault ([[29-07-2026-tZERO-rob-qa]]; matrix in [[tzero-oms-risk-settings]]; digested into [[tzero]] §11).
 
 **Fixed live in the session:** account-scoped position tracking (positions had been aggregating at the firm level because test accounts used TEST-environment credentials; the credential routing was corrected), and ticker `IPTCCONH` (was missing from OMS SIM, now created).
 
@@ -110,7 +110,7 @@ The InPlay Trading Challenge mobile app now has all 20 screens built with full m
 
 - **Onboarding + Referral + Global Website extracted** from [[12-05-2026-onboarding-and-renewal-and-global-component]]
 - **[[components/customer-onboarding/customer-onboarding|Customer Onboarding]]** — full 10-section component doc. Status `Collecting` → `Defined`. 5 sub-components surfaced: Discovery & App Acquisition, Registration+KYC, Wallet Provisioning, Holding State, Returning Login
-  - Key decisions: registration and KYC happen as one step; T0 owns auth credentials (SSO parked); cash wallet on T0 chain (sidesteps store-of-value licensing); pre-funded wallet pool agreed in principle (pending T0 cost); holding state UX is "gray out, never hide"
+  - Key decisions: registration and KYC happen as one step; tZERO owns auth credentials (SSO parked); cash wallet on tZERO chain (sidesteps store-of-value licensing); pre-funded wallet pool agreed in principle (pending tZERO cost); holding state UX is "gray out, never hide"
 - **[[components/referral/referral|Referral]]** — full 10-section component doc merging vision content with new transcript. Status `Collecting` → `Defined`. 7 sub-components surfaced: Code Lifecycle, Share Surfaces, Bonus Campaigns, Cash Eligibility Tracking, Social Engagement Credits, Sponsor Redemption, Donor/Group Accounts (exploratory)
   - Key decisions: lifetime-stable codes; "Get 1,000 / Give 500" in orange on every surface; QR + dot card + t-shirt strategy; embedded-post QR mechanic; transparent eligibility checklist (no hidden T&Cs); cash eligibility rules owned here, surfaced at withdrawal moment
 - **[[components/inplay-global-website/inplay-global-website|InPlay Global Website]]** — short summary + action list (design is in flight). Status `Collecting` → `In Design`

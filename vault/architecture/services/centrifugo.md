@@ -33,7 +33,7 @@ With a Managed Instance Group:
 - Google auto-heals failed VMs
 - Existing VMs keep their connections untouched during scale-up
 
-## Channel Mapping (from T0 Spec)
+## Channel Mapping (from tZERO Spec)
 
 | Channel | Data | Source |
 |---------|------|--------|

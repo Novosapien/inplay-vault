@@ -44,7 +44,7 @@ def run_team_loop(team):
         cycle    = new_cycle_id(team)                     # monotonic counter, not wall clock
         rng      = seeded_rng(team, cycle)                # determinism
         book     = compute_cycle(state, inputs, rng)      # §2–§10 (pure function!)
-        publish(team, book, state)                        # §11 cancel-replace into T0
+        publish(team, book, state)                        # §11 cancel-replace into tZERO
         state    = commit(team, cycle, trigger, inputs, book, state)   # §12 immutable record
 ```
 
@@ -249,7 +249,7 @@ falls back to a defensive profile (still two-sided).
 
 ---
 
-## 11 · Publish — cancel-replace into T0
+## 11 · Publish — cancel-replace into tZERO
 
 ```python
 def publish(team, target, state):
@@ -299,7 +299,7 @@ def on_execution_report(team, report, state):
         # in-game → reload at top of book next call;
         # off-game → maybe leave it and let the ladder fill down (design w/ Edwin)
         enqueue_trigger(team, FILL)
-    if report.exec_type == BUST:                      # ExecType=H from T0
+    if report.exec_type == BUST:                      # ExecType=H from tZERO
         state.inventory -= signed_qty(report.original)
         enqueue_trigger(team, STATE_CHANGE)
 ```

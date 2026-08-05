@@ -24,7 +24,7 @@
   v8) and mined them: replace chain semantics, no iceberg/ExecInst,
   Pos*-per-fill, aggregated-only book, halt machinery on the feed, busts as
   public trade deletes, disconnect behaviour.
-- **Prepped and supported the T0 call** (plain-English ask list in chat) and
+- **Prepped and supported the tZERO call** (plain-English ask list in chat) and
   **extracted the 23-07 MM follow-up call** in full — 17 findings routed into
   decisions / open-questions / parameters / plan / learnings.
 - **Reworked all the docs to the v1 model** (hub, valuation engine, quoting

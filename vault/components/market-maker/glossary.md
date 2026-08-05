@@ -38,7 +38,7 @@ description: "Plain-English definitions for every market-maker term and equation
 | **OrderQty / CumQty / LeavesQty** | An order's three numbers: total · filled so far · still resting. 500 total, 250 filled → 250 resting. Fills survive a cancel-replace (CumQty carries to the updated order). |
 | **Queue position** | At one price, resting orders fill first-come-first-served. Whether an update keeps your place or sends you to the back = T8.1. |
 | **Pairs trade** | Two correlated symbols traded against each other — every game is one (Troy's frame). |
-| **Bust** | Voiding an already-executed trade at a clearly-wrong price; positions/cash reversed by T0 (`ExecType=H`). Operator + venue power, never a participant's. |
+| **Bust** | Voiding an already-executed trade at a clearly-wrong price; positions/cash reversed by tZERO (`ExecType=H`). Operator + venue power, never a participant's. |
 | **Band** | Allowed price corridor around the RP (~±30%) — outside it, orders reject or fills get busted. |
 | **Halt** | Matching stopped for a team (or all); defensive/pulled quotes until resumed. |
 

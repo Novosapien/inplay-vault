@@ -38,7 +38,7 @@
   before posting creates a gap Edwin explicitly doesn't want; a fleeting
   cross during a price adjustment is accepted on the first iteration. Wash
   blockers "can be used very predatorily" — policy for users is rulebook +
-  order queries + removal, not venue tech (Troy checking T0's self-match
+  order queries + removal, not venue tech (Troy checking tZERO's self-match
   prevention anyway, T11).
 
 - **Edwin's ingestion model is pull, not push.** He talks in "calls" — we
@@ -57,7 +57,7 @@
 - **Aggregated book = queue position is invisible.** tZERO's feed shows only
   the total per price level (plus an order count) — never individual orders.
   We can never observe where our own order sits in the queue, so T8.1 (does
-  an update keep queue position?) can only be answered by T0 directly or by
+  an update keep queue position?) can only be answered by tZERO directly or by
   a two-account experiment in QA.
 
 - **Opening auctions exist in the venue.** Some markets open by collecting

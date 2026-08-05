@@ -897,7 +897,7 @@ Edwin Johnson: if if we refer 500,000 uh users at 150 bucks a pop, it's $75 mill
 George Westbrook: Okay.  
 Edwin Johnson: imper  
 George Westbrook: So the so obviously there's the call it the attention marketing the other you've got the referral you've got the transaction fees. Is there anything else in there?  
-Edwin Johnson: um the team companies we create. So underneath inplay global there's inplay markets that acts as the uh ATS or in this case with T0 we're going to act as a manager of the ATS and as a manager of the ATS we're going to extract roughly 10% of the money that's raised during the IPOs and then we also extract a lot of the money that's been raised during the IPOs for corporate services.  
+Edwin Johnson: um the team companies we create. So underneath inplay global there's inplay markets that acts as the uh ATS or in this case with tZERO we're going to act as a manager of the ATS and as a manager of the ATS we're going to extract roughly 10% of the money that's raised during the IPOs and then we also extract a lot of the money that's been raised during the IPOs for corporate services.  
    
  
 
@@ -1040,7 +1040,7 @@ Kevin Murray: Is that I
 Edwin Johnson: So KYC it's a standardized  
 Kevin Murray: mean I'm curious why we're trying to go down that rabbit hole for production trading right now because  
 Edwin Johnson: uh  
-Kevin Murray: it's all going to be handled by and outsourced by the vendor T0.  
+Kevin Murray: it's all going to be handled by and outsourced by the vendor tZERO.  
 Brett StClair: Yeah.  
 Kevin Murray: Yeah.  
 Brett StClair: Yeah. I think it's uh production versus the the Yeah.  
@@ -1064,7 +1064,7 @@ Kevin Murray: Okay, understood.
    
 Kevin Murray: Thank you. So for the trading challenge,  
 Edwin Johnson: conflate  
-Kevin Murray: the KYC is really around age verification and that people are who they say they are, that bots aren't signing up for the trading competition. People are under the age of 18 are not signing up for the trading competition. If we are subject to US citizenships only, we have to then validate they are a US citizen or based in the US, one of the two. Um, now if we expand globally, then you know we're working with a company called Persona that will be able to expand that and do the proper KYC globally, most likely using passports or some other foreign uh documentation. But it's really about age verification and that people that like real people are signing up for this trading competition. It's not being signed up by bots or AIS or anything like that. That's for the trading competition. For production, the brokers are required to do all the KYC alongside with the trading venue that facilitates the trading. So in this case, T0 and then any brokers.  
+Kevin Murray: the KYC is really around age verification and that people are who they say they are, that bots aren't signing up for the trading competition. People are under the age of 18 are not signing up for the trading competition. If we are subject to US citizenships only, we have to then validate they are a US citizen or based in the US, one of the two. Um, now if we expand globally, then you know we're working with a company called Persona that will be able to expand that and do the proper KYC globally, most likely using passports or some other foreign uh documentation. But it's really about age verification and that people that like real people are signing up for this trading competition. It's not being signed up by bots or AIS or anything like that. That's for the trading competition. For production, the brokers are required to do all the KYC alongside with the trading venue that facilitates the trading. So in this case, tZERO and then any brokers.  
    
  
 

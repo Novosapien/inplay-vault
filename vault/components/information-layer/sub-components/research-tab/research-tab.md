@@ -16,7 +16,7 @@
 
 **Functional purpose:**
 
-The Research Tab is InPlay's data-intelligence and **monetisation** surface. It is where a user goes to *understand* the market before they trade: run reports over the platform's data (Sport Radar sports data, T0 market data, and InPlay's cross-correlated volatility dataset), build and save their own reports, and — in Phase 2 — converse with an **AI research companion** that builds reports for them in natural language. It is also the **primary paid product of the first trading-challenge season**: a subscription that exists, in Cody's framing, to "unlock a tool in the tool belt" that offsets the lack of advertising revenue in season one (≈$14.99 × 500k users ≈ $8M).
+The Research Tab is InPlay's data-intelligence and **monetisation** surface. It is where a user goes to *understand* the market before they trade: run reports over the platform's data (Sport Radar sports data, tZERO market data, and InPlay's cross-correlated volatility dataset), build and save their own reports, and — in Phase 2 — converse with an **AI research companion** that builds reports for them in natural language. It is also the **primary paid product of the first trading-challenge season**: a subscription that exists, in Cody's framing, to "unlock a tool in the tool belt" that offsets the lack of advertising revenue in season one (≈$14.99 × 500k users ≈ $8M).
 
 The 26-06 session reframed the tab from "the AI Research Agent" into a **three-tier feature ladder**, deliberately sequenced so cost and complexity ramp with willingness to pay:
 
@@ -29,7 +29,7 @@ Research Tab (subscription-gated)
 └── AI companion         PHASE 2   conversational "smart Excel buddy"; NL report building; unlocks $49.99 tier
 ```
 
-**Build status (13-07):** the v1 **pre-canned reports are demoed live in-app** — Sport Radar data roll-ups on a weekly cadence, sortable columns, and click-in column definitions (phone width limits how many columns display at once; users click in to see what a column means). Cody is sending over a set of pre-canned report ideas to brainstorm from. George's 13-07 articulation also refined the ladder into **four steps**: pre-canned → user custom reports ("still effectively database roll-ups") → **an LLM analysis layer over both** (outlier detection + commentary: "the AI's analysed it and said, this is an outlier… I've also noticed on this research report…") → the full **AI agent** with access to all reports and users, able to answer questions and create reports. Resourcing between the layers follows usage metrics ("given the metrics from usage, that's where we pour the resources"). The differentiator lands once T0 prices are piped in alongside SR data: cross-correlating win probabilities with price history — "this team in the fourth quarter when they're losing, this is the likelihood they win… the price usually fluctuates X amount in the last quarter… no other platform, app, or software does that on the planet." (Source: standup 2026-07-13)
+**Build status (13-07):** the v1 **pre-canned reports are demoed live in-app** — Sport Radar data roll-ups on a weekly cadence, sortable columns, and click-in column definitions (phone width limits how many columns display at once; users click in to see what a column means). Cody is sending over a set of pre-canned report ideas to brainstorm from. George's 13-07 articulation also refined the ladder into **four steps**: pre-canned → user custom reports ("still effectively database roll-ups") → **an LLM analysis layer over both** (outlier detection + commentary: "the AI's analysed it and said, this is an outlier… I've also noticed on this research report…") → the full **AI agent** with access to all reports and users, able to answer questions and create reports. Resourcing between the layers follows usage metrics ("given the metrics from usage, that's where we pour the resources"). The differentiator lands once tZERO prices are piped in alongside SR data: cross-correlating win probabilities with price history — "this team in the fourth quarter when they're losing, this is the likelihood they win… the price usually fluctuates X amount in the last quarter… no other platform, app, or software does that on the planet." (Source: standup 2026-07-13)
 
 Underneath the three tiers, the original **AI Research Agent** modes still apply and are now mapped to "foreground" vs "background" AI (see §1 architecture note and §3):
 
@@ -242,7 +242,7 @@ Report-first, not chat-first (for Phase 1): a landing area of **pre-canned repor
 | What | Direction | Description | Source / Destination |
 |------|-----------|------------|---------------------|
 | Sport Radar stats | In | Basis for reports + NL answers | Sport Radar |
-| Market data | In | Prices, order book, block trades, price spikes | T0 |
+| Market data | In | Prices, order book, block trades, price spikes | tZERO |
 | Cross-correlated volatility dataset | In | Event→price patterns (InPlay IP) | InPlay |
 | Data-point catalog | Stored | The selectable building blocks for custom reports (scope TBD ⚠️) | InPlay |
 | Saved custom report definitions | Stored | Per-user report config (data points, columns, cadence) | InPlay |
@@ -261,7 +261,7 @@ Report-first, not chat-first (for Phase 1): a landing area of **pre-canned repor
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
 | Sport Radar | Stats for grounding + report data points | Yes |
-| T0 / market data | Prices, block-trade / price-spike events | Partial — pre-canned reports can run on SR alone initially |
+| tZERO / market data | Prices, block-trade / price-spike events | Partial — pre-canned reports can run on SR alone initially |
 | **Billing / in-app purchase** | Apple/Google IAP, plan state, upgrade/downgrade/cancel surface | **Yes** for the paid product |
 | **Separate billable LLM instance** | Cheapest viable model + cost guardrails | **Yes** for Phase 2 |
 | [[third-space/third-space|Third Space]] (Research AI Chat) | Same manual-chat capability; reconcile ownership | Partial |

@@ -226,7 +226,7 @@ Edwin Johnson: And because there's only 17 games a year, it's not watered down l
 InPlay: That  
 Edwin Johnson: But like we need to like we need to move really really quickly and like our  
 InPlay: is  
-Edwin Johnson: our our well my position is you know when I told T0 what they had to spend they didn't give a s*** because if they they know how much access they're going to get how many people are going to be involved it it's not just in the people who like engage with it daily. And by the way, our numbers are are putly low for what we're suggesting the consumption is going to be. A football game is 3 hours and 10 minutes. That's a game that people tend to watch the 75 to 100% of that game. It's not a basketball game where you tune in for the last minute. That game is definitely around viewership wise much much more.  
+Edwin Johnson: our our well my position is you know when I told tZERO what they had to spend they didn't give a s*** because if they they know how much access they're going to get how many people are going to be involved it it's not just in the people who like engage with it daily. And by the way, our numbers are are putly low for what we're suggesting the consumption is going to be. A football game is 3 hours and 10 minutes. That's a game that people tend to watch the 75 to 100% of that game. It's not a basketball game where you tune in for the last minute. That game is definitely around viewership wise much much more.  
    
  
 

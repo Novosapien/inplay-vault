@@ -25,7 +25,7 @@ This component is **not yet documented** — a dedicated session with InPlay is 
   - 1099 tax information (US users)
   - **W9 automation (22-07):** cash-prize withdrawals over a threshold auto-trigger a W9 form via a dedicated tax-automation vendor (see below)
 - **Pattern reference:** Cody — _"I've dealt with that. I was going to treat it the same way I've dealt with high stakes fantasy is you fill in all that information once you request a withdrawal."_
-- **Cash wallet hosting:** on T0 chain (decided in onboarding call to sidestep store-of-value licensing exposure)
+- **Cash wallet hosting:** on tZERO chain (decided in onboarding call to sidestep store-of-value licensing exposure)
 - **Eligibility verdict:** received from [[components/referral/referral]] — user must satisfy Referral's cash eligibility rules (e.g., 10 referrals + location-on + other rules TBD) before withdrawal proceeds
 - **Eligibility surfacing:** if any requirements are unmet, the withdrawal flow shows a transparent checklist — never a hidden T&C (Skye principle)
 - **Tax automation / W9 (22-07):** a new **tax-automation vendor** is being added so that when a user **wins a cash prize and withdraws over a threshold amount**, an automation **triggers a W9 form** fill. Two vendors were in conversation as of 21-07. This **jumped ahead of HubSpot** in the backlog. It **must be ready by 29 Aug** (first games): a winner could withdraw cash that night. Edwin notes settlement is 29 Aug even if the payment lands 30 Aug, i.e. within the first 24 hours of games ending. (Source: [[22-07-2026-touchdown]])
@@ -63,7 +63,7 @@ This component needs a dedicated session. Key starting questions:
 - Eligibility verdict handoff from Referral — interface contract
 - Failure & dispute flows — including the bad-experience precedent Edwin's $900 Polymarket incident represents (28 hours to first response, 4 days to credit)
 - Cybersecurity for bank + 1099 data — coordinate with the cross-cutting Cybersecurity & Data-Handling Framework
-- T0 cash-wallet → bank/crypto wire mechanics
+- tZERO cash-wallet → bank/crypto wire mechanics
 
 ---
 
@@ -71,4 +71,4 @@ This component needs a dedicated session. Key starting questions:
 
 - **[[components/customer-onboarding/customer-onboarding]]** — establishes the user identity + cash wallet that this flow operates on
 - **[[components/referral/referral]]** — supplies the eligibility verdict and the transparent checklist UX
-- **T0** — hosts the cash wallet; payout mechanics depend on T0 capability
+- **tZERO** — hosts the cash wallet; payout mechanics depend on tZERO capability

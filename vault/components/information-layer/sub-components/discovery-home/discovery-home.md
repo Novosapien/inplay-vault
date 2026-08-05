@@ -190,7 +190,7 @@ Clean, scannable, fast. This is not a data-dense page -- it's a decision-making 
 |------|-----------|------------|---------------------|
 | Game schedule / fixtures | In | All games today and upcoming, with times, teams, venues | Sport Radar |
 | Win probabilities | In | Current probability for each team in each game | Sport Radar |
-| Current prices per team | In | Latest stock price and direction (up/down) for each team | T0 ATS |
+| Current prices per team | In | Latest stock price and direction (up/down) for each team | tZERO ATS |
 | User's active positions | In | Which teams the user holds, and unrealised P&L per position | Trading component |
 | Featured games list | In | Which games are marquee this week (selection criteria TBD) | InPlay internal / editorial |
 | Last game of the day | In | Which game starts last today (derived from schedule) | Sport Radar schedule data |
@@ -204,7 +204,7 @@ Clean, scannable, fast. This is not a data-dense page -- it's a decision-making 
 | Depends on | What we need | Blocking for build? |
 |-----------|-------------|----------|
 | Sport Radar | Game schedule, win probabilities, team metadata | Yes -- no schedule, no discovery page |
-| T0 ATS | Current prices per team | Yes -- need price direction for game cards |
+| tZERO ATS | Current prices per team | Yes -- need price direction for game cards |
 | Trading component | User's active positions and P&L | No -- page works without position indicators |
 | Leaderboard (sibling) | User's rank for compact indicator | No -- can hide indicator |
 | Single Game Page (sibling) | Navigation target when user selects a game | No -- can stub the destination |
@@ -238,7 +238,7 @@ Clean, scannable, fast. This is not a data-dense page -- it's a decision-making 
 
 **Must-have at launch?** Yes -- this is the front door to the app.
 
-**Sequencing rationale:** Should be built alongside or shortly after Single Game Page. It's simpler technically (mostly read-only display of schedule and price data) but depends on the same SR and T0 integrations. The search functionality is the most complex piece here.
+**Sequencing rationale:** Should be built alongside or shortly after Single Game Page. It's simpler technically (mostly read-only display of schedule and price data) but depends on the same SR and tZERO integrations. The search functionality is the most complex piece here.
 
 ---
 

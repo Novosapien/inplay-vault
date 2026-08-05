@@ -239,7 +239,7 @@ Sorted as issued (highest to lowest).
 
 ## How this connects
 
-- **Issuance:** these listed prices are the single-price offering level for [[primary-offering-execution]] (long-only primary raise, minted to wallets; the OMS can seed the same value as the IPO reference price, see [[t0]] §10.6).
+- **Issuance:** these listed prices are the single-price offering level for [[primary-offering-execution]] (long-only primary raise, minted to wallets; the OMS can seed the same value as the IPO reference price, see [[tzero]] §10.6).
 - **Settlement / earnings:** the $5/win, $2.50/tie and $2.50/game off-field pool are the [[earnings-report]] accruals (SDMM-1), so the IPO price is literally the expected sum of every future earnings distribution.
 - **Market maker:** the on-field + off-field EV that produces each IPO price is the same fair-value basis the internal market maker quotes around. Reconciling this pricing model with the MM reference-price / ESV design is an item for the `market-maker/` workstream (its working-guide process owns that; not written here).
 - **Float sizing:** pricing is now concrete per team; the open float-size question (5M vs ~1M/875k) is tracked separately in [[open-questions]].

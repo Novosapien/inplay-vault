@@ -19,7 +19,7 @@
 
 The Market Maker is an **internal, non-user-facing** market participant
 operated by InPlay. It posts **resting liquidity** — passive two-sided bid/ask
-limit orders — into T0's order book for every team market, so that from a
+limit orders — into tZERO's order book for every team market, so that from a
 user's perspective there is always a potential to buy and always a potential
 to sell. It is not a required counterparty: user orders that match each other
 fill directly; the market maker's orders are simply always there alongside
@@ -40,14 +40,14 @@ at acceptable terms), **profitability moves to the top**. (Source: standup
 2026-07-20)
 
 **Scope (confirmed 20-07):** Novosapien builds the full stack — the valuation
-engine (CTS-001), the market-operations layer (CTS-002, excluding T0's
+engine (CTS-001), the market-operations layer (CTS-002, excluding tZERO's
 matching engine), and the SDMM itself (PTS-001). Edwin: *"We will build them."*
 
 ## The One-Sentence Mental Model
 
 > Quote two-sided ladders around a fair price we compute ourselves, sized
 > generously, skewed to shed inventory — refreshed ~200ms during live games,
-> every 30–60s otherwise — published to T0 deterministically, for every team,
+> every 30–60s otherwise — published to tZERO deterministically, for every team,
 > all season. v1 keeps it simple: orders rest until fully traded; on a price
 > move, cancel and repost the remainder at the new price.
 
@@ -69,11 +69,11 @@ Sport Radar (win probabilities, game events)
            ▼
 ┌───────────────────────┐
 │ QUOTING ENGINE (SDMM) │  decision cycle → reservation prices → ladders → sizes
-│ (PTS-001)             │  → validate → cancel-replace into T0
+│ (PTS-001)             │  → validate → cancel-replace into tZERO
 │                       │  (live ~200ms · non-live 30–60s · earnings burst)
 └──────────┬────────────┘
            ▼
-     T0 order book  ◄──── users (Trading Service → FIX GW)
+     tZERO order book  ◄──── users (Trading Service → FIX GW)
            │              limit orders only · price-time matching
            ▼
    fills (execution reports)
@@ -96,7 +96,7 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 | [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value (ESV) from win probabilities + the revenue model | Inputs resolved 23-07 (SR live pull + Wednesday drop) · $5/win sign-off + E11 pending |
 | [[market-maker/systems/market-state\|Market State]] | Publishes the Reference Price; classifies market condition; selects profile + liquidity session | Shape known · classifier ours to design |
 | [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: decision cycle, reservation prices, ladders, inventory skew, randomizer, cancel-replace | v1 model set 23-07 (rest-until-gone · bifurcated cadence) · numbers owed |
-| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 |
+| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with tZERO |
 | [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game |
 | [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last |
 | [[market-maker/systems/synthetic-noise-taker\|Synthetic Noise Taker (SNT-1)]] | Second house agent: a taker-only noise account that crosses the spread so every book trades from IPO onward. A controlled loser by design (spread cost = liquidity subsidy) | Reference impl v1.0 from Edwin 30-07; our side = ExchangeAdapter + hardening |
@@ -108,7 +108,7 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 - `sessions/` — one note per working session: what we did, learned, what went
   wrong, next. Newest note = where to pick up.
 - [[market-maker/decisions]] — dated log of confirmed decisions + standard-doc supersessions
-- [[market-maker/open-questions]] — live blockers with owners (Edwin / T0 / Sport Radar / us)
+- [[market-maker/open-questions]] — live blockers with owners (Edwin / tZERO / Sport Radar / us)
 - [[market-maker/parameters]] — every tunable number: value, status, source
 - [[market-maker/plan]] — build phases, dependencies, timeline anchors
 - [[market-maker/glossary]] — terms + equation symbols in plain English
@@ -127,9 +127,9 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 ## Boundaries
 
-- **T0 owns:** the order book, matching (price-time), order lifecycle, trade
+- **tZERO owns:** the order book, matching (price-time), order lifecycle, trade
   records, and bust execution. Our MM is a participant; our supervision role is
-  the operator's agent acting *through* T0.
+  the operator's agent acting *through* tZERO.
 - **[[trading/trading|Trading]] owns:** the user-facing order flow. The
   synthetic market order is specced here (it exists because of MM mechanics)
   but ships in the app.
@@ -137,5 +137,5 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
   EST/ACT mechanics that feed the valuation engine's off-field term.
 - **[[ipo-module/ipo-module|IPO Module]] owns:** primary issuance; the MM's
   role there is fill guarantee / float warehousing (max clips ~50k,
-  guaranteeing ~35–50% of every float — mechanics open on the T0 ledger side).
+  guaranteeing ~35–50% of every float — mechanics open on the tZERO ledger side).
 - **[[architecture/open-questions]]** tracks the MM rows in the global list.
