@@ -46,6 +46,24 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 05-08c (all 170 bindings verified · ⭐ the ingestion ruling):**
+> The live `HttpSource` + the seam's failure contract landed (**500 →
+> 512 tests**), the bindings were captured in one careful pass and
+> verified to all 170 (163 exact · 6 profile-confirmed · the Rams via
+> the mappings bridge → `sr:competitor:4387`), and
+> `mm/bindings.py::TEAM_BINDINGS` closed the bindings live-gate.
+> ⭐ **Then George's ruling re-cut the live path: the sportradar SERVICE
+> polls SR and publishes readings on NATS — the MM consumes the bus and
+> never calls SR itself.** The build had drifted from the 24-07
+> ingestion decision (polling absorbed into the engine across 01-08 →
+> 05-08); stop-condition #2 never fired; George caught it in review.
+> The seam contains the cost — `HttpSource` and the failure contract
+> transplant to the service; nothing in valuation/quoting/replay moves.
+> ⚠ The 05-08b/c MM commits are LOCAL and stay unpushed (George).
+> **Next: (1) the ingestion-move scope, one page, George approves BEFORE
+> any build** (service work: git pull → verify local → branch off `dev`)
+> **→ (2) §10.3 checkpoints → (3) the Edwin round E29–E38 + N23/N28.**
+>
 > **Update 05-08b (the COMPOSITION lands — the machine RUNS):**
 > `python -m mm.runtime` boots, stands its book against the real gateway,
 > ticks, drains, sweeps, and dies cleanly — **the drill passed both

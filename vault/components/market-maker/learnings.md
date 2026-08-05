@@ -9,6 +9,27 @@
 
 ---
 
+## 2026-08-05c — the drift George caught
+
+- **A drift can be fully documented and still be a drift.** The 24-07
+  ingestion decision says the hot path never calls SR — a poller at the
+  edge, pushing onto the bus. Across four sessions the build absorbed
+  polling into the engine, each step logged in the vault, and no step
+  checked itself against the ARCHITECTURE decision — only against the
+  previous session's state. The stop-condition ("contradicts a recorded
+  decision") never fired because each increment was small and locally
+  consistent. **Reconcile the built shape against the decisions log,
+  not just against the last session note.** George caught it in review;
+  the seam meant the correction was cheap — which is the second lesson:
+  a well-placed seam is what makes an architecture mistake survivable.
+
+- **A handover is context, not consent.** This session started
+  autonomously because the handover said "fully unblocked", carrying
+  yesterday's ruling forward as authorization. George had not approved
+  the run. Spend that cannot be un-spent (API quota, external calls)
+  deserves a fresh confirmation at session start, even when a recorded
+  ruling appears to cover it.
+
 ## 2026-08-03→05 — the deployment thread, the runtime, and the liveness lesson
 
 - **Two different facts were fused into one number, and it took George

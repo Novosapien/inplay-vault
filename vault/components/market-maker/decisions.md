@@ -10,6 +10,43 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-05c — all 170 bindings verified · ⭐ George's ingestion ruling
+
+Build then live review (`06d6853` · `df6ae5b` · `46af364`, **500 → 512
+tests**, commits deliberately LOCAL — George: do not push). Full
+narrative: `sessions/2026-08-05-b-live-source-bindings-ingestion-ruling.md`.
+
+- ⭐ **George's ingestion ruling: the sportradar SERVICE polls SR and
+  publishes readings on NATS. The MM consumes the bus and never calls
+  SR itself. The in-engine pull path must not go live.** This is the
+  24-07 ingestion decision re-asserted (*"a dedicated MM poller at the
+  edge… write-through push… the hot path never calls SR"*) — ⚠ **the
+  build had DRIFTED from it** (01-08 poller, 04/05-08 runtime, today's
+  HTTP source all absorbed polling into the engine), and stop-condition
+  #2 never fired. George caught it in review. The seam contains the
+  cost: `HttpSource` + the failure contract transplant to the service;
+  valuation, quoting, journal, replay and the E38 liveness rules are
+  untouched (the fetch stamp fits the message key on the push path —
+  his design, recorded 05-08). **Process: the move is scoped in writing
+  and approved before any build; before touching the sportradar
+  service — git pull, verify local state, branch off `dev`.**
+- ✅ **All 170 sr-id bindings verified and in code**
+  (`mm/bindings.py::TEAM_BINDINGS`, validated at import). 163 exact
+  schedule-name matches (14 trial-key calls, raws saved, `--from-raw`
+  re-derives free) · 6 variants profile-confirmed on the core key
+  (Texas A&M · Marshall · Middle Tennessee State · Sam Houston State ·
+  UMass · Delaware) · the **LA Rams** via the NFL league uuid through
+  the AF mappings bridge → **`sr:competitor:4387`**, profile-confirmed.
+  **The bindings live-gate CLOSED; the ingestion-move gate replaced it.**
+- ✅ **The seam's failure contract (ours):** `SourceUnavailable`, one
+  exception for every cause — E38 needs exactly one fact, "did the
+  source answer just now?". A failed fetch is skipped, never fatal,
+  never a hot retry; `games_polled` means fetched successfully (it
+  feeds the `observations` map). `source_fetch_timeout_s` = 1.5 s
+  (Ch 12). Both transplant with the poller in the move.
+- ⚠ **Serial fetches have a ceiling** (~35 live games outrun the tick) —
+  noted in code; the move plus the S7 live-bulk endpoint is the answer.
+
 ## 2026-08-05b — tiers, the universe, the composition: the machine RUNS
 
 Second half of the 04/05-08 stretch (`cf2bc10` · `7ac6787` · `0bd7f6f` ·
