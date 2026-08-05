@@ -10,6 +10,54 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-05b — tiers, the universe, the composition: the machine RUNS
+
+Second half of the 04/05-08 stretch (`cf2bc10` · `7ac6787` · `0bd7f6f` ·
+`db19e93` · `01b16c7`), **481 → 500 tests**. Full narrative:
+`sessions/2026-08-05-composition-built-machine-runs.md`.
+
+- ✅ **The slow poll tiers are George's numbers ("to be safe"):**
+  OVERNIGHT **30 min** · POST_GAME **10 min through the 1 h window, then
+  never**. The post-game watch re-offers the final each poll — identical
+  is a quiet duplicate, a CHANGED score is a loud **CONFLICT** (§3.1.3
+  wants a human, not an overwrite). The overnight tier doubles as the
+  **N24 experiment**. PRE_KICKOFF stays **15 s, interim** — George has
+  not picked from his 10–30 range.
+- ✅ **The tier decision lives in the POLLER, from poller-local facts**
+  (ours, recorded): the orchestrator's activity axis needs readings to
+  know a game is live, which is circular for scheduling. The two
+  derivations stay independent. `ensure_game` now carries the kickoff
+  discovery always fetched, and a re-stamped kickoff reschedules at once.
+- ✅ **The 170-security universe is tZERO's own ticker list, stored AS
+  CODE** (`mm/universe.py`), validated at import against §2.5, refusing
+  any hole. **The ticker IS the security id** — one name, no second
+  namespace; the symbol map became identity. Floats via Ch 12 (900k
+  NFL / 1M NCAA, v2 gospel). Four FCS programs sit inside the 138.
+- ✅ **The composition** (`compose.py` + `__main__.py`,
+  `python -m mm.runtime`): boot order promoted from the wire test —
+  connect → beat → build → replay → stand the book → tick. **Live mode
+  REFUSES to start and names its gates** (S1/S7 · sr-id bindings · N19):
+  synthetic prices must never reach a real venue, so the gate is a
+  raise, not a warning.
+- ✅ **The drill passed both halves on the revived rig** — cold boot and
+  restart-from-journal. ⚠ The restart **demonstrated the boot-reconcile
+  gap live**: three dead-man-swept levels survived in the replayed
+  record because their sweep events published into our absence. Parked
+  with eyes open (the §3.1.4 healer + an ICD snapshot are the fixes;
+  George: "we think about that more").
+- ✂ **Defect fixed, spec-relevant:** `ingest_reference_numbers` never
+  folded its record into the last-RP map, so **Edwin's daily step
+  reached the book one event late** — a [no-smoothing] violation. The
+  test now proves the ladder straddles the new price.
+- ⭐ **George, end of session: the TRIAL KEY covers the build.** The live
+  HTTP source and the sr-id bindings capture proceed WITHOUT waiting for
+  S7 — one careful capture pass, not a loop (the trial quota was
+  half-used in July). **T1 goes to Hasan directly**, carrying N30 and
+  the 50 msg/s governor in the same conversation.
+- 📝 Edwin's file: the 28-07 **structure is built** (field-for-field in
+  `adapters/reference_feed.py`); only the delivery and his confirmation
+  of that schema remain open (N19).
+
 ## 2026-08-05 — a quiet game is not a dead feed: the observation-age deviation
 
 Built across 04/05-08 (`de33ebb` · `6a79c9f` · `48b648d`), corrected

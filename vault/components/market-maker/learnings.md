@@ -9,7 +9,60 @@
 
 ---
 
-## 2026-07-27/28 — reviewing our own build, and the wins insight
+## 2026-08-03→05 — the deployment thread, the runtime, and the liveness lesson
+
+- **Two different facts were fused into one number, and it took George
+  pushing back twice to see it.** "How old is the probability" and "when
+  did the source last answer us" are different questions. Sportradar sends
+  no heartbeat — 98 % of timeline entries change the number, so its
+  timestamp advances only when the game moves. Measured on the real game:
+  halftime is a 2,862 s gap. §3.3.1 as written suspends every book for all
+  of it. The fix is not new bands — it is applying the same bands to the
+  right fact (the fetch, not the reading). **When a rule misbehaves, ask
+  which FACT it measures before touching its values.** And the second
+  correction mattered as much as the first: a confirmed number is not
+  a *degraded* form of fresh — it is fresh. Nothing to discount.
+
+- **Clock-driven work in an event-sourced core has exactly one honest
+  shape: a producer.** The sweep needed to run every 2 s; the orchestrator
+  reads no wall clock; therefore the scheduler lives OUTSIDE, mints a
+  journalled event, and replay consumes what it minted. Same relationship
+  the poller already had. Corollary learned the same day: keep every
+  clock-reader in ONE module (`runtime/loop.py`), because a second one can
+  creep in silently and nothing will flag that replay broke.
+
+- **The dedup system fights liveness signals, correctly.** A source that
+  republishes the same probability every 2 s produces duplicates from the
+  second copy on — recorded, then ignored. So "proof of life" can never
+  ride an existing fact's identity; it needs its own (the sweep's
+  observations map, or a fetch-stamp in a push message's key). We nearly
+  built it twice the wrong way: a fetch-time in the key would re-mint the
+  whole re-fetched timeline as new facts; in the payload alone it would
+  CONFLICT-alarm every 2 s. **The identity design IS the feature.**
+
+- **Estimates were wrong by 22× in the safe direction, and one benchmark
+  ended the argument.** ~140 ms per pass was the carried belief; 6.3 ms is
+  the measurement. The compute case for a Go port evaporated in a minute
+  of running code. Meanwhile the Mac's fsync figure was 35k/s — invalid,
+  because macOS `fsync` does not flush the drive cache. **Benchmarks only
+  count on the hardware that will run the thing** (N31 waits for the VM).
+
+- **The restart drill demonstrated a gap no test had reached:** events
+  that publish into our absence are simply gone (core NATS, no JetStream
+  on that subject) — the replayed record believed three swept levels still
+  rested. Replay is honest about what the journal SAW, not about what
+  happened. Venue truth needs either a snapshot at boot or a healer that
+  re-derives it — both known, both parked with eyes open.
+
+- **Docs-vs-reality is a live failure mode, twice in one session.** The
+  vault's VPC draft had every address wrong (the deployed proxy's env was
+  the truth), and the "reading time vs last_updated" confusion came from
+  me trusting my own earlier summary over the adapter's code. The working
+  mode's third stop condition (reality ≠ docs) earns its place.
+
+- **The tail-pipe gotcha bit AGAIN.** Piping gates through `tail` in an
+  `&&` chain masked a broken import and let a commit through; caught on
+  the unpiped rerun. Two sessions, same trap. Never pipe a gate.
 
 - **The tests were shaped like the bug.** Every test ran one side of a game
   at a time, so the head-on collision between two per-team events sharing a
