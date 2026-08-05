@@ -46,6 +46,31 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 05-08b (the COMPOSITION lands — the machine RUNS):**
+> `python -m mm.runtime` boots, stands its book against the real gateway,
+> ticks, drains, sweeps, and dies cleanly — **the drill passed both
+> halves** (cold boot + restart-from-journal) on the revived rig.
+> Built this stretch: **tiered polling** (LIVE 2 s · PRE_KICKOFF 15 s
+> interim · OVERNIGHT 30 min · POST_GAME 10 min through the window, then
+> never — the slow tiers are George's numbers, and the post-game watch
+> turns a corrected score into a loud CONFLICT) · **`mm/universe.py`**
+> (the 170 from tZERO's own ticker list; the ticker IS the security id;
+> §2.5-validated at import) · the tick **drains** `order.mm1.>` to empty
+> (a fill moves the book in its own tick) · discovery's first production
+> caller · **live mode refuses to start and names its gates**.
+> Two defects found by building: Edwin's daily step reached the book one
+> event late (fixed — [no-smoothing]); a moved kickoff slept out its old
+> schedule (fixed). ⚠ The restart drill demonstrated the boot-reconcile
+> gap live: three dead-man-swept levels survived in the replayed record —
+> parked with eyes open (the §3.1.4 healer + an ICD snapshot are the
+> fixes). **443 → 500 tests.**
+> ⭐ **George, end of session: the TRIAL KEY covers the build** — so the
+> live HTTP source and the sr-id bindings capture proceed WITHOUT S7
+> (one careful capture, not a loop; the trial quota was half-used in
+> July). **T1 goes to Hasan directly** (with N30 + the governor).
+> **Next: the live source + bindings → §10.3 checkpoints → the Edwin
+> round E29–E38.**
+>
 > **Update 04/05-08 (the RUNTIME lands · quiet ≠ dead):** **N28 built** —
 > `VALUATION_SWEEP` is the tenth event type, minted by the new
 > **`mm/runtime/`** loop (1 s tick: beat → drain → due polls → due
