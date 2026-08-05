@@ -20,14 +20,30 @@ jobs:
     steps:
       - name: Trigger the MCP server build
         env:
-          GH_TOKEN: ${{ secrets.MCP_DISPATCH_TOKEN || secrets.PANEL_DISPATCH_TOKEN }}
+          MCP_TOKEN: ${{ secrets.MCP_DISPATCH_TOKEN }}
+          PANEL_TOKEN: ${{ secrets.PANEL_DISPATCH_TOKEN }}
         run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::warning::MCP_DISPATCH_TOKEN is not set. The MCP server was NOT rebuilt; it serves a stale vault snapshot."
+          # MCP_DISPATCH_TOKEN is the deliberate wiring: when it is set, a failed
+          # dispatch fails this workflow. PANEL_DISPATCH_TOKEN is best-effort — it
+          # was minted for panel sync and (measured 2026-08-05) has no access to the
+          # MCP repo, so a failure with it warns and stays green.
+          if [ -n "$MCP_TOKEN" ]; then
+            export GH_TOKEN="$MCP_TOKEN"; strict=1
+          elif [ -n "$PANEL_TOKEN" ]; then
+            export GH_TOKEN="$PANEL_TOKEN"; strict=0
+          else
+            echo "::warning::No dispatch token is set. The MCP server was NOT rebuilt; it serves a stale vault snapshot."
             exit 0
           fi
-          gh api repos/novosapien/inplay-vault-mcp/dispatches \
+          if gh api repos/novosapien/inplay-vault-mcp/dispatches \
             --method POST \
             -f event_type=vault-updated \
             -F "client_payload[sha]=${GITHUB_SHA}" \
-            -F "client_payload[pushed_at]=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            -F "client_payload[pushed_at]=$(date -u +%Y-%m-%dT%H:%M:%SZ)"; then
+            echo "Dispatched."
+          elif [ "$strict" = 1 ]; then
+            exit 1
+          else
+            echo "::warning::The panel PAT cannot reach inplay-vault-mcp. The MCP server was NOT rebuilt. Set MCP_DISPATCH_TOKEN to wire this properly."
+            exit 0
+          fi
