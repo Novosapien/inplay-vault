@@ -20,7 +20,7 @@ Troy McDonald Kane: Yeah.
 Brett StClair: And the it's nice to see that they've also got the flexibility cuz you like this app's going to evolve fast and so you need a partner downstream as well that's  
 Troy McDonald Kane: Heat.  
 Brett StClair: adapting um quickly too and it's quite nice to see that they've got that flexibility. It's really nice. Really really nice.  
-Troy McDonald Kane: Yeah, I don't know if you know the history of T0, but uh they were the first um special purpose ATS to get approved in the United States for tokenized assets uh many years ago. And so they've, you know, they were kind of one of the pioneers as well in how to bring um a digitalization element to, you know, equities and fixed income was what they were focused on.  
+Troy McDonald Kane: Yeah, I don't know if you know the history of tZERO, but uh they were the first um special purpose ATS to get approved in the United States for tokenized assets uh many years ago. And so they've, you know, they were kind of one of the pioneers as well in how to bring um a digitalization element to, you know, equities and fixed income was what they were focused on.  
    
  
 
@@ -55,7 +55,7 @@ George Westbrook: No, this has to be done this way. And it was no, you want that
    
 Edwin Johnson: Yeah,  
 George Westbrook: handy.  
-Edwin Johnson: I mean Troy and I had a call with um Al who was on the call today and their CEO. Um I don't know if Troy, you've set the table for what an impact uh we are to them. It's a massive opportunity for T0 to really push forth their their whole mantra of tokenization blockchain because they don't have any products that are are compelling enough to trade on the weekends yet. Like they're they're I don't know how I don't know anybody who's been more all in on us than them.  
+Edwin Johnson: I mean Troy and I had a call with um Al who was on the call today and their CEO. Um I don't know if Troy, you've set the table for what an impact uh we are to them. It's a massive opportunity for tZERO to really push forth their their whole mantra of tokenization blockchain because they don't have any products that are are compelling enough to trade on the weekends yet. Like they're they're I don't know how I don't know anybody who's been more all in on us than them.  
 Troy McDonald Kane: Yeah.  
 Edwin Johnson: I mean, it's George. I think regardless of what they ask or what we ask, they're going to try to  
 George Westbrook: Yeah. Yeah.  
@@ -224,7 +224,7 @@ George Westbrook: prioritization as well. So obviously ideal world we have every
 ### 00:18:47
 
    
-George Westbrook: Um, and what what we're going to be doing as well from the start of next week is let's get some live data in there. Obviously with T0, there might be a little bit of a a wait for that once we've aligned on our side and their side. Um, but things like Sports Radar, I mean, after that call the other day, Cody, I mean, the documentation's amazing. Um, it's they've got the simulated stuff. So, there's there's no reason we can't be pulling in live data.  
+George Westbrook: Um, and what what we're going to be doing as well from the start of next week is let's get some live data in there. Obviously with tZERO, there might be a little bit of a a wait for that once we've aligned on our side and their side. Um, but things like Sports Radar, I mean, after that call the other day, Cody, I mean, the documentation's amazing. Um, it's they've got the simulated stuff. So, there's there's no reason we can't be pulling in live data.  
 Cody Haugen: There.  
 George Westbrook: Um, but I think it's just conceptually first. We want to know like what's going to be on this page, what's going to be on that page before we start building out the microservices for fetching for fetching the real  
 Edwin Johnson: So, George,  
@@ -386,7 +386,7 @@ George Westbrook: Perfect. And Troy will be looking into the Slack stuff as well
 
    
 George Westbrook: And then I think I meant we'll use things Slack connect so that it's not you're joining our Slack or we're joining your Slack. We've just got channels that we can all see but then we've got the obviously the privacy within within each each workspace as well but we can obviously DM each other as well. Um so it's just just getting that sorted. It's the the issue we've got is a lot of our like agent auto fix and auto notification stuff linked onto the other one. So, it's just getting that getting that moved  
-Troy McDonald Kane: Great. And then um for syncing with T0,  
+Troy McDonald Kane: Great. And then um for syncing with tZERO,  
 Edwin Johnson: Great.  
 George Westbrook: over.  
 Troy McDonald Kane: does Friday mornings work or Friday afternoons work for you guys or do you want to do Thursdays? You know, is there a time slot? I think definitely at least, you know, until we get a beta out, it's good to to connect with them once a  

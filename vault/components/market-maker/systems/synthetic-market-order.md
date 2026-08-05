@@ -2,14 +2,14 @@
 
 > **Component:** [[market-maker/market-maker]] · ships in [[trading/trading]]
 > **Status:** New build item (20-07) — **Edwin wants it before the first NFL game (~09 Sep)**
-> **One-liner:** T0 has no market orders. Users expect a "just buy it" button. We fake it app-side the way real brokers do: a limit order priced through several levels.
+> **One-liner:** tZERO has no market orders. Users expect a "just buy it" button. We fake it app-side the way real brokers do: a limit order priced through several levels.
 
 ---
 
 ## The Problem
 
-- T0 supports **limit orders only** — a user must name a price. (Source:
-  standup 2026-07-20; Troy: "there actually aren't market orders on T0")
+- tZERO supports **limit orders only** — a user must name a price. (Source:
+  standup 2026-07-20; Troy: "there actually aren't market orders on tZERO")
 - Casual users placing a limit at a stale price will miss the market and get
   frustrated. Edwin: "we don't want the user experience to be frustrating."
 - Fun fact from Troy: even in real equities, market orders barely exist —

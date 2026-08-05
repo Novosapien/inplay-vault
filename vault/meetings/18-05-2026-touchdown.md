@@ -411,7 +411,7 @@ George Westbrook: store. it gets it doesn't get approved because it's not got XY
 George Westbrook: What do we what have we got in the component and subcomponent documents? Let's look through every single page of the documentation on sports radar. Let's map it up. What data is there in sports radar that they're currently not utilizing that we could let's look at what we've currently got on the application. Let's take the delta and then let's build it in. So there's a few new pages. Let me just I'll share my screen rather than me going through it.  
 Edwin Johnson: While you pull that up,  
 George Westbrook: Um,  
-Edwin Johnson: did on on the meeting on Friday with uh T0, nothing gave you like stomach trouble, did it, boys?  
+Edwin Johnson: did on on the meeting on Friday with uh tZERO, nothing gave you like stomach trouble, did it, boys?  
 George Westbrook: no, the  
 Edwin Johnson: Cool.  
 Brett StClair: Yeah, we're very happy.  
@@ -660,7 +660,7 @@ Brett StClair: as well.
 Edwin Johnson: I really don't.  
 Brett StClair: I agree. I agree.  
 George Westbrook: right.  
-Brett StClair: Um, so let's aim for that. But this week, what we also just I'm going to add to it because I'm taking note of time. Um, we're working on the architectural side of things. So just trying to make sure that we are articulating. So you just want to bring that up a bit. how data is flowing from the app, how we segregating it out into different microservices, how those microservices are going to be engaging with the T0 with the sports radar and that we've got the right tooling and the right managed services and the right infrastructure.  
+Brett StClair: Um, so let's aim for that. But this week, what we also just I'm going to add to it because I'm taking note of time. Um, we're working on the architectural side of things. So just trying to make sure that we are articulating. So you just want to bring that up a bit. how data is flowing from the app, how we segregating it out into different microservices, how those microservices are going to be engaging with the tZERO with the sports radar and that we've got the right tooling and the right managed services and the right infrastructure.  
    
  
 
@@ -673,7 +673,7 @@ Brett StClair: George.
 George Westbrook: add um yeah based on more information we learn about the external dependencies and how we think we should segment it. So it's ultra scalable yet not ultra  
 Brett StClair: So this is such an important part for us to nail.  
 George Westbrook: expensive.  
-Brett StClair: We've got to get this part beded down. As soon as we can get this part beded down properly and there's probably a couple of outline questions, the T0 conversations and getting all the documentation around the APIs has helped a lot. Um we've got to just now run some tests against it, prove what we're thinking and what's theoretically in play actually hold out. Um, and then off the back of that is to look at getting a first version of the app stood up so that we can start thinking about how do we start lighting up each of the core screens and components but on this infrastructure.  
+Brett StClair: We've got to get this part beded down. As soon as we can get this part beded down properly and there's probably a couple of outline questions, the tZERO conversations and getting all the documentation around the APIs has helped a lot. Um we've got to just now run some tests against it, prove what we're thinking and what's theoretically in play actually hold out. Um, and then off the back of that is to look at getting a first version of the app stood up so that we can start thinking about how do we start lighting up each of the core screens and components but on this infrastructure.  
    
  
 

@@ -1973,7 +1973,7 @@ Brett StClair: So, it only has pre-launch features and functions on it. and we'l
 
   
 
-Brett StClair: Um I'm just a bit worried that Let's see. Let's see what the T0 guys come up with just on that API. Let's just make sure that that API is available. Then we can launch with it even, you know, by the end of the week. Otherwise, we can always drip feed. So, which has got an idea to kind of just, you know, simulate the end points for now. But as soon as we do turn on, at a minimum, we're going to need to make sure that those those abilities are there.
+Brett StClair: Um I'm just a bit worried that Let's see. Let's see what the tZERO guys come up with just on that API. Let's just make sure that that API is available. Then we can launch with it even, you know, by the end of the week. Otherwise, we can always drip feed. So, which has got an idea to kind of just, you know, simulate the end points for now. But as soon as we do turn on, at a minimum, we're going to need to make sure that those those abilities are there.
 
 Inplay Global: Yeah, I think we need to come up with a little bit of a backup plan in the event that we want the pro the referral program to go live for Fourth of July weekend, which I think we absolutely should try to drive for that if through the web and not through the app at a
 

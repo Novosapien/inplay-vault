@@ -2,10 +2,10 @@
 
 > **Component:** [[market-maker/market-maker]]
 > **Purpose:** The live blocker list, by owner. Update after every touchdown /
-> T0 call. Global architecture questions live in
+> tZERO call. Global architecture questions live in
 > [[architecture/open-questions]]; this is the MM-specific working list.
 
-**Next scheduled venues:** T0 tech calls Tue + Thu · **another MM call with
+**Next scheduled venues:** tZERO tech calls Tue + Thu · **another MM call with
 Edwin expected** (the 23-07 call never reached E11/E12; George emailing him
 the anchor doc).
 
@@ -67,21 +67,21 @@ $/win sign-off. Asked as **questions**.
 | E17 | **SNT-1 x MM interaction during Primary Mandate rounds**, Edwin explicitly invited this: how the noise taker's flow interacts with the MM's quoting and inventory while the MM is absorbing unsold IPO float (completion sweep). Does SNT-1 run during the primary at all, or only once secondary opens? | SNT-1, MM | 🔴 New _(30-07, Edwin)_ |
 | E18 | **SNT-1 tuning + weight feed**, the two levers Edwin expects to tune after real books are `base_orders_per_hour` and the daily loss budget. Also: confirm the per-team `team_weight` (0.25–4.0) feed from the EAV / popularity model | SNT-1 | 🟡 _(30-07, tune post-launch)_ |
 
-## Owed by / with T0 (Tue + Thu calls)
+## Owed by / with tZERO (Tue + Thu calls)
 
 | # | Question | Blocks | Status |
 |---|----------|--------|--------|
 | T1 | **MM account — permission to create it** — we know the messages (create account, seed stock, move cash: `UAAR`/`UEPR`/`UBT`). Still needed: permission to send them on our connection + how account numbers map between the REST system and the OMS | All testing | 🟡 Mechanism known — permission pending |
 | T2 | **Order-rate limit** — how many messages/sec will tZERO allow the MM account (`MaxOrdRate`)? Our own software is proven far faster than needed; the venue's allowance is the real ceiling. Need ~1–2k msg/s at peak — more if NCAA secondary happens (E12) | Quoting cadence | 🟡 Venue config question |
 | T3 | **Reject out-of-band trades at source** — can the matching engine itself refuse any trade outside the price corridor, per team? If yes, voiding trades becomes a rare last resort | Supervision | 🔴 Open |
-| T4 | **Voiding + correcting trades** — who decides, who triggers, how fast; positions/cash reverse automatically (plumbing known). Also (23-07): the spec lets T0 **correct** a past trade's price/size instead of voiding it — when would they, and can a correction leave someone worse off? | Supervision | 🔴 Open |
+| T4 | **Voiding + correcting trades** — who decides, who triggers, how fast; positions/cash reverse automatically (plumbing known). Also (23-07): the spec lets tZERO **correct** a past trade's price/size instead of voiding it — when would they, and can a correction leave someone worse off? | Supervision | 🔴 Open |
 | T5 | **Halting one team's market** — the data feed carries halt states (including manual halts), so we can *see* halts the moment they happen (23-07). Ask: who can trigger one, how fast, do resting orders survive it, who resumes | Supervision, market state | 🔴 Open — feed side confirmed |
 | T6 | **IPO stock warehousing** — how the ledger records the MM absorbing unsold IPO stock (~50k blocks) | IPO fill guarantee | 🔴 Open (also in [[architecture/open-questions]]) |
 | T9 | **Opening auction, or just always on?** — apart from the short daily gap, is it plain normal matching all day, every day? The venue supports opening auctions (collect orders, one opening price, then normal trading) — confirm we're NOT using one. Mirrors E16 (opened 23-07) | Market state, quoting | 🔴 Open — ask on next call |
-| T10 | **One environment for everything** — T0 have said it's basically one environment: all testing, QA, and production in the same place (George, 23-07). So every risky experiment (account setup, the queue test, rate limits, halt and bust drills) must be done **before real users arrive** — after that there is no sandbox. Ask: can we have **permanent test symbols** (~10)? ⚠ They'd be FINRA-regulated securities, so users must be **blocked from trading them in the app** — confirm what's allowed and how many we can have | All testing, the plan | 🔴 Open — top of list |
+| T10 | **One environment for everything** — tZERO have said it's basically one environment: all testing, QA, and production in the same place (George, 23-07). So every risky experiment (account setup, the queue test, rate limits, halt and bust drills) must be done **before real users arrive** — after that there is no sandbox. Ask: can we have **permanent test symbols** (~10)? ⚠ They'd be FINRA-regulated securities, so users must be **blocked from trading them in the app** — confirm what's allowed and how many we can have | All testing, the plan | 🔴 Open — top of list |
 | T7 | ~~MM order entry = standard OE session?~~ **✅ RESOLVED 22-07:** no Quote/MassQuote interface exists in tZERO's FIX schema — the MM is order-based (resting limit orders via D/F/G) by necessity. Dedicated MM FIX session (isolation) remains a filed ask | — | ✅ Resolved |
-| T8 | ~~Order-update behaviour~~ **✅ RESOLVED / MOOT 23-07:** **8.1 answered** — an updated order goes to the **back of the queue** (T0 call + Troy: standard on every matching engine); Edwin: "we don't care about that." **8.2 moot** — we never top up partially-filled orders (new lifecycle). **8.3 moot for v1** — a momentary self-cross during a price adjustment is tolerated (George-confirmed). Self-match prevention follow-up → T11 | — | ✅ Resolved |
-| T11 | **What self-match prevention does T0 have?** — Troy checking (23-07). Relates to the per-account wash-trade toggle in the OMS spec. For USER wash-trading the v1 policy is rulebook ban + order queries on high-volume accounts + removal from the event | Supervision | 🟡 Troy checking |
+| T8 | ~~Order-update behaviour~~ **✅ RESOLVED / MOOT 23-07:** **8.1 answered** — an updated order goes to the **back of the queue** (tZERO call + Troy: standard on every matching engine); Edwin: "we don't care about that." **8.2 moot** — we never top up partially-filled orders (new lifecycle). **8.3 moot for v1** — a momentary self-cross during a price adjustment is tolerated (George-confirmed). Self-match prevention follow-up → T11 | — | ✅ Resolved |
+| T11 | **What self-match prevention does tZERO have?** — Troy checking (23-07). Relates to the per-account wash-trade toggle in the OMS spec. For USER wash-trading the v1 policy is rulebook ban + order queries on high-volume accounts + removal from the event | Supervision | 🟡 Troy checking |
 
 ## Owed by Sport Radar
 

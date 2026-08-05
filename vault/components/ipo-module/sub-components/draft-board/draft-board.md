@@ -38,7 +38,7 @@ The board is deliberately built for fast, low-friction discovery across a large 
 **Business rules:**
 
 - Listings exist only while a team's IPO window is open; at window close the team leaves the board and appears in the secondary market.
-- Shares-remaining must reflect the authoritative float state (single source of truth = T0 ledger).
+- Shares-remaining must reflect the authoritative float state (single source of truth = tZERO ledger).
 
 **Edge cases:**
 
@@ -154,7 +154,7 @@ _None originate here. Buying crosses into [[primary-offering-execution]] (same c
 | Team list (current offering) | Out | All team companies with an open IPO window | [[ipo-scheduling]] / InPlay |
 | IPO price | Out | Static ask price per team | InPlay valuation model |
 | Expected wins | Out | Basis for the price | InPlay projection |
-| Shares remaining | Out | Live float state per team | T0 ledger via [[primary-offering-execution]] |
+| Shares remaining | Out | Live float state per team | tZERO ledger via [[primary-offering-execution]] |
 | Conference / division mapping | In | Grouping metadata for filters | Sport Radar / InPlay |
 | Sold-out / window-state flag | Out | Buyable vs sold-out vs now-trading | [[ipo-scheduling]] |
 

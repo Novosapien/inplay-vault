@@ -4,7 +4,7 @@
 > **Status:** Draft
 > **Date:** 2026-05-10
 > **Owner:** Novosapien
-> **Sources:** Vision document, T0 integration spec, architecture workshop sessions
+> **Sources:** Vision document, tZERO integration spec, architecture workshop sessions
 
 ## Overview
 
@@ -172,7 +172,7 @@ graph LR
 
 ```mermaid
 sequenceDiagram
-    participant T0 as tZERO
+    participant tZERO as tZERO
     participant FIX as FIX Gateway
     participant NATS as NATS JetStream
     participant CENT as Centrifugo
@@ -180,7 +180,7 @@ sequenceDiagram
     participant REDIS as Redis
     participant APP as User's App
 
-    T0->>FIX: FIX message (price change)
+    tZERO->>FIX: FIX message (price change)
     Note over FIX: Parse + normalize (<2ms)
     FIX->>NATS: publish market.quote.cowboys
     
@@ -207,7 +207,7 @@ sequenceDiagram
     participant TS as Trading Service
     participant FIX as FIX Gateway
     participant NATS as NATS JetStream
-    participant T0 as tZERO
+    participant tZERO as tZERO
     participant CENT as Centrifugo
     participant REDIS as Redis
     participant PG as PostgreSQL
@@ -222,8 +222,8 @@ sequenceDiagram
     TS-->>APP: 200 OK {status: "acknowledged"}
     Note over APP: User sees "Order Pending"
     
-    FIX->>T0: FIX NewOrderSingle
-    T0-->>FIX: ExecutionReport (Filled)
+    FIX->>tZERO: FIX NewOrderSingle
+    tZERO-->>FIX: ExecutionReport (Filled)
     FIX->>NATS: publish order.user123.ORD456 (filled)
     
     par Notify user
@@ -286,7 +286,7 @@ sequenceDiagram
 
 ### Integrations
 - [[integrations]] -- Summary of all external dependencies
-- [[t0]] -- tZERO FIX 4.2 + REST API specification
+- [[tzero|tZERO]] -- tZERO FIX 4.2 + REST API specification
 - [[sportradar]] -- Sport Radar real-time data integration
 - [[persona]] -- Persona KYC integration
 

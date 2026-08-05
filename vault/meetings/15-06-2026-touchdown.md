@@ -1397,7 +1397,7 @@ George Westbrook: And it's only going to get
 
 Edwin Johnson: man.
 
-Troy McDonald Kane: well, when T when you guys are done with your integration into T0,
+Troy McDonald Kane: well, when T when you guys are done with your integration into tZERO,
 
 George Westbrook: better.
 

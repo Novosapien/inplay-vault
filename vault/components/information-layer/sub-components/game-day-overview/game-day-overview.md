@@ -204,7 +204,7 @@ The page should feel alive on game days -- real-time score updates, price moveme
 |------|-----------|------------|---------------------|
 | Today's game schedule | In | All games for today with times, teams, venues, time slots | Sport Radar |
 | Live game scores | In | Real-time scores and quarter/period for all live games | Sport Radar push API |
-| Current prices per team | In | Stock prices and direction for all teams playing today | T0 ATS |
+| Current prices per team | In | Stock prices and direction for all teams playing today | tZERO ATS |
 | User's active positions | In | All positions the user holds, per-game unrealised P&L | Trading component |
 | Aggregate day P&L | In/Stored | Sum of all position P&L for the day | Trading component / InPlay internal |
 | User's leaderboard position | In | Current rank and gap to payout | Leaderboard sub-component |
@@ -218,7 +218,7 @@ The page should feel alive on game days -- real-time score updates, price moveme
 | Depends on | What we need | Blocking for build? |
 |-----------|-------------|----------|
 | Sport Radar | Today's schedule, live scores, game status | Yes -- no SR, no game day page |
-| T0 ATS | Current prices for all teams playing today | Yes -- need prices for the overview |
+| tZERO ATS | Current prices for all teams playing today | Yes -- need prices for the overview |
 | Trading component | User's positions and per-game P&L | No -- page works as a scoreboard without position overlay |
 | Leaderboard (sibling) | User's rank for the sticky indicator | No -- can hide indicator |
 | Single Game Page (sibling) | Navigation target when user taps a game | No -- can stub |
@@ -253,7 +253,7 @@ The page should feel alive on game days -- real-time score updates, price moveme
 
 **Must-have at launch?** Yes -- on game days, users need a way to monitor multiple games simultaneously. Without this, they'd have to click into each game individually.
 
-**Sequencing rationale:** Depends on the IA decision (separate page vs. Discovery tab). If separate, can be built in parallel with Discovery. If a tab within Discovery, build after Discovery's base is functional. Either way, it shares the same SR and T0 integrations.
+**Sequencing rationale:** Depends on the IA decision (separate page vs. Discovery tab). If separate, can be built in parallel with Discovery. If a tab within Discovery, build after Discovery's base is functional. Either way, it shares the same SR and tZERO integrations.
 
 ---
 

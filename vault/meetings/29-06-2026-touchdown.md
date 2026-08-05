@@ -20,10 +20,10 @@ extracted-to:
 | Challenge-site review: hype video in phone, How-It-Works page, **IPO pricing calculator**, OG image needed | [[challenge-website/challenge-website]] | Update block |
 | Newsletter → action-first first send; community channel deferred | [[components/components]] (Push/CRM) | Note added |
 | AI brand-preview tool missing from ad page (Max to restore for Mastercard) | [[challenge-website/challenge-website]] | Noted |
-| Market-maker session reconfirmed (Edwin + George; T0 feeds; white papers) | [[trading/trading]] + [[architecture/open-questions]] | Update block + reinforces flag |
+| Market-maker session reconfirmed (Edwin + George; tZERO feeds; white papers) | [[trading/trading]] + [[architecture/open-questions]] | Update block + reinforces flag |
 | TestFlight vs PWA build sync; education center missing on TestFlight | [[customer-onboarding/customer-onboarding]] | Update block |
 | App bugs / design confirmations (buy/sell chart markers, chat-defaults-to-latest, splash = arrow only, price rounding, Visa label cutoff) | — | Status / delivery — no doc change |
-| T0 press release (8:30 ET next day); multi-agent dev-approach explainer | [[components/components]] (Push/CRM) / — | PR noted / no graph impact |
+| tZERO press release (8:30 ET next day); multi-agent dev-approach explainer | [[components/components]] (Push/CRM) / — | PR noted / no graph impact |
 | Corp-dev: Teddy Sagi NDA, Goldman, Kalshi $40B / perpetuals | — | Parked — commercial / vision-adjacent |
 
 **
@@ -1007,7 +1007,7 @@ George Westbrook: Yeah. Yes. any anything that's price related.
 
 Edwin Johnson: Um,
 
-George Westbrook: It's what one mock data and two some of like the like those rounding errors that that you're mention mentioning they're just we we haven't even touched them because they're we haven't got the live data from T0 in there
+George Westbrook: It's what one mock data and two some of like the like those rounding errors that that you're mention mentioning they're just we we haven't even touched them because they're we haven't got the live data from tZERO in there
 
 Edwin Johnson: yes, I understand. And then um on like the trade page,
 
@@ -2009,7 +2009,7 @@ Edwin Johnson: I mean, it might be the real gig because I got to start trading s
 
   
 
-Edwin Johnson: I all the parameters are set. um just integrating it with the feeds from T0. Uh the last one I wrote was for uh Xerry and I had trouble with
+Edwin Johnson: I all the parameters are set. um just integrating it with the feeds from tZERO. Uh the last one I wrote was for uh Xerry and I had trouble with
 
 George Westbrook: H.
 
@@ -2031,7 +2031,7 @@ George Westbrook: I think that one thing I've got to send we I think me and you 
 
 Edwin Johnson: today?
 
-George Westbrook: Troy, the email to T0. I was holding off till today because I didn't think they'd read it over the weekend about the referrals. I think we know we all spoke about it, didn't we? The the mechanism for the referrals and then rather than doing it as like some can't remember the way that they did it, I think there's just a lot simpler.
+George Westbrook: Troy, the email to tZERO. I was holding off till today because I didn't think they'd read it over the weekend about the referrals. I think we know we all spoke about it, didn't we? The the mechanism for the referrals and then rather than doing it as like some can't remember the way that they did it, I think there's just a lot simpler.
 
   
   
@@ -2050,13 +2050,13 @@ George Westbrook: Yeah.
 
 Troy McDonald Kane: Great.
 
-Edwin Johnson: Oh, and by the way, we have that T0 press release going out
+Edwin Johnson: Oh, and by the way, we have that tZERO press release going out
 
 Troy McDonald Kane: Yeah.
 
 Edwin Johnson: tomorrow.
 
-Troy McDonald Kane: 8:30 Eastern will go out tomorrow morning announcing the partnership with T0.
+Troy McDonald Kane: 8:30 Eastern will go out tomorrow morning announcing the partnership with tZERO.
 
 Edwin Johnson: That's great.
 
@@ -2066,7 +2066,7 @@ Troy McDonald Kane: Yeah,
 
 Skye Capazorio: that
 
-Troy McDonald Kane: as soon as it's published, we'll send it over. It's uh Julie from T0 is running it through their P PR service. It's staged to go out at 8:30 Eastern tomorrow. The moment it's live, we'll hand over the link to both Hassan and to Kevin to embed into the whatever distribution we do tomorrow.
+Troy McDonald Kane: as soon as it's published, we'll send it over. It's uh Julie from tZERO is running it through their P PR service. It's staged to go out at 8:30 Eastern tomorrow. The moment it's live, we'll hand over the link to both Hassan and to Kevin to embed into the whatever distribution we do tomorrow.
 
 Edwin Johnson: Yo, King.
 

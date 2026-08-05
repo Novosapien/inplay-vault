@@ -4,7 +4,7 @@
 > **Date:** 2026-05-11
 > **Status:** Collecting
 > **Owner:** George Westbrook
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[architecture/integrations/t0]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[architecture/integrations/tzero]]_
 > **Note:** Order Status was not directly discussed in the 11-06-2026 trading component session. Content is derived from the vision workshop, architecture docs (tZERO FIX specs), and reasonable inference from the limit-order-only decision.
 
 ---
@@ -65,7 +65,7 @@ _Navigation:_
 
 - Only the unfilled portion of a partially filled order can be cancelled -- filled shares are permanent
 - Cancel may be rejected by tZERO if the order fills between the cancel request and processing ("too late" -- CxlRejReason=0)
-- Order status transitions follow the tZERO DFA -- see `architecture/integrations/t0.md` for the full state machine
+- Order status transitions follow the tZERO DFA -- see `architecture/integrations/tZERO.md` for the full state machine
 - Done for Day orders expire automatically at end of trading session -- user should be notified
 
 **Edge cases:**

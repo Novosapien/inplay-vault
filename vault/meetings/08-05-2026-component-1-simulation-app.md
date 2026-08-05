@@ -1402,7 +1402,7 @@ Cody Haugen: 20 where it's it's a touchdown Alabama and timestamped and then a t
 edwin: Does that help you,  
 Brett StClair: It does. I just got a couple of questions actually around that just to help my brain understand the data  
 edwin: Brett?  
-Brett StClair: modeling. Um so T0 will be pulling the um financial graphing right and then we need to crossorrelate data from sports radar.  
+Brett StClair: modeling. Um so tZERO will be pulling the um financial graphing right and then we need to crossorrelate data from sports radar.  
 Skye Capazorio: X  
 Brett StClair: Is that  
 edwin: I don't know that.  
@@ -1494,7 +1494,7 @@ edwin: Fair enough. Fair
 Cody Haugen: chart  
 Brett StClair: So three sets of data are going to be coming through.  
 edwin: enough.  
-Brett StClair: So we'll be m so t0 providing a whole lot of shared data. sports radar bringing a whole lot of sports data. We're representing each individually and we're merging to across then there's a different set of data that we're going to hold which is going to be around uh your leadership your leaderboards the performance um um the whole campaign mechanism and so my brain's just kind of going to I don't doesn't feel like there's a bleed over on that because we're going to build those rule books right so I'm guessing as you're building out those kind of rules that you want to apply to. We'll take that, make sure the data is extracted, stored, and then we start also charting or leaderboarding those as well and then floating those into the right kind of area.  
+Brett StClair: So we'll be m so tZERO providing a whole lot of shared data. sports radar bringing a whole lot of sports data. We're representing each individually and we're merging to across then there's a different set of data that we're going to hold which is going to be around uh your leadership your leaderboards the performance um um the whole campaign mechanism and so my brain's just kind of going to I don't doesn't feel like there's a bleed over on that because we're going to build those rule books right so I'm guessing as you're building out those kind of rules that you want to apply to. We'll take that, make sure the data is extracted, stored, and then we start also charting or leaderboarding those as well and then floating those into the right kind of area.  
    
  
 

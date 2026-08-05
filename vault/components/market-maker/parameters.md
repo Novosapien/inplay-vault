@@ -38,7 +38,7 @@
 
 | Parameter | Meaning | Value | Status | Source |
 |---|---|---|---|---|
-| `buying power` | MM capital in T0 | ~$100M–$100B ("never a limit") — set via `DTBPo` on account creation | ✅ decided, exact number 🟡 | 20-07 (Edwin/Troy) · OMS spec 22-07 |
+| `buying power` | MM capital in tZERO | ~$100M–$100B ("never a limit") — set via `DTBPo` on account creation | ✅ decided, exact number 🟡 | 20-07 (Edwin/Troy) · OMS spec 22-07 |
 | `refresh rate` | Quoting cadence | **Bifurcated (supersedes flat 5–10×/sec):** live games ~200ms · non-live 30–60s · earnings burst ~5 min all symbols | ✅ 23-07 | MM call 23-07 |
 | `tick size` | Min price increment | **$0.01** | ✅ | Venue-verified 22-07 |
 | `base spread` | Default half-spread per side (per profile) | Tick × S multiplier | 🔴 base TBD | PTS-001 §6.6.1 |

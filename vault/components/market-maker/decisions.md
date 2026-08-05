@@ -35,7 +35,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   Supersedes the 22-07 amend-in-place recommendation (N12) and the
   top-up-replace mechanics (N10 → resolved).
 - ✅ **Replace = cancel + new order at the back of the queue** — confirmed on
-  the T0 call and by Troy ("common practice on just about every matching
+  the tZERO call and by Troy ("common practice on just about every matching
   engine"). Edwin: **"we don't care about that."** (T8.1 resolved; 35=G's
   only remaining value is message count.)
 - ✅ **v1 crossing tolerance (confirmed by George 23-07):** post the new
@@ -69,7 +69,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   the feeds. (New Phase-0 item.)
 - ✅ **User wash-trading policy = rulebook + surveillance, not tech (v1):**
   prohibited in the rulebook; order-query on high-volume accounts; removal
-  from the event. Troy checking what self-match prevention T0 employs (new
+  from the event. Troy checking what self-match prevention tZERO employs (new
   T-item).
 - ✅ **MM is a buyer at every IPO** — when buyers are short / to balance
   shares pushed into the market. Edwin: **"we're going to start with the
@@ -211,7 +211,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 - ✅ **Scope: Novosapien builds CTS-001 and CTS-002** as well as PTS-001.
   George asked build-or-consume directly; Edwin: "We will build them." The
-  matching engine / order book remain T0's.
+  matching engine / order book remain tZERO's.
 - ✅ **Valuation formula given** (fills CTS-001's missing Section 3):
   `price = P(win this game)×$/win + E[remaining wins]×$/win + off-field`.
   Sport Radar live win probabilities are the input.
@@ -220,8 +220,8 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   do on capital"; buying power set to ~$100M–$100B. No finite pool, no
   zero-sum allocation. Per-team displayed-size config survives.
 - ✅ **MM entity = ordinary participant + unlimited buying power + short-locate
-  exemption.** T0 to stand up the synthetic MM entity in QA (asked via the new
-  Tue/Thu T0 tech calls).
+  exemption.** tZERO to stand up the synthetic MM entity in QA (asked via the new
+  Tue/Thu tZERO tech calls).
 - ✅ **Limit orders only, including for the MM** — aggression via pricing
   through levels (bid 11 on a 7-at-8 market to sweep to 10).
 - ✅ **Reference Price = the mid** between best bid and best ask.
@@ -237,7 +237,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   (overnight deliberately wide, ~$2.5–5 spreads).
 - ✅ **Markets truly isolated intragame**; each game a pairs trade; no
   rankings/tiebreaker effects; cross-game effects only between games.
-- ✅ **Price band (~30%) + trade busting with T0** required for orderly
+- ✅ **Price band (~30%) + trade busting with tZERO** required for orderly
   markets — policy sessions "over the next couple of days."
 - ✅ **NEW BUILD: synthetic market order** (app-side price-through) — before
   the first NFL game. Troy to help with logic. "A market order means whatever
@@ -252,7 +252,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 - ⚠ **The standards are context, not constitution** — Edwin: "I meant it for
   Claude to read." Season-1 conformance bar to be signed off explicitly
   (Thursday 23-07).
-- ✅ **T0 cadence: two tech calls/week (Tue + Thu)** from this week.
+- ✅ **tZERO cadence: two tech calls/week (Tue + Thu)** from this week.
 - ✅ **Deep-dive booked: Thursday 23-07, 3–4pm London.**
 
 ## 2026-07-15 / 17-07 — Standups — [[15-07-2026-touchdown]] · [[17-07-2026-touchdown]]

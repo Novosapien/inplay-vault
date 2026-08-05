@@ -10,14 +10,14 @@ Third-party services, APIs, and data feeds.
 | Integration | Purpose | Status |
 |------------|---------|--------|
 | Sport Radar | Real-time sports data, live match tracker, historical stats, news feed | Licensed |
-| T0 ATS | Trading engine, price data, order book, trade execution | Partnered |
+| tZERO ATS | Trading engine, price data, order book, trade execution | Partnered |
 | Persona | KYC / identity verification | Setup in progress |
 | Pay.com (+ redundant processor) | Payouts and subscriptions / cash-out optionality | Vendor selection (23-07) |
 | Brokerage Partners | Production trading (future -- not challenge scope) | Future |
 
-> **T0 environments (23-07-2026, _[[23-07-2026-tZERO-weekly]]_):** the current T0 environment **becomes SIM**; a **separate PROD environment** will be stood up. Test/dummy assets (named after non-existent teams) live inside SIM. Payouts/subscriptions route through **Pay.com (+ redundancy)** and need **no tZERO direction** for launch. Full T0 deployment notes in [[t0]] §10.
+> **tZERO environments (23-07-2026, _[[23-07-2026-tZERO-weekly]]_):** the current tZERO environment **becomes SIM**; a **separate PROD environment** will be stood up. Test/dummy assets (named after non-existent teams) live inside SIM. Payouts/subscriptions route through **Pay.com (+ redundancy)** and need **no tZERO direction** for launch. Full tZERO deployment notes in [[tzero]] §10.
 
-> **T0 OMS Q&A + risk settings (29-07-2026, _[[29-07-2026-tZERO-rob-qa]]_):** Rob Colucci answered the OMS testing questions and delivered the IPLY risk-settings matrix ([[tzero-oms-risk-settings]]). Highlights: IPLY accounts **carry positions overnight**, account-scoped position tracking is **fixed** (was a TEST-credential routing bug), bid/ask is **driven by FIX orders** (market maker sets the market), ticker `IPTCCONH` is **created in OMS SIM**, and **Stop Wash Trades is ON**. Primary-issuance metrics belong on a **dedicated cap-table stack**, not the OMS. Detail in [[t0]] §11.
+> **tZERO OMS Q&A + risk settings (29-07-2026, _[[29-07-2026-tZERO-rob-qa]]_):** Rob Colucci answered the OMS testing questions and delivered the IPLY risk-settings matrix ([[tzero-oms-risk-settings]]). Highlights: IPLY accounts **carry positions overnight**, account-scoped position tracking is **fixed** (was a TEST-credential routing bug), bid/ask is **driven by FIX orders** (market maker sets the market), ticker `IPTCCONH` is **created in OMS SIM**, and **Stop Wash Trades is ON**. Primary-issuance metrics belong on a **dedicated cap-table stack**, not the OMS. Detail in [[tzero]] §11.
 
 ## Sport Radar: feeds, probabilities API, contract (24-07-2026)
 

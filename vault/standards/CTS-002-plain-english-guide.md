@@ -113,7 +113,7 @@ final contest: Final Post-Game → Final Financial Report → Settlement
 
 **In our stack this chapter is mostly tZERO's implementation** — but we must know it cold, because both the app and the SDMM live inside these rules.
 
-- **Order types (v1):** Market, Limit, Cancel, Cancel/Replace. Nothing else — no stops, no icebergs, no pegs, no hidden orders. **In practice T0 is limit-only** (no native market orders — see §8 on synthetic market orders).
+- **Order types (v1):** Market, Limit, Cancel, Cancel/Replace. Nothing else — no stops, no icebergs, no pegs, no hidden orders. **In practice tZERO is limit-only** (no native market orders — see §8 on synthetic market orders).
 - **Matching:** price priority, then time priority. Partial fills allowed; remainders keep their queue position.
 - **Order lifecycle:** *New → Accepted → Working → Partially Filled → Filled / Cancelled / Replaced / Expired* — deterministic, recorded, auditable.
 - **Validation:** every order checked against market state, order type, price/quantity constraints, tick size before acceptance.
@@ -138,8 +138,8 @@ The split of responsibilities is clean: **the standard defines required market b
 
 - **We build this.** But the matching engine and order book are tZERO's — CTS-002's Ch 6 machinery is consumed, not built. (And the docs themselves were "meant for Claude… fairly simple" — architecture over ceremony.)
 - **"Market state"** is Edwin's word for the MOC/MOP layer. Use his vocabulary on calls.
-- **Trading bands + quote busting are real requirements**: ~30% band around the reference; fills outside it can be busted "as the exchange or with T0… we have to maintain orderly markets." Policy to agree with T0 in the coming days.
-- **Synthetic market orders are a new build item** (app-side): T0 has no market orders, but users will expect a "just buy it" button. Implementation: price through several levels (buy the 12s when it's 8 bid at 9) or a cancel-replace walk that chases until filled. Troy: this is exactly how real brokers fake market orders in equities; he'll help write the logic. **Edwin wants it before the first NFL game.**
+- **Trading bands + quote busting are real requirements**: ~30% band around the reference; fills outside it can be busted "as the exchange or with tZERO… we have to maintain orderly markets." Policy to agree with tZERO in the coming days.
+- **Synthetic market orders are a new build item** (app-side): tZERO has no market orders, but users will expect a "just buy it" button. Implementation: price through several levels (buy the 12s when it's 8 bid at 9) or a cancel-replace walk that chases until filled. Troy: this is exactly how real brokers fake market orders in equities; he'll help write the logic. **Edwin wants it before the first NFL game.**
 - **Three liquidity sessions** (in-game / around-game / overnight) replace any elaborate reading of the lifecycle chapters — the practical question is just: which session are we in, and what profile does it select?
 - **Cadence confirmed:** 5–10 quote refreshes/sec intragame via cancel-replace ("wipe the book and replace it"), event-triggered recompute on game events, wide-and-slow outside games.
 - **MM ops UI is a build item** (desktop): set algo parameters, order lookup, positions, P&L. Kevin likely operates it. Deliberately last in the build order.
@@ -154,7 +154,7 @@ The split of responsibilities is clean: **the standard defines required market b
 | Market Operating Condition (Ch 4) | **Novosapien** | Small classifier inside/beside the SDMM service: feed health + valuation freshness + session → one enum. Mostly "Normal." |
 | Market Operations Profile (Ch 5) | **Novosapien** | Config lookup: (condition, session) → profile parameters. Merges with PTS-001's pricing profiles into one table. |
 | Lifecycles / sessions (Ch 2) | **Novosapien** | State machine driven by fixture schedule + Sport Radar event status. Drives everything else's timing. |
-| Order book, matching, order lifecycle (Ch 6) | **tZERO** | Consumed via FIX. We validate app-side before submission but T0 is authoritative. |
+| Order book, matching, order lifecycle (Ch 6) | **tZERO** | Consumed via FIX. We validate app-side before submission but tZERO is authoritative. |
 | Synthetic market orders | **Novosapien (app)** | New: price-through / cancel-replace walk. Pre-first-NFL-game. |
 | Bands, halts, quote-bust (Ch 6/integrity) | **Joint with tZERO** | Policy + who pulls the trigger. To agree on the Tue/Thu calls. |
 | Liquidity provision (Ch 7–9) | **Novosapien** | This *is* the SDMM service — see PTS-001 guide. |
@@ -168,16 +168,16 @@ The split of responsibilities is clean: **the standard defines required market b
 - **"Do NOT define F"** (§4.4) — a generation instruction left in the text. Harmless, but hard evidence the doc is AI-drafted context, and that the classifier is deliberately unspecified.
 - **Profile-name mismatch** with PTS-001 (*Balanced/Emergency* vs *Liquidity-Preservation/Protective*). One merged profile set needed.
 - **Ch 5 vs Ch 9 overlap** — the Market Operations Profile and the Market Configuration describe near-identical objects at different levels of formality. Build one thing.
-- **Market orders** are a recognized type in Ch 6 but don't exist on T0 (Troy). Synthetic market orders resolve this at the app layer.
+- **Market orders** are a recognized type in Ch 6 but don't exist on tZERO (Troy). Synthetic market orders resolve this at the app layer.
 - Formatting drift: broken bullet nesting, an underlined equation, sections that trail off — same conversion artifacts as the other docs.
 
 **Genuinely open:**
-1. **Band width and bust policy** — 30%? Who busts, us or T0, and how fast?
+1. **Band width and bust policy** — 30%? Who busts, us or tZERO, and how fast?
 2. **Halt semantics** — what can halt a single team's market intragame, and who decides?
 3. **Weekly Financial Report** — who produces it, what's in it, when does it publish?
 4. **MOC classifier thresholds** — what feed-latency/staleness actually flips Normal → Degraded?
 5. **Session boundaries** — when exactly does in-game become around-game become overnight (esp. NCAA's 6-day weeks)?
-6. **Throughput** — 5–10 cancel-replaces/sec × 32+ books through T0's FIX session: confirm limits on the Tue/Thu calls.
+6. **Throughput** — 5–10 cancel-replaces/sec × 32+ books through tZERO's FIX session: confirm limits on the Tue/Thu calls.
 
 ---
 

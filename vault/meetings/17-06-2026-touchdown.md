@@ -1038,7 +1038,7 @@ George Westbrook: Yeah. No,
 
 Brett StClair: Yeah.
 
-George Westbrook: it will be. it the the thing is it's not as I know it seems like obviously an urgent thing but the actual process is it's something that we could we're not going to do this but in theory the day before the trading starts we just allocate an ID well the wallet ID to a user and then it's then it's done um we're not going to do that but it's cuz it's it's just feeding a bit of data to um T0 and then they give us the wallet which we already have the IDs for cuz they've already been
+George Westbrook: it will be. it the the thing is it's not as I know it seems like obviously an urgent thing but the actual process is it's something that we could we're not going to do this but in theory the day before the trading starts we just allocate an ID well the wallet ID to a user and then it's then it's done um we're not going to do that but it's cuz it's it's just feeding a bit of data to um tZERO and then they give us the wallet which we already have the IDs for cuz they've already been
 
   
   

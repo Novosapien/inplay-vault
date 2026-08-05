@@ -138,7 +138,7 @@ graph TD
 | Last-season per-game stats | Out | Historical form | Sport Radar |
 | Additions / departures | Out | Roster gains and losses | Sport Radar / roster data |
 | Schedule | Out | Upcoming games | Sport Radar |
-| Shares remaining / price | Out | Live offering state | T0 ledger / [[primary-offering-execution]] |
+| Shares remaining / price | Out | Live offering state | tZERO ledger / [[primary-offering-execution]] |
 
 ---
 

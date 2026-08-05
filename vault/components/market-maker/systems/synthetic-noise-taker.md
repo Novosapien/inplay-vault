@@ -38,7 +38,7 @@ Every number below is in [[market-maker/parameters]] with a status. All randomne
 
 ## Integration (our side)
 
-SNT-1 is engine-agnostic: it drives through a thin **`ExchangeAdapter`** interface that Novosapien implements against tZERO's matching engine (see [[t0]]). One `NoiseTakerAgent` per league (or one global; it is team-keyed internally). Drive `agent.step(now)` from the event loop.
+SNT-1 is engine-agnostic: it drives through a thin **`ExchangeAdapter`** interface that Novosapien implements against tZERO's matching engine (see [[tzero]]). One `NoiseTakerAgent` per league (or one global; it is team-keyed internally). Drive `agent.step(now)` from the event loop.
 
 `ExchangeAdapter` methods to implement:
 

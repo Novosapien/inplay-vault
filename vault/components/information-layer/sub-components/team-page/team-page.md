@@ -194,8 +194,8 @@ When a live game is in progress, the page should feel energised at the top (live
 | Current season stats | In | Win/loss record, standings, key performance metrics | Sport Radar |
 | Historical performance | In | 10-15 years of team stats, season records, notable results | Sport Radar REST API |
 | Head-to-head matchup data | In | Historical results and stats against specific opponents | Sport Radar |
-| Stock price history | In | Price over time since IPO, with annotated volatility moments for past games | T0 ATS + InPlay internal (annotations) |
-| Current stock price | In | Bid/offer/last, direction indicator | T0 ATS |
+| Stock price history | In | Price over time since IPO, with annotated volatility moments for past games | tZERO ATS + InPlay internal (annotations) |
+| Current stock price | In | Bid/offer/last, direction indicator | tZERO ATS |
 | Team news | In | Injuries, signings, coaching changes, AP-style editorial | Sport Radar newswire (filtered to this team) |
 | Upcoming schedule | In | Next games, dates, opponents | Sport Radar |
 | Live game data (when applicable) | In | Score, quarter, game status for current game | Sport Radar |
@@ -208,7 +208,7 @@ When a live game is in progress, the page should feel energised at the top (live
 | Depends on | What we need | Blocking for build? |
 |-----------|-------------|----------|
 | Sport Radar | Team stats, historical data, matchup data, news, schedule, live game data | Yes -- no SR, no team page |
-| T0 ATS | Stock price history and current price | Yes -- no T0, no price chart |
+| tZERO ATS | Stock price history and current price | Yes -- no tZERO, no price chart |
 | Trading component | User's position in this team | No -- page works without position data |
 | InPlay internal store | Historical volatility annotations for past games | No -- chart works without annotations |
 | Single Game Page (sibling) | Navigation target when user taps live game banner | No -- can stub |
@@ -242,7 +242,7 @@ When a live game is in progress, the page should feel energised at the top (live
 
 **Must-have at launch?** Yes -- users need team-level research to make informed trades. Without it, trading decisions are uninformed.
 
-**Sequencing rationale:** Can be built in parallel with Single Game Page. Less complex technically (mostly read-only data display from SR and T0) but shares the same data integrations. The live game enrichment can be added after the base page is functional.
+**Sequencing rationale:** Can be built in parallel with Single Game Page. Less complex technically (mostly read-only data display from SR and tZERO) but shares the same data integrations. The live game enrichment can be added after the base page is functional.
 
 ---
 

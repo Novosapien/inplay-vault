@@ -24,7 +24,7 @@ extracted-to:
 | **Discovery** — house-ad tips, hyper-personalised prompts, team-page entry | [[research-tab]] §3 Journey 6 | Added |
 | **Trade hand-off** — reports list 5–10 teams; trade action must carry team id; trade from research page | [[research-tab]] §2, §3 | Added |
 | Status + components.md Research-Tab line (undefined → Defined) | [[research-tab]], [[components/components]] | Updated |
-| **T0 buying-power / ledger explainer** (Troy) + George's "elegant" referral-via-API mechanism (vs FTP file) | [[trading/trading]] + 18–29 Jun sweep | Cross-ref — captured in [[trading/trading]] update + the touchdown sweep |
+| **tZERO buying-power / ledger explainer** (Troy) + George's "elegant" referral-via-API mechanism (vs FTP file) | [[trading/trading]] + 18–29 Jun sweep | Cross-ref — captured in [[trading/trading]] update + the touchdown sweep |
 | **Market-maker session** flagged again (Edwin to give parameters, build with George) | [[architecture/open-questions]] | Cross-ref — reinforces existing market-maker flag |
 | Corp-dev / commercial (Teddy Sagi family office NDA, Goldman, Kalshi $40B / perpetual-futures "InPlay as underlying source data") | — | Parked — commercial / vision-adjacent, no component change |
 
@@ -227,7 +227,7 @@ Brett StClair: Um,
 
 Troy McDonald Kane: one.
 
-Brett StClair: would you be able to take us through kind of what the T0 system looks like because like I don't know. I don't know. I I don't know how you feel about it, George, but sometimes I'm listening to the guys and I don't know like I'm feeling sometimes lost.
+Brett StClair: would you be able to take us through kind of what the tZERO system looks like because like I don't know. I don't know. I I don't know how you feel about it, George, but sometimes I'm listening to the guys and I don't know like I'm feeling sometimes lost.
 
   
   
@@ -255,7 +255,7 @@ Troy McDonald Kane: Yeah. So, I think there are some cross signals.
 
 George Westbrook: signals.
 
-Troy McDonald Kane: I think that's both sides. And even Rob today was a little annoying because he's already forgetting conversations that we had 3 days ago. But, uh, and little little concerning to me. I'm going to have to talk to evangelists about that. But um so their their matching engine is a traditional matching engine. It's nothing nothing complex. Nothing goes on the chain until post trade. And so the way that the the systems work is buying power is just what your capital Edwin's joining now. So we're just talking Edwin about how the T T0 system works.
+Troy McDonald Kane: I think that's both sides. And even Rob today was a little annoying because he's already forgetting conversations that we had 3 days ago. But, uh, and little little concerning to me. I'm going to have to talk to evangelists about that. But um so their their matching engine is a traditional matching engine. It's nothing nothing complex. Nothing goes on the chain until post trade. And so the way that the the systems work is buying power is just what your capital Edwin's joining now. So we're just talking Edwin about how the T tZERO system works.
 
 Edwin Johnson: Great.
 
@@ -272,7 +272,7 @@ Troy McDonald Kane: uh, you know, the buying power essentially is what cash on h
 
   
 
-Troy McDonald Kane: the brokers are typically responsible for transmitting those files to T0 uh because the they're T0 is just the the exchange the ATS they're not the broker who's supposed to grant what that buying power is based on the funds on deposit if they're trading on margin or they not trading on margin and so that's only at the start of day so that's what we've been talking about which I I feel like is still getting lost in translation with them because Edwin we just came out of our TZ tech all. So, we have to send them a file every day with every account's buying power. Now, that's more intended if people move over the referral bank into their trading bank or their trading wallet. So, that's why we have to provide that file at the end at the beginning of the day or end of the day, however we decide to do it. So, let's say I'm trading all day long. I draw down my buying power to 25K. I want to move 50K from my referral wallet over to my trading wallet.
+Troy McDonald Kane: the brokers are typically responsible for transmitting those files to tZERO uh because the they're tZERO is just the the exchange the ATS they're not the broker who's supposed to grant what that buying power is based on the funds on deposit if they're trading on margin or they not trading on margin and so that's only at the start of day so that's what we've been talking about which I I feel like is still getting lost in translation with them because Edwin we just came out of our TZ tech all. So, we have to send them a file every day with every account's buying power. Now, that's more intended if people move over the referral bank into their trading bank or their trading wallet. So, that's why we have to provide that file at the end at the beginning of the day or end of the day, however we decide to do it. So, let's say I'm trading all day long. I draw down my buying power to 25K. I want to move 50K from my referral wallet over to my trading wallet.
 
   
   
@@ -281,7 +281,7 @@ Troy McDonald Kane: the brokers are typically responsible for transmitting those
 
   
 
-Troy McDonald Kane: We actually have to facilitate that for T0. T0 can't can't figure that out or won't be able to figure that out. And so we say, okay, let's say Troy Kane ends the day at 24K. He wants to move 50 in. There's we have to build that mechanism into how we want to do that on our side, like to give clients the ability to do that. And then how do we transform that into a file that gets sent to T0? And then they just load it and say, "All right, they just like consider it like a deposit. They just deposited 50K into their account, increasing their buying power now to 74K for the new trade day." Um, and then the buying power will be calculated intraday by T0 because that's what's on their systems.
+Troy McDonald Kane: We actually have to facilitate that for tZERO. tZERO can't can't figure that out or won't be able to figure that out. And so we say, okay, let's say Troy Kane ends the day at 24K. He wants to move 50 in. There's we have to build that mechanism into how we want to do that on our side, like to give clients the ability to do that. And then how do we transform that into a file that gets sent to tZERO? And then they just load it and say, "All right, they just like consider it like a deposit. They just deposited 50K into their account, increasing their buying power now to 74K for the new trade day." Um, and then the buying power will be calculated intraday by tZERO because that's what's on their systems.
 
 George Westbrook: Yeah.
 
@@ -329,7 +329,7 @@ George Westbrook: Because I think the one thing still like with referrals, I get
 
   
 
-George Westbrook: But in terms of like buying power because obviously the the buying power is going to live within the wallets that that T0 have because I I thought what the plan was is that it's we effectively make a call to an API um which tells T0 this user's wallet put some funds in there um and they've already got the existing buying power stored on their system and it would be an API call to basically go just add add some money to this wallet and then on our side, we consume that referral, for lack of a better term, so that it can't be used again. And then given that consumption, we the the the extra buying power is added to their
+George Westbrook: But in terms of like buying power because obviously the the buying power is going to live within the wallets that that tZERO have because I I thought what the plan was is that it's we effectively make a call to an API um which tells tZERO this user's wallet put some funds in there um and they've already got the existing buying power stored on their system and it would be an API call to basically go just add add some money to this wallet and then on our side, we consume that referral, for lack of a better term, so that it can't be used again. And then given that consumption, we the the the extra buying power is added to their
 
 Brett StClair: Dispatch.
 
@@ -337,7 +337,7 @@ Troy McDonald Kane: Yeah, what I would do,
 
 George Westbrook: wallet.
 
-Troy McDonald Kane: George, is I would write that up that way and send it to the T0 team and please copy myself as well and let's see what their reaction to that because that is a much more elegant way of doing it and
+Troy McDonald Kane: George, is I would write that up that way and send it to the tZERO team and please copy myself as well and let's see what their reaction to that because that is a much more elegant way of doing it and
 
 Brett StClair: No.
 
@@ -465,7 +465,7 @@ George Westbrook: Perfect. Yeah, I'll draft.
 
 Troy McDonald Kane: side.
 
-George Westbrook: I've got it on my the high priority um uh reminders, the uh notepad in big writing. Um and I think the only other thing was that the which obviously I appreciate this is about the the research thing, but I think it's important the with the market making algorithm and then how where does that sit? How deeply is it integrated to T0? Or is it a service that we have that doesn't touch T0 or is that a a different cat fish that requires another call?
+George Westbrook: I've got it on my the high priority um uh reminders, the uh notepad in big writing. Um and I think the only other thing was that the which obviously I appreciate this is about the the research thing, but I think it's important the with the market making algorithm and then how where does that sit? How deeply is it integrated to tZERO? Or is it a service that we have that doesn't touch tZERO or is that a a different cat fish that requires another call?
 
 Edwin Johnson: It's another
 

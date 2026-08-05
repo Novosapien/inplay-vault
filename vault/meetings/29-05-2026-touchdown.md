@@ -499,7 +499,7 @@ Edwin Johnson: Cool.
 Brett StClair: And that's how you build the hospital.  
 Edwin Johnson: I mean,  
 Brett StClair: Um,  
-Edwin Johnson: I think there's some value for us to add like, you know, the the T0 partnership. I when we announced that Troy, you know, these other assets that we can use that establish some credibility, Sport Radar, her data,  
+Edwin Johnson: I think there's some value for us to add like, you know, the the tZERO partnership. I when we announced that Troy, you know, these other assets that we can use that establish some credibility, Sport Radar, her data,  
 Skye Capazorio: So,  
 Edwin Johnson: you know, it's a big deal. It's very, very expensive.  
 Skye Capazorio: so that all of that is that all of that is on there from a content perspective or placeholders for it at least at this point in time on the website.  
@@ -578,7 +578,7 @@ Skye Capazorio: Um Brett just bought in, you know, in southwest London has just 
 George Westbrook: That is  
 Edwin Johnson: Absolutely.  
 Skye Capazorio: Um,  
-Edwin Johnson: Because like if I go to raise money, if I go do a round at the end of the year and we have our we're going to have our offering circular done in July for SEC approval, a partnership with T0, um for not just for running the simulation, but there a FINRA approved automated trading system or I'm sorry, alternative trading system, ATS we call it, which takes a big load off of inplay from having to park a lot of money in there. So, we have the the offering circular qualified the deal for the ATS. We've stood up and run a competition and we have, you know, whatever we'll call it 200,000 users and a million people signed up. And then when you go to your advertising metrics guy, um all of those things are going to be impenetrable for someone trying to beat me up on valuation,  
+Edwin Johnson: Because like if I go to raise money, if I go do a round at the end of the year and we have our we're going to have our offering circular done in July for SEC approval, a partnership with tZERO, um for not just for running the simulation, but there a FINRA approved automated trading system or I'm sorry, alternative trading system, ATS we call it, which takes a big load off of inplay from having to park a lot of money in there. So, we have the the offering circular qualified the deal for the ATS. We've stood up and run a competition and we have, you know, whatever we'll call it 200,000 users and a million people signed up. And then when you go to your advertising metrics guy, um all of those things are going to be impenetrable for someone trying to beat me up on valuation,  
 Skye Capazorio: 100%  
 Edwin Johnson: you know.  
    

@@ -32,11 +32,11 @@ The build can't start in earnest until these move; none are code.
 
 - [ ] **Sport Radar probabilities feed fixed** (S1/S2) — the valuation
   engine's primary input. Cody chasing.
-- [ ] **Synthetic MM entity in T0 QA** (T1) — asked 20-07, Tue/Thu calls.
+- [ ] **Synthetic MM entity in tZERO QA** (T1) — asked 20-07, Tue/Thu calls.
 - [ ] **Thursday 23-07 deep-dive** — extract E1–E10 (the numbers, the trigger
   script, conformance bar). Bring [[market-maker/parameters]] as the agenda:
   every 🔴 row is a question.
-- [ ] **T0 throughput + bands answers** (T2–T5).
+- [ ] **tZERO throughput + bands answers** (T2–T5).
 - [ ] **Gateway cancel system (35=F/35=G)** — committed 22-07, owner Hasan.
   A hard prerequisite for any re-quoting: without it every replaced quote
   strands a resting DAY order until 23:59 ET. The MM build queues behind it.
@@ -100,7 +100,7 @@ Goal: orderly markets + the user-facing "market" button. **Gate: before first
 NFL game.**
 
 - Band checks at order entry (app-side) + out-of-band execution detector;
-  bust workflow per the T0 procedure (T4); manual halt/resume.
+  bust workflow per the tZERO procedure (T4); manual halt/resume.
 - Synthetic market order in the Trading Service (N levels through, Troy's
   logic) — designed together with the band so N can't sweep outside it.
 - **Exit test:** deliberately fat-finger in QA; detector flags; bust reverses
@@ -124,7 +124,7 @@ market order ride the existing Trading Service / FIX GW work. Ops UI last.
 ## Standing cadence
 
 - **Mon/Wed/Fri:** internal touchdowns.
-- **Tue/Thu:** T0 tech calls (entity, throughput, bands, busts).
+- **Tue/Thu:** tZERO tech calls (entity, throughput, bands, busts).
 - **Thu 23-07:** Edwin deep-dive — parameters + conformance sign-off.
 - After every session: update [[market-maker/decisions]],
   [[market-maker/open-questions]], [[market-maker/parameters]].

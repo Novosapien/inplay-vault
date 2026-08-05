@@ -427,12 +427,12 @@ Hasan Mohammed Ahmed: If you want to do it with like 100king users for like exam
 Edwin Johnson: beautiful. Yeah,  
 Hasan Mohammed Ahmed: yeah  
 Edwin Johnson: this is awesome.  
-George Westbrook: we need to do in order we can actually integrate into T0. Yeah, like some thinking conceptually what simulate one end,  
+George Westbrook: we need to do in order we can actually integrate into tZERO. Yeah, like some thinking conceptually what simulate one end,  
 Hasan Mohammed Ahmed: the rough flow is going to  
 Edwin Johnson: Welcome.  
 George Westbrook: simulate the other end so that we can work on the part in the middle,  
 Edwin Johnson: Okay.  
-George Westbrook: then plug in plug into T0. Hopefully, we've matched it up perfectly. There's always going to be some sort of error, but we can fix that. And we're not starting from scratch, doing it in that old waterfall style where it's right, let's do this first, let's do that first. It's no, we know we can start this now, we got to wait on that, let's work work on this, and then obviously we can build on this in the future as well. Um, so that it's not just an internal testing tool.  
+George Westbrook: then plug in plug into tZERO. Hopefully, we've matched it up perfectly. There's always going to be some sort of error, but we can fix that. And we're not starting from scratch, doing it in that old waterfall style where it's right, let's do this first, let's do that first. It's no, we know we can start this now, we got to wait on that, let's work work on this, and then obviously we can build on this in the future as well. Um, so that it's not just an internal testing tool.  
    
  
 
@@ -469,7 +469,7 @@ Hasan Mohammed Ahmed: on that big one.
 Edwin Johnson: That's  
 George Westbrook: Fix gateway basically managing the connection between,  
 Edwin Johnson: really  
-George Westbrook: pardon me, T0 and our infrastructure. Um, and then obviously the two websites as well. Um, big thing as well is obviously the advertising. So at the M it's been a lot of research in the background. Okay, what technology do we want to use here?  
+George Westbrook: pardon me, tZERO and our infrastructure. Um, and then obviously the two websites as well. Um, big thing as well is obviously the advertising. So at the M it's been a lot of research in the background. Okay, what technology do we want to use here?  
 Hasan Mohammed Ahmed: Possible. Allow us to  
    
  
