@@ -23,3 +23,19 @@ next sync — no code changes needed. See `brand/README.md` for the full convent
 - To add or update CI: drop files into `brand/<category>/` on a feature branch
   and open a PR (per the Git Workflow above). Merging to main triggers the
   panel sync that makes them appear.
+
+## Description frontmatter
+
+Every markdown document in this vault carries a one-line `description:` in its
+YAML frontmatter.
+
+- When you create a markdown file, write its description in the same edit.
+- When you edit a markdown file, re-read its description. If the description no
+  longer matches what the page now says, rewrite it in the same edit.
+- Format: one line, at most 160 characters, double-quoted, a sentence that says
+  what the document IS. Never a quote from the page, a table fragment, or
+  dialogue. Over 160 characters is INVALID, not merely truncated downstream.
+- If you cannot summarise the page faithfully from its content, leave
+  `description:` absent and say so — a confident wrong line is worse than none.
+- Exempt (no description): files named `changelog.md` or `*changelog*.md`, files
+  named `TEMPLATE.md` or `*template*.md`, and empty files.
