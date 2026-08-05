@@ -14,6 +14,19 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-05b, Full-book market data — depth is available on the session we already run
+
+> Live probes against the tZERO MD session. Session note: `sessions/2026-08-05-b-full-book-probe.md`.
+
+- ✅ **Depth of book is available and the MM does not need the IOI feed.** `MarketDepth=0` is accepted on the existing FIX v8 session; `IPTCGIAN` returned **8 price levels per side** in one fragment. We have only ever asked for `MarketDepth=1`, which is why the platform has never seen depth.
+- ✅ **Request `266=Y` (AggregatedBook) on any full-book subscription.** It is the switch that turns on **`346` NumberOfOrders** per level — per-level order counts are otherwise absent. With `266` the per-level `299` QuoteEntryID disappears; the two are alternatives, not both.
+- ✅ **Full book comes from the existing v8 session**, not IOI and not a second one. IOI's only real advantages are `9846` PreviousClosingPx and **`9848` InitPrx** (reference price for not-yet-tradeable assets — relevant to E3 / the NCAA symbols at TBA); everything else the MM needs is v8-only (trade IDs and DeleteReason for busts, halts, session status, imbalance). IOI also allows one client connection per session.
+- ✅ **Depth-0 and depth-1 traffic must be routed separately by MDReqID.** Not a nicety — measured. A depth-0 reply on the top-of-book fold path **corrupts** rather than degrades: `handleSnapshot` flattens entries by overwriting, so the outermost rung wins and the price board took best_bid 67.45 / best_offer 69.20 against a real 68.15 / 68.50.
+- ✅ **Book state is Redis + NATS only** — no Postgres migration. Depth is high-churn ephemeral state and nothing renders it.
+- ✅ **Previous close is derived from our own tape** (`venue_ticks`), not chased on the feed. `9846` is absent from v8 even when explicitly requested, so `venue_quotes.previous_close` can never populate from this session.
+- ⚠ **OHLC on v8 is partial.** Entry types 4/5/7/8 are accepted, but the venue answers High and Low with values, **Open with an empty entry** (`270=0.00`) and **Close not at all**. An empty Open is dangerous, not merely useless: it satisfies the gateway's `open != nil` publish gate and writes a real-looking `0.0000`.
+- ⚠ **Full book ships feature-flagged off**, with a symbol allow-list.
+
 ## 2026-07-30, SNT-1 Synthetic Noise Taker added (Edwin email), [[market-maker/systems/synthetic-noise-taker]]
 
 > Edwin delivered a spec-quality reference implementation (`sources/snt1_noise_taker.py`, ~349 lines) for a **second house agent**. Session note: `sessions/2026-07-30-snt1-noise-taker.md`.
