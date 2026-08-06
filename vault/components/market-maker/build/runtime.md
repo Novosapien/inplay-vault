@@ -83,7 +83,8 @@ consumer bind. Two modes:
   reading routes to its real securities), synthetic T. Proves plumbing,
   boot order, the drains, the sweep and the venue leg — never prices.
   `MM_SECURITIES=IPTCCHIE,IPTCRAVE` names a drill's exact books;
-  `MM_LIMIT_SECURITIES=N` caps for the 50 msg/s governor.
+  `MM_LIMIT_SECURITIES=N` caps politely for old rig configs (the real
+  governor is 5,000 msg/s — Hasan's guide 05-08).
 - **live** — **REFUSES to start and names its gates**: the S1/S7
   entitlement · the go-live ingestion switch (the live wiring consumes
   the bus; the poller keeps only the heartbeat) · N19 (Edwin's file

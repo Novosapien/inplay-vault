@@ -58,11 +58,16 @@ Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
 - **The dead-man:** the gateway sweeps our resting book after **4 s** of
   heartbeat silence (N15 — the window is ours to tune); the **30 s boot
   grace** covers synchronous journal replay at boot.
-- **The MM governor:** 50 msg/s token bucket (Hasan's placeholder), and
-  over-limit messages are **REJECTED, never queued** — a full
-  170-security book is ~1,020 submits, so rig drills cap the universe
-  (`MM_SECURITIES` / `MM_LIMIT_SECURITIES`). The real venue ceiling is
-  T2 (`MaxOrdRate`), unanswerable from documents.
+- **The MM governor: 5,000 msg/s, burst 2,000** (Hasan's guide 05-08 —
+  ✂ supersedes the 50 msg/s placeholder recorded earlier; local rig
+  containers may still run old configs). Over-limit messages are
+  **REJECTED, never queued**. T2 is ANSWERED: tZERO `MaxOrdRate`
+  5,000/s · `MaxDupOrdRate` 200/s (duplicate = same symbol + side +
+  type). The venue account is **1797733477** ($1bn cash + DTBP; the
+  buying-power check charges ~4.8 % over notional; every order carries
+  `account` = FIX Tag 1). ⚠ Wash-trade blocking is ON and rejects
+  self-crosses — in open conflict with N12's post-first design (see
+  decisions 06-08c; the reconciler has a change coming either way).
 - **tZERO recycles ExecIDs** — proven by incident: a real fill was
   silently dropped because its ExecID had been seen the previous day on
   another symbol. Our EXECUTION key uses the client order id (see

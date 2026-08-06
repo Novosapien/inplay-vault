@@ -18,7 +18,7 @@
 
 | Host | Address | What it is |
 |---|---|---|
-| FIX gateway VM | `10.0.1.2` + a static PUBLIC IP | The tZERO-whitelisted host — the one single point of failure. FIX session 00:01–23:59 ET · 30 s boot grace · 4 s dead-man · 50 msg/s MM governor (placeholder) |
+| FIX gateway VM | `10.0.1.2` + a static PUBLIC IP | The tZERO-whitelisted host — the one single point of failure. FIX session 00:01–23:59 ET · 30 s boot grace · 4 s dead-man (latching; beat expected ~200 ms) · MM governor 5,000 msg/s burst 2,000 (Hasan's guide 05-08 — supersedes the 50 msg/s placeholder) |
 | NATS VM (`inplay-nats`) | `10.0.2.2` (no public IP) | e2-small, template `inplay-nats-tmpl`. **JetStream ON — validated on the server 06-08**: store `/data/nats/jetstream`, 10 GB disk / 256 MB memory cap; the gateway's streams already live there. Carries `order.mm1.>`, the heartbeat, and `SR_PROBABILITIES` |
 | Redis | `10.78.64.3` (TLS) | Already in the panel's proxy — the intended home of the MM's LIVE projection (better than Postgres; adds no dependency) |
 | Cloud SQL | `10.78.65.3` | PostgreSQL 15. The panel displays its health but reads nothing from it |

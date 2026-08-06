@@ -10,6 +10,73 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-06c — ⭐ Hasan's build guide lands: T1/T2 ANSWERED, two design conflicts surfaced
+
+George delivered Hasan's "Market Maker Bot — Build Guide" (05-08,
+live-verified on the venue that day) plus the MM platform account's
+credentials (stored locally, never in git). Filed verbatim:
+`reference/mm-build-guide-hasan-2026-08-05.md` — venue/gateway facts are
+gospel (22-07 filter); its bot-design suggestions are suggestions.
+Also created this day: the MM VM (`infra-changes-2026-08-06-mm-vm.md`).
+
+- ⭐ **T1 ANSWERED — the MM venue account EXISTS and is configured.**
+  tZERO account **1797733477**: $1bn cash, $1bn day-trading buying
+  power, position 0 everywhere, Agency capacity, uncapped open orders.
+  Every order carries `account` (FIX Tag 1). The account 404s on
+  tZERO's REST API (creation artifact, harmless — OMS-side everything
+  works). ⚠ The buying-power check charges ~4.8 % over notional.
+- ⭐ **T2 ANSWERED — the real rate limits:** gateway MM governor
+  **5,000 msg/s (burst 2,000)** · tZERO `MaxOrdRate` **5,000/s** ·
+  `MaxDupOrdRate` **200/s** (raised from the 20/s default for ladder
+  churn). ✂ **Supersedes the recorded "50 msg/s placeholder"**
+  everywhere it appears (parameters, build pages, `compose.py`'s
+  [governor] note — the rig-drill caution stands only for old configs).
+  The governor still REJECTS, never queues.
+- ⚠ **CONFLICT 1 — wash-trade blocking vs N12 (design-changing).**
+  tZERO's Stop Wash Trades is ON and REJECTS orders that cross our own
+  resting orders. N12 (23-07) built the reconciler post-first with a
+  momentary self-cross tolerated. **Incompatible as configured** —
+  either the flag turns off (T13's conversation) or the re-quote path
+  waits for cancels. Hasan says decide BEFORE finalising the diff
+  engine. → Decide with Hasan/Troy; the reconciler has a change coming
+  either way.
+- ⚠ **CONFLICT 2 — the heartbeat is tick-tied; the guide wants it
+  independent.** The gateway expects a beat ~every 200 ms and sweeps
+  after 4 s of silence (latching; boot grace 30 s; arms only when it
+  has something to protect). Our beat rides the 1 s tick INSIDE the
+  loop — a tick that blocks 4 s (checkpoint write, GC, slow drain)
+  would cost the whole book. → Move the beat to an independent task at
+  ~200 ms (N15's number lands: window 4 s confirmed).
+- ⚠ **NEW ASK for Hasan — NATS permissions for the readings path.**
+  Since 05-08 every NATS user has its own scoped credential. The
+  `market-maker` user may publish `gateway.orders.mm.>` and subscribe
+  `order.> position.> market.> _INBOX.>` — **`sr.probabilities.>` is
+  not in the list, and JetStream consumer API calls are not either.**
+  The MM consumer and the sportradar publisher both need grants (or
+  their own users). Without this the ingestion path cannot run on the
+  real bus.
+- ✅ **E27's venue mechanism is real:** inventory seeds via HTTP
+  `POST 10.0.1.2:8080/position-transfer` — **one-way** (negatives
+  accepted then silently ignored), **not idempotent** (each call is a
+  delta), **no read-back** (position visible only via Tag 9383 on an
+  execution report). Hasan's rule adopted: build a transfer LEDGER
+  before seeding at scale. Who computes the allocation numbers is
+  still E27's open half.
+- ✅ **New venue facts:** 170 symbols exist (6 quoted two-sided in QA,
+  164 empty — our resting orders ARE the book) · tick $0.01 · price
+  cap/floor **$127.50 / 1 tick** (client sheet → parameters) · TIF
+  DAY today, GTC pending, IOC/FOK unavailable · `market.snapshot/
+  quote/trade/status.{symbol}` subjects exist (the §5.5 book feed's
+  transport is appearing) · shorts are side 5 with a stock-loan fee ·
+  venue price bands UNRECONCILED — the self-collar is ours (§5.4/MEV
+  already built).
+- ✅ **The wire contract is confirmed** against our build: MM prefix,
+  ≤20 chars, no leading zeros, fresh id per cancel/replace — our
+  minting complies. `userId` keys the reply subject; the real value
+  replaces the wire test's `mm1` at composition time.
+- 📝 The platform's RP/MOC/MOP streams still have no producers — our
+  engine computes RP internally; nothing changes.
+
 ## 2026-08-06b — the MM-side consumer BUILT and DRILLED · ⭐ every fetch publishes
 
 Build session, step-approved (MM `6a4904f` → `f4d3eac`, **512 → 534
