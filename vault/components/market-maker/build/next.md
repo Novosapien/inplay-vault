@@ -31,6 +31,21 @@ Each item names the build page it will change.
   replay-from-checkpoint equality across the engines. A session-sized
   build. Changes [[market-maker/build/event-core|Event core]] and
   [[market-maker/build/runtime|Runtime]].
+  **Design agreed with George 06-08b:** five steps — per-engine
+  `state()`/`restore()` · canonical file format (sorted-keys JSON,
+  sequence + config version + schema version + SHA-256; schema mismatch
+  falls back to full replay, loud) · hourly writer at a tick boundary
+  (atomic temp+rename, keep the last few) · boot loads the newest valid
+  checkpoint then replays the tail · the equality proof on the real
+  captured game is the deliverable. **Storage:** local persistent disk
+  beside the journal (boot never depends on the network); the journal
+  disk's hourly GCP snapshots are the external copy (⚠ not provisioned
+  yet — the VM does not exist; lands with deployment). **Companion
+  item — dedup retention:** the acceptor's seen-keys memory grows
+  ~43k/day (sweeps) → ~0.5 GB/season; prune keys older than the
+  redelivery bound (one week, JetStream's retention), deterministically
+  — driven by EVENT timestamps inside event processing, never a wall
+  clock, so replay reproduces the same pruned set.
 - **N31 group commit**: batch same-moment events into one fsync; nothing
   accepted until its batch is on disk. Measure the real fsync on the VM
   first. Changes [[market-maker/build/event-core|Event core]].
