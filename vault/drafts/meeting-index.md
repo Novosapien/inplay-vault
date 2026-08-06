@@ -1088,7 +1088,7 @@ deliverables promised or delivered.
   - Media plan decks as PowerPoint (Brett to Edwin)
   - Layman's narrative of the market-maker design (Edwin to George, ahead of the Monday deep-dive)
   - 16 updated education modules, all videos under 2 minutes — shipped, pending another review pass
-- **Timeline anchors stated**: secondary trading opens 29 Aug (since superseded by IPO Requirements v2 — see `vault/drafts/project-status-synthesis-31-07.md`); ~10k users targeted at IPO launch; Edwin committing $1M August + $2M September marketing plus $1–2M prize money
+- **Timeline anchors stated**: secondary trading opens 29 Aug (since superseded by IPO Requirements v2 — see `vault/archive/project-status-synthesis-31-07.md`); ~10k users targeted at IPO launch; Edwin committing $1M August + $2M September marketing plus $1–2M prize money
 
 ### 20-07-2026 — Monday touchdown (standup, 75 min)
 - **Attendees**: Edwin Johnson (first ~35 min only), Troy McDonald Kane, Brett StClair, George Westbrook, Cody Haugen, Kevin Murray, Max Kingaby, Skye Capazorio, Hasan Ahmed

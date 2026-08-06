@@ -1,5 +1,17 @@
 # InPlay VPC Setup Guide
 
+> ⚠️ **STALE — THE ADDRESSES IN THIS DOCUMENT ARE WRONG (verified
+> 2026-08-03, N30 in [[market-maker/open-questions]]).** The deployed
+> configuration disagrees with this draft on every address: gateway is
+> **10.0.1.2** (not 10.0.0.2) · NATS is **10.0.2.2** (not 10.0.0.3) ·
+> Redis **10.78.64.3** · Cloud SQL **10.78.65.3** — not one /24. The
+> live source of truth is `inplay-admin-panel-trading/proxy/.env.example`;
+> the full real layout is Hasan's to confirm (N30). Also superseded:
+> this draft's "Cloud NAT not yet created" — **Cloud NAT exists**
+> (George, 04-08). Do not build or configure anything from this
+> document. ⚠ Line-number citations into this file recorded before
+> 06-08 (e.g. "VPC Setup.md:660") predate this banner and are shifted.
+
 Infrastructure setup for the FIX gateway VM, NATS JetStream, Centrifugo, and VPC networking on GCP.
 
 ---
