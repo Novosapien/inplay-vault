@@ -23,9 +23,15 @@
 | Redis | `10.78.64.3` (TLS) | Already in the panel's proxy — the intended home of the MM's LIVE projection (better than Postgres; adds no dependency) |
 | Cloud SQL | `10.78.65.3` | PostgreSQL 15. The panel displays its health but reads nothing from it |
 
-## The MM engine's home (designed 03-08 — the VM does NOT exist yet)
+## The MM engine's home (VM CREATED 06-08b — the engine is not deployed on it yet)
 
-Its own VM, **`e2-medium`, same subnet as NATS**. One process, one
+Its own VM — **created 06-08b**: `inplay-market-maker`, `e2-medium`,
+`nats-subnet` at `10.0.2.3` (static, `inplay-market-maker-ip`), no
+public IP, SA `market-maker-sa`, journal disk `pd-ssd 50 GB` mounted at
+`/var/lib/mm` with the `mm-journal-hourly` snapshot schedule (7-day
+retention), firewall rules 2085/2086, IAP SSH. NATS reachability
+verified from the VM. The full change-set + rollbacks:
+`infra-changes-2026-08-06-mm-vm.md` (for Hasan). One process, one
 writer:
 
 - **Not Cloud Run** — scale-to-zero and container recycling are
@@ -95,5 +101,5 @@ drill (06-08b) ran.
 |---|---|
 | Gateway VM · NATS (JetStream) · panel | Deployed (Hasan's side), verified against |
 | MM publisher (service worker) | Built + drilled locally · **NOT deployed** (firewall path + worker-pool slot open) |
-| MM engine | Built + drilled in loopback · **NOT deployed** (no VM; live mode refuses on its gates) |
+| MM engine | Built + drilled in loopback · **VM exists** (`inplay-market-maker`, e2-medium, 10.0.2.3, journal disk + hourly snapshots, NATS reachable — see `infra-changes-2026-08-06-mm-vm.md`) · engine NOT deployed; live mode refuses on its gates |
 | CI/CD for both | **Audit owed at end of implementation** (George, 06-08): testing + prod deploys for the sportradar API and workers incl. the publisher's slot, and the MM engine's deploy story |
