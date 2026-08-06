@@ -3,8 +3,16 @@
 > Part of [[market-maker/build/index|As Built]] · Sources: N7 (03-08) ·
 > N29/N30 (03-08b) · the 04-08 rulings · the 06-08 server validation.
 > ⚠ `vault/drafts/VPC Setup.md` is WRONG on every address (banner on the
-> file); the live truth for addresses is the trading panel's
-> `proxy/.env.example`; the full subnet layout is N30 (Hasan).
+> file). **The real layout, read directly from GCP 06-08b:** project
+> `inplay-497712` · network `inplay-vpc` · us-east4-a · per-service
+> subnets — `fix-gateway-subnet` 10.0.1.0/28 · `nats-subnet`
+> 10.0.2.0/28 · `centrifugo-subnet` 10.0.3.0/28 · `cloudrun-subnet`
+> 10.0.8.0/22. The firewall (`inplay-fw-policy`) is DENY-BY-DEFAULT
+> with explicit per-source allows; a new VM needs its own rules (the
+> retired loadrunner at 10.0.2.10 is the pattern: explicit ingress to
+> NATS 4222 from its /32). SSH is via IAP. N30's residual ask for
+> Hasan shrinks to: confirm the MM VM's placement + its two firewall
+> rules.
 
 ## The production VPC (us-east4), as verified
 
