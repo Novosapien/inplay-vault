@@ -6,30 +6,41 @@
 The only code that reads a clock. Everything else reacts to events —
 which is why the sweep is an event and not a method call.
 
+## The beat (~250 ms, its own task — 06-08d)
+
+The heartbeat is `run()`'s own asyncio task at `heartbeat_interval_s`
+(0.25 s, the dictionary), independent of the tick's work — N15's
+position and Hasan's guide agree: tick-tied, a tick that stalled 4 s
+would go silent past the dead-man window and cost the whole book. A
+dead beat task stops the run LOUDLY (a bot that cannot beat is already
+swept). ⚠ The honest limit, recorded in `[beat-task]`: asyncio does not
+preempt, so a synchronously blocking tick still starves the beat — that
+is exactly what the VM jitter measurement watches before the window
+tightens to ~1–1.5 s (the beat and the window move together).
+
 ## The tick (1 s, `loop.py`)
 
 In order, every second:
 
-1. **Beat** — FIRST, inside the poller's `run_once`, before any work: the
-   gateway's 4 s dead-man is counting, and a slow source must never
-   delay the heartbeat. One beat per tick tolerates three missed ticks.
-2. **Due polls** (the pull path; empty in live-after-switch).
-3. **Drain bus readings** — each through the full pipeline (accept →
+1. **Due polls** (the pull path; empty in live-after-switch).
+2. **Drain bus readings** — each through the full pipeline (accept →
    journal → engines → sync). The observation stamp is taken from each
    message's `Fetched-At` (its envelope `receive_time`) **before and
    regardless of the accept verdict** — a §7.3 duplicate IS the
    publisher's deliberate liveness confirmation.
-4. **Drain venue answers** to empty — a fill the machine has not
+3. **Drain venue answers** to empty — a fill the machine has not
    consumed means quoting inventory it no longer holds; a drained fill
    can move the book within the same tick.
-5. **Daily discovery** if due (first tick runs it immediately; the
+4. **Daily discovery** if due (first tick runs it immediately; the
    composition owns the wall-clock→monotonic conversion at the edge;
    `ensure_game` is idempotent and re-stamps moved kickoffs).
-6. **The sweep** if due.
+5. **The sweep** if due.
 
-After the tick, `run()` **flushes the readings' batched acks** — pop →
-journal → ack, the crash-safety order. One tick never overlaps the next;
-a slow tick shortens the following wait instead of drifting.
+The beat is deliberately NOT in this list any more — the poller lost it
+(and its transport) to the beat task above. After the tick, `run()`
+**flushes the readings' batched acks** — pop → journal → ack, the
+crash-safety order. One tick never overlaps the next; a slow tick
+shortens the following wait instead of drifting.
 
 ## The sweep (§3.1.4, N28)
 
@@ -58,10 +69,11 @@ consumes the emitted sweeps and never re-runs the scheduler.
 ## Boot (`[boot]`)
 
     1 connect the transport
-    2 beat            — the dead-man is already counting
+    2 beat once       — the dead-man is already counting; the beat task
+                        takes over when the loop starts
     3 replay the journal — rebuild all memory (synchronous)
     4 reconcile against the venue's real book
-    5 tick
+    5 tick (run() starts the ~250 ms beat task here)
 
 Step 3 runs inside the gateway's **30 s boot grace**, and the journal
 grows all season — which is exactly why **§10.3 checkpoints are REQUIRED
@@ -76,7 +88,11 @@ with eyes open (the §3.1.4 healer + an ICD snapshot are the fixes).
 Every construction decision in ONE file: the universe, the journal path,
 the clock conversions, both drains, the readings wiring
 (queue → `ReadingInbound` + `PendingAcks` → the runtime), the durable
-consumer bind. Two modes:
+consumer bind — and the WIRE IDENTITY: `Settings` is the one module
+that reads env, and `MM_USER_ID` / `MM_BOT_ID` / `MM_VENUE_ACCOUNT`
+become the `MMIdentity` every payload carries (the env-vs-dictionary
+split, George 06-08b — env answers "who am I", the dictionary answers
+"how do I behave"). Two modes:
 
 - **loopback** — the full stack against the docker bench: real gateway
   binary, real NATS/JetStream, **real TEAM_BINDINGS** (a published
@@ -99,4 +115,5 @@ loud REJECTED/CONFLICT/MISSED counts), SIGINT/SIGTERM → clean shutdown.
 
 [[market-maker/build/next|Next]]: the go-live switch (this page's live
 mode) · §10.3 checkpoints · the boot-reconcile healer · N31 group commit
-(the journal's fsync ceiling).
+(the journal's fsync ceiling) · N15's window retune after the VM jitter
+measurement (the beat task landed 06-08d).

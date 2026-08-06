@@ -20,25 +20,19 @@ Each item names the build page it will change.
 
 **Ours, unblocked:**
 
-- **Wire-contract alignment from Hasan's guide (small, found 06-08b):**
-  the new-order payload does NOT carry `account` (venue account
-  `1797733477` → FIX Tag 1 — the guide requires it on every order;
-  loopback never noticed) · the real `userId` replaces the wire test's
-  `mm1` at composition (the reply subject follows it) · the $127.50
-  price cap (client sheet) joins the config dictionary and the ladder's
-  self-collar · the heartbeat moves to an independent ~250 ms timer
-  (N15's pairing: then retune the window). Changes
-  [[market-maker/build/venue|Venue]] and
-  [[market-maker/build/runtime|Runtime]].
-  **Design (George, 06-08b): identity and deployment facts ride
-  ENVIRONMENT variables through `compose.py::Settings`** — the one
-  module that reads env — `MM_VENUE_ACCOUNT` · `MM_USER_ID` ·
-  `MM_BOT_ID` · the NATS credentials (Secret Manager → env at deploy,
-  never files, never git). **Book-visible or tunable numbers stay in
-  the Configuration Dictionary** (§1.6-5, with a status) — the $127.50
-  cap included. Env answers "who am I and where am I"; the dictionary
-  answers "how do I behave"; no number bypasses the parameter process
-  by hiding in a deploy script.
+- ✅ **DONE 06-08d — the wire-contract alignment from Hasan's guide:**
+  `account` (FIX Tag 1) on every new order · identity via env through
+  `compose.py::Settings` (`MM_VENUE_ACCOUNT` · `MM_USER_ID` ·
+  `MM_BOT_ID`; the reply subject follows the env user id;
+  `mm_user_id`/`mm_bot_id` left the dictionary) · `venue_price_cap`
+  $127.50 in the dictionary, the ladder ceiling floored at min(MEV,
+  cap) · the heartbeat on its own ~250 ms task (N15's pairing — the
+  4 s window retunes AFTER the VM jitter measurement). MM commits
+  `21dd7e1` → `3c2368f`, 534 → 540 tests. The env-vs-dictionary split
+  is recorded on [[market-maker/build/venue|Venue]] and
+  [[market-maker/build/runtime|Runtime]]; the NATS credential
+  (Secret Manager → env at deploy, never files, never git) lands with
+  the deploy.
 
 - **The go-live ingestion switch** (at push-live — George, 06-08b): the
   live composition consumes the bus, the poller keeps only the

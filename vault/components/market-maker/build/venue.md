@@ -48,10 +48,31 @@ Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
   onto the wire (a task per publish would interleave). Serialization
   happens at the call site so a bad payload fails with the caller on the
   stack. A dead writer raises on the next publish — never silent.
+- **Every new order carries `account` (FIX Tag 1)** — the 06-08b
+  wire-contract gap, CLOSED 06-08d. Cancel and replace carry no account
+  field in the gateway's structs (verified in its source), so none is
+  sent there.
+- **Identity rides env, not the dictionary** (the env-vs-dictionary
+  split, George 06-08b): `MMIdentity` (user id · bot id · venue
+  account) is built by `compose.py::Settings` from `MM_USER_ID` /
+  `MM_BOT_ID` / `MM_VENUE_ACCOUNT` and passed explicitly to the sync
+  driver and every payload builder. The inbound reply subject
+  (`order.{user}.>`) follows the env user id. The loopback default's
+  account is the string `"loopback"` — deliberately not a real account,
+  so a placeholder can never pass for `1797733477`.
+- **The ladder ceiling floors at min(MEV, $127.50)** — the venue's hard
+  cap (client sheet, live-verified in Hasan's guide) REJECTS rather
+  than clamps, so a wrong MEV input must produce a capped ladder, not a
+  stream of rejects. `venue_price_cap` lives in the Configuration
+  Dictionary; the floor needs no twin (`minimum_price` is already one
+  tick). See `[venue-cap]` in `orchestration/engine.py`.
 - **Time-in-force is DAY** behind one constant (E36, Edwin's call): the
   book vanishes nightly at 23:59 ET and reposts after the boundary;
   GTC's alternative is a dead bot's quotes resting with only the
   dead-man as cleanup. Self-cleaning is the built default.
+- **The heartbeat is the runtime's own ~250 ms task** since 06-08d —
+  see [[market-maker/build/runtime|Runtime]]; N15's window stays 4 s
+  until the VM jitter measurement.
 
 ## Gateway facts (gospel under the 22-07 filter)
 
@@ -83,7 +104,9 @@ Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
 
 ## What changes here next
 
-[[market-maker/build/next|Next]]: the boot-reconcile healer (dead-man-
-swept levels surviving a replayed record — parked with eyes open) · E36
-(DAY vs GTC, Edwin) · T1/T2 (the account and the real rate limit) · the
-§5.5 participant book feed.
+[[market-maker/build/next|Next]]: the wash-trade-vs-N12 decision (the
+reconciler has a change coming either way — decide with Hasan before
+any venue drill) · the boot-reconcile healer (dead-man-swept levels
+surviving a replayed record — parked with eyes open) · E36 (DAY vs
+GTC, Edwin) · the §5.5 participant book feed. ~~T1/T2~~ answered
+05-08; the wire-contract alignment they triggered landed 06-08d.
