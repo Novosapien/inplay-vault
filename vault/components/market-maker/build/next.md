@@ -30,6 +30,15 @@ Each item names the build page it will change.
   (N15's pairing: then retune the window). Changes
   [[market-maker/build/venue|Venue]] and
   [[market-maker/build/runtime|Runtime]].
+  **Design (George, 06-08b): identity and deployment facts ride
+  ENVIRONMENT variables through `compose.py::Settings`** — the one
+  module that reads env — `MM_VENUE_ACCOUNT` · `MM_USER_ID` ·
+  `MM_BOT_ID` · the NATS credentials (Secret Manager → env at deploy,
+  never files, never git). **Book-visible or tunable numbers stay in
+  the Configuration Dictionary** (§1.6-5, with a status) — the $127.50
+  cap included. Env answers "who am I and where am I"; the dictionary
+  answers "how do I behave"; no number bypasses the parameter process
+  by hiding in a deploy script.
 
 - **The go-live ingestion switch** (at push-live — George, 06-08b): the
   live composition consumes the bus, the poller keeps only the
