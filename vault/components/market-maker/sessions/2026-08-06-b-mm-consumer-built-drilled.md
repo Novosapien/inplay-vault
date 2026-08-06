@@ -115,6 +115,17 @@
 3. Unchanged: the unsent Edwin round E29–E38 · §10.3 checkpoints
    (required pre-season) · N19's 06:00 hand-off · the Hasan message
    (N30 + governor) · pushing all branches (George's call).
-4. **Vault restructure/archive discussion** — George wants to review
-   what in the vault is stale (raised at this session's close; not yet
-   done).
+4. ~~Vault restructure/archive discussion~~ — **partly done same
+   session**: the certain-stale tidy landed (`5cf6ef3` — VPC draft
+   banner, N7/N29 housekeeping, `vault/archive/` convention, call-prep
+   sheets archived). Still open: the unread drafts, `mm-pipeline.html`,
+   the root files (`todos.md`, `whats-new.md`, `audiences.md`).
+
+## Addendum (same session)
+
+- **[[market-maker/as-built]] created** (George's ask): the
+  authoritative "how the machine is actually built" — key equations as
+  implemented (verified against the code, not the spec), the key
+  sections, real-vs-mocked-vs-gated, the module map. Wired into the
+  working guide (deep reference + a session-loop line: machine changed →
+  update as-built.md) and the hub.

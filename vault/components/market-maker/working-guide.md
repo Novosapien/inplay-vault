@@ -27,7 +27,10 @@ Absorb these, in this order, before touching anything:
 6. **The latest note in `sessions/`** — what happened last time, what was
    left dangling.
 
-Deep reference when needed: the systems docs
+Deep reference when needed: **[[market-maker/as-built]]** — the
+authoritative "how the machine is actually built" (key equations as
+implemented, the key sections, the module map; read it before touching
+code you have not read), the systems docs
 ([[market-maker/systems/valuation-engine|valuation]] ·
 [[market-maker/systems/market-state|market state]] ·
 [[market-maker/systems/quoting-engine|quoting]] ·
@@ -73,6 +76,8 @@ END     1. write a session note in sessions/ (format below)
            · question answered/raised?→ open-questions.md
            · number learned/proposed? → parameters.md (with status)
            · plan shifted?            → plan.md
+           · machine changed?         → as-built.md (equations, sections,
+                                        module map — keep it TRUE)
         3. leave a clear "next" line — the next session starts there
 ```
 

@@ -102,6 +102,9 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 - **[[market-maker/working-guide]] — READ FIRST, every session.** The process:
   reading order, ground rules, the session loop.
+- **[[market-maker/as-built]] — how the machine is ACTUALLY built.** The
+  authoritative as-built reference: key equations as implemented, the key
+  sections, real-vs-mocked-vs-gated, the module map. For agents and humans.
 - `sessions/` — one note per working session: what we did, learned, what went
   wrong, next. Newest note = where to pick up.
 - [[market-maker/decisions]] — dated log of confirmed decisions + standard-doc supersessions
