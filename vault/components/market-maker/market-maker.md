@@ -8,8 +8,10 @@
 
 > ⚠️ **Custom structure.** This component deliberately does NOT follow the
 > standard component/sub-component pattern. It's an internal engineering
-> system, not a user-facing feature — so it's organised as `systems/` (one doc
-> per buildable system) plus living working docs (decisions, open questions,
+> system, not a user-facing feature — so it's organised as `build/` (the
+> as-built source of truth, one page per part) + `systems/` (design docs for
+> the UNBUILT systems only; built systems' design narratives are in
+> `archive/`) plus living working docs (decisions, open questions,
 > parameters, plan, glossary). Promoted from a candidate `trading/market-maker`
 > sub-component on 20-07-2026 after the market-maker Q&A with Edwin and Troy.
 
@@ -91,9 +93,9 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 | System | What it does | Status |
 |--------|--------------|--------|
-| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value from win probabilities + Edwin's daily T | ✅ **Built** (Edwin's on-field leg, freshness/status/confidence §3.3–§3.5, replay-proven on the real Chiefs–Ravens game) · off-field §3.6 still mocked |
-| [[market-maker/systems/market-state\|Market State]] | Permission to quote: Stable/Active/Defensive/Suspended per security, kill switch, promotion ladder | ✅ **Built 01-08** (Ch 6; classifier superseded by σ² — decisions 30-07b) · Active/Defensive widening awaits E31 |
-| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: σ² → width → ladder → sizes → publish-or-hold → reconcile → gateway | ✅ **Built + wire-proven 02-08** (loopback test 5/5 vs the real gateway) · values 🟡 pending E31 · §5.5/§5.9 gated (Ch 8 book feed / E17) |
+| [[market-maker/build/valuation\|Valuation Engine]] | Computes each team's fair value from win probabilities + Edwin's daily T | ✅ **Built** (Edwin's on-field leg, freshness/status/confidence §3.3–§3.5, replay-proven on the real Chiefs–Ravens game) · off-field §3.6 still mocked |
+| [[market-maker/build/market-state\|Market State]] | Permission to quote: Stable/Active/Defensive/Suspended per security, kill switch, promotion ladder | ✅ **Built 01-08** (Ch 6; classifier superseded by σ² — decisions 30-07b) · Active/Defensive widening awaits E31 |
+| [[market-maker/build/quoting\|Quoting Engine (SDMM)]] | The bot: σ² → width → ladder → sizes → publish-or-hold → reconcile → gateway | ✅ **Built + wire-proven 02-08** (loopback test 5/5 vs the real gateway) · values 🟡 pending E31 · §5.5/§5.9 gated (Ch 8 book feed / E17) |
 | [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 (T3–T5) · busts currently refuse-and-raise (T4) |
 | [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game — not ours to build in the MM repo |
 | [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last · will own CONFIGURATION_ACTIVATION + the N19 upload page |

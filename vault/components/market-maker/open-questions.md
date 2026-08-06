@@ -18,7 +18,7 @@ questions to InPlay per spec §1.6-1.
 
 > **Stance (George, 22-07): we ask — we do not propose.** Parameter values and
 > deferred math are InPlay's remit, not ours. The placeholder constants in
-> [[market-maker/systems/decision-cycle-reference]] exist only to make the
+> the archived decision-cycle pseudocode exist only to make the
 > pseudocode runnable; they carry no authority and are not presented to Edwin
 > as proposals. (The 22-07-era interactive walk-through `mm-pipeline.html`
 > is archived — the deferred landscape has moved on; this list is current.)

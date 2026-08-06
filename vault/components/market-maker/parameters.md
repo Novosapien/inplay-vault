@@ -303,7 +303,7 @@ The platform team's `sdmm.py` prototype proposed defaults. Noted here because
 several **converge with our own decision-cycle-reference proposals** — useful
 corroboration, but per the 22-07 filter these bind nothing:
 
-| Parameter | Their proposal | Our proposal ([[market-maker/systems/decision-cycle-reference]]) | Converge? |
+| Parameter | Their proposal | Our proposal (decision-cycle pseudocode, archived) | Converge? |
 |---|---|---|---|
 | Base half-spread | 2 ticks | 2 ticks (`spread_ticks`) | ✅ same |
 | Ladder spacing Δ | 3 ticks | 3 ticks (`spacing_ticks`) | ✅ same |
