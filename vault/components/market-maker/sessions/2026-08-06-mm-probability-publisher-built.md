@@ -68,14 +68,37 @@
 
 ## What's open / next
 
-1. **The MM-side consumer** (MM repo — NEW SESSION): JetStream durable
-   subscription → the runtime's drain path (mirror the venue drain) →
-   the same adapter/acceptor; observation age from `Fetched-At`; finals
-   minted MM-side (N16 stays the MM's). Then the in-engine poller
-   retires from the live composition. `LIVE_GATES` in the MM's
-   compose.py already names the ingestion move.
+1. **The MM-side consumer** (MM repo — NEW SESSION). The design was
+   worked out at the end of this session; do not re-derive it:
+   - **Mirror the venue drain**: JetStream durable subscription on
+     `sr.probabilities.reading.>` → an asyncio queue → drained per tick
+     inside `Runtime.tick()`, exactly the shape `make_inbound` /
+     `order.mm1.>` already has in `mm/runtime/compose.py`.
+   - **Adapter parity is the contract**: one NATS reading must build the
+     SAME envelope `timeline_to_submissions` builds — same idempotency
+     basis (`source_id=sportradar · game_id · provider_sequence =
+     last_updated`), same payload fields (`p_home`/`p_away` via the
+     ÷100 conversion, `p_tie="0"` per S6, `live_coverage` from the
+     payload's `live` flag, timestamps to trailing-Z). Any field drift
+     false-CONFLICTs against journalled file-replay history — that is
+     why the service now carries `live` (`4eb2102`).
+   - **Finals stay MM-minted (N16)**: a reading whose `status` is
+     ended/closed carries the scores; mint `OFFICIAL_RESULT` result
+     version 1 with the poller's exact key basis.
+   - **Liveness**: `Runtime._last_observed[game_id]` gets the
+     `Fetched-At` HEADER (producer's stamp — George's design, decisions
+     05-08), replacing poll-time stamping. Everything downstream (the
+     sweep's `observations` map, E38's rungs) is already built.
+   - **Acks**: ack after the orchestrator handled the message, batched
+     per tick (an async flush hook after `tick()` in `Runtime.run`).
+     Ack-before-journal would re-open the downtime-loss gap JetStream
+     exists to close.
+   - Then the in-engine poller retires from the live composition
+     (Poller keeps `games=[]` — it still owns the heartbeat) and the
+     `LIVE_GATES` ingestion entry closes.
 2. **Rig chore:** `mm-nats` has no jetstream stanza — needs the `-js`
-   flag before an end-to-end drill.
+   flag before an end-to-end drill (publisher → stream → consumer →
+   book on the rig).
 3. **George's CI/CD audit ask (recorded 06-08):** at end of
    implementation, audit testing + prod deployments for the sportradar
    API **and** the workers, incl. where the MM publisher slots into the
