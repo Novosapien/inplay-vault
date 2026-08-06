@@ -20,6 +20,17 @@ Each item names the build page it will change.
 
 **Ours, unblocked:**
 
+- **Wire-contract alignment from Hasan's guide (small, found 06-08b):**
+  the new-order payload does NOT carry `account` (venue account
+  `1797733477` → FIX Tag 1 — the guide requires it on every order;
+  loopback never noticed) · the real `userId` replaces the wire test's
+  `mm1` at composition (the reply subject follows it) · the $127.50
+  price cap (client sheet) joins the config dictionary and the ladder's
+  self-collar · the heartbeat moves to an independent ~250 ms timer
+  (N15's pairing: then retune the window). Changes
+  [[market-maker/build/venue|Venue]] and
+  [[market-maker/build/runtime|Runtime]].
+
 - **The go-live ingestion switch** (at push-live — George, 06-08b): the
   live composition consumes the bus, the poller keeps only the
   heartbeat, `LIVE_GATES`' ingestion entry closes. Changes
