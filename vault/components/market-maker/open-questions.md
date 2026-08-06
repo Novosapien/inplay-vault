@@ -20,8 +20,8 @@ questions to InPlay per spec §1.6-1.
 > deferred math are InPlay's remit, not ours. The placeholder constants in
 > [[market-maker/systems/decision-cycle-reference]] exist only to make the
 > pseudocode runnable; they carry no authority and are not presented to Edwin
-> as proposals. Interactive walk-through of every deferred item:
-> `mm-pipeline.html` (this folder).
+> as proposals. (The 22-07-era interactive walk-through `mm-pipeline.html`
+> is archived — the deferred landscape has moved on; this list is current.)
 >
 > **The remit line (22-07):** litmus test — *"if Edwin watched the book, could
 > he tell the difference?"* **Yes → his algorithm, his question**: every
