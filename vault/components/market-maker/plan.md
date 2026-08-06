@@ -46,6 +46,21 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 06-08 (the ingestion move, service side: the publisher BUILT):**
+> `inplay-sportradar-service` branch `feat/mm-probability-publisher` (off
+> updated dev; all local, unpushed): the MM probability publisher — tier
+> scheduler (the vault's numbers) · float-free fetch (`parse_float=str`
+> end to end) · lease-fenced worker loop · **JetStream delivery** (Hasan
+> confirmed, then **validated on the production server**: 10 GB store,
+> 5 streams live; the publisher refuses to start without it; msg-id
+> dedup on the reading's identity). 547 → 575 tests. Payload carries the
+> `live` flag for §7.3 hash parity with the MM's file path.
+> **Next (NEW session): the MM-side consumer** — JetStream durable sub →
+> the runtime's drain path, observation age from `Fetched-At`, finals
+> MM-side; then the in-engine poller retires. Rig chore: `mm-nats`
+> needs `-js`. 📌 George (06-08): END-OF-IMPLEMENTATION CI/CD AUDIT —
+> testing + prod deploys for the sportradar API and workers.
+>
 > **Update 05-08c (all 170 bindings verified · ⭐ the ingestion ruling):**
 > The live `HttpSource` + the seam's failure contract landed (**500 →
 > 512 tests**), the bindings were captured in one careful pass and
