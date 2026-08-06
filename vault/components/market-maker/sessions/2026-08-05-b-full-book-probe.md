@@ -105,6 +105,45 @@
   take, so the constraint on using it is design preference rather than
   availability.
 
+## Addendum, 2026-08-06 — the feed is live, and a real trade exercised it
+
+- **Full book shipped and enabled for all 170 symbols.** Depth-0 subscriptions
+  (`MDB-` prefix, `266=Y`) run alongside the 170 top-of-book ones; **164 symbols
+  return depth**, the other handful being the same unknown tickers the quote
+  feed already rejects. Published on `market.book.{sym}` → bridge →
+  `market:book.{sym}`. Gated off production in the app; the ladder renders TBA
+  there until secondary markets open.
+- **Depth-0 incrementals have now been OBSERVED**, which no probe window managed.
+  A real buy on IPTCGIAN produced exactly three:
+
+  ```
+  279=2 269=0 270=68.50 271=0        delete: the 68.50 offer, consumed
+  279=2 269=1 270=68.60 271=0        delete: the 68.60 offer, consumed
+  279=0 269=0 270=68.60 271=5 346=1  new bid: the residual resting order
+  ```
+
+  Zero anomalies, zero crossed books, and the ladder, the price board and the
+  tape all agree (`68.60 × 5 / 68.70 × 105`, volume 150 → 330).
+- **A depth-0 delete DOES carry its price.** The refusal branch was written
+  because at `MarketDepth=1` the venue omits it and depth-0 behaviour could not
+  be assumed. It does not omit it. The defensive path never fires — now measured
+  rather than guessed.
+- **The parser fix was load-bearing, not incidental.** Every one of those
+  messages puts `279` before `269`. Under the old split-on-269 logic the first
+  action would have been dropped and the rest shifted by one, so both deletes
+  would have applied as New/Change and the consumed offers would still be
+  sitting in the book. The ladder is correct *because* of that fix.
+- **T12 is effectively answered.** Both subscriptions coexisted through a live
+  trade: depth-0 delivered the incrementals above while depth-1 kept the price
+  board current in the same window. tZERO adds rather than replaces.
+- ⚠ **Own goal worth remembering:** the first probe reply was folded like an
+  ordinary snapshot and wrote the OUTERMOST rungs of a depth-0 book to the app's
+  price board (`67.45 / 69.20` against a real `68.15 / 68.50`). A code comment
+  asserting "the reply is NOT folded" was written and acted on before it was
+  checked, and the code disproving it had already been read. Routing by MDReqID
+  is now the guard, and the lesson is the ordering: trace the write path before
+  firing at a live venue, not after.
+
 ## Next
 
 - Answer **T12** with one more probe: `SubscriptionRequestType=1` at depth 0

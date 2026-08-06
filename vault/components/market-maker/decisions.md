@@ -14,6 +14,16 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-06, Full book is live — and a real trade proved the incremental path
+
+> Deployed and enabled for all 170 symbols. Session note addendum: `sessions/2026-08-05-b-full-book-probe.md`.
+
+- ✅ **T12 RESOLVED — tZERO ADDS, it does not replace.** Two subscriptions per symbol on one session coexisted through a live trade: the depth-0 one delivered the incrementals while the depth-1 one kept the app's price board current in the same window. The additive design stands; no switch-over needed.
+- ✅ **Depth-0 incrementals observed for the first time**, and they behave as built: a buy on IPTCGIAN produced two deletes (the consumed offers) and one New (the residual resting bid), with zero anomalies and zero crossed books.
+- ✂ **A depth-0 delete CARRIES its price** — `279=2` arrives with `270` populated. This supersedes the assumption the code was defensively written against: at `MarketDepth=1` the venue omits the price, and depth-0 was expected to possibly do the same. It does not. The refusal branch stays as a guard but never fires.
+- ⚠ **The 279-before-269 parser fix is load-bearing.** Every real incremental puts `MDUpdateAction` first. Under the previous split-on-269 logic both deletes would have applied as New/Change and the consumed offers would still sit in the book. Depth-of-book was not possible without that fix, and nothing had exposed it because no consumer read the action.
+- ⚠ **A depth-0 reply on the top-of-book fold path CORRUPTS, it does not degrade.** Proven the hard way: the first probe wrote the outermost rungs of a depth-0 book to the live price board as best bid/offer. Routing by MDReqID is a prerequisite of the design, not a refinement of it.
+
 ## 2026-08-05b, Full-book market data — depth is available on the session we already run
 
 > Live probes against the tZERO MD session. Session note: `sessions/2026-08-05-b-full-book-probe.md`.
