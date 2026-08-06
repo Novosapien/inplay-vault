@@ -10,6 +10,47 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-06b — the MM-side consumer BUILT and DRILLED · ⭐ every fetch publishes
+
+Build session, step-approved (MM `6a4904f` → `f4d3eac`, **512 → 534
+tests**; service `0b936c8`, **575 → 577**; all LOCAL). Full narrative:
+`sessions/2026-08-06-b-mm-consumer-built-drilled.md`.
+
+- ⭐ **Every successful fetch publishes (George).** The publisher had a
+  watermark (send only NEW readings) — which silently strips the "the
+  source answered just now" signal and re-creates the quiet-is-not-dead
+  halftime trap at the transport layer, and lets a final whose status
+  flips after the last probability move never reach the MM at all. Now a
+  fetch that finds nothing new re-offers the NEWEST reading under a
+  fresh `Fetched-At`: the body is a §7.3 quiet duplicate, the header
+  advances the observation age, and the re-offer's current status +
+  scores close the finals gap and carry the post-game correction watch
+  onto the wire path. **`Nats-Msg-Id` =
+  `{game_id}:{last_updated}:{fetched_at}`** (George's composition): one
+  publish ATTEMPT's identity — JetStream dedups client retries, never a
+  deliberate re-offer.
+- ✅ **The in-engine poller retires only AT GO-LIVE (George).** Nothing
+  deleted now; the live composition switches to the bus when we push
+  live. Loopback keeps the poller for the heartbeat.
+- ✅ **The consumer half is built and proven end to end** on the local
+  docker containers (`mm-nats` recreated with `-js`): adapter parity
+  (1,089/1,089 file-vs-wire envelope equality, wire re-delivery of
+  journalled history = all DUPLICATE) · finals minted MM-side on the
+  poller's exact key basis (N16) · durable JetStream consumption with
+  acks batched AFTER the tick (pop → journal → ack) · catch-up of
+  pre-boot readings · a mid-run re-offer observed advancing the sweep's
+  `observations` stamp while landing duplicate · restart with ZERO
+  redelivery (135 events replayed from the journal instead).
+- ✅ Ours, tagged in code: structural parity (both paths feed one
+  envelope constructor — `_reading_envelope`, `result_envelope`) · the
+  poison rule (a malformed message is acked away and counted, never
+  redelivered forever) · durable `mm-engine`, deliver-all on first
+  bind · both ends ENSURE the stream with one literal config (boot
+  order free; drifted contract = loud boot failure) · the observation
+  stamp is taken from `receive_time` BEFORE the accept verdict · the
+  loopback team map is the real `TEAM_BINDINGS` now (synthetic `lb:*`
+  retired) · `MM_SECURITIES` selects a drill's exact books.
+
 ## 2026-08-05c — all 170 bindings verified · ⭐ George's ingestion ruling
 
 Build then live review (`06d6853` · `df6ae5b` · `46af364`, **500 → 512

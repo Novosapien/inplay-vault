@@ -46,6 +46,26 @@
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
 
+> **Update 06-08b (the ingestion move, MM side: the consumer BUILT +
+> DRILLED):** the MM consumes the bus end to end — reading + finals
+> adapters (structural parity with the file path, proven 1,089/1,089 on
+> the real capture), the JetStream durable consumer seam (acks batched
+> AFTER the tick: pop → journal → ack), the runtime drain (a duplicate
+> re-offer still advances the observation stamp — E38 on the wire), and
+> the composition (`python -m mm.runtime` binds the durable; loopback
+> now routes via the real `TEAM_BINDINGS`). **512 → 534 tests.**
+> ⭐ **George's ruling, service side (`0b936c8`): every successful fetch
+> publishes** — the re-offer is the liveness signal; msg-id =
+> `{game_id}:{last_updated}:{fetched_at}`. Closes the halftime trap at
+> the transport layer AND the finals-after-last-reading gap.
+> ⭐ **The end-to-end drill PASSED on local docker** (`mm-nats` now runs
+> `-js`): pre-boot catch-up · live delivery · duplicate-advances-stamp ·
+> MM-minted final · restart with zero redelivery.
+> **Parked (George): the poller retires only at GO-LIVE** — the live
+> composition switches to the bus then, and the `LIVE_GATES` ingestion
+> entry closes then. **Next: session close done; then the Edwin round /
+> §10.3 checkpoints / the CI/CD audit at end of implementation.**
+>
 > **Update 06-08 (the ingestion move, service side: the publisher BUILT):**
 > `inplay-sportradar-service` branch `feat/mm-probability-publisher` (off
 > updated dev; all local, unpushed): the MM probability publisher — tier

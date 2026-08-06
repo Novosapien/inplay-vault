@@ -6,8 +6,10 @@
 > ingestion ruling executed)
 > **Refs:** branch `feat/mm-probability-publisher` off updated `dev` —
 > commits `7cfe391` · `75bc8ba` · `766a607` · `4e770fb` · `55a9019` ·
-> `614c4be` · `b98e732` · `4eb2102` · **547 → 575 tests**, ruff + format +
+> `614c4be` · `451cd63` · `4eb2102` · **547 → 575 tests**, ruff + format +
 > mypy clean. Design doc: `docs/mm-probability-publisher.md` (in the repo).
+> *(Corrected 06-08b: the JetStream commit was first recorded here as
+> `b98e732`; the repo's hash is `451cd63` — amended after this note.)*
 > ⚠ All commits LOCAL, unpushed (George's standing instruction).
 
 ## What we did

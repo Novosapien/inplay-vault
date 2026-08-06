@@ -9,6 +9,37 @@
 
 ---
 
+## 2026-08-06b — the watermark that was secretly a liveness filter
+
+- **Dedup on the publish side strips the liveness signal.** The
+  publisher's "send only new readings" watermark looked like a polite
+  optimisation. But on the push path, the ONLY way the consumer can know
+  "the source answered just now" is a message arriving — so a watermark
+  turns every quiet stretch into apparent silence, and the halftime trap
+  (E38: 2,862 s with no new reading) comes back one layer down, after
+  being carefully engineered out of the freshness rules. The general
+  form: **whenever a signal is derived from message ARRIVAL, any
+  filtering upstream of the consumer changes the signal's meaning.**
+  Dedup belongs at the consumer (§7.3), where the identity lives.
+- **A dedup id must name what it protects against.** JetStream's msg-id
+  first named the READING — which made the server swallow deliberate
+  re-offers along with accidental retries. Naming the publish ATTEMPT
+  (reading + fetch stamp) dedups exactly the accidents and nothing else.
+  Ask of any dedup key: "which repeats are accidents, which are on
+  purpose?" — the key must separate them.
+- **The ack is the durability boundary, so its position is a design
+  decision, not plumbing.** Ack after journal makes every crash window
+  safe (before → redelivery; after → §7.3 discards). Ack before journal
+  would quietly re-open the exact loss JetStream was adopted to close.
+  The same shape as write-the-object-then-the-row (03-08): order the
+  irreversible step last.
+- **Structural parity beats tested parity.** Two code paths that must
+  emit identical envelopes (file replay vs the wire) drift eventually if
+  parity is only asserted in tests; giving both paths ONE constructor
+  makes drift impossible and turns the tests into proof of the callers'
+  argument derivation only. The 1,089-reading equality test then guards
+  the contract, not the construction.
+
 ## 2026-08-05c — the drift George caught
 
 - **A drift can be fully documented and still be a drift.** The 24-07
