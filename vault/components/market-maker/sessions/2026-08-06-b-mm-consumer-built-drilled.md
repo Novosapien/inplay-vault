@@ -123,9 +123,11 @@
 
 ## Addendum (same session)
 
-- **[[market-maker/as-built]] created** (George's ask): the
-  authoritative "how the machine is actually built" — key equations as
-  implemented (verified against the code, not the spec), the key
-  sections, real-vs-mocked-vs-gated, the module map. Wired into the
-  working guide (deep reference + a session-loop line: machine changed →
-  update as-built.md) and the hub.
+- **[[market-maker/build/index|build/]] created** (George's ask, then
+  split at his direction): the as-built SOURCE OF TRUTH — one page per
+  part of the machine (event core · ingestion · valuation · position ·
+  quoting · market state · venue · runtime · infrastructure · next),
+  every equation verified against the code, real-vs-mocked-vs-gated,
+  the change-anchor rule (a change starts by reading the page it
+  touches, and ends by updating it). Wired into the working guide (deep
+  reference + session loop), the hub, and the repo's `CLAUDE.md`.
