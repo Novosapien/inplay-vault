@@ -10,6 +10,59 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-06d — the wire-contract fixes, the quarantine, §10.3 checkpoints BUILT
+
+Build session (MM `21dd7e1` → `43ba08d`, **534 → 561 tests**, ruff +
+mypy strict clean, all commits LOCAL). The 06-08c intake's fixes and
+the recorded checkpoint design, executed. Full narrative:
+`sessions/2026-08-06-d-wire-fixes-quarantine-checkpoints.md`.
+
+- ✅ **The four wire-contract fixes landed** exactly as designed 06-08c:
+  `account` (FIX Tag 1) on every new order (cancel/replace carry no
+  account field in the gateway's structs — verified in its source) ·
+  identity rides env through `compose.Settings` (`MM_USER_ID` ·
+  `MM_BOT_ID` · `MM_VENUE_ACCOUNT`; `mm_user_id`/`mm_bot_id` LEFT the
+  dictionary; the reply subject follows the env user id) ·
+  `venue_price_cap` $127.50 in the dictionary with the ladder ceiling
+  floored at min(MEV, cap) — healthy MEV already sits at or under the
+  cap, so the min() binds only on a WRONG input, where a capped ladder
+  beats a stream of venue rejects · the heartbeat is `run()`'s own
+  ~250 ms task; a dead beat task stops the run loudly. ⚠ Recorded
+  honestly in `[beat-task]`: asyncio does not preempt — a synchronously
+  blocking tick still starves the beat; that is what the N15 VM jitter
+  measurement watches before the 4 s window tightens.
+- ⭐ **NEW requirement (George): markets are independently failable.**
+  One security's engine fault must not cost the other 169 books. Built
+  as the per-security QUARANTINE at the orchestrator's cycle boundary:
+  the faulted security's outcome becomes `BookSuspended("quarantined:
+  …")` — the existing suspension sweep cancels its resting book — and
+  its engines are never re-run. Deliberate boundaries BOTH ways
+  (ours, tagged `[quarantine]`): event ingestion and the transport stay
+  FATAL — a wire fault must kill the process so the dead-man sweeps.
+  Replay-safe with no new event type (engines are pure functions of the
+  event stream; proven by test). The log line shouts `QUARANTINED=n`.
+- ✅ **§10.3 checkpoints BUILT to the recorded five-step design, and the
+  deliverable PASSES:** on the real captured game, checkpoint-resume ≡
+  never-stopped ≡ full-replay, byte-identical across all engines.
+  Boot restores the newest valid checkpoint (schema, config and
+  SHA-256 guards; rejects printed loudly) and replays only the journal
+  tail; no valid file → full replay. Writer hourly at a tick boundary,
+  local disk beside the journal, keep last 3.
+  ⚠ **The proof caught a real gap mid-build:** tail replay must RE-ARM
+  the acceptor's gate (sequence + seen keys) or a redelivered tail
+  event after a checkpoint boot would be accepted twice. Fixed;
+  the catch is exactly why the equality proof is the deliverable.
+- ✅ **Dedup retention built:** seen keys prune on the accepted-time
+  high-water mark past the one-week JetStream redelivery bound —
+  §12.3's `event_idempotency_retention_s` slot is FILLED by the
+  recorded 06-08c design (604,800 s), superseding the empty-slot
+  posture. Duplicates deliberately never refresh a key's age (replay
+  never sees duplicate lines — a refresh would fork live from replay).
+  Checkpoint schema bumped to 2.
+- 📝 The stale `[governor]` note in `compose.py` caught up with T2
+  (50 → 5,000 msg/s); `parameters.md` rows 175–178 corrected the same
+  day (the 06-08c supersession had not reached them).
+
 ## 2026-08-06c — ⭐ Hasan's build guide lands: T1/T2 ANSWERED, two design conflicts surfaced
 
 George delivered Hasan's "Market Maker Bot — Build Guide" (05-08,

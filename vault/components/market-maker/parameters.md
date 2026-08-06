@@ -193,6 +193,8 @@ reasoning: `sessions/2026-08-03-deployment-architecture.md`.
 | Parameter | Meaning | Value | Status | Source |
 |---|---|---|---|---|
 | `runtime tick` | The loop's base rate: drain inbound → due polls → due sweeps (the beat is its OWN ~250 ms task since 06-08d) | **1 s**, fixed, unconditional | 🟡 ours | 03-08 design · beat task 06-08d |
+| `checkpoint_interval_s` | §10.3: how often the runtime writes a complete-state checkpoint (bounds boot replay to one hour of tail) | **3,600 s**, written at a tick boundary, local disk beside the journal, keep last 3 | 🟡 ours — **built 06-08d**, equality-proven | `mm/config/dictionary.py` · design 06-08c |
+| `event_idempotency_retention_s` | §12.3's slot: how long a seen idempotency key is remembered | **604,800 s (one week)** = JetStream's redelivery bound; pruned on EVENT time so replay reproduces the same set; duplicates never refresh an age | 🟡 ours — recorded design 06-08c, **built 06-08d** | `mm/events/acceptor.py` `[seen-retention]` |
 | `poll tier — LIVE` | SR poll per live game (kickoff passed, no final) | **~2 s** — E18's evidenced rate; a 200 ms poll re-reads unchanged values against SR's 4 s median gap | 🟡 evidence-backed, E18 open · ✅ **built 05-08** | `cf2bc10` |
 | `poll tier — PRE_KICKOFF` | SR poll within 1 h of the scheduled kickoff | **15 s** — the midpoint of George's 10–30 s range; one dictionary value to change when he picks | 🟡 **interim, built 05-08** | `cf2bc10` |
 | `poll tier — OVERNIGHT` | SR poll for an upcoming game > 1 h out | **30 min** (George, 05-08, "to be safe"). ⚠ Doubles as the **N24 experiment** — the journal now records whether pregame probability moves at all | 🟡 **George's number, built 05-08** | `7ac6787` |

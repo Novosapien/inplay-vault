@@ -40,6 +40,16 @@ order is fixed and the order matters:
   data-integrity alarm: somebody upstream is lying or broken. The
   conflicting submission is journalled as a `conflict` line and
   surfaced; it never reaches an engine.
+- **Seen-key retention (built 06-08d):** keys older than JetStream's
+  one-week redelivery bound are pruned — nothing can redeliver them, so
+  remembering them buys nothing (~43k keys/day of sweeps → ~0.5 GB per
+  season unpruned). The pruning clock is the `accepted_time` high-water
+  mark read from the events themselves, never a wall clock, so live
+  processing, recovery, tail replay and a checkpoint restore all
+  converge on the SAME pruned set. Duplicates deliberately do NOT
+  refresh a key's age (replay never sees duplicate lines). §12.3's
+  `event_idempotency_retention_s` slot is filled by the recorded
+  06-08c design — 604,800 s.
 - **Sequence (§7.4):** accepted events get the next Accepted Event
   Sequence. A restart continues the sequence and still dedups —
   proven by test.
@@ -86,7 +96,44 @@ BEFORE anything reacts to it (§7.4).
   duplicate/conflict/rejected audit lines. **Replay equality is proven on
   a real captured game**, through the venue leg, byte-identically.
 
+## Checkpoints (§10.3 — BUILT 06-08d)
+
+`events/checkpoint.py` + `state()`/`restore()` on every engine, both
+trackers, and the orchestrator's aggregate. Boot becomes
+restore-plus-tail instead of replay-everything — the journal grows all
+season and every deploy is a restart.
+
+- **The state:** the machine's COMPLETE deterministic memory as
+  JSON-safe primitives (Decimals as strings, datetimes ISO, enums as
+  values). The venue-connection axis stays out — the runtime supplies
+  it live.
+- **The file:** one canonical spelling (the payload hash's own
+  sort-keys discipline), SHA-256 over the state, schema + config
+  versions checked separately so a reject names WHICH guard failed;
+  temp + fsync + rename atomic writes; keep-last-3 retention;
+  newest-valid pick with every reject named. A config-version change
+  deliberately invalidates checkpoints.
+- **The boot:** the composition picks the newest valid file BEFORE
+  constructing the acceptor (the full-journal scan is skipped),
+  `restore()` supplies the memory, and only the journal tail past the
+  checkpoint's sequence replays. No valid file → full replay — always
+  correct, only slower. ⚠ Tail replay also RE-ARMS the acceptor's gate
+  (sequence + seen keys) — without that fold, a redelivered tail event
+  after a checkpoint boot would be accepted twice; the equality proof
+  caught exactly this while building.
+- **The proof (the deliverable):** on the real captured game, a machine
+  that checkpoints mid-game through the real file path, dies, restores
+  and replays the tail is byte-for-byte the machine that never stopped
+  — identical cycle outcomes on every tail event, identical complete
+  state at the final whistle, and equal to a from-scratch full replay
+  (`tests/test_checkpoint_replay_equality.py`).
+- **The writer:** hourly (the dictionary's `checkpoint_interval_s`), at
+  a tick boundary, on the LOCAL disk beside the journal (boot never
+  depends on the network; the journal disk's hourly GCP snapshots are
+  the external copy). The write is synchronous — one of the stalls the
+  N15 beat-jitter measurement watches.
+
 ## What changes here next
 
-[[market-maker/build/next|Next]]: §10.3 checkpoints (bound replay time —
-required pre-season, every deploy is a restart) and N31 group commit.
+[[market-maker/build/next|Next]]: N31 group commit (the fsync ceiling).
+~~§10.3 checkpoints~~ built 06-08d, equality-proven.

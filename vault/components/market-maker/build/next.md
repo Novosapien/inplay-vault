@@ -9,10 +9,12 @@
 | Real and proven | Mocked / interim | Gated / unbuilt |
 |---|---|---|
 | Event core, journal, replay equality on a real game | Off-field RAV/EAV (§3.6) — static inputs | Live mode (S1/S7 · the go-live switch · N19) |
-| Valuation with Edwin's on-field leg (his unit tests pass) | `p_tie = 0` (S6 interim) | §10.3 checkpoints (required pre-season) |
-| Position/skew (Ch 4) · quoting chain (Ch 5) · market state (Ch 6) | Pre-kickoff tier 15 s (George's 10–30 range) | §5.5 public-book checks · §5.9 replenishment (E17) |
-| Venue sync, wire-proven vs the real gateway | E31 width values (mechanisms built, numbers Edwin's) | Ch 9 IPO · Ch 11 settlement · §10 recovery |
-| The full bus path, drilled end to end 06-08 | Loopback's synthetic T | Opening-position publisher (E27) · boot-reconcile healer |
+| Valuation with Edwin's on-field leg (his unit tests pass) | `p_tie = 0` (S6 interim) | §5.5 public-book checks · §5.9 replenishment (E17) |
+| Position/skew (Ch 4) · quoting chain (Ch 5) · market state (Ch 6) | Pre-kickoff tier 15 s (George's 10–30 range) | Ch 9 IPO · Ch 11 settlement · §10 recovery |
+| Venue sync, wire-proven vs the real gateway | E31 width values (mechanisms built, numbers Edwin's) | Opening-position publisher (E27) · boot-reconcile healer |
+| The full bus path, drilled end to end 06-08 | Loopback's synthetic T | |
+| **§10.3 checkpoints + dedup retention, equality-proven on the real game (06-08d)** | | |
+| **Per-security quarantine — markets independently failable (06-08d)** | | |
 
 ## What we build next
 
@@ -40,26 +42,28 @@ Each item names the build page it will change.
   [[market-maker/build/ingestion|Ingestion]] and
   [[market-maker/build/runtime|Runtime]]. Gate: re-run the docker drill
   against the live wiring.
-- **§10.3 checkpoints** (required pre-season — every deploy is a
-  restart): complete-state snapshots + integrity hashes +
-  replay-from-checkpoint equality across the engines. A session-sized
-  build. Changes [[market-maker/build/event-core|Event core]] and
-  [[market-maker/build/runtime|Runtime]].
-  **Design agreed with George 06-08b:** five steps — per-engine
-  `state()`/`restore()` · canonical file format (sorted-keys JSON,
-  sequence + config version + schema version + SHA-256; schema mismatch
-  falls back to full replay, loud) · hourly writer at a tick boundary
-  (atomic temp+rename, keep the last few) · boot loads the newest valid
-  checkpoint then replays the tail · the equality proof on the real
-  captured game is the deliverable. **Storage:** local persistent disk
-  beside the journal (boot never depends on the network); the journal
-  disk's hourly GCP snapshots are the external copy (⚠ not provisioned
-  yet — the VM does not exist; lands with deployment). **Companion
-  item — dedup retention:** the acceptor's seen-keys memory grows
-  ~43k/day (sweeps) → ~0.5 GB/season; prune keys older than the
-  redelivery bound (one week, JetStream's retention), deterministically
-  — driven by EVENT timestamps inside event processing, never a wall
-  clock, so replay reproduces the same pruned set.
+- ✅ **DONE 06-08d — §10.3 checkpoints + dedup retention**, exactly per
+  the recorded five-step design: per-engine `state()`/`restore()` ·
+  canonical hashed file with schema/config guards · hourly writer at a
+  tick boundary on the local disk beside the journal · boot restores
+  the newest valid checkpoint then replays the tail (rejects printed
+  loudly; no valid file → full replay) · **the equality proof on the
+  real captured game PASSES** — checkpoint-resume ≡ never-stopped ≡
+  full-replay, byte-identical. Retention: seen keys prune on the
+  accepted-time high-water mark past the one-week redelivery bound
+  (§12.3's slot filled per the design); duplicates never refresh an
+  age. Found by the proof mid-build: tail replay must re-arm the
+  acceptor's gate. As-built detail on
+  [[market-maker/build/event-core|Event core]] and
+  [[market-maker/build/runtime|Runtime]]. MM commits `b5472d1` →
+  `43ba08d`, 545 → 561 tests. ⚠ The journal disk's hourly GCP
+  snapshots (the external copy) are provisioned with the VM — confirm
+  at deploy.
+
+- ✅ **DONE 06-08d — the per-security quarantine (George: markets
+  independently failable):** one security's engine fault suspends and
+  sweeps THAT book and never costs the rest; wire faults stay fatal.
+  On [[market-maker/build/runtime|Runtime]].
 - **N31 group commit**: batch same-moment events into one fsync; nothing
   accepted until its batch is on disk. Measure the real fsync on the VM
   first. Changes [[market-maker/build/event-core|Event core]].

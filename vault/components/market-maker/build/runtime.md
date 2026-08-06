@@ -39,8 +39,25 @@ In order, every second:
 The beat is deliberately NOT in this list any more — the poller lost it
 (and its transport) to the beat task above. After the tick, `run()`
 **flushes the readings' batched acks** — pop → journal → ack, the
-crash-safety order. One tick never overlaps the next; a slow tick
-shortens the following wait instead of drifting.
+crash-safety order — and writes a **§10.3 checkpoint when due** (hourly,
+at the tick boundary — the state is quiescent because the tick is
+synchronous). One tick never overlaps the next; a slow tick shortens
+the following wait instead of drifting.
+
+## Markets are independently failable (06-08d)
+
+One security's engine fault must not cost the other 169 books (George).
+The boundary is the orchestrator's per-security cycle
+(`[quarantine]` in `orchestration/engine.py`): on a fault the security
+is QUARANTINED — its outcome becomes `BookSuspended("quarantined: …")`,
+the sync driver's existing suspension sweep cancels its resting book,
+and later events repeat the suspended outcome WITHOUT re-running its
+engines. Replay-safe with no new event type: engines are pure functions
+of the event stream, so the same events reproduce the same fault and
+the same quarantine. Deliberate boundaries both ways: event ingestion
+and the transport stay FATAL (a wire fault must kill the process so the
+dead-man sweeps). The tick reports a cumulative count; the log line
+shouts `QUARANTINED=n`.
 
 ## The sweep (§3.1.4, N28)
 
@@ -75,10 +92,14 @@ consumes the emitted sweeps and never re-runs the scheduler.
     4 reconcile against the venue's real book
     5 tick (run() starts the ~250 ms beat task here)
 
-Step 3 runs inside the gateway's **30 s boot grace**, and the journal
-grows all season — which is exactly why **§10.3 checkpoints are REQUIRED
-before the season** (every deploy is a restart). Until then, boot time
-is a number to watch. ⚠ The restart drill demonstrated the
+Step 3 runs inside the gateway's **30 s boot grace**. **§10.3
+checkpoints are BUILT (06-08d):** the composition picks the newest
+valid checkpoint before constructing the acceptor, `restore()` supplies
+the memory, and step 3 replays only the journal TAIL past the
+checkpoint's sequence — boot time is bounded to at most one hour of
+tail (see [[market-maker/build/event-core|Event core]] for the format,
+the guards and the equality proof). No valid checkpoint → full replay,
+always correct, only slower; rejected files are printed loudly. ⚠ The restart drill demonstrated the
 boot-reconcile gap live: dead-man-swept levels survive in the replayed
 record because their sweep events published into our absence — parked
 with eyes open (the §3.1.4 healer + an ICD snapshot are the fixes).
@@ -114,6 +135,6 @@ loud REJECTED/CONFLICT/MISSED counts), SIGINT/SIGTERM → clean shutdown.
 ## What changes here next
 
 [[market-maker/build/next|Next]]: the go-live switch (this page's live
-mode) · §10.3 checkpoints · the boot-reconcile healer · N31 group commit
-(the journal's fsync ceiling) · N15's window retune after the VM jitter
-measurement (the beat task landed 06-08d).
+mode) · the boot-reconcile healer · N31 group commit (the journal's
+fsync ceiling) · N15's window retune after the VM jitter measurement.
+~~§10.3 checkpoints~~ built 06-08d, equality-proven.
