@@ -1,10 +1,14 @@
 # The Market Maker — As Built
 
 > **Component:** [[market-maker/market-maker]]
-> **Purpose:** The authoritative description of how the machine is ACTUALLY
-> built — for agents working on it and for humans reading it. Key equations
-> as implemented, the key sections of the machine, and where each lives in
-> code. Updated 2026-08-06.
+> **Purpose:** The SOURCE OF TRUTH for the machine — for agents working on
+> it and for humans reading it. Three jobs: (1) what is actually built —
+> key equations as implemented, the key sections, where each lives in
+> code; (2) what is still to build (§14, sequenced by
+> [[market-maker/plan]]); (3) the anchor for changes — a proposal to
+> change the machine starts by reading the section it touches here, and
+> the work that changes the machine ends by updating it here.
+> Updated 2026-08-06.
 >
 > **Authority chain:** [[market-maker/decisions]] (dated rulings) outranks
 > the **v1.3 Build Spec** (`standards/MM-build-spec-v1.3.html`), which
@@ -16,7 +20,9 @@
 > document (part of the session loop in [[market-maker/working-guide]]).
 > Repo-side detail lives in `inplay-market-maker/docs/BUILD-LOG.md`
 > (traceability matrix, session log); this document is the shape and the
-> mathematics.
+> mathematics. The `systems/` docs are the per-system DESIGN narratives,
+> written before and during the build — where one disagrees with this
+> document, **this document wins** (it describes what exists).
 
 Repo: `inplay-market-maker` (Python 3.12, `src/mm/`), 534 tests, ruff +
 `mypy --strict` clean. The Sportradar publisher lives in
@@ -427,3 +433,50 @@ H=30 s, σ²∈[0.05,400] 🟡 (E31) · base 10,000 × 0.72^i, clamp
 [1,000, 15,000] 🟡 · tick 1 s, sweep 2.0 s ✅ · tiers 2 s/15 s/30 min/
 10 min (LIVE ✅ · PRE 🟡 · slow tiers George's) · dead-man 4 s (Hasan's
 placeholder, N15).
+
+## 14 · What we build next
+
+Sequencing lives in [[market-maker/plan]]; blockers and owners in
+[[market-maker/open-questions]]. What follows is the build view — each
+item names the section of THIS document it will change.
+
+**Ours, unblocked:**
+
+- **The go-live ingestion switch** (at push-live — George, 06-08b): the
+  live composition consumes the bus, the poller keeps only the
+  heartbeat, `LIVE_GATES`' ingestion entry closes. Changes §3, §9, §10.
+  Re-run the docker drill against the live wiring as its gate.
+- **§10.3 checkpoints** (required pre-season — every deploy is a
+  restart): complete-state snapshots + integrity hashes +
+  replay-from-checkpoint equality across the engines. A session-sized
+  build. Changes §2, §9.
+- **N31 group commit**: batch same-moment events into one fsync; nothing
+  is accepted until its batch is on disk. Measure the real fsync on the
+  VM first. Changes §2.
+- **The CI/CD audit** (George, 06-08): testing + prod deploys for the
+  sportradar API and workers incl. the publisher's slot, and the MM
+  engine's deploy story. Fills §10's thin row.
+- **The boot-reconcile healer** (parked with eyes open): dead-man-swept
+  levels surviving a replayed record; the §3.1.4 healer + an ICD
+  snapshot. Changes §8, §9.
+
+**Gated on others:**
+
+- **Live mode itself** — S1/S7 (SR production allocation) · T1 (the MM
+  account) · N19 (Edwin's file transport: bucket + upload page; who does
+  06:00 until the page exists). Changes §10's status table.
+- **Off-field §3.6** — the RAV/EAV methodology (Edwin's world; today
+  static inputs). Changes §4.
+- **E31 width values** — the per-state width floor + the σ² bounds are
+  Edwin's numbers; the slots exist. Changes §6.
+- **§5.5 / §5.9** — the public-book checks (need the participant book
+  feed) and fill replenishment (E17 decides the lifecycle). Changes §6.
+- **Ch 9 IPO allocation** (needs E27's publisher — the day-one book) and
+  **Ch 11 settlement**. New sections when built.
+- **The MM panel pages + kill-switch surface** (N29's shape; access
+  control first). Changes §10.
+- **The Edwin round E29–E38 + N23/N28** — not build items, but several
+  answers above land directly in code slots.
+
+**Direction, parked:** the Go port (everything stays Python through
+season 1; differential replay is the port's certification tool).
