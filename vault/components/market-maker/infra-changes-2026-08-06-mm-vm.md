@@ -139,3 +139,28 @@ gcloud iam service-accounts delete \
    needs its worker-pool slot + NATS reachability from the Cloud Run
    subnet (rules 2019/2024 look like they already cover 10.0.8.0/22 —
    to confirm together).
+
+---
+
+## Addendum 2026-08-07 — the deploy channel + VM software (additive)
+
+The engine was deployed to the VM and drilled (loopback only — nothing
+touches production NATS or the gateway). Because the VM has no internet
+egress (your NATs cover fix-gateway/mgmt/cloudrun subnets only — we
+deliberately did NOT extend NAT to nats-subnet, since that would also
+give the NATS VM egress; your call if ever wanted), artifacts ship
+through a GCS bucket over Private Google Access:
+
+| # | Change | Detail |
+|---|---|---|
+| 9 | New bucket `inplay-mm-deploy` | us-east4, uniform access. Deploy artifacts only (git bundles, docker images, python toolchain) |
+| 10 | Bucket IAM | `market-maker-sa` → `roles/storage.objectViewer` on this bucket only |
+| 11 | OS-level, on the VM only | git, docker.io (+ deps) installed; local drill containers `mm-nats`/`mm-gateway` (LOOPBACK_MODE) on a `mm-loopback` docker network; repo + Python 3.12 toolchain under the user home; drill journal at `/var/lib/mm/drill` |
+
+Rollbacks:
+
+```
+gcloud storage rm -r gs://inplay-mm-deploy
+# bucket IAM dies with the bucket; VM software: delete the VM's disks or
+# apt remove docker.io git && docker rm -f mm-nats mm-gateway
+```
