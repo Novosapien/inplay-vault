@@ -120,3 +120,23 @@ git bundles.
   measurement means leaving a loopback engine running — George's call)
   · nothing touches production NATS or the gateway (the
   `sr.probabilities.>` grants remain the open ask).
+
+## Addendum (07-08c, same chat session) — pushed to main · supervised mode built
+
+- **⭐ George: push everything (Hasan's agent is engaging).** The
+  standing local-only rule is superseded for the MM repo: the full
+  build line merged to `main` via PR #4; `dev` and `testing` branches
+  created from main. The vault and the sportradar service remain
+  unpushed (the service branch carries the publisher half of the
+  readings contract — flagged to George).
+- **⭐ George: test against the QA venue's 7 populated tickers**
+  (IPTCEAGL · IPTCPATR · IPTCBILL · IPTCGIAN · IPTCCOWB · IPTCSTEE ·
+  IPTCJETS). Built: **supervised mode** (`feat/supervised-mode`,
+  PR #5, 561 → 570 tests) — books NAMED, every number from a reviewed
+  file (template in `docs/supervised-inputs.template.json`), real
+  identity required, readings leg unwired, live mode untouched.
+  Running it stays gated on Hasan's agreed posture + the
+  wash-trade-vs-N12 decision.
+- **What turns the mode into a real test:** (1) the wash-trade decision
+  (George/Hasan) · (2) 7 T values from Edwin into the template ·
+  (3) Hasan's posture sign-off. Then it is a config change.
