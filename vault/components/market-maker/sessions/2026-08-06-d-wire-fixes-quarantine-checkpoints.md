@@ -140,3 +140,22 @@ git bundles.
 - **What turns the mode into a real test:** (1) the wash-trade decision
   (George/Hasan) · (2) 7 T values from Edwin into the template ·
   (3) Hasan's posture sign-off. Then it is a config change.
+
+## Addendum (07-08c→f, same chat session) — THE MACHINE IS LIVE ON THE VENUE
+
+The full arc, recorded in decisions 2026-08-07 b–f: probes verified
+wash-off · we seeded 100k × 7 (the transfer ledger) · the first
+supervised run exposed the LmtPerc reject loop · the book walk ate the
+stale quotes and anchored all six books at Edwin's prices · two more
+live lessons (the no-id fill that killed the engine → the poison fix
+PR #6; the duplicate-id deadlock → MM_CONFIG_VERSION PR #7) · and the
+continuous run now STANDS: **all six books two-sided at Edwin's
+prices, 8–17k shares/level, the poker walking them so the books
+visibly breathe** — proven end to end by the gateway log showing the
+engine cancelling a foreign resting order off its own book.
+
+**Running on the VM right now:** the engine (`supervised3`, CFG-0002)
++ the poker (120 min from ~18:00Z). DAY orders die at 23:59 ET; the
+dead-man sweeps if the engine stops. **Build items born today:** the
+reject-backoff (three observed shapes) · N31 group commit · the N15
+jitter recorder · eat the residual ghost quotes (George's call).
