@@ -72,6 +72,19 @@
   book-staleness evidence (his design call how to gate/alert) and a
   heads-up that naive `market.quote` consumers see partial documents.
 
+## Late additions (same session)
+
+- **The test plan** became a working doc — see Next below.
+- **SNT-1 intake completed:** George forwarded Edwin's full email +
+  reference code (the 30-07b "market taker"). Filed verbatim in
+  reference/; concept outline + venue-reality mapping written as
+  [[market-maker/systems/snt-1-noise-taker]] (fourth unbuilt system).
+  The poker is NOT SNT-1 — it is the walking skeleton of SNT-1's
+  adapter at most. Blockers unchanged: E32 mechanics + E33/T13
+  compliance; one NEW flag — the artifact's profit-take tilt
+  conditions on own P&L, which weakens Edwin's "certified
+  uninformative" claim (added to the E32 row for the compliance read).
+
 ## Next
 
 **The test plan is now a working doc: [[market-maker/test-plan]]**

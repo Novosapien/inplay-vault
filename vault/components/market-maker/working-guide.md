@@ -30,12 +30,13 @@ Absorb these, in this order, before touching anything:
 Deep reference when needed: **[[market-maker/build/index|build/]]** — the
 as-built SOURCE OF TRUTH, one page per part of the machine (key equations
 as implemented, the module map; read the page you are about to touch
-before touching code you have not read), the systems docs for the three
+before touching code you have not read), the systems docs for the four
 UNBUILT systems only
 ([[market-maker/systems/market-supervision|supervision]] ·
 [[market-maker/systems/synthetic-market-order|synthetic MO]] ·
-[[market-maker/systems/mm-ops-ui|ops UI]] — the built systems' design
-narratives are archived; build/ is their truth), the
+[[market-maker/systems/mm-ops-ui|ops UI]] ·
+[[market-maker/systems/snt-1-noise-taker|SNT-1]] — the built systems'
+design narratives are archived; build/ is their truth), the
 [[market-maker/glossary]], and the plain-English guides in
 [[standards/README|standards/]] (+ `standards/sdmm-machine.html` for the
 interactive equation map).
