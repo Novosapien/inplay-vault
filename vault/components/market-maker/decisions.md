@@ -10,6 +10,49 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07c — Hasan's trading-ops guide lands: we can seed OURSELVES · the LmtPerc mystery thins
+
+Hasan's "Driving the Trading Stack with Claude Code" (07-08,
+live-verified same day) — filed verbatim:
+`reference/claude-trading-ops-guide-hasan-2026-08-07.md`. Gateway/venue
+facts are gospel (22-07 filter). What it changes:
+
+- ⭐ **The seeding dependency on Hasan DISSOLVES.** `POST
+  /position-transfer` (35=UPT) is on the gateway VM's own HTTP server,
+  reachable by IAP SSH — the same access we already use. Rules
+  restated: `txfrQty` signed delta · `txfrCost` = TOTAL cost (not
+  price), same sign, avg > 0 · replies `UPTa`/`UPTx` land in the
+  journal, the 202 is only "sent" · **one-way** (negatives accepted
+  then ignored) · **not idempotent** (a retry double-seeds) → keep a
+  ClOrdID ledger (auto-ids prefix `T`). ⚠ `confirmTyp` is NOT a
+  two-step commit — 1-then-2 produced TWO transfers (proven 05-08).
+- ⭐ **The IPTCBILL "price" is a GHOST — a Redis quote is never
+  cleared.** The guide states it exactly: a quote is only overwritten,
+  never removed; when a venue snapshot comes back empty the gateway
+  publishes nothing, so a dead symbol keeps its last price forever.
+  BILL's $89.17 bid is stamped **2026-07-24** against an EMPTY venue
+  book. So the panel's price and the venue's LmtPerc reference are
+  DIFFERENT facts — the venue-side reference question for Hasan
+  stands, but "check the timestamp" is now a rule for reading any
+  quote.
+- ✅ **UEAR (buying power / risk limits) is ours to drive too** — same
+  SSH door. maxOrdRate default 100/s (⚠ the guide's own note: ~17×
+  under MM full-ladder need — the 5,000 in Hasan's build guide was the
+  MM namespace's configured value, not the IPLY default). UEPR stays
+  dead (entitlement per MsgType).
+- ✅ **Cancel/replace for non-app orders goes over NATS**
+  (`gateway.orders.cancel` — a NEW clOrdId per cancel, orig in
+  `origClOrdId`); the app path is ownership-gated. The admin proxy has
+  no cancel route (Hasan's own "worth adding").
+- ⚠ **Check the loopback toggle before trusting any order was
+  simulated** (`GET /gateway/loopback`) — the OE session points at the
+  live venue. Yesterday's probes filled for real (consistent with our
+  record).
+- 📝 Operational doors now in the record: the admin proxy (Cloud Run +
+  bearer key from Secret Manager) for market data / orders / logs; SSH
+  for buying power, transfers, raw journal. No secret values in docs —
+  fetch at use, always.
+
 ## 2026-08-07b — ⭐ the probe run: wash-off VERIFIED · two new venue facts (gospel)
 
 George: fire the MM-account probes now ("nobody's using production").
