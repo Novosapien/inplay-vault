@@ -40,23 +40,30 @@ random walk) found the cause is NOT the ±25% variation:
   fresh — round500 flattens it to 10,000/7,000/5,000/3,500/2,500/2,000
   before variation.
 
-**Two candidate fixes, both book-visible (Edwin/George's call, filed
-on E17):** (a) full cancel-and-repost every publish — always-clean
-book, but reverses N10's rest-until-gone, ~4× message volume, doubled
-size flicker under post-first; (b) **the one-liner** — the move pass
-carries `cum_qty + level.quantity` (the fresh drawn size for the new
-rank) instead of the old remainder: fixes ~96% of stale-size carriers,
-cancels nothing, keeps the lifecycle — ⚠ but it re-words N10's
-"carrying the remainder", so it needs the ruling, not a silent change.
+**RESOLVED — option (b) ruled by George and BUILT (07-08h, MM PR #8,
+main `e0f2e45`):** the move pass now carries `cum_qty + level.quantity`
+(the fresh drawn size for the new rank) instead of the old remainder.
+Fixes the ~96% of stale-size carriers, cancels nothing, keeps the
+lifecycle; the ✂ supersession of N10's "carrying the remainder"
+wording is recorded in decisions 07-08h. Option (a) — full
+cancel-and-repost — was rejected (~4× message volume, reverses
+rest-until-gone). What the fix does NOT touch stays on E17: kept
+orders at still-wanted prices keep their old sizes, and partial fills
+are never topped up. **Live confirmation (same day, redeploy
+CFG-0003):** under active poker fire the visible ladder measured
+32–36% monotone (5.8% before; 55.6% excluding the bitten inside
+rank) — the residual scramble is the E17 remnant.
 
 ## The reconciler (`venue/reconciler.py`)
 
-Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
+Implements **rest-until-gone** as ruled (Edwin 23-07, N10; move-size
+superseded 07-08h):
 
 - A still-wanted price is LEFT ALONE — never topped up.
-- A price move is ONE cancel-replace carrying the remainder
-  (`CumQty + LeavesQty`, which satisfies the gateway's
-  quantity-above-fills guard by construction).
+- A price move is ONE cancel-replace that ADOPTS THE NEW RANK'S DRAWN
+  SIZE (`CumQty + level.quantity` — George 07-08h, superseding the
+  remainder-carry; satisfies the gateway's quantity-above-fills guard
+  by construction, a drawn level being ≥ 1,000).
 - New levels post FIRST, then cancels (N12 — post-first ordering; a
   momentary self-cross during adjustment is tolerated for v1).
 - **No replace ever relies on keeping queue priority** (§8.3 — tZERO

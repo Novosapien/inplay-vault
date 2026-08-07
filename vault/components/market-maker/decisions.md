@@ -10,6 +10,30 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07h — ✂ the move pass adopts the fresh drawn size (George's ruling, BUILT + MERGED)
+
+The ladder-shape trace's fix, ruled by George on the 07-08 findings
+("the book shows no profile") and built next session as directed
+(MM PR #8, merged — main `e0f2e45`):
+
+- ✂ **Supersedes N10's "carries the remainder" wording for MOVES
+  only.** A price move is still ONE cancel/replace (35=G), but the
+  replace now sends `CumQty + level.quantity` — the moved order
+  ADOPTS THE SIZE DRAWN FOR ITS NEW RANK — instead of
+  `CumQty + LeavesQty` (the old remainder). The gateway's
+  `quantity > CumQty` guard still holds by construction (a drawn
+  level is ≥ 1; in practice ≥ 1,000 after round500).
+- ✅ **Rest-until-gone for KEPT orders is unchanged** — a still-wanted
+  price is never topped up. The E17 lifecycle question stays open;
+  this narrows it to the kept-order generations, and Edwin sees the
+  whole thing in the round (E17/E31).
+- 📝 Why: the trace measured 95.7% of instructions carrying stale
+  sizes under remainder-carry (a one-tick drift teleports the order
+  falling off one end to the other end at its old size); the visible
+  ladder was monotone 5.8% vs the target's 84%. Proven by test: the
+  rotation fixtures (drift up/down) now assert a single replace at
+  the new rank's draw, ladder non-increasing.
+
 ## 2026-08-07g — tZERO's MPID scheme lands (Rob Colucci): IPLM is the MM's tape identity
 
 Direct from Rob (tZERO) to George, same day (venue facts, gospel):
@@ -1056,6 +1080,9 @@ contract and our integration surface before any code was written.
   satisfies the gateway's quantity-above-fills guard by construction);
   post-first ordering per N12. §8.3 honoured: no replace ever relies on
   keeping queue priority. §5.9 stays unbuilt — E17 decides the lifecycle.
+  **✂ 07-08h: the remainder-carry on MOVES is superseded — a replace now
+  adopts the new rank's drawn size (`CumQty + level.quantity`). Kept-order
+  rest-until-gone stands.**
 - ✅ **§4.4's PBE/PSE includes Partially Filled (ours, recorded).** The
   spec's state list omits it; a part-filled order's remainder still rests,
   and excluding it understates exposure. §4.4 and the Effective Position

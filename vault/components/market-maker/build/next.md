@@ -36,6 +36,16 @@ Each item names the build page it will change.
 - **A systemd unit for the supervised engine** (if George keeps it
   running) — doubles as the N15 beat-jitter recorder.
 
+- ✅ **DONE 07-08h — the reconciler move-size fix (George's ruling,
+  option b):** a replace adopts its new rank's drawn size
+  (`CumQty + level.quantity`) instead of carrying the old remainder —
+  the ladder-shape trace's ~96% stale-size carriers eliminated. MM
+  PR #8, main `e0f2e45`; rotation fixtures prove a one-tick drift
+  keeps the resting ladder non-increasing. ✂ supersession of N10's
+  wording recorded in decisions 07-08h; the E17 remnant (kept-order
+  generations, no top-ups) stays with Edwin. On
+  [[market-maker/build/venue|Venue]].
+
 - ✅ **DONE 07-08 — supervised mode + the first live-venue day:** the
   engine quoted all six QA books two-sided at Edwin's sheet prices on
   production; seeding self-served via position-transfer (the ledger);
