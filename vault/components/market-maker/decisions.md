@@ -10,6 +10,39 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07 — ⭐ the wash-trade conflict RESOLVES: blocking OFF for the MM account (unverified)
+
+Hasan's side set wash-trade blocking PER ACCOUNT via 35=UEAR, 10/10
+accepted: **MM account 1797733477 → 8985=0, blocking OFF · the 9 pilot
+user accounts → 8985=1, blocking ON.** Only `account` and
+`stopWashTrades` were sent — cash/DTBP/order-rate untouched; the MM
+account sits outside INPLAY_VENUE_PLACE_SUBS, no overlap.
+
+- ✅ **CONFLICT 1 from the 06-08c intake resolves in the flag-off
+  direction.** N12's post-first re-quote design STANDS unchanged — no
+  reconciler change needed. The user-account posture (blocking ON)
+  matches the 23-07 rulebook line: users must not wash-trade.
+- ⚠ **UNVERIFIED, stated plainly by Hasan's side:** UEARa means the
+  message was ACCEPTED, not that the flag took effect — UEARa echoes
+  only ClOrdID and Account, and no REST view exposes risk fields. The
+  only proof is behavioural: rest an order on a user account, try to
+  cross it from the same account (expect reject), then confirm the MM
+  account still self-crosses. Offered by Hasan's side on request.
+  **Do not treat as verified until that test runs.**
+- ⚠ **New consequence, eyes open: with blocking OFF, the MM's
+  momentary self-crosses can now EXECUTE as self-fills, not just
+  rest.** Post-first on a price move can lift our own resting ask; the
+  fill prints on the tape and the engine consumes both sides (net
+  position unchanged, the spread paid to ourselves). Functionally
+  handled; the COMPLIANCE optics of house self-prints on a
+  FINRA-regulated ATS are exactly **E33** — keep it live with
+  Troy/legal. The behavioural test will also show whether a self-cross
+  executes or rests.
+- 📝 T13's venue half is answered by mechanism (per-account
+  `stopWashTrades` exists and is settable); the MM↔SNT-1 cross-account
+  question inside T13 remains open — blocking is per-account
+  self-cross, and whether tZERO relates two house accounts is untested.
+
 ## 2026-08-06d — the wire-contract fixes, the quarantine, §10.3 checkpoints BUILT
 
 Build session (MM `21dd7e1` → `43ba08d`, **534 → 561 tests**, ruff +
