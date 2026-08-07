@@ -10,6 +10,43 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07b — ⭐ the probe run: wash-off VERIFIED · two new venue facts (gospel)
+
+George: fire the MM-account probes now ("nobody's using production").
+Run from the MM VM over production NATS with the `market-maker`
+credential, real orders on the real gateway, account 1797733477.
+
+- ⭐ **Wash-trade blocking OFF is VERIFIED for the MM account,
+  behaviourally.** On IPTCEAGL: our BUY 100 @ 145.50 rested top of
+  book (below the 146.00 ask — untouchable by construction), our SELL
+  SHORT 100 @ 145.50 matched it — **both sides EXECUTED**. A
+  self-cross PRINTS (it does not rest), which makes E33's compliance
+  optics concrete: house self-prints on the tape. Net position flat;
+  cancels correctly NOT_CANCELABLE after the fills. The user-account
+  half (blocking ON) still needs Hasan's pilot accounts.
+- ⭐ **NEW VENUE FACT 1 — side-2 sells require inventory.**
+  `FAILSRISK[1797733477]: You are not long IPTCBILL. There are NO
+  shares to SELL.` From a flat book, every side-2 ask REJECTS. Side 5
+  (sell short) IS accepted from flat (proven — the EAGL short filled).
+  ⚠ **Design-relevant: our transport sends side 2 for ALL sells**
+  (`[side-codes]`: "the MM never sends 5 — E26"). On the real venue
+  the entire ask side of a flat book would reject. The fork:
+  (a) asks go side 5 from flat (stock-loan fee — economics, Edwin) or
+  (b) seed inventory FIRST via E27's position-transfer, then side 2.
+  **E26 + E27 are now launch-blocking mechanics, not product
+  questions. Decide before the supervised run posts asks.**
+- ⭐ **NEW VENUE FACT 2 — `LmtPerc: No price available` rejects orders
+  on books without a reference price.** IPTCBILL (bid-only, no
+  trades?) rejected a plain BUY on this risk check. 164 of our 170
+  books are EMPTY — if a virgin book cannot take a first order, the
+  MM cannot stand its book. → Ask Hasan: what feeds LmtPerc's
+  reference (last trade? close? a settable per-symbol reference), how
+  the first order lands on an empty symbol, and whether the check is
+  configurable per account. **Blocking for everything beyond the 7
+  populated tickers.**
+- 📝 A real print now exists on IPTCEAGL at 145.50 (our self-trade,
+  100 sh). Deliberate, George-directed, on the nobody-uses-it venue.
+
 ## 2026-08-07 — ⭐ the wash-trade conflict RESOLVES: blocking OFF for the MM account (unverified)
 
 Hasan's side set wash-trade blocking PER ACCOUNT via 35=UEAR, 10/10
