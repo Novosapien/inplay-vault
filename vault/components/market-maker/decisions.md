@@ -10,6 +10,39 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07e — ⭐ the book walk: LmtPerc DECODED, the stale quotes eaten, the books moved to Edwin's prices
+
+George: "get the prices on the books, set the references to something
+realistic, and run the engine so I can watch the book update live."
+Executed as a scripted walk from the MM VM (real orders, MM account).
+
+- ⭐ **LmtPerc decoded from full reject texts:** aggressive orders may
+  cross at most **3%** through the opposite best (5% seen on STEE —
+  per-symbol bands exist); passive orders must sit within **90%** of
+  their own side's best. And the reference is **NOT the live book** —
+  it is a SNAPSHOT that refreshes on a delay (minutes): we ate PATR's
+  entire bid side and the check still said `BID(112.20)`; a COWB bid
+  rejected against `ASK(53.90)` was ACCEPTED minutes later once the
+  reference caught up. **Walk fast, anchor slow.**
+- ✅ **The stale test quotes are GONE — eaten at their own prices**
+  (aggressive-at-best = 0% through, always legal): all stale bids on
+  the down-books (EAGL 8 levels/1,160 sh · PATR 9/1,170 · GIAN
+  6/780 — sold from our seeded inventory) and all stale asks on the
+  up-books (COWB 9/930 · STEE 8/800 · JETS 8/760 — bought, fake
+  cash). The stale-order owner's account received the fills.
+  ⚠ These are TRADES, not transfers — they are NOT in any MM journal
+  (no engine was listening); position truth is Tag 9383 at next
+  execution. Residue: EAGL/PATR/GIAN kept their stale ASKS (146+/
+  112.95+/68.5+ — deep out of the money above Edwin's price,
+  unreachable now by the 3% rule; harmless ghosts, noted).
+- ✅ **Anchors at Edwin's prices** (10-share own orders, DAY): posted
+  where the frozen reference allowed; the rest retried by a finisher
+  script as the reference refreshes. JETS needs the recorded two-hop
+  rung chain (the 90% passive band vs its ~18 reference).
+- 📝 The never-empty rule held throughout — no book was left without a
+  resting side (BILL's "No price available" state is the disease this
+  avoids).
+
 ## 2026-08-07d — ⭐ FIRST RUN ON THE REAL VENUE: the machine quotes, the dead-man cleans up — and LmtPerc reveals a reject loop
 
 The supervised test ran (George's go): `python -m mm.runtime` on the MM
