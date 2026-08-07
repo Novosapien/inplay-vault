@@ -42,6 +42,15 @@ account sits outside INPLAY_VENUE_PLACE_SUBS, no overlap.
   `stopWashTrades` exists and is settable); the MM↔SNT-1 cross-account
   question inside T13 remains open — blocking is per-account
   self-cross, and whether tZERO relates two house accounts is untested.
+- ✅ **Expected wins: Edwin's doc is the source for now (George,
+  07-08).** The SR-sourcing question (SR futures carries NFL win
+  totals — S10's on-file fallback — but not NCAA) is DEFERRED — ask
+  later, alongside the Edwin round. Confirms the 28-07 design: Edwin
+  publishes all 170; the engine's seam (the daily file /
+  `ingest_reference_numbers`) makes any later source swap an upstream
+  change only. Today's interim delivery is hand-carried: Edwin's IPO
+  sheet → the reviewed supervised-inputs file, prices verified to the
+  cent.
 
 ## 2026-08-06d — the wire-contract fixes, the quarantine, §10.3 checkpoints BUILT
 
