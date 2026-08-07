@@ -74,9 +74,15 @@
 
 ## Next
 
+**The test plan is now a working doc: [[market-maker/test-plan]]**
+(George's ask — normal ✅ · in-game A2 · pre/post game A3/A4 · ops B ·
+failure drills C, each with method + pass criteria + status). Suggested
+order there: B1 (the 23:59 ET session boundary — tonight, free) → A2
+on the rig → C2 → the reject-backoff then A2 live.
+
 1. **The reject-backoff build** (unchanged TOP — 751 CANCEL_REJECTED
-   in 30 min of poker churn is the same family).
+   in 30 min of poker churn is the same family; test C4 gates on it).
 2. The Hasan message (now: ghosts · LmtPerc reference · user-side wash
    · infra file · the two MD items) · Rob's pending answer · the Edwin
-   round (E17 remnant + E31).
+   round (E17 remnant + E31 + the A4 final-whistle question).
 3. systemd unit + N15 jitter recorder · N31 group commit.

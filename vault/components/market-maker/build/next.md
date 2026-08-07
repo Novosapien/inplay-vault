@@ -18,7 +18,9 @@
 
 ## What we build next
 
-Each item names the build page it will change.
+Each item names the build page it will change. **What we TEST next
+lives in [[market-maker/test-plan]]** (lifecycle · ops · failure
+drills, with statuses).
 
 **Ours, unblocked:**
 

@@ -109,6 +109,7 @@ honest and fast — 10 minutes max:
 | Live blockers by owner | [[market-maker/open-questions]] |
 | Every tunable number + status | [[market-maker/parameters]] |
 | Build phases + dependencies | [[market-maker/plan]] |
+| Live test cases + statuses | [[market-maker/test-plan]] |
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
 | Session-by-session narrative | `sessions/` |
