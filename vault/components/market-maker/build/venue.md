@@ -17,6 +17,38 @@ and every resting DAY order expires there as a distinct terminal state
 feeds §4.4's pending exposure (PBE/PSE), Partially Filled remainders
 included.
 
+## ⭐ Why the visible book scrambles (traced 07-08, simulation on the real code)
+
+George watched the live QA books and saw no size profile. The trace
+(agent run, real `reconcile_book` + `quantity_ladder`, 400-publish
+random walk) found the cause is NOT the ±25% variation:
+
+- **The engine's fresh target ladder is non-increasing 84% of the
+  time** (6 levels; ties, not inversions, are what variation mostly
+  produces — round500 collapses overlap bands onto shared values).
+- **The venue's resting ladder is non-increasing only 5.8% of the
+  time.** The profile dies in the reconciler's MOVE pass: a replace
+  carries the OLD order's quantity (`cum_qty + leaves_qty`) to the NEW
+  price, paired by rank — on a one-tick drift the order falling off
+  one end TELEPORTS to the other end with its old size (a 10,500
+  top-of-book order lands on the deepest rung). **95.7% of simulated
+  instructions carried a stale size**; in steady state submits are
+  zero, so a fresh drawn size almost never reaches the wire. Shape
+  redraws at dwell expiry then make the scramble permanent; partial
+  fills never topped up (E17) add bite marks.
+- Also true: the clean 10,000/7,200/5,184 decay never exists even
+  fresh — round500 flattens it to 10,000/7,000/5,000/3,500/2,500/2,000
+  before variation.
+
+**Two candidate fixes, both book-visible (Edwin/George's call, filed
+on E17):** (a) full cancel-and-repost every publish — always-clean
+book, but reverses N10's rest-until-gone, ~4× message volume, doubled
+size flicker under post-first; (b) **the one-liner** — the move pass
+carries `cum_qty + level.quantity` (the fresh drawn size for the new
+rank) instead of the old remainder: fixes ~96% of stale-size carriers,
+cancels nothing, keeps the lifecycle — ⚠ but it re-words N10's
+"carrying the remainder", so it needs the ruling, not a silent change.
+
 ## The reconciler (`venue/reconciler.py`)
 
 Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
