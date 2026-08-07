@@ -122,11 +122,28 @@ split, George 06-08b — env answers "who am I", the dictionary answers
   `MM_SECURITIES=IPTCCHIE,IPTCRAVE` names a drill's exact books;
   `MM_LIMIT_SECURITIES=N` caps politely for old rig configs (the real
   governor is 5,000 msg/s — Hasan's guide 05-08).
+- **supervised** — the venue-plane test mode (built 07-08, ran the
+  same day): ONLY explicitly named books, every number from a reviewed
+  inputs file (`MM_SUPERVISED_INPUTS`, exact-set match, every
+  violation listed at once), REAL identity required (loopback
+  placeholders refuse), the readings leg unwired (no
+  `sr.probabilities.>` grants exist; a book with no live game quotes
+  from T alone). First production run 07-08: all six QA books
+  two-sided at Edwin's sheet prices. `MM_CONFIG_VERSION` names the
+  deployment's config version — a re-minting redeploy MUST bump it
+  (the venue remembers ClOrdIDs; see
+  [[market-maker/build/venue|Venue]]).
 - **live** — **REFUSES to start and names its gates**: the S1/S7
   entitlement · the go-live ingestion switch (the live wiring consumes
   the bus; the poller keeps only the heartbeat) · N19 (Edwin's file
   delivery). Synthetic prices must never reach a real venue (§2.3), so
   the gate is a raise, not a warning.
+
+The venue drain is `InboundDrain` (07-08): an untranslatable inbound
+message is POISON — counted, logged loudly, skipped — after a real
+no-ids fill event killed the engine live; deliberate alarms
+(trade busts, unmapped fills) stay fatal. Fills use the subject's
+order-id fallback exactly as acks do.
 
 The entrypoint: fail-fast NATS connect, the boot order above, one log
 line per tick (`polled/accepted/dup/drained/readings/swept/cycles` +

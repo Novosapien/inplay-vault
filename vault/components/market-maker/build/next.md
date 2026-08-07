@@ -22,6 +22,28 @@ Each item names the build page it will change.
 
 **Ours, unblocked:**
 
+- **⭐ The reject-backoff (TOP — born live 07-08):** the reconciler
+  resubmits a persistently-rejected level at cycle cadence, forever.
+  Three shapes observed on the real venue in one day: LmtPerc
+  ("aggressive") rejects · duplicate-ClOrdID rejects · no-reference
+  rejects. Design note: rejects arrive as journalled order events, so
+  a deterministic backoff keyed on them is replay-safe. Changes
+  [[market-maker/build/venue|Venue]].
+- **The residual ghost cleanup** (Hasan's side: delete the old test
+  account's orders on the 7 QA books — unreachable by us under the 3%
+  rule) and **the LmtPerc reference question** (what feeds it, refresh
+  cadence, per-account config — gates BILL and the other 163 books).
+- **A systemd unit for the supervised engine** (if George keeps it
+  running) — doubles as the N15 beat-jitter recorder.
+
+- ✅ **DONE 07-08 — supervised mode + the first live-venue day:** the
+  engine quoted all six QA books two-sided at Edwin's sheet prices on
+  production; seeding self-served via position-transfer (the ledger);
+  wash-off verified behaviourally; the book walk moved every book to
+  Edwin's prices; the poison fix (PR #6) and MM_CONFIG_VERSION (PR #7)
+  merged from live lessons. Decisions 2026-08-07 b–g carry the whole
+  arc.
+
 - ✅ **DONE 06-08d — the wire-contract alignment from Hasan's guide:**
   `account` (FIX Tag 1) on every new order · identity via env through
   `compose.py::Settings` (`MM_VENUE_ACCOUNT` · `MM_USER_ID` ·

@@ -182,6 +182,10 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `EXECUTION idempotency key` | What names one fill | (venue, **client_order_id**, execution_id) — ⚠ supersedes §7.3's (venue, execution_id): **tZERO recycles ExecIDs** (incident 29-07) | ✅ venue-verified | Gateway `e37cd3d` · `mm/events/idempotency.py` |
 | `gateway local-event naming` | Which field names the order on gateway-originated events | **The subject alone** (`order.{user}.{clOrdId}`) — loopback accepts and resolved cancels (dead-man/cancel_all sweeps) carry NO clOrdId in data; adapter falls back to the topic segment | ✅ wire-verified 02-08 | Loopback wire test · `[topic-fallback]` |
 | `gateway event ordering` | Cross-subject timestamp order of order events | **Not guaranteed** — 8 publisher workers; acks for one security observed 10 µs reversed. Handled: per-security cycle-clock floor `[monotonic-at]` | ✅ wire-verified 02-08 | Loopback wire test |
+| `LmtPerc aggressive band` | Max distance an order may CROSS through the opposite best | **3%** (5% seen on one symbol — per-symbol bands exist) | ✅ live-decoded 07-08 | Reject texts, real venue |
+| `LmtPerc passive band` | Max distance a passive order may sit from its own side's best | **90%** | ✅ live-decoded 07-08 | Reject texts, real venue |
+| `LmtPerc reference` | What the bands measure against | A **delayed snapshot** of the book (refresh ~minutes, not live); empty book → "No price available", ALL orders reject | 🔴 exact feed + cadence = the Hasan ask; gates the 163 empty books | 07-08 live |
+| `MPID` | The MM's tape identity | **IPLM**, driven venue-side by Account1=1797733477; retail IPLY, future BD-prop IPLP | ✅ Rob Colucci 07-08 | decisions 07-08g |
 
 ### Runtime clocks (03-08 design session — `mm/runtime/` is UNBUILT)
 

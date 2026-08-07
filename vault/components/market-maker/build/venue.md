@@ -74,6 +74,32 @@ Implements **rest-until-gone** exactly as ruled (Edwin 23-07, N10):
   see [[market-maker/build/runtime|Runtime]]; N15's window stays 4 s
   until the VM jitter measurement.
 
+## Venue risk facts learned LIVE (07-08 — the first real-venue day)
+
+- **LmtPerc, decoded from reject texts:** an AGGRESSIVE order (one that
+  crosses) may price at most **3%** through the opposite side's best
+  (5% observed on one symbol — per-symbol bands exist); a PASSIVE
+  order must sit within **90%** of its own side's best. The reference
+  is a **SNAPSHOT that refreshes on a delay of minutes**, not the live
+  book — orders can reject against a book state that no longer exists.
+  An empty book (both sides) rejects everything: "No price available"
+  (IPTCBILL's state; how the first order ever lands on a virgin symbol
+  is the open Hasan question that gates the other 163 books).
+- **tZERO remembers ClOrdIDs per session.** A redeploy that re-mints
+  the same deterministic ids duplicate-rejects every order — and with
+  no material change the reconciler resubmits the same ids forever
+  (deadlock, seen live). Rules: NEVER wipe the journal against a
+  session that remembers; a re-minting redeploy runs under a new
+  `MM_CONFIG_VERSION` (every id re-mints; proven disjoint by test).
+- **MPIDs (Rob Colucci, 07-08):** driven entirely by Account1 (FIX
+  Tag 1) — our account 1797733477 → **IPLM**; retail → IPLY; a future
+  BD-prop account → IPLP. We never send an MPID. The MM's prints are
+  attributable on the tape.
+- **The reject-backoff gap (build item, top priority):** the
+  reconciler re-wants and re-submits a persistently-rejected level at
+  cycle cadence — ~16 msg/s of churn observed. Three reject shapes
+  seen live: LmtPerc, duplicate-id, no-reference.
+
 ## Gateway facts (gospel under the 22-07 filter)
 
 - **The dead-man:** the gateway sweeps our resting book after **4 s** of
