@@ -10,6 +10,38 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07f — ⭐ ALL SIX BOOKS LIVE, TWO-SIDED, AT EDWIN'S PRICES — after two more venue lessons
+
+The continuous supervised run stands (engine `9ac909d`, CFG-0002,
+journal `/var/lib/mm/supervised3`): EAGL 77.76/77.82 · PATR
+79.76/79.82 · GIAN 61.08/61.13 · COWB 76.16/76.20 · STEE 66.32/66.36 ·
+JETS 45.41/45.45 — every spread straddling its sheet price, 8–17k
+shares per level. A 60-minute poker loop trades small clips against
+our own inside so the books visibly update (George's ask).
+
+**Two more real-venue lessons on the way, both fixed and merged:**
+- ⭐ **A real fill event arrived with NO ids in its payload** — the
+  gateway's local-publish quirk (recorded 02-08 for acks) proven on a
+  fill — and the adapter's KeyError KILLED the engine; the dead-man
+  swept the book (correctly — including the walk's anchors, which are
+  MM-namespace orders). **Fix (PR #6):** fills use the subject
+  fallback like acks; the venue drain gets the readings consumer's
+  POISON rule — an untranslatable message is counted and skipped
+  loudly; deliberate halts (busts, unmapped fills) stay fatal.
+- ⭐ **The duplicate-id deadlock (PR #7):** ClOrdIDs mint
+  deterministically over the config version; tZERO remembers ids per
+  session; a redeploy on a WIPED journal re-mints the same ids → every
+  order duplicate-rejects, and with no material change the reconciler
+  resubmits the same ids forever. **Never wipe the journal against a
+  session that remembers.** Fix: `MM_CONFIG_VERSION` env (§12.1's
+  versioned configuration at run scale) — a new version re-mints every
+  id (disjointness proven by test). This run is CFG-0002.
+- 📝 The LmtPerc reference-refresh delay healed 4 of 6 books unaided
+  (the reconciler's per-cycle retry IS an anchor-retry); the reject
+  churn while waiting is the same backoff gap recorded 07-08d — the
+  reject-backoff build item now covers three observed shapes:
+  LmtPerc rejects, duplicate-id rejects, and empty-reference rejects.
+
 ## 2026-08-07e — ⭐ the book walk: LmtPerc DECODED, the stale quotes eaten, the books moved to Edwin's prices
 
 George: "get the prices on the books, set the references to something
