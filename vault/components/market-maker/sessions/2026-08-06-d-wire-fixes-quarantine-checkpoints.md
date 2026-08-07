@@ -94,3 +94,29 @@ traffic — the honest dead-man check is the worst beat gap.
 3. Unchanged: the go-live ingestion switch (at push-live) · N31 group
    commit (measure the real fsync on the VM first) · the boot-reconcile
    healer (parked) · E29–E38 · pushing branches (George's call).
+
+## Addendum (07-08b, same chat session) — the VM deploy: 16/16 on the real disk · N31 measured
+
+The engine is ON the VM and drilled there. The VM has NO internet
+egress (the NATs cover other subnets; extending one would also give the
+NATS VM egress — deliberately not touched), so artifacts ship through a
+new GCS bucket `inplay-mm-deploy` over Private Google Access (recorded
+in the infra file addendum for Hasan). Python 3.12.13 standalone + uv +
+wheels + amd64 docker images all offline; repo at the branch tip via
+git bundles.
+
+- **`scripts/rig_drill.py`: 16/16 on the VM**, journal + checkpoints on
+  `/var/lib/mm` (the real pd-ssd). Worst beat gap **299 ms** on
+  e2-medium — the first real N15 jitter data point.
+- ⭐ **N31's number landed: fsync p50 1.70 ms · p99 2.47 ms → ~579
+  events/s single-writer ceiling.** Under the 04-08 estimate
+  (1,000–3,000/s) and far under the ~2,100/s the 200 ms capability
+  needs. **Group commit: required, build next.**
+- Two drill-script fixes the VM exposed (committed): the restart
+  subprocess runs offline (`sys.executable`, not uv) · the drill
+  ensures the stream (it plays the publisher; a virgin server has
+  none). The Mac's arm64 docker images needed amd64 rebuilds.
+- Deliberately NOT done: no systemd unit (the multi-day N15 jitter
+  measurement means leaving a loopback engine running — George's call)
+  · nothing touches production NATS or the gateway (the
+  `sr.probabilities.>` grants remain the open ask).
