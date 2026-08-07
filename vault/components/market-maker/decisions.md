@@ -10,6 +10,51 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07d — ⭐ FIRST RUN ON THE REAL VENUE: the machine quotes, the dead-man cleans up — and LmtPerc reveals a reject loop
+
+The supervised test ran (George's go): `python -m mm.runtime` on the MM
+VM, MM_MODE=supervised, 6 priced books (BILL parked), real identity,
+production NATS, loopback confirmed OFF. Before the run: **the 7 books
+were seeded ourselves** — 100,000/ticker via position-transfer, all
+UPTa, basis at Edwin's prices, ledger in
+`reference/position-transfer-ledger.md`; a side-2 sell then ACCEPTED
+(yesterday's "not long" reject gone).
+
+**What worked — the machine's first real-venue milestones:**
+- 50 instructions stood for 6 securities; 64 orders ACCEPTED and
+  RESTED — our bids visible on the venue book at $77.78/$77.76
+  (IPTCEAGL), Edwin-priced, next to the stale $145 test quotes.
+- 665 heartbeats at ~250 ms; the full boot/identity/account chain
+  clean; no quarantine; journal + checkpoints on /var/lib/mm.
+- ⭐ **The dead-man drill, live:** SIGTERM → beats stop → the gateway
+  fired at +4 s and swept all 33 resting orders (`reason=deadman`).
+  The venue book is clean. Exactly the designed cleanup.
+
+**⭐ THE FINDING — a reject loop, two defects exposed at once:**
+- **Venue reality:** the books carry STALE test quotes (EAGL ~$145,
+  ~2× Edwin's $77.79; 110–180 sh/level), and LmtPerc measures
+  aggressiveness against that reference — so every order of ours that
+  would CROSS the stale book rejects as "Aggressive BUY/SELL LmtPrx".
+  1,511 rejects vs 64 accepts. The passive side rested fine.
+- **OURS, a real design gap: the reconciler has NO reject backoff.**
+  A persistently-rejected level is re-wanted by every cycle and
+  re-submitted at sweep cadence — ~16 msg/s of reject churn,
+  indefinitely. Live-mode versions of this exist (venue bands, halts),
+  so this is a REQUIRED pre-season fix, not test noise. Design note:
+  rejects arrive as journalled order events, so a deterministic
+  backoff keyed on them is replay-safe.
+- The LmtPerc question for Hasan is now TWO-sided and sharper:
+  (a) empty books reject everything ("No price available");
+  (b) stale-referenced books reject fair-priced orders as aggressive.
+  Ask: what sets the reference, the band width, per-account
+  configurability — and clear the old test quotes off the 7 books
+  (another user's orders; not ours to cancel).
+
+**State after the run:** positions unchanged (nothing traded — the
+"totalVolumeTraded 300" on the book snapshot was yesterday's probes,
+cumulative), the account still holds the 700k seeded shares, no resting
+orders. Supervised journal preserved at /var/lib/mm/supervised.
+
 ## 2026-08-07c — Hasan's trading-ops guide lands: we can seed OURSELVES · the LmtPerc mystery thins
 
 Hasan's "Driving the Trading Stack with Claude Code" (07-08,
