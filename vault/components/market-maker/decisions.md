@@ -10,6 +10,28 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-07g — tZERO's MPID scheme lands (Rob Colucci): IPLM is the MM's tape identity
+
+Direct from Rob (tZERO) to George, same day (venue facts, gospel):
+
+- ✅ **SIM placeholder MPIDs:** **IPLM** = the MM account (1797733477)
+  · **IPLP** = a future BD PROP account (assigned when it onboards —
+  the SNT-1 / second-house-account slot, E33/T13's subject) · **IPLY**
+  = retail (challenger) accounts, assigned at onboarding.
+- ✅ **The MPID is DRIVEN BY Account1 (FIX Tag 1)** — "when we receive
+  Account1=1797733477 it is hitting an IPLM MPID." Nothing changes on
+  our side: the 06-08d fix already puts the account on every order,
+  and we never send an MPID ourselves (tag 9251 is UAAR-side,
+  add-only, not ours).
+- 📝 Consequences worth carrying: the MM's prints and quotes are now
+  ATTRIBUTABLE on the tape as IPLM vs IPLY retail flow — feeds the
+  §5.5 public-book checks (ours-vs-others) and makes E33's house
+  prints labelled house prints. When SNT-1's account onboards, telling
+  Rob to cut IPLP over is the trigger to settle T13's cross-account
+  wash question. George asked Rob whether MPID assignment interacts
+  with the wash/self-trade settings or is purely the per-account 8985
+  flags — answer pending.
+
 ## 2026-08-07f — ⭐ ALL SIX BOOKS LIVE, TWO-SIDED, AT EDWIN'S PRICES — after two more venue lessons
 
 The continuous supervised run stands (engine `9ac909d`, CFG-0002,
