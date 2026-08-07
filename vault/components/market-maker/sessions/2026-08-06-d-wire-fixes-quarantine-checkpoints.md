@@ -69,10 +69,23 @@
   duplicates never refresh retention age · checkpoint schema guard
   separate from the integrity hash · tail replay re-arms the gate.
 
+## Addendum (07-08, same chat session) — the rig drill: 16/16
+
+`scripts/rig_drill.py` (kept in the repo, MM `3ba52fa`) proved the
+06-08d changes on the real docker rig: the ~250 ms beat on the wire
+(20 beats/5 s, worst gap 257 ms — the 4 s dead-man never close) ·
+`account` from the env on all 38 orders · pre-boot catch-up + a
+re-offer landing as liveness, 8/8 readings drained · **the PRODUCTION
+checkpoint boot**: a real `python -m mm.runtime` subprocess restored
+checkpoint seq 67, replayed 3 tail events, redelivered ZERO, repriced
+on the next reading, exited clean on SIGTERM. One drill-script
+correction: outbound cancels are legitimate reconciler cancel-replace
+traffic — the honest dead-man check is the worst beat gap.
+
 ## What's open / next
 
 1. **Deploy + drill on the VM** — the engine to `inplay-market-maker`
-   (10.0.2.3), then the docker drill against the real rig incl. a
+   (10.0.2.3), then `scripts/rig_drill.py` re-run there incl. the
    checkpoint-boot restart; then the N15 jitter measurement (beat gaps
    name tick stalls) before any window change.
 2. **The Hasan conversation** (George owes the send): the infra file ·
