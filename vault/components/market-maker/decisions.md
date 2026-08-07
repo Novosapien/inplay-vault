@@ -10,6 +10,56 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-08 — ⭐ the double-post race found and fixed · poker v7 · the MD-view verdicts
+
+George: "the book doesn't look like we expect — check the logs/replay,"
+then "fix and deploy both," with a careful-impact review of anything
+touching Hasan's service. Three causes found; two were ours, both fixed
+and deployed (engine `dfa87f9`, CFG-0004, journal `supervised5`).
+
+- ⭐ **ENGINE BUG — an in-flight replace left its destination
+  unprotected (MM PR #9).** `register_replace` recorded PENDING_REPLACE
+  at the OLD price only; the reconciler read the replace's destination
+  as unmet during the ~250 ms in-flight window and pass 3 submitted a
+  fresh order there; the venue confirmed both. Journal proof: replace
+  → 77.74×5500 at 23:16:14.541, fresh submit 77.74×5500 at .598.
+  **19 doubled price levels stood across the six books** (all four
+  STEE ask levels 2× their draw) — real resting exposure, not optics.
+  Fix: `VenueOrder.pending_price` — set on register, cleared on
+  confirm/reject, carried by the checkpoint (**schema 2 → 3**), and
+  counted as occupied by the reconciler. Pre-existing (supervised3's
+  JETS had doubles); the trace missed it because it simulated settled
+  venue states. Post-deploy: zero doubles.
+- ✅ **The poker aimed at frozen prices (v7 deployed):** it read
+  `q["bid"]/q["ask"]` off the message envelope — fields that do not
+  exist in the quote schema — so every poke fell back to the static
+  launch prices (COWB 99.7% miss; 1000-lots resting at fixed prices
+  inside the spread — the fake 1-cent top). v7 aims from
+  `market.book`. Post-deploy: **100% fill on all six books.**
+- ✅ **market.quote's null sides are Hasan's DESIGN, not a bug** — the
+  quote is a partial-update contract: null = "no change", consumers
+  must merge with COALESCE; explicit `bestBidCleared`/`bestOfferCleared`
+  flags mean "genuinely empty". Documented in his publisher; the Redis
+  path already merges. Nothing to fix in his service; any consumer
+  reading a single message naively (as poker v6 did) sees nulls.
+- ⚠ **The market.book stream served a provably stale JETS book for
+  ~5 min under churn** (23:09–23:14): the wire showed an ask at 45.44
+  while a journal-confirmed poker bid at 45.45 rested unfilled —
+  impossible on the real venue, so the published book was not the
+  venue's. Not the crossed-book holdback (0 log hits). The feed is
+  depth-0 snapshot-driven + a republish tick, so a stalled venue
+  snapshot stream freezes the published book while republish keeps
+  re-emitting it. Evidence handed to the Hasan message; his deployed
+  binary (08-07 12:16Z) already carries all his 08-06 MD fixes.
+- 📝 The visible ladder after both fixes: **monotone 69.7%** (5.8%
+  original → 32–36% after the move-size fix alone → 69.7% now, vs the
+  84% target ceiling). The remainder is the true E17 remnant — bites
+  and kept generations.
+- 📝 Restated for ops: every redeploy bumps `MM_CONFIG_VERSION` and
+  takes a fresh journal dir until the boot-reconcile healer exists
+  (dead-man sweeps while the engine is down never journal — an old
+  journal replays phantom ACTIVE orders).
+
 ## 2026-08-07h — ✂ the move pass adopts the fresh drawn size (George's ruling, BUILT + MERGED)
 
 The ladder-shape trace's fix, ruled by George on the 07-08 findings

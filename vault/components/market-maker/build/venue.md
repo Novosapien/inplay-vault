@@ -68,6 +68,12 @@ superseded 07-08h):
   momentary self-cross during adjustment is tolerated for v1).
 - **No replace ever relies on keeping queue priority** (§8.3 — tZERO
   sends amends to the back of the queue).
+- **An in-flight replace occupies its DESTINATION price**
+  (`VenueOrder.pending_price`, 08-08, MM PR #9): with only the old
+  price occupied, the destination read as unmet during the ~250 ms
+  in-flight window and pass 3 double-posted it — 19 doubled levels
+  measured live across the six QA books. The field rides the
+  checkpoint (schema 3).
 - §5.9 replenishment is deliberately unbuilt — it IS the E17 conflict.
 
 ## Sync (`venue/sync.py`)

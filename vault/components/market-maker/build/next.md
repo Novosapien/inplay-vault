@@ -36,6 +36,16 @@ Each item names the build page it will change.
 - **A systemd unit for the supervised engine** (if George keeps it
   running) — doubles as the N15 beat-jitter recorder.
 
+- ✅ **DONE 08-08 — the double-post race (MM PR #9, deployed CFG-0004):**
+  an in-flight replace now occupies its destination price
+  (`pending_price`, checkpoint schema 3) — the reconciler can no longer
+  double-post a level during the in-flight window. Found from George's
+  "the book doesn't look right" via journal forensics; 19 live doubled
+  levels stood before the fix, zero after. Poker v7 rides along (aims
+  from market.book — v6 read fields that don't exist in the quote
+  schema and poked static prices). Ladder monotone 69.7% live. On
+  [[market-maker/build/venue|Venue]].
+
 - ✅ **DONE 07-08h — the reconciler move-size fix (George's ruling,
   option b):** a replace adopts its new rank's drawn size
   (`CumQty + level.quantity`) instead of carrying the old remainder —
