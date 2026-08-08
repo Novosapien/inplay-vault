@@ -10,6 +10,33 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-08b — SNT-1 BUILT (George: "we start building it") — code complete, NOT deployed
+
+MM PR #10 (merged, main `b42aa65`): Edwin's reference rebuilt
+venue-hardened as `src/snt/` — own package beside `mm/`, own process,
+own journal, identity all-env. 27 new tests; 609 total green.
+
+- ✅ **Shape (autonomous, recorded):** same repo, separate package —
+  process/account separation is what E33 needs, not repo separation;
+  the wire contract, toolchain and deploy channel are shared and
+  proven. Extractable later.
+- ✅ **The IOC substitute:** marketable DAY + cancel after 1.5 s
+  (tZERO has no IOC — E32). Rejects are first-class: a 5-streak
+  quiets the book 60 s (interim until the reject-backoff build).
+- ✅ **Restart safety:** an economic journal (fills/sends/session
+  marks) replays position, basis and budget at boot; the send
+  sequence resumes so a used ClOrdID is never re-minted. The RNG is
+  seeded per process (config-version salt) and deliberately NOT
+  persisted — replay reproduces economic state, not the future draw
+  sequence (a noise bot's draws are not audit-relevant like the MM's
+  quotes; noted in the code).
+- ✅ **Two run postures, no code change:** QA on the MM account (the
+  poker's door — self-crosses print, empty venue) vs production on
+  the IPLP account when Rob assigns it. **Production stays blocked on
+  E32 rulings + E33/T13 compliance** — building ≠ shipping.
+- 📝 Parameters: Edwin's numbers filed 🟡 in the registry; the 8-tick
+  spread gate filed 🔴 (never trades §5.2's Stable spread — E32).
+
 ## 2026-08-08 — ⭐ the double-post race found and fixed · poker v7 · the MD-view verdicts
 
 George: "the book doesn't look like we expect — check the logs/replay,"

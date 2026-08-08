@@ -75,6 +75,11 @@
 ## Late additions (same session)
 
 - **The test plan** became a working doc — see Next below.
+- **SNT-1 BUILT** (George: "we start building it") — MM PR #10 merged,
+  `src/snt/`, 27 tests, undeployed. The record: decisions `2026-08-08b`
+  · the SNT-1 parameter rows · the systems page now carries status
+  BUILT. Run posture (QA on the MM account vs wait for IPLP) is
+  George's call; production remains gated on E32 + E33/T13.
 - **SNT-1 intake completed:** George forwarded Edwin's full email +
   reference code (the 30-07b "market taker"). Filed verbatim in
   reference/; concept outline + venue-reality mapping written as

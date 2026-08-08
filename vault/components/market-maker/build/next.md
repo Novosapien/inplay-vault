@@ -38,6 +38,13 @@ drills, with statuses).
 - **A systemd unit for the supervised engine** (if George keeps it
   running) — doubles as the N15 beat-jitter recorder.
 
+- ✅ **DONE 08-08b — SNT-1 built (MM PR #10, undeployed):** Edwin's
+  noise taker venue-hardened as `src/snt/` — IOC substitute (DAY +
+  1.5 s cancel), first-class rejects, economic journal (position/
+  budget/id-seq survive restarts), env-only identity (QA on the MM
+  account now; IPLP later). Production gated on E32 + E33/T13 + the
+  account. Design + mapping: [[market-maker/systems/snt-1-noise-taker]].
+
 - ✅ **DONE 08-08 — the double-post race (MM PR #9, deployed CFG-0004):**
   an in-flight replace now occupies its destination price
   (`pending_price`, checkpoint schema 3) — the reconciler can no longer

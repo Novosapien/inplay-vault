@@ -318,3 +318,26 @@ corroboration, but per the 22-07 filter these bind nothing:
 | Depth weights | front-loaded 2^k | front-loaded 0.55^k | ~close |
 | Inventory gain λ | 1500 ¢ per 100% float | 0.5 × price per 100% float (different units — reconcile) | ⚠ compare |
 | Cadence | 200 ms full per-team replace on RP change | 200 ms heartbeat + event triggers, diff-based publish | ⚠ differs (full-replace vs diff) |
+
+## SNT-1 — the Synthetic Noise Taker (built 08-08; Edwin's reference numbers)
+
+Source: Edwin's `snt1_noise_taker.py` (filed in reference/). 🟡 = his
+reference value, built as given, tunable · 🔴 = conflicted, needs his
+ruling. Code: `inplay-market-maker/src/snt/config.py`.
+
+| Parameter | Value | Status | Note |
+|---|---|---|---|
+| Base arrival rate | 9 orders/hr (weight-1.0 team, OVERNIGHT) | 🟡 | his "first lever to tune" |
+| State multipliers | OVERNIGHT ×1 · PRE_KICKOFF ×6 · LIVE ×75 · POST ×4 | 🟡 | |
+| Team weight range | 0.25–4.0 (default 1.0) | 🟡 | feed from the popularity model, later |
+| Size distribution | log-normal μ=3.4 σ=0.9, clip 5–400 sh | 🟡 | median ~30 |
+| Sweep probability | 10% | 🟡 | else at-touch |
+| Impact cap | 3 ticks through the touch | 🟡 | the real damage cap (his hardening pt 4) |
+| At-touch size cap | 50% of displayed touch | 🟡 | |
+| Daily loss budget | $100,000 / team / session | 🟡 | cannot bind at LIVE (~$1.5k/hr — E32) |
+| Spread gate | 8 ticks | 🔴 | never trades §5.2 Stable ($0.10=10t); QA books 4–6t OK — E32 ruling |
+| Inventory soft cap | 1,500 sh · 80% flatten bias | 🟡 | exceeds the 1,000 short reserve — E32 |
+| Profit tilt | 0.50→0.65 ceiling, full at 10 ticks | 🟡 | flagged to compliance (E32 row) |
+| IOC substitute window | cancel after 1.5 s | 🟡 | ours — tZERO has no IOC |
+| Book staleness gate | 30 s | 🟡 | ours — the 08-08 MD evidence |
+| Reject quiet guard | 5 consecutive → 60 s quiet | 🟡 | ours — interim until reject-backoff |

@@ -1,7 +1,11 @@
 # SNT-1 — the Synthetic Noise Taker (Edwin's "market taker")
 
-> **Component:** [[market-maker/market-maker]] · **Status:** UNBUILT —
-> concept filed; blocked on E32 (mechanics) + E33/T13 (compliance)
+> **Component:** [[market-maker/market-maker]] · **Status:** ⭐ BUILT
+> 08-08 (MM PR #10, `src/snt/` — agent · pending · journal · runtime;
+> 27 tests) — NOT deployed. Production blocked on E32 (mechanics
+> rulings) + E33/T13 (compliance) + the IPLP account (Rob). QA can run
+> on the MM account, env-only switch. Numbers: the SNT-1 section of
+> [[market-maker/parameters]].
 > **Source:** Edwin's email + reference code, filed verbatim in
 > [[market-maker/reference/snt1-noise-taker-edwin-2026-07-30|reference]]
 > (`snt1_noise_taker.py`). Received at the 30-07b intake; the full
