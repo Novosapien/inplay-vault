@@ -99,6 +99,7 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 | [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with T0 (T3–T5) · busts currently refuse-and-raise (T4) |
 | [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game — not ours to build in the MM repo |
 | [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last · will own CONFIGURATION_ACTIVATION + the N19 upload page |
+| [[market-maker/systems/snt-1-noise-taker\|SNT-1 — the Market Taker]] | Edwin's house noise taker: crosses the MM's spread with random clips so every book prints trades | ⭐ **Built 08-08** (`src/snt/`, MM PR #10) · **NOT deployed** — blocked on the IPLP account, E32 rulings, E33/T13 compliance · requirements: [[market-maker/market-taker-requirements]] |
 
 ## Working Docs
 
@@ -113,6 +114,12 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 - [[market-maker/decisions]] — dated log of confirmed decisions + standard-doc supersessions
 - [[market-maker/open-questions]] — live blockers with owners (Edwin / T0 / Sport Radar / us)
 - [[market-maker/parameters]] — every tunable number: value, status, source
+- **[[market-maker/requirements]] — the MM's normative go-live list** (what MUST
+  be true), sourced and status-tracked; change it only through its dated addendum
+- **[[market-maker/market-taker-requirements]] — the same for SNT-1**, the market
+  taker. The build document for the taker phase
+- **[[market-maker/test-plan]] — the live test matrix** (lifecycle · ops ·
+  failure drills), with a status per case
 - [[market-maker/plan]] — build phases, dependencies, timeline anchors
 - [[market-maker/glossary]] — terms + equation symbols in plain English
 - [[market-maker/learnings]] — running log of distilled understanding (concepts that clicked, traps caught) — add every session

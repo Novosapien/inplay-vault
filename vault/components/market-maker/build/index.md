@@ -58,6 +58,14 @@ that reads a clock.
 | [[market-maker/build/infrastructure\|Infrastructure]] | Where it runs: the VPC, the VMs, storage, the local bench, deployment status | — |
 | [[market-maker/build/next\|Next]] | Real vs mocked vs gated, and what we build next | — |
 
+**Beside the MM, in the same repo:** SNT-1, the market taker
+(`src/snt/` — agent · pending · journal · runtime; MM PR #10, built
+08-08, not deployed). Its design is
+[[market-maker/systems/snt-1-noise-taker|the systems page]] and what it
+must satisfy is [[market-maker/market-taker-requirements]]. Separate
+process, separate account, separate journal — deliberately not inside
+the MM engine (single-writer journal + the E33 account separation).
+
 ## Where things live — the module map
 
 | Piece | Code |
