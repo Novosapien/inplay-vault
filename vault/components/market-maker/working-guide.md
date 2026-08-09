@@ -23,6 +23,9 @@ Absorb these, in this order, before touching anything:
 4. **[[market-maker/parameters]]** — every number and its status
    (✅ confirmed · 🟡 proposed · 🔴 TBD). No number gets used in code or specs
    without a row here.
+4b. **[[market-maker/requirements]]** — the normative list: what MUST be
+   true to go live, each with a source and a status. Change it only
+   through its dated addendum, never silently.
 5. **[[market-maker/plan]]** — phases, dependencies, timeline anchors.
 6. **The latest note in `sessions/`** — what happened last time, what was
    left dangling.
@@ -110,6 +113,7 @@ honest and fast — 10 minutes max:
 | Live blockers by owner | [[market-maker/open-questions]] |
 | Every tunable number + status | [[market-maker/parameters]] |
 | Build phases + dependencies | [[market-maker/plan]] |
+| **What MUST be true to go live** | [[market-maker/requirements]] |
 | Live test cases + statuses | [[market-maker/test-plan]] |
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
