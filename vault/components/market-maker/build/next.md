@@ -38,6 +38,23 @@ drills, with statuses).
 - **A systemd unit for the supervised engine** (if George keeps it
   running) — doubles as the N15 beat-jitter recorder.
 
+- **⭐ The stale-book crossing (NEW 08-09, live and ongoing):** the
+  engine's bids are marketable against the QA books' third-party stale
+  asks, so every repost TAKES liquidity — measured once at 920 shares /
+  $50,366 on COWB. The MM is supposed to rest, not take. Needs a
+  marketability guard against the live book before publishing (adjacent
+  to §5.5's unbuilt public-book checks). Changes
+  [[market-maker/build/venue|Venue]].
+- **The sell gate (NEW 08-09):** nothing subtracts LIVE RESTING SELLS
+  before drawing an ask ladder, but the venue's rule is
+  `sellable = Pos − livS` and it rejects the whole order over that.
+  Applies to the MM's ladder AND to SNT-1 (where it is mandatory).
+  Changes [[market-maker/build/venue|Venue]] and `src/snt/`.
+- **The replace churn (NEW 08-09, unexplained):** ~40 replaces/minute
+  for 15 hours with the poker stopped and supervised inputs static —
+  35,982 ORDER_REPLACED and 9,156 CANCEL_REJECTED since boot. Nothing
+  should be moving. Diagnose before the reject-backoff build.
+
 - ✅ **DONE 08-08b — SNT-1 built (MM PR #10, undeployed):** Edwin's
   noise taker venue-hardened as `src/snt/` — IOC substitute (DAY +
   1.5 s cancel), first-class rejects, economic journal (position/

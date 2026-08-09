@@ -7,6 +7,9 @@
 > note carries the narrative.
 > **Born:** 2026-08-08 (George: "we need different test cases — normal,
 > in-game, pre and post game").
+> **Securities:** [[market-maker/test-symbols]] — the ten permanent `.TEST`
+> symbols (tZERO, 08-08) and the 17 Sportradar replay games that drive
+> them. A2 below takes its game feed from that page.
 
 Status legend: ✅ passed · 🔄 ready to run · 🔧 needs a build first ·
 ⛔ blocked on someone else.
@@ -74,18 +77,22 @@ setup.
 
 ## B · Venue-ops tests
 
-### B1 — The 23:59 ET session boundary — 🔄 ready (free, nightly)
+### B1 — The 23:59 ET session boundary — ⚠ RUN 08-09: THE PREMISE IS FALSE
 
-tZERO ends its session at 23:59 ET; every resting DAY order expires as
-DONE_FOR_DAY (a venue fact we added to §8.2 but have never watched
-live).
+The premise was that tZERO ends its session at 23:59 ET and every
+resting DAY order expires as DONE_FOR_DAY (adopted 22-07 from the
+platform doc).
 
-- **Method:** leave the engine running overnight. Read the journal
-  after 00:01 ET.
-- **Pass criteria:** every resting order lands DONE_FOR_DAY (not
-  CANCELLED, no quarantine, no poison) · the engine's book state is
-  clean and empty · at the 06:00 re-open the repost happens (or the
-  gap is measured — E36's question made concrete).
+- **What happened:** the engine ran unattended from 08-08 through
+  08-09, across TWO 23:59 ET boundaries. **No `39=3` DONE_FOR_DAY
+  exists anywhere in the gateway's FIX log**, the engine journalled
+  none, and orders placed 08-08 00:31 are STILL RESTING.
+- **Verdict:** the venue fact is wrong, or the QA venue does not run a
+  session roll. The MM's DONE_FOR_DAY handling is harmless but dead
+  code. → **T14** (ask tZERO: is there a session roll, does DAY expire,
+  and does the QA environment differ from production?).
+- **Still open from the original test:** what the engine does at a real
+  roll, if one ever occurs — untestable until T14 answers.
 
 ### B2 — Venue halt / resume — ⛔ needs Hasan (or luck)
 

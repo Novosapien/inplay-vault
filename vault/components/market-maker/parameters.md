@@ -186,6 +186,8 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `LmtPerc passive band` | Max distance a passive order may sit from its own side's best | **90%** | ✅ live-decoded 07-08 | Reject texts, real venue |
 | `LmtPerc reference` | What the bands measure against | A **delayed snapshot** of the book (refresh ~minutes, not live); empty book → "No price available", ALL orders reject | 🔴 exact feed + cadence = the Hasan ask; gates the 163 empty books | 07-08 live |
 | `MPID` | The MM's tape identity | **IPLM**, driven venue-side by Account1=1797733477; retail IPLY, future BD-prop IPLP | ✅ Rob Colucci 07-08 | decisions 07-08g |
+| `test symbol scheme` | How a permanent test security is named | **Real ticker + `.TEST`** — e.g. `IPTCRAVE.TEST` (8 → 13 chars). tZERO tracks them separately; accounts can be entitled to `.TEST` symbols only. The dot is in the SYMBOL, never the `ClOrdID` | ✅ Rob Colucci 08-08 (**answers T10**) | decisions 08-08c · [[market-maker/test-symbols]] |
+| `test symbol set` | Which securities the test books run on | **10:** RAVE · BILL · COWB · LION · PACK · TEXA · JAGU · CHIE · EAGL · COMM. Chosen for Sportradar replay coverage → **17 playable games** (46 of 102 recordings carry both push `events` and REST `pbp`; all 17 live-verified 08-08) | 🟡 **4 codes unattested** (LION · TEXA · JAGU · COMM are ours, pattern-derived); provisioning pending | [[market-maker/test-symbols]] |
 
 ### Runtime clocks (03-08 design session — `mm/runtime/` is UNBUILT)
 
@@ -341,3 +343,20 @@ ruling. Code: `inplay-market-maker/src/snt/config.py`.
 | IOC substitute window | cancel after 1.5 s | 🟡 | ours — tZERO has no IOC |
 | Book staleness gate | 30 s | 🟡 | ours — the 08-08 MD evidence |
 | Reject quiet guard | 5 consecutive → 60 s quiet | 🟡 | ours — interim until reject-backoff |
+
+## Venue risk + price bands — live-verified 08-09
+
+Measured from reject texts on the real venue (decisions `2026-08-09`).
+✅ = observed directly.
+
+| Parameter | Value | Status | Note |
+|---|---|---|---|
+| Sellable quantity (side 2) | `Pos − livS` | ✅ | position minus shares already committed to LIVE RESTING SELLS. An order above it is rejected WHOLE — never partially filled |
+| Oversell reject text | `FAILSRISK[acct]: You can SELL at most N shares of SYM. Pos=P livS=L` | ✅ | the venue states its own arithmetic |
+| Flat-sell reject text | `FAILSRISK[acct]: You are not long SYM. There are NO shares to SELL.` | ✅ | the `Pos=0` case of the same rule |
+| LmtPerc passive band — EAGL | 80% above the ASK | ✅ | per-symbol, NOT global |
+| LmtPerc passive band — JETS | 90% above the ASK | ✅ | |
+| LmtPerc aggressive band — EAGL/COWB/GIAN/PATR | 3% below the BID | ✅ | |
+| LmtPerc aggressive band — STEE | 5% below the BID | ✅ | |
+| LmtPerc reference | can be CROSSED | ⚠ | EAGL observed with BID 145.25 and ASK 77.80 simultaneously → no legal sell price exists on that book at all |
+| DONE_FOR_DAY (39=3) | **never observed** | ⚠ | orders survive the 23:59 ET boundary — see T14; the 22-07 adopted "fact" is contradicted |

@@ -54,6 +54,49 @@ CFG-0003):** under active poker fire the visible ladder measured
 32–36% monotone (5.8% before; 55.6% excluding the bitten inside
 rank) — the residual scramble is the E17 remnant.
 
+## ⭐ The sell rule (venue-verified 08-09) — sellable = Pos − livS
+
+A side-2 sell is checked against **the position minus the quantity
+already committed to live resting sells**. Over that, the venue rejects
+the WHOLE order — it never part-fills to the limit, and it never opens
+a short (that needs side 5, which we do not send — E26).
+
+```
+FAILSRISK[5120866205]: You can SELL at most 50 shares of IPTCGIAN. Pos=100 livS=50
+```
+
+Consequences for this machine:
+- The ladder's ask side is bounded by inventory **and by its own
+  resting asks**. A repost that adds an ask while earlier asks still
+  rest can trip the check even though the position looks sufficient.
+- The `Pos=0` case is the familiar "You are not long … There are NO
+  shares to SELL" (07-08b) — the same rule, not a separate one.
+- ⚠ **Not yet enforced in the reconciler.** §5.9/E17 aside, nothing in
+  `quotes/` or `venue/` subtracts live resting sells before drawing an
+  ask ladder. Build item.
+
+## ⚠ The engine crosses the stale book on every repost (live 08-09)
+
+The QA books still carry third-party stale quotes far from Edwin's
+prices. The engine prices from its own valuation, not from the book, so
+its bids can be marketable against those stale asks. Observed: a COWB
+bid at 76.04 swept 8 stale levels — **920 shares, $50,366**, position
+100,930 → 101,850. The MM is TAKING liquidity while intending to rest.
+It recurs on every repost, so it is an inventory-accumulation risk, not
+a one-off. Related to §5.5's unbuilt public-book checks.
+
+## ⚠ The engine adopts any MM-prefixed order on its user id
+
+`_get_or_admit` (built so a restart can recover orders it did not
+register) admits an unregistered ack as ACTIVE — so the reconciler
+treats a hand-sent MM-prefixed order as its own and moves it. Observed
+08-09: a probe order was cancel/replaced 0.7 s later (85.00 → 76.31,
+60,000 → 2,500). **No manual probe on the MM user id is safe while the
+engine runs.** Workaround for probes: `gateway.orders.mm.new` validates
+only the ClOrdID prefix, so a different `userId`/`account` in the
+payload routes the responses to that user's subject, invisible to the
+engine.
+
 ## The reconciler (`venue/reconciler.py`)
 
 Implements **rest-until-gone** as ruled (Edwin 23-07, N10; move-size

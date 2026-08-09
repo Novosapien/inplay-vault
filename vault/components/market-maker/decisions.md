@@ -10,6 +10,114 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-08c — T10 ANSWERED: permanent test symbols exist — real ticker + `.TEST` (Rob Colucci)
+
+Direct from Rob (tZERO) to George, Slack, same day (venue facts, gospel).
+**This closes the top item on the T-list.** Full registry, the ten symbols
+and the replay games: [[market-maker/test-symbols]].
+
+- ✅ **A test symbol is the real ticker plus a `.TEST` suffix.** Rob's own
+  example: Baltimore Ravens → **`IPTCRAVE.TEST`**. Symbols go 8 → 13 chars;
+  Rob asked about length, George confirmed no problem on the Novo side.
+- ✅ **tZERO can track `.TEST` symbols separately and can create accounts
+  that are only allowed to interact with them.** This is what makes them
+  *permanent* rather than a pre-launch window — T10's "users must be
+  blocked from trading them" caveat becomes a **venue-side entitlement**,
+  not an app-side filter. The one-environment constraint stops biting.
+- ✅ **Nothing changes on order routing** (Rob, same thread): the MPID is
+  still driven by Account1 (FIX Tag 1); `Account1=1797733477` still hits
+  an IPLM MPID. Restates `2026-08-07g`.
+- ✅ **Ten teams requested** (George, same thread): BAL · BUF · DAL · DET ·
+  GB · HOU · JAX · KC · PHI · WAS. Chosen by ONE criterion — the number of
+  **Sportradar replay games playable between them**. Not brand, not market.
+  A replay exercises a ticker *pair*, so a team with no in-set opponent is
+  a dead symbol.
+- 📝 **The selection, and the finding behind it:** Sportradar's simulation
+  library is a fixed set of **102** NFL recordings, and only **46** carry
+  BOTH the push `events` feed and the REST `pbp` feed. Every 2023 recording
+  and 9 of 37 from 2024 have no push at all. `pbp` is not optional — push
+  holds no state, so a disconnect recovers by pulling `pbp`. Exhaustive
+  search over the 46 gives these ten a **17-game** matrix; an eleventh
+  ticker buys only 1–2 more. All 17 live-tested 08-08: session + `pbp` 200
+  + push connect, **17/17 pass**.
+- ⚠ **Four of the ten four-letter codes are OURS, not tZERO's** — `LION`,
+  `TEXA`, `JAGU`, `COMM` follow the observed `IPTC****` pattern but no
+  source confirms them. RAVE/BILL/COWB/PACK/CHIE/EAGL are venue- or
+  vault-attested. Nothing hardcodes the four until Rob returns them.
+- ⚠ **The blocker that survives:** do the `.TEST` books get a `UEPR`
+  reference price, or open empty? An empty book rejects everything ("No
+  price available" — the `IPTCBILL` state). Same blocker as the other 163
+  production books; see `LmtPerc reference` in [[market-maker/parameters]].
+- 📝 For contrast, the seven already-minted symbols (EAGL · PATR · BILL ·
+  GIAN · COWB · STEE · JETS) hold **one** push-capable head-to-head game
+  between them. PATR, GIAN and STEE contribute zero at this set size.
+
+## 2026-08-09 — ⭐ THE SELL RULE DECODED (live probe) · DONE_FOR_DAY never happens · the MM crosses the stale book
+
+George: "is there a way to check the app state for my user ID… now you've
+got the account ID, you can do the testing yourself." Probes run on
+George's own user account (`380030896289412728` / venue account
+`5120866205`, MPID IPLY) with his authorisation, alongside a research
+sweep of the vendor specs.
+
+- ⭐ **THE OVERSELL RULE — venue-verified, one message answers
+  everything.** A side-2 sell for more than the sellable quantity is
+  **rejected whole**. It does NOT fill up to the position and it does
+  NOT open a short. The reject states the arithmetic:
+  `FAILSRISK[5120866205]: You can SELL at most 50 shares of IPTCGIAN.
+  Pos=100 livS=50`. So **sellable = Pos − livS**, where `livS` is the
+  quantity already committed to LIVE RESTING SELLS. Control (sell 50 of
+  100 held) accepted; test (sell 150 of 100 held) rejected.
+- ✅ **This is a VENUE rule, not per-account config** (an earlier
+  hypothesis, now retracted). The MM account's 07-08b reject —
+  "You are not long IPTCBILL. There are NO shares to SELL" — is the
+  same check at `Pos=0`. The negative positions seen on user accounts
+  came from **side-5 (sell short) orders**, a different order type,
+  behaving correctly.
+- ✂ **Corrects three contradictory beliefs in the app code**
+  (all pre-existing, none venue-sourced):
+  `venueOrders.ts` — rejects whole + resting sells count as spoken-for
+  → **CORRECT, now verified**; `OrderEntrySheet.tsx` — "the venue is
+  free to fill only up to your position" → **WRONG**;
+  `buying_power.py` — "undefined… could fill against inventory that is
+  not the caller's" → the fear is unfounded, though its client-side
+  refusal remains right behaviour.
+- 📝 **SNT-1 consequence:** the sell gate is mandatory and must
+  subtract LIVE RESTING SELLS, not merely compare to the position.
+- ⚠ **DONE_FOR_DAY HAS NEVER HAPPENED — a recorded venue "fact" is
+  wrong.** No `39=3` appears anywhere in the gateway's FIX log. Orders
+  placed 08-08 00:31 survived TWO 23:59 ET boundaries and are still
+  resting. This contradicts the 22-07 platform-doc adoption ("tZERO
+  ends its session at 23:59 ET and every resting DAY order expires")
+  and removes test **B1**'s premise. The MM's DONE_FOR_DAY state
+  handling is harmless but has never fired. → new **T14**.
+- ⚠ **The MM crosses the stale book on every repost — live, ongoing.**
+  Its COWB bid at 76.04 was marketable against stale asks at
+  54.35–55.05 and **swept all 8 levels: 920 shares, $50,366**, moving
+  the position 100,930 → 101,850. The MM is TAKING liquidity while
+  intending to rest passively. Cause: the venue book still carries
+  third-party stale quotes far from Edwin's prices, and the engine
+  prices off its own valuation, not the book. → build item.
+- ⚠ **The engine ADOPTS any MM-prefixed order on its user id.** The
+  gateway requires the `MM` prefix on `gateway.orders.mm.*`
+  (`MM_PREFIX_REQUIRED`), but the engine's `_get_or_admit` path
+  (built for restart recovery) admits an unregistered ack as ACTIVE —
+  so the reconciler adopted a hand-sent probe order and cancel/replaced
+  it 0.7 s later (85.00 → 76.31, 60,000 → 2,500 shares). **No manual
+  probe on the MM user id is safe while the engine runs.**
+- ✅ **The workaround (ours, recorded):** `gateway.orders.mm.new`
+  validates only the ClOrdID PREFIX — `userId` and `account` ride in
+  the payload. So a probe can use the MM transport with a different
+  account's identity; its responses publish to `order.{thatUserId}.>`,
+  which the engine does not subscribe to, so no adoption. This is how
+  the probe ran. ⚠ Note the MM prefix makes such an order a target of
+  the account-wide dead-man sweep.
+- 📝 **The vendor OE spec does not document side 5 at all** — tag 54 is
+  enumerated `1 = Buy, 2 = Sell` only, with no short-sale marking, no
+  locate tag, and no occurrence of "short"/"borrow"/"locate". Side 5 is
+  live-verified but vendor-undocumented. `OrdRejReason` (103) has no
+  position-related value; the position rejects arrive as FAILSRISK text.
+
 ## 2026-08-08b — SNT-1 BUILT (George: "we start building it") — code complete, NOT deployed
 
 MM PR #10 (merged, main `b42aa65`): Edwin's reference rebuilt
