@@ -113,7 +113,8 @@ honest and fast — 10 minutes max:
 | Live blockers by owner | [[market-maker/open-questions]] |
 | Every tunable number + status | [[market-maker/parameters]] |
 | Build phases + dependencies | [[market-maker/plan]] |
-| **What MUST be true to go live** | [[market-maker/requirements]] |
+| **What MUST be true to go live — the MM** | [[market-maker/requirements]] |
+| **What MUST be true to go live — the taker** | [[market-maker/market-taker-requirements]] |
 | Live test cases + statuses | [[market-maker/test-plan]] |
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
