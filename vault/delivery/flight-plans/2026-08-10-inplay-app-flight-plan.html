@@ -145,7 +145,7 @@
   <h1>InPlay App Flight Plan</h1>
   <div class="stamp">
     Prepared by <span style="font-weight:700; letter-spacing:.14em; color:var(--foreground)">NOVOSAPIEN</span><br>
-    Generated 2026-08-10 13:00 BST &middot; evidence: all 21 build repositories fetched from GitHub today, reconciled against the InPlay vault (5 touchdowns digested to 7 Aug) and the partnership proposal
+    Generated 2026-08-10 14:15 BST &middot; evidence: all 21 build repositories fetched from GitHub today, reconciled against the InPlay vault (5 touchdowns digested to 7 Aug) and the partnership proposal
   </div>
 </header>
 
@@ -192,25 +192,56 @@
 
   <div class="flag"><strong>What changed since 5 August.</strong> Market maker: 88 commits, SNT-1 (the noise taker) built and merged, checkpoints and per-security quarantine in, deployed to its VM and drilled 16 of 16 on real disk. Gateway: full order book publishing, position transfer, and <strong>10 venue test symbols registered</strong>, which answers the permanent-test-symbol ask. App: Edwin UI sessions 2, 3 and 4 all landed, groups and Ranks shipped behind a flag, AdMob native fill wired. Vault: five touchdowns digested, a new Compliance section, and the IPO market structure settled. Two facts moved the plan more than the rest: <strong>the journal disk measured at ~579 events per second against ~2,100 needed</strong>, and <strong>AppLovin MAX has still not responded</strong>.</div>
 
-  <h3>Critical timeline</h3>
+  <h3>Critical timeline &middot; the dates and what has to be finished on each one</h3>
+  <p class="small muted">Not just when things happen, but what must be <strong>done</strong> by then. Every deliverable that has to be finished before the IPO appears against the date it is due. Full detail, with owners and definitions of done, on the <a href="#board">Countdown Board</a>; sized and confidence-rated on the <a href="#backlog">Backlog</a>.</p>
   <div class="card">
     <table>
-      <tr><th>Date</th><th>Event</th><th>State</th></tr>
-      <tr><td>Thu 13 Aug</td><td><strong>Live-game run 1</strong>: NFL preseason, secondary trading, TestFlight, internal traders</td><td><span class="chip committed">Committed &middot; gated on tZERO tickers</span></td></tr>
-      <tr><td>w/c 17 Aug</td><td>Scope freeze; IPO dress rehearsal (primary to close to hand-off to quoting)</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>Wed 19 Aug</td><td>NCAA price freeze: all 138 listing prices final in the app</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
-      <tr><td>Thu 20 Aug</td><td><strong>Live-game run 2</strong>: multi-game concurrency plus the market maker quoting</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>Sat 22 Aug</td><td><strong>NCAA IPO opens</strong>: 138 team companies, five-day offering</td><td><span class="chip committed">Committed &middot; the trading path is still the long pole</span></td></tr>
-      <tr><td>26 to 27 Aug</td><td>NCAA offering closes; secondary opens with the market maker quoting</td><td><span class="chip dep">Date conflict E25 &middot; needs InPlay ruling</span></td></tr>
-      <tr><td>Thu 27 Aug</td><td><strong>Live-game run 3</strong>: dress rehearsal at full cadence before real users trade</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>Sat 29 Aug</td><td>First NCAA game: real users trading a real game for the first time</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>Sat 5 to Sun 6 Sep</td><td>NFL IPO: 18 one-minute rounds per day, pre-buy book, water line</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>Mon 7 Sep</td><td>NFL secondary opens: market maker quoting all 170 names</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr><td>~10 Sep</td><td>NFL season begins: peak live-game trading, ~200ms quote cadence</td><td><span class="chip committed">Committed &middot; live-feed switch-on is a controlled change</span></td></tr>
-      <tr><td>~13 Jan 27</td><td>Season close: settlement must be flawless (built in Q1/Q2, not needed at launch)</td><td><span class="chip committed">Committed for Q2</span></td></tr>
+      <tr><th style="width:11%">Date</th><th style="width:24%">What happens</th><th>What must be finished by this date</th><th style="width:16%">State</th></tr>
+
+      <tr><td><strong>Tue 11 Aug</strong></td><td>Venue gate</td><td><strong>tZERO issues all 170 team-company tickers.</strong> Nothing below moves without this: it blocks the market maker, the taker and all three live-game runs</td><td><span class="chip dep">Blocked &middot; tZERO</span></td></tr>
+
+      <tr><td><strong>Wed 12 Aug</strong></td><td>InPlay inputs due</td><td>Taker <strong>requirements document</strong> and the <strong>taker share range and time blocks</strong> (E22), both owed by Edwin. The taker cannot be built to spec or tested without them</td><td><span class="chip dep">Blocked &middot; Edwin</span></td></tr>
+
+      <tr><td><strong>Thu 13 Aug</strong></td><td><strong>Live-game run 1</strong><br><span class="small muted">NFL preseason</span></td><td>Secondary trading proven on a real game: Sportradar probabilities in production, prices moving off real play-by-play, orders to tZERO, fills back into the app. TestFlight, internal traders. <em>No market maker on this run</em></td><td><span class="chip committed">Committed &middot; gated on 11 Aug</span></td></tr>
+
+      <tr><td><strong>Fri 14 Aug</strong></td><td>Venue gate</td><td><strong>Both MPIDs stood up and seeded</strong>: broker dealer preloaded with 1,000,000 shares per team, principal trading arm with one wallet for maker and taker</td><td><span class="chip dep">Blocked &middot; Troy, tZERO</span></td></tr>
+
+      <tr><td><strong>w/c 17 Aug</strong></td><td>Scope freeze<br>IPO dress rehearsal</td><td><strong>Advertising:</strong> the ad-carrying App Store build submitted and approved (24 to 48 hours of review, so it cannot be left later). <strong>Compliance:</strong> team naming and acronym tickers agreed with counsel and configured; app-store age rating set to 13+. <strong>Trading:</strong> opening-position hand-off defined and rehearsed (E27). Primary to close to hand-off to quoting, in one pass</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>Tue 18 Aug</strong></td><td>Engine room complete</td><td><strong>Market maker complete:</strong> quoting unattended on every named book, no intervention. <strong>Market taker complete:</strong> the IPO mandate behaviour, buying its target share with randomised size and heartbeat. <strong>Infrastructure:</strong> sizing pass finished on the gateway, NATS and Centrifugo VMs. <strong>App:</strong> first-open tour and fork screen live; short-while-long guard verified. <strong>Identity:</strong> tZERO relaxes the 18+ date-of-birth check, or Trader Light does not exist</td><td><span class="chip inflight">In flight &middot; the heaviest day on the plan</span></td></tr>
+
+      <tr><td><strong>Wed 19 Aug</strong></td><td>NCAA price freeze<br><span class="small muted">all 138 prices final</span></td><td><strong>Advertising:</strong> AdMob filling <em>every</em> ad surface in the app, fill rate and eCPM observed over a full day, on AdMob alone; under-18-safe inventory gating enforced and verified. <strong>IPO:</strong> NCAA offering engine complete, friends-and-family run passed, burst test run against the 1pm Saturday open. <strong>Scale:</strong> Centrifugo connection load test done. <strong>Compliance:</strong> language sweep complete, no SEC-regulation claims anywhere, simulated IPO throughout, Rule 255 disclaimer in place</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
+
+      <tr><td><strong>Thu 20 Aug</strong></td><td><strong>Live-game run 2</strong><br><span class="small muted">multi-game concurrency</span></td><td>Market maker quoting both sides through a full game across concurrent games. Spread widens rather than the book going dark when an input is stale. Cloud Run pre-warm rehearsed against the same spike. First run where a user can always buy and always sell</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>Fri 21 Aug</strong></td><td>Last working day<br>before the IPO</td><td><strong>Tax forms:</strong> the Avalara W-9 path live, a user can complete a W-9 and it is recorded against their account. <strong>Identity:</strong> all three trader tiers live end to end. <strong>Attribution:</strong> Kochava MMP working, including the AdMob workaround. <strong>Compliance:</strong> state-by-state clearance returned by counsel</td><td><span class="chip inflight">In flight</span></td></tr>
+
+      <tr><td><strong>Sat 22 Aug</strong><br><span class="small muted">1:00pm ET</span></td><td><strong>NCAA IPO OPENS</strong><br><span class="small muted">138 team companies</span></td><td><strong>Everything above is finished.</strong> Trading, market maker, market taker, the offering engine, advertising on AdMob, tax forms, the three trader tiers, the compliance sweep and the infrastructure sizing. From here only defect fixes merge</td><td><span class="chip committed">Committed &middot; the trading path is still the long pole</span></td></tr>
+
+      <tr><td><strong>Mon 24 Aug</strong></td><td>Scale ramp</td><td><strong>Group commit on the market maker journal.</strong> Measured need: ~579 events per second today against ~2,100 for the 200ms in-game cadence. Required before the season, not before the IPO</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>26 to 27 Aug</strong></td><td>NCAA offering closes<br>secondary opens</td><td>Market maker quoting all 138 NCAA names from the open. The taker's IPO inventory handed across and managed in secondary</td><td><span class="chip dep">Date conflict E25 &middot; needs InPlay ruling</span></td></tr>
+
+      <tr><td><strong>Thu 27 Aug</strong></td><td><strong>Live-game run 3</strong><br><span class="small muted">dress rehearsal</span></td><td>Maker and taker both running, 24/7 flow overnight, ads serving, notifications firing. An unattended overnight session ending in a clean morning book, then the go or no-go call for 29 Aug</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>Fri 28 Aug</strong></td><td>Money out</td><td><strong>Payment provider signed</strong>, or the manual rail is formally the plan for the first prize cycle</td><td><span class="chip dep">Blocked &middot; Edwin, Charles</span></td></tr>
+
+      <tr><td><strong>Sat 29 Aug</strong></td><td><strong>First NCAA game</strong><br><span class="small muted">real users, real game</span></td><td>Payout safety net live: qualified winners and owed amounts visible in the app whether or not the provider has signed</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>5 to 6 Sep</strong></td><td>NFL IPO</td><td>18 one-minute rounds per day, pre-buy book, water line. NFL prices frozen three days ahead</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>Mon 7 Sep</strong></td><td>NFL secondary opens</td><td>Market maker quoting all 170 names concurrently, the first time the full universe is live at once</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>~10 Sep</strong></td><td>NFL season begins</td><td>Peak live-game trading at ~200ms cadence, which is what the group-commit work on 24 Aug exists to support. Live-feed switch-on is a separately approved change</td><td><span class="chip committed">Committed</span></td></tr>
+
+      <tr><td><strong>Sep to Nov</strong></td><td>Season running</td><td>Earnings report engine live (first cycle mid-September), micro-challenges wrapper for the campus term, analyst portal for the influencer channel, notifications at season volume</td><td><span class="chip committed">Committed for Q1</span></td></tr>
+
+      <tr><td><strong>~13 Jan 27</strong></td><td>Season close</td><td>Season-end settlement: longs credited, shorts force-closed, final leaderboard, prize payouts at scale and 1099s. Must be flawless, so it is built and rehearsed across Q1 and Q2</td><td><span class="chip committed">Committed for Q2</span></td></tr>
     </table>
-    <p class="small muted" style="margin-top:6px">Preseason fixtures for runs 2 and 3 are the Thursday slots; exact games to be named by InPlay, see the Countdown Board.</p>
+    <p class="small muted" style="margin-top:8px">Preseason fixtures for runs 2 and 3 are the Thursday slots; the exact games are still to be named by InPlay. Dates in bold with a blocked state are not late by our hand: each is held by tZERO, Edwin or counsel, and is chased daily.</p>
   </div>
+
+  <div class="flag"><strong>Read the 18th and the 19th together.</strong> They carry the market maker, the market taker, the whole advertising stack, the offering engine and the infrastructure sizing, in two days, three days before the IPO. That concentration is the single biggest schedule risk on the plan, and it exists because the 11th and 14th are held by tZERO. Every day those venue gates slip pushes that pile closer to the 22nd, and the pile does not get smaller.</div>
 
   <h3>Flight plan &middot; the next two months</h3>
   <div class="card">
@@ -373,7 +404,7 @@
 
   <p class="small muted" style="margin-top:18px"><strong>Small print.</strong> Quarter frame is launch-anchored: Q1 starts 23 Aug 2026 (the day after the NCAA IPO opens) and quarters run three months each to 22 Aug 2027; the frame stays stable between reports. Sources, reconciled 10 Aug 2026: all 21 build repositories fetched from GitHub the same day (market maker, trading service, FIX gateway, app, admin panels, websites), the InPlay vault at commit <code>2a0b581</code> with five touchdowns digested through 7 Aug and a new Compliance section, and the partnership proposal. Logos: InPlay from the vault brand folder; Novosapien from the corporate brand set. This file lives in a dated folder and is updated in place during the day; a new dated folder opens on the next working session, so the folder series is the audit trail.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- =========================== COUNTDOWN BOARD =========================== -->
@@ -522,7 +553,7 @@
     <p class="muted">Red items are not late by our hand: each one is waiting on tZERO, AppLovin, Sportradar, counsel or an InPlay decision. They are listed with owners so the chase is visible rather than assumed.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ KEY RELEASES ============================ -->
@@ -624,7 +655,7 @@
 
   <div class="flag"><strong>Scope-add protocol is live.</strong> Any new ask before 22 August gets a written answer in this format: its slot after launch (the default), or what it displaces from the must-land list plus which risk family it raises and by how much. Agentic speed makes late adds possible; it does not make them safe.</div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ NEXT 8 WEEKS ============================ -->
@@ -724,7 +755,7 @@
     <p class="small muted" style="margin-top:6px">Beyond November the plan runs at quarter level: see the Q2 to Q4 pages. As each key date passes, the weekly window rolls forward and the next four weeks gain this level of detail.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q1 ================================ -->
@@ -779,7 +810,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q2 ================================ -->
@@ -834,7 +865,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q3 ================================ -->
@@ -896,7 +927,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q4 ================================ -->
@@ -948,7 +979,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== BACKLOG ============================== -->
@@ -1105,7 +1136,7 @@
 
   <p class="small muted">Triangle notes: repos and vault agree throughout the pack; the one standing document conflict is E25/E24 inside InPlay's own Requirements v2 material, flagged on the Key Releases page as a decision, not a build item.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-10 14:15 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <script>
