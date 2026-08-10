@@ -175,6 +175,7 @@
   <a href="#q2">Q2 &middot; Dec to Feb 27</a>
   <a href="#q3">Q3 &middot; Mar to May 27</a>
   <a href="#q4">Q4 &middot; Jun to Aug 27</a>
+  <a href="#backlog">Backlog</a>
   <a href="#ledger">Module Ledger</a>
 </nav>
 
@@ -948,6 +949,128 @@
   </div>
 
   <footer>InPlay App Flight Plan &middot; generated 2026-08-10 13:00 BST &middot; prepared by Novosapien</footer>
+</section>
+
+<!-- ============================== BACKLOG ============================== -->
+<section id="backlog" class="page">
+  <h2>Backlog</h2>
+  <p class="lede">Every piece of work not yet delivered, in one ordered list, with a size and a confidence against each. This is the list the weekly review runs down and the list InPlay re-prioritises against. Nothing is hidden: items InPlay has asked for and we have not committed to appear here as loaded, not as promises.</p>
+
+  <div class="card" style="border-left:4px solid var(--primary)">
+    <table class="small" style="margin:0">
+      <tr>
+        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-10 13:40 BST</span></td>
+        <td style="border:0; width:33%"><strong>Evidence base</strong><br><span class="muted">21 repositories fetched 10 Aug; vault at <code>a429e31</code>; touchdowns to 7 Aug</span></td>
+        <td style="border:0"><strong>Next regeneration</strong><br><span class="muted">At the next weekly review, or on any accepted scope change</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="grid c3">
+    <div class="card kpi hot"><div class="n">30 items</div><div class="l">Launch band: must land before or with the 22 Aug IPO</div></div>
+    <div class="card kpi"><div class="n">17 items</div><div class="l">Q1 band: the season, September to November</div></div>
+    <div class="card kpi"><div class="n">13 items</div><div class="l">Later or deferred, including 4 loaded by InPlay and not yet committed</div></div>
+  </div>
+
+  <h3>How to read the sizing and the confidence</h3>
+  <div class="card small">
+    <p><strong>Size</strong> uses the same frame as the quarter slots: <strong>large</strong> is a multi-day build with real unknowns, <strong>medium</strong> is a day or two of focused work, <strong>small</strong> is hours. Size is the build, not the wait: an item can be small and still take a fortnight if it is queued behind someone else.</p>
+    <p style="margin-top:6px"><strong>Confidence</strong> is where the honesty lives. <span class="chip delivered">High</span> means we have built the like of it before and the unknowns are named. <span class="chip attempting">Medium</span> means the shape is clear but the refinement is not. <span class="chip risk">Low</span> means we are estimating something we have not yet opened, and the number will move. Standing up a feature is hours; making it dependable is where the time goes, and confidence tracks that second half, not the first.</p>
+    <p style="margin-top:6px" class="muted">Blocked items carry no confidence rating, because the estimate is meaningless until the dependency clears. They are listed with the name of whoever holds them.</p>
+  </div>
+
+  <!-- ---------- LAUNCH BAND ---------- -->
+  <h3>Band 1 &middot; Launch, on or before 22 August</h3>
+  <p class="small muted">Ordered by what blocks the most behind it. Everything here is <strong>committed</strong> unless the status says otherwise. These are the same items as the Countdown Board, sized.</p>
+  <div class="card">
+    <table class="board">
+      <tr><th style="width:5%">#</th><th style="width:28%">Item</th><th style="width:9%">Size</th><th style="width:12%">Confidence</th><th>Note</th><th style="width:11%">Target</th></tr>
+      <tr class="blocked"><td class="pos">1</td><td><strong>tZERO team-company tickers</strong></td><td>n/a</td><td><span class="chip dep">tZERO</span></td><td>All 170 in the venue. Blocks the market maker, the taker and all three live-game runs</td><td class="due">11 Aug</td></tr>
+      <tr class="blocked"><td class="pos">2</td><td><strong>The two MPIDs, seeded</strong></td><td>n/a</td><td><span class="chip dep">Troy, tZERO</span></td><td>Broker dealer with 1,000,000 shares per team; principal trading arm with one wallet</td><td class="due">14 Aug</td></tr>
+      <tr class="blocked"><td class="pos">3</td><td>Taker share range and time blocks (E22)</td><td>n/a</td><td><span class="chip dep">Edwin</span></td><td>Without the numbers the taker cannot be built to spec or tested</td><td class="due">12 Aug</td></tr>
+      <tr class="blocked"><td class="pos">4</td><td>Taker requirements document</td><td>n/a</td><td><span class="chip dep">Edwin</span></td><td>Acknowledged as owed on 7 Aug</td><td class="due">12 Aug</td></tr>
+      <tr><td class="pos">5</td><td><strong>Market maker quoting unattended</strong></td><td>Large</td><td><span class="chip attempting">Medium</span></td><td>Engine is built and drilled; the remaining work is connections, scheduling and deployment, which is exactly the part that surprises</td><td class="due">18 Aug</td></tr>
+      <tr><td class="pos">6</td><td><strong>Taker IPO mandate behaviour</strong></td><td>Medium</td><td><span class="chip risk">Low</span></td><td>SNT-1 exists; the primary-window buying pattern does not. Low confidence until item 3 lands</td><td class="due">18 Aug</td></tr>
+      <tr><td class="pos">7</td><td><strong>Group commit on the MM journal</strong></td><td>Large</td><td><span class="chip attempting">Medium</span></td><td>Measured need: ~579 events/s today against ~2,100 for the 200ms cadence. Designed, not built</td><td class="due">24 Aug</td></tr>
+      <tr><td class="pos">8</td><td>NCAA offering engine + friends-and-family run</td><td>Large</td><td><span class="chip attempting">Medium</span></td><td>Load and allocation verified end to end under a burst</td><td class="due">19 Aug</td></tr>
+      <tr class="blocked"><td class="pos">9</td><td>Opening-position hand-off (E27)</td><td>Medium</td><td><span class="chip dep">InPlay owner</span></td><td>Someone must publish each team's day-one book to the market maker</td><td class="due">17 Aug</td></tr>
+      <tr><td class="pos">10</td><td><strong>Live-game run 1</strong>, wiring</td><td>Medium</td><td><span class="chip attempting">Medium</span></td><td>Gated on item 1. Secondary trading on a real preseason game</td><td class="due">13 Aug</td></tr>
+      <tr><td class="pos">11</td><td><strong>Live-game run 2</strong>, concurrency plus MM</td><td>Medium</td><td><span class="chip attempting">Medium</span></td><td>First run where a user can always buy and always sell</td><td class="due">20 Aug</td></tr>
+      <tr><td class="pos">12</td><td><strong>Live-game run 3</strong>, dress rehearsal</td><td>Medium</td><td><span class="chip attempting">Medium</span></td><td>Unattended overnight, ads serving, go or no-go for 29 Aug</td><td class="due">27 Aug</td></tr>
+      <tr><td class="pos">13</td><td><strong>AdMob across every ad surface</strong></td><td>Medium</td><td><span class="chip delivered">High</span></td><td>Units exist and serve in the lab; this is placement and observation, not new integration</td><td class="due">19 Aug</td></tr>
+      <tr><td class="pos">14</td><td>Ad-carrying App Store release</td><td>Small</td><td><span class="chip delivered">High</span></td><td>24 to 48 hours of review. Small build, unmovable wait</td><td class="due">17 Aug</td></tr>
+      <tr><td class="pos">15</td><td>Kochava MMP, including the AdMob workaround</td><td>Medium</td><td><span class="chip risk">Low</span></td><td>No direct AdMob integration exists. The workaround has not been opened yet</td><td class="due">21 Aug</td></tr>
+      <tr><td class="pos">16</td><td>Under-18-safe ad gating</td><td>Small</td><td><span class="chip attempting">Medium</span></td><td>Enforcement is per network and has to be verified by inspection, not assumed</td><td class="due">19 Aug</td></tr>
+      <tr><td class="pos">17</td><td><strong>Three trader tiers</strong></td><td>Large</td><td><span class="chip attempting">Medium</span></td><td>Two Persona paths plus tier-aware gating throughout the app</td><td class="due">21 Aug</td></tr>
+      <tr class="blocked"><td class="pos">18</td><td>tZERO relaxes the 18+ date-of-birth check</td><td>n/a</td><td><span class="chip dep">tZERO</span></td><td>Until it lands, Trader Light cannot hold a wallet and does not exist</td><td class="due">18 Aug</td></tr>
+      <tr><td class="pos">19</td><td><strong>First-open tour and fork screen</strong></td><td>Medium</td><td><span class="chip delivered">High</span></td><td>Edwin's non-negotiable. Front-end only, which is the fast half</td><td class="due">18 Aug</td></tr>
+      <tr><td class="pos">20</td><td>Avalara W-9 embed</td><td>Small</td><td><span class="chip attempting">Medium</span></td><td>Vendor sizes it at a few hours; the landing page and the completion record are ours</td><td class="due">21 Aug</td></tr>
+      <tr><td class="pos">21</td><td>Payout safety net, owed amounts visible</td><td>Medium</td><td><span class="chip delivered">High</span></td><td>Protects the first prize cycle whether or not the provider signs</td><td class="due">29 Aug</td></tr>
+      <tr class="blocked"><td class="pos">22</td><td>Payment provider signed</td><td>n/a</td><td><span class="chip dep">Edwin, Charles</span></td><td>Merchant application reassigned to Edwin; the provider's portal cannot transfer one</td><td class="due">28 Aug</td></tr>
+      <tr><td class="pos">23</td><td><strong>VM sizing pass</strong>, gateway, NATS, Centrifugo</td><td>Medium</td><td><span class="chip attempting">Medium</span></td><td>Three machines sized for a demo. Needs headroom targets, not guesses</td><td class="due">18 Aug</td></tr>
+      <tr><td class="pos">24</td><td><strong>Centrifugo connection load test</strong></td><td>Medium</td><td><span class="chip risk">Low</span></td><td>Per-instance connection limit has never been measured. This is the one that breaks first if the campaigns work</td><td class="due">19 Aug</td></tr>
+      <tr><td class="pos">25</td><td>IPO-open burst test on the offering engine</td><td>Medium</td><td><span class="chip attempting">Medium</span></td><td>Everyone arrives at 1pm ET on the Saturday. An allocation failure is a fairness dispute</td><td class="due">19 Aug</td></tr>
+      <tr><td class="pos">26</td><td>Cloud Run pre-warm rehearsal</td><td>Small</td><td><span class="chip delivered">High</span></td><td>Configured but never exercised against a real spike. Fold into run 2</td><td class="due">20 Aug</td></tr>
+      <tr><td class="pos">27</td><td>Language compliance sweep</td><td>Small</td><td><span class="chip delivered">High</span></td><td>No SEC-regulation claims, simulated IPO throughout, Rule 255 disclaimer present</td><td class="due">19 Aug</td></tr>
+      <tr><td class="pos">28</td><td>Team naming and acronym tickers</td><td>Small</td><td><span class="chip delivered">High</span></td><td>A config change in the app once counsel agrees the convention</td><td class="due">17 Aug</td></tr>
+      <tr><td class="pos">29</td><td>App-store age rating at 13+</td><td>Small</td><td><span class="chip delivered">High</span></td><td>Both stores, so parental controls can block upstream</td><td class="due">17 Aug</td></tr>
+      <tr><td class="pos">30</td><td>Short-while-long guard verified in the app</td><td>Small</td><td><span class="chip delivered">High</span></td><td>Rule confirmed 29 July; the enforcement path needs a test</td><td class="due">18 Aug</td></tr>
+    </table>
+  </div>
+
+  <!-- ---------- Q1 BAND ---------- -->
+  <h3>Band 2 &middot; Q1, the season (September to November)</h3>
+  <p class="small muted">Committed items are P1 and sit in the quarter's slot frame. Attempting items are genuine effort with no guarantee. Nothing here is needed for the IPO to succeed.</p>
+  <div class="card">
+    <table class="board">
+      <tr><th style="width:5%">#</th><th style="width:28%">Item</th><th style="width:9%">Size</th><th style="width:12%">Level</th><th>Note</th><th style="width:11%">Window</th></tr>
+      <tr><td class="pos">31</td><td><strong>Earnings report engine</strong></td><td>Large</td><td><span class="chip committed">P1</span></td><td>The weekly tradable event: batched release, report card, off-field engine, chart annotation, alerts. Build opens w/c 31 Aug, first live cycle mid-September</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">32</td><td>Fill and price notifications at season volume</td><td>Medium</td><td><span class="chip committed">P1</span></td><td>Working today; needs to survive an NCAA Saturday</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">33</td><td>Withdrawals, owed amounts and the manual rail</td><td>Medium</td><td><span class="chip committed">P1</span></td><td>Carries the first prize cycle if the provider is late</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">34</td><td><strong>Micro-challenges, the product wrapper</strong></td><td>Medium</td><td><span class="chip committed">P1</span></td><td><strong>Less work than assumed.</strong> Groups, usernames, share codes, group-scoped leaderboards and subscription tokens already shipped on 4 Aug. What is missing is join mechanics and the campus-facing wrapper</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">35</td><td><strong>Analyst portal and ingestion</strong></td><td>Medium</td><td><span class="chip committed">P1</span></td><td>The Analyst tab is live and empty. Six to ten analysts submitting weekly, and email is not workable. This gates the influencer channel, so it is earlier than its size suggests</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">36</td><td>Ticker clickable and configurable</td><td>Small</td><td><span class="chip committed">P1</span></td><td>Cody's hamster wheel: click a team, land on its page, trade it. Cap around 20 entries</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">37</td><td>Key players from the Sportradar depth chart</td><td>Small</td><td><span class="chip committed">P1</span></td><td>Replaces the naive top-four pull that Jared caught</td><td class="due">Sep</td></tr>
+      <tr><td class="pos">38</td><td>Research subscription and the payment rail</td><td>Large</td><td><span class="chip attempting">P2</span></td><td>Third-party provider, not app-store billing, plus in-app gating. Edwin: week two of the NFL is acceptable</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">39</td><td>Watch Mode as a paid surface</td><td>Large</td><td><span class="chip attempting">P2</span></td><td>Premium versus ad-inventory tension is still unresolved by InPlay</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">40</td><td>Rewarded video, 30 seconds for 100 InPlay dollars</td><td>Small</td><td><span class="chip attempting">P2</span></td><td>Proposed 7 Aug, not scoped. Overlaps the education reward mechanic</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">41</td><td>AppLovin MAX, if they ever respond</td><td>Medium</td><td><span class="chip attempting">P2</span></td><td>Fill-rate and yield upgrade, no longer a dependency</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">42</td><td>Third SSP (Smart) onboarding</td><td>Medium</td><td><span class="chip attempting">P2</span></td><td>Cap stays at three networks in the first three months</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">43</td><td>Full in-app W-9 SDK</td><td>Medium</td><td><span class="chip attempting">P2</span></td><td>User never leaves the app. Deliberately deferred from launch</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">44</td><td>NBA challenge stand-up</td><td>Large</td><td><span class="chip attempting">P2</span></td><td>Where the load-balancing algo returns, dropped from football season 1</td><td class="due">Nov</td></tr>
+      <tr><td class="pos">45</td><td>MM ops read-only dashboard</td><td>Medium</td><td><span class="chip attempting">P2</span></td><td>Parameters, orders, positions, P&amp;L. Kevin likely operates it</td><td class="due">Oct</td></tr>
+      <tr><td class="pos">46</td><td>Education intermediate and expert tiers</td><td>Large</td><td><span class="chip attempting">P2</span></td><td>Beginner tier delivered; 36 modules across three tiers is the full shape</td><td class="due">Nov</td></tr>
+      <tr><td class="pos">47</td><td>Season-end settlement</td><td>Large</td><td><span class="chip committed">P1, Q2</span></td><td>Must be flawless well before ~13 January. Built in Q1 and Q2, rehearsed early</td><td class="due">Dec</td></tr>
+    </table>
+  </div>
+
+  <!-- ---------- LATER AND LOADED ---------- -->
+  <h3>Band 3 &middot; Later, deferred, and loaded by InPlay</h3>
+  <p class="small muted">Loaded items are things InPlay has asked for that carry no commitment yet. They are listed so nothing is quietly lost, which is the point of writing them down rather than remembering them.</p>
+  <div class="card">
+    <table class="board">
+      <tr><th style="width:5%">#</th><th style="width:28%">Item</th><th style="width:9%">Size</th><th style="width:12%">Level</th><th>Note</th><th style="width:11%">Window</th></tr>
+      <tr><td class="pos">48</td><td><strong>Back-test lab</strong></td><td>Large</td><td><span class="chip dropped">Loaded</span></td><td>Edwin's prototype: build two to five criteria into a strategy and run it over a season against reconstructed historical share prices. George: the UI is days, the backend is the deep part of the iceberg. Explicitly not before launch</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">49</td><td>Pre-IPO indication of interest</td><td>Medium</td><td><span class="chip dropped">Loaded</span></td><td>Queue orders before the window opens against a shares-spoken-for bar. Asked 31 July, scoping owed. If it lands before 22 Aug it displaces something from band 1</td><td class="due">Decision</td></tr>
+      <tr><td class="pos">50</td><td>Own win-probability model (NFLverse)</td><td>Large</td><td><span class="chip dropped">Loaded</span></td><td>Replaces the Sportradar dependency with proprietary IP. Not before launch by George's assessment; Edwin attempting an interim version himself</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">51</td><td>Proprietary price feed as a data product</td><td>Large</td><td><span class="chip p4">P4 horizon</span></td><td>Licensing the price feed to sportsbooks and prediction markets. Strategy, not a build item, until there is a season of data behind it</td><td class="due">2027</td></tr>
+      <tr><td class="pos">52</td><td>Third space and community chat</td><td>Large</td><td><span class="chip dropped">Deferred</span></td><td>Deferred 6 July. Activation threshold still needs a number from InPlay; Discord is the interim</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">53</td><td>MM parameter controls beyond read-only</td><td>Medium</td><td><span class="chip dropped">P3</span></td><td>Held out of v1 by Edwin's ruling</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">54</td><td>Groups and leagues, the richer social layer</td><td>Large</td><td><span class="chip dropped">Loaded</span></td><td>From Jared's feedback, 24 July. Distinct from micro-challenges: influencer-hosted competitive groups on the GameStock model</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">55</td><td>Streak system</td><td>Medium</td><td><span class="chip dropped">Loaded</span></td><td>Also from Jared. A branch exists in the app repo; no commitment attached</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">56</td><td>Watchlists distinct from favourites</td><td>Medium</td><td><span class="chip dropped">Loaded</span></td><td>Open since 20 July. Needs a product ruling on the semantics before it is worth building</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">57</td><td>Education AI chatbot</td><td>Large</td><td><span class="chip dropped">Phase 2</span></td><td>Deferred by decision; needs guardrails and a token-burn design</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">58</td><td>Support and maintenance, designed agentically</td><td>Large</td><td><span class="chip dropped">Loaded</span></td><td>Brett's 29 July flag: build it as automation from the start rather than retrofitting onto a human rota. Deliberately not rushed before launch</td><td class="due">Q1 to Q2</td></tr>
+      <tr><td class="pos">59</td><td>Kevel for moment-based direct sponsorship</td><td>Large</td><td><span class="chip dropped">P3</span></td><td>Phase 2 of the direct-sold motion, once a brand owns touchdowns for a team</td><td class="due">Q2</td></tr>
+      <tr><td class="pos">60</td><td>FINRA live-production track</td><td>Large</td><td><span class="chip p4">P4 horizon</span></td><td>Real-money production, worked back three to four months from a ~February to March 2027 target</td><td class="due">2027</td></tr>
+    </table>
+  </div>
+
+  <div class="flag"><strong>The rule that keeps this list honest.</strong> Anything InPlay wants pulled into band 1 before 22 August displaces something already in it. The displacement is named, written into the next version of this page, and carries a risk statement. Nothing moves silently, in either direction, and an item leaving band 1 always lands somewhere visible rather than disappearing.</div>
+
+  <p class="small muted">Backlog generated 2026-08-10 13:40 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
+
+  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-10 13:40 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== LEDGER ============================== -->

@@ -15,7 +15,7 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
-| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown** and a **Countdown Board**: one cross-team must-land list covering the engine room, the **three live-game proving runs** (13, 20, 27 Aug), advertising on **AdMob alone** (AppLovin MAX has not responded), tax forms and payouts, identity and compliance, the **scale ramp**, and **go to market**. Evidence refreshed from all 21 repos |
+| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown**, a **Countdown Board**, and a **Backlog** page (60 items in three bands, sized and confidence-rated, generated 13:40 BST): one cross-team must-land list covering the engine room, the **three live-game proving runs** (13, 20, 27 Aug), advertising on **AdMob alone** (AppLovin MAX has not responded), tax forms and payouts, identity and compliance, the **scale ramp**, and **go to market**. Evidence refreshed from all 21 repos |
 | 2026-08-05 | [flight-plans/2026-08-05-inplay-app-flight-plan.html](flight-plans/2026-08-05-inplay-app-flight-plan.html) | 17 days to the NCAA IPO; launch mode active; trading path is the long pole |
 
 ## The Countdown Board (added 2026-08-10)
