@@ -2,6 +2,58 @@
 
 > **Project:** [[index]]
 
+## 2026-08-10: Five touchdowns digested, and a new Compliance section
+
+Processed the 27 July → 7 August touchdown block ([[27-07-2026-touchdown]],
+[[29-07-2026-touchdown]], [[31-07-2026-touchdown]], [[03-08-2026-touchdown]],
+[[07-08-2026-touchdown]]). Three weeks of calls, two weeks from the IPO.
+
+**A new [[compliance/compliance|Compliance]] section.** The regulatory
+constraints had been scattered through meeting notes; they now have a home, with
+[[compliance/regulatory-positioning]] (the securities-not-gambling argument, the
+SEC filing and gun-jumping risk, Rule 255, the Kalshi litigation, state-by-state
+exposure) and [[compliance/eligibility-and-age-gating]] (who may hold which
+account and what they may win). Eight live build constraints are listed, from
+"never say regulated by the SEC" to "non-KYC users only see under-18-safe ads".
+
+**Onboarding is now three tiers, not one.** KYC was killing the funnel, and
+international students can never qualify for cash anyway, so
+[[customer-onboarding/customer-onboarding]] splits into **Trader Full** (US tax
+resident, 18+, full KYC, cash prizes), **Trader Medium** (international, KYC'd,
+no cash) and **Trader Light** (email only, 13+, no cash). Everyone can trade —
+it is a simulator. One hard blocker: tZERO's onboarding API still demands a
+DOB of 18+, so Trader Light cannot be allocated a wallet until they relax it.
+Ahead of all three sits Edwin's non-negotiable **first-open explainer and fork
+screen**, because today a referred user's first sight of the app is a stadium
+picture that explains nothing.
+
+**The IPO's market structure is settled.** [[ipo-module/ipo-module]] and
+[[market-maker/market-maker]] both re-based: a **broker-dealer MPID** holds and
+sells the whole **1,000,000-share-per-team** issuance, and the **taker algo
+buys ≥600,000** of it with randomised sizing and timing, purely so that no team
+visibly fails to sell. The maker never touches the primary. NCAA opens for five
+days, NFL for two, and the load-balancing algo is dropped until the NBA in
+October. Prices publish early via OTA and **freeze three days out**.
+
+**The valuation chain is confirmed end to end.** The Sport Radar probabilities
+contract amendment is signed at no extra cost and live in production, closing
+the S1 blocker that had no input at all. We poll at **500ms in-game**; the RP
+formula gained its missing term (the in-game leg is a **delta from the kickoff
+probability**, not the raw probability). Edwin also settled a real design worry:
+the MM dragging price back toward the reference price is not a bug, it is how
+every market works.
+
+**Trading works end to end** into tZERO, with fills, partial fills, shorts and
+notifications ([[trading/trading]]). The **Android app is live**. AdMob is
+serving, with an SSP ladder capped at three networks and **Kochava** picked as
+the MMP. **Avalara** is chosen for W-9 handling; the payout processor is still
+the open gap. The app has been restructured into Teams / League / Schedule /
+Games tabs with a live order book on the team page.
+
+**Flagged for focused sessions, not written here:** micro-challenges and private
+leaderboards for universities and frats; the strategy **back-test lab**; and the
+**analyst portal** that the empty Analyst tab needs.
+
 ## 2026-07-30: SNT-1 Synthetic Noise Taker
 
 Edwin introduced a **second house agent** for the Challenge and sent a spec-quality reference implementation, now processed into the market-maker component: [[market-maker/systems/synthetic-noise-taker]] (code safe-copied to `sources/snt1_noise_taker.py`).

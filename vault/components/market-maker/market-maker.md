@@ -2,7 +2,7 @@
 
 > **Vision:** [[vision]]
 > **Date:** 2026-07-20 · restructured 2026-07-21 · v1 model set 2026-07-23
-> **Status:** v1 model set (23-07 MM call) — **another MM call expected**; E11 settlement + E12 NCAA still unasked
+> **Status:** v1 model set (23-07) · **IPO market structure settled + valuation inputs confirmed (27-07 → 07-08 touchdown block)** · running end to end on a single pass, no orders sent yet · **13 Aug dry run** · E11 settlement + E12 NCAA still unasked
 > **Owner:** Kevin Murray (Head Execution Trader) / George Westbrook (engineering) / Edwin (co-build, domain expertise)
 > **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
 
@@ -31,7 +31,7 @@ Its jobs, in priority order for the trading challenge (profit-seeking is
 explicitly at the bottom during the challenge):
 
 1. **Maintain stable, orderly market conditions** — two-sided liquidity in every market
-2. **Guarantee IPO fill** — warehouse unsold primary-offering float so no offering reads as zero sales (see [[ipo-module/ipo-module]])
+2. **Guarantee IPO fill** — ensure no offering reads as zero sales (see [[ipo-module/ipo-module]]). ⚠ **Re-based 31-07 / 03-08:** this is now done by the **taker algo buying from a separate broker-dealer MPID**, not by the MM warehousing float. The maker does not participate in the primary at all. See the 27-07 → 07-08 block in [[market-maker/decisions]]
 3. **Generate market data** — the challenge run produces the behavioural dataset used to model risk tolerance, spread tightness, and depth, and to pitch production market makers
 
 In production the hierarchy flips: if InPlay becomes its own market maker
@@ -135,7 +135,9 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
   but ships in the app.
 - **[[earnings-report/earnings-report|Earnings Report]] owns:** the off-field
   EST/ACT mechanics that feed the valuation engine's off-field term.
-- **[[ipo-module/ipo-module|IPO Module]] owns:** primary issuance; the MM's
-  role there is fill guarantee / float warehousing (max clips ~50k,
-  guaranteeing ~35–50% of every float — mechanics open on the tZERO ledger side).
+- **[[ipo-module/ipo-module|IPO Module]] owns:** primary issuance. **Re-based
+  03-08:** the issuance sits in a separate **broker-dealer MPID** that holds and
+  sells 1,000,000 shares per team; the **taker algo** buys ≥600,000 of them per
+  team with randomised sizing. The maker is absent from the primary entirely.
+  Supersedes the 15-07 float-warehousing model (~50k clips, ~35–50% of float).
 - **[[architecture/open-questions]]** tracks the MM rows in the global list.

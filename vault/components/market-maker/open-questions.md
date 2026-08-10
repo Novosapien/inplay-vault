@@ -5,13 +5,19 @@
 > tZERO call. Global architecture questions live in
 > [[architecture/open-questions]]; this is the MM-specific working list.
 
-**Next scheduled venues:** tZERO tech calls Tue + Thu · **another MM call with
-Edwin expected** (the 23-07 call never reached E11/E12; George emailing him
-the anchor doc).
+**Next scheduled venues:** tZERO tech calls Tue + Thu · Mon/Wed/Fri touchdowns
+· **13 Aug dry run** (secondary trading on a live preseason game).
 
-**Next-call priority (set 23-07):** E11 settlement → E12 NCAA scope → E14
-float basis → E16 always-on trading → N14 fill-response walk-through → E1
-$/win sign-off. Asked as **questions**.
+**Next-call priority (reset 10-08 after the 27-07 → 07-08 block):** T13 tickers
+(blocks all order testing) → T12 the two MPIDs → E19 taker requirements doc →
+E20 daily-report schema → E22 taker share range + time blocks → E11 settlement
+→ E12 NCAA scope → E14 float basis. Asked as **questions**.
+
+> **What the 27-07 → 07-08 block changed:** the IPO market structure is settled
+> (two MPIDs, taker as primary buyer, load-balancing algo dropped), the
+> valuation input chain is confirmed end to end (SR probabilities contract
+> signed, poll at 500ms, RP formula agreed), and E11/E12 are **still unasked**
+> after three more calls. See [[market-maker/decisions]].
 
 > **Stance (George, 22-07): we ask — we do not propose.** Parameter values and
 > deferred math are InPlay's remit, not ours. The placeholder constants in
@@ -51,7 +57,7 @@ $/win sign-off. Asked as **questions**.
 | E1 | **Sign off $5 per win** — the client's own price sheet works out to: each expected win adds **$5.00** to the share price. Confirm it, and say whether NCAA uses the same number | Valuation | 🟡 Decoded — needs sign-off |
 | E2 | ~~Off-field: which number goes into the price?~~ **✅ RESOLVED 23-07:** Edwin's **popularity index** — ~$14–30 per team, static at the start, already inside the NFL IPO prices, refreshed in the **Wednesday data drop**. Residual: how the EST/ACT earnings mechanic interacts with it long-term — deferred | Valuation | ✅ Resolved (residual deferred) |
 | E3 | **Opening prices** — who calculates each team's starting price at IPO, and from what? (NFL sheet exists; NCAA owed) | Valuation, IPO | 🟡 NFL known / 🔴 NCAA |
-| E4 | **Edwin's old simulation code** — he's sending the original market-maker Python files ("functional, not a heavy lift") | Calibration | 🟡 In motion (23-07) |
+| E4 | ~~Edwin's old simulation code~~ **✅ CLOSED 31-07:** received and assessed. It **cannot be used as-is** — too much missing above and below it, plus the technical layer (200ms scheduling, cancel behaviour, state). We extract components (the volatility calculation named specifically) and replace the rest. Edwin ran ~5,000 sims/team over ~5 seasons with it | Calibration | ✅ Closed (assessed, not adopted) |
 | E5 | **All the pricing numbers** — spreads, ladder shape, sizes, how hard the MM fights to stay flat (λ) — per session and profile. **We ask; we don't propose** | Quoting | 🔴 Open |
 | E6 | **Week-zero college games** — how to price massive-mismatch openers | Valuation | 🔴 Open (Cody to ask) |
 | E7 | **How strictly do the standards bind for season 1?** — which rules bend for launch (replay tooling, audit depth, the quote-aging chapter)? | Everything | 🟡 Needs explicit sign-off |
@@ -66,6 +72,11 @@ $/win sign-off. Asked as **questions**.
 | E16 | **Is trading just… on, all day?** — confirm the product intent: continuous matching all day, every day (apart from the short daily maintenance gap) — no daily opening auction, no open/close ceremony (mirrors T9; opened 23-07) | Market state | 🔴 New |
 | E17 | **SNT-1 x MM interaction during Primary Mandate rounds**, Edwin explicitly invited this: how the noise taker's flow interacts with the MM's quoting and inventory while the MM is absorbing unsold IPO float (completion sweep). Does SNT-1 run during the primary at all, or only once secondary opens? | SNT-1, MM | 🔴 New _(30-07, Edwin)_ |
 | E18 | **SNT-1 tuning + weight feed**, the two levers Edwin expects to tune after real books are `base_orders_per_hour` and the daily loss budget. Also: confirm the per-team `team_weight` (0.25–4.0) feed from the EAV / popularity model | SNT-1 | 🟡 _(30-07, tune post-launch)_ |
+| E19 | **Taker requirements document** — George asked for one in the same shape as the MM requirements doc Edwin already produced. Owed, not yet started | Taker build | 🔴 New _(07-08, Edwin acknowledged: "I actually owe you deliverables")_ |
+| E20 | **Structure of the daily report the MM consumes** — Edwin's daily drop carries the pricing mechanism and expected wins. He confirmed it is codifiable rather than judgement ("it's a math problem, not a what I feel like") but has not built the forward-looking gains model yet. Need the schema so we can automate ingestion rather than hand-loading it | Valuation | 🔴 New _(03-08 / 07-08)_ |
+| E21 | **Volatility half-life in the spread equation** — width now comes from the time-decaying volatility number, not a lookup table. George floated ~20 seconds; Edwin did not confirm ("I don't know if that's right") | Quoting | 🔴 New _(03-08)_ |
+| E22 | **Taker share range and time blocks per team** — Edwin owes the concrete range (~600–650k of 1,000,000) and the time-block schedule the randomiser runs inside, per league window | Taker, IPO | 🔴 New _(31-07 / 03-08)_ |
+| E23 | **Market operations after the primary closes** — Edwin plans to "do market operations to get everyone balanced" once secondary opens, deliberately as a tradeable information event. What are the rules, who triggers it, and does it run through the maker or the taker? | Taker, market state | 🔴 New _(31-07)_ |
 
 ## Owed by / with tZERO (Tue + Thu calls)
 
@@ -81,16 +92,20 @@ $/win sign-off. Asked as **questions**.
 | T10 | **One environment for everything** — tZERO have said it's basically one environment: all testing, QA, and production in the same place (George, 23-07). So every risky experiment (account setup, the queue test, rate limits, halt and bust drills) must be done **before real users arrive** — after that there is no sandbox. Ask: can we have **permanent test symbols** (~10)? ⚠ They'd be FINRA-regulated securities, so users must be **blocked from trading them in the app** — confirm what's allowed and how many we can have | All testing, the plan | 🔴 Open — top of list |
 | T7 | ~~MM order entry = standard OE session?~~ **✅ RESOLVED 22-07:** no Quote/MassQuote interface exists in tZERO's FIX schema — the MM is order-based (resting limit orders via D/F/G) by necessity. Dedicated MM FIX session (isolation) remains a filed ask | — | ✅ Resolved |
 | T8 | ~~Order-update behaviour~~ **✅ RESOLVED / MOOT 23-07:** **8.1 answered** — an updated order goes to the **back of the queue** (tZERO call + Troy: standard on every matching engine); Edwin: "we don't care about that." **8.2 moot** — we never top up partially-filled orders (new lifecycle). **8.3 moot for v1** — a momentary self-cross during a price adjustment is tolerated (George-confirmed). Self-match prevention follow-up → T11 | — | ✅ Resolved |
+| T12 | **Stand up the two MPIDs** — `InPlay Markets` the **broker dealer** (preloaded 1,000,000 shares per team company + unlimited buying power, sells the primary) and `InPlay Markets` the **principal trading arm** (one wallet, maker + taker algos). Troy committing to configure it this way on tZERO; we need the account/wallet IDs and the entitlements | IPO, all MM testing | 🟡 New _(03-08, Troy actioning)_ |
+| T13 | **Team company tickers** — the MM cannot start order testing until tZERO issue the tickers. Named as the immediate blocker on 07-08 ("once we get the tickers from T0… then we'll start testing it, making orders"). Ties to the C6 naming constraint in [[compliance/compliance]] | MM testing, 13 Aug dry run | 🟡 New _(07-08, chased same day)_ |
+| T14 | **IPO price lock vs simulated trading** — tZERO make prices **static once the IPO price is set**, which blocks simulated trading. Agreed workaround: publish prices now, **freeze only 3 days before the IPO**. Confirm tZERO can hold prices unlocked until then, and that the 3-day freeze is enforceable on their side | IPO, price publication | 🔴 New _(31-07)_ |
 | T11 | **What self-match prevention does tZERO have?** — Troy checking (23-07). Relates to the per-account wash-trade toggle in the OMS spec. For USER wash-trading the v1 policy is rulebook ban + order queries on high-volume accounts + removal from the event | Supervision | 🟡 Troy checking |
 
 ## Owed by Sport Radar
 
 | # | Question | Blocks | Status |
 |---|----------|--------|--------|
-| S1 | **The probabilities API is broken** — 403 errors; only 8 of 32 NFL win totals come back. The pricing engine has no input until this is fixed | Valuation | 🟡 Escalated — Cody chasing |
-| S2 | **More API allowance** — the trial quota is nearly half used; we need a production-sized allowance | Valuation | 🟡 Cody on it |
-| S3 | **Do they push updates to us, or do we keep asking?** — sets how stale our prices can get, and whether we can even measure the feed's delay | Valuation cadence | 🔴 Open (long-standing) |
-| S4 | **Our probabilities must not lag the sportsbooks** — if the feed is behind DraftKings/FanDuel, users pick the MM off ("too easy for people to make money"). Cody owns getting the right feeds | MM integrity | 🔴 Open — Cody (23-07) |
+| S1 | ~~The probabilities API is broken~~ **✅ RESOLVED 03-08:** contract amendment signed by Troy at **no change in cost**, live probabilities now in the **production** account. Cody: "Done." | Valuation | ✅ Resolved |
+| S2 | ~~More API allowance~~ **✅ RESOLVED 03-08:** quota stopped being the constraint under the amended contract. Edwin: "there's no limit on requests"; Cody: "I'm not worried about the API call limits." Supersedes the 27-07 concern about 8–10M calls/month | Valuation | ✅ Resolved |
+| S3 | ~~Do they push updates to us, or do we keep asking?~~ **✅ ANSWERED 03-08:** we **poll**. Probability never rides in the play-by-play payload, so the MM polls the probabilities endpoint on its own clock — **500ms in-game** to start, slower but still polled outside games (the taker needs 24/7 prices). Next-game probabilities post **~15 min after the previous game ends** (typically faster), derived from the posted odds; the prior value carries until then | Valuation cadence | ✅ Answered |
+| S4 | **Our probabilities must not lag the sportsbooks** — if the feed is behind DraftKings/FanDuel, users pick the MM off ("too easy for people to make money"). Still live: the probabilities are an extrapolation of posted odds, so lag is a function of how fast SR ingests the line. **The betting feed (faster play-by-play) was explicitly ruled out for this run**, so there is no faster path bought | MM integrity | 🔴 Open — Cody (23-07, re-scoped 03-08) |
+| S6 | **What is a "key player"?** — the team page currently pulls the naive top four. Cody: SR sells facts, not subjective impact ratings, so the closest available primitive is the **depth chart** (QB1, RB1, WR1 plus a defensive player). An own impact algorithm is explicitly deferred ("let's not go down that rabbit hole") | [[information-layer/sub-components/team-page/team-page]] | 🔴 New _(07-08)_ |
 | S5 | **Can Sport Radar actually serve it the way Edwin expects?** — live win probability per game, readable roughly every 200ms during play, with enough quota; plus the **simulation games** we want for testing (replay a past game in a ~4-hour window). Check their API products against this shape before the next MM call (George, 23-07) | Valuation, testing | 🔴 Open — check next |
 
 ## Ours to design (Novosapien)
@@ -102,7 +117,7 @@ $/win sign-off. Asked as **questions**.
 | N3 | **When do we stop trusting our inputs?** — the staleness/delay thresholds that flip a market defensive. **Edwin decides the policy, we implement** | Market state | 🔴 Open |
 | N4 | **When does each session start and end?** — in-game / around-game / overnight, per team (NCAA plays 6 days a week). **Edwin decides, we implement** | Market state | 🔴 Open |
 | N5 | **"Just buy it" button depth** — how many price levels through a synthetic market order reaches; chase it if unfilled, yes/no; how it interacts with the wallet check | Trading app | 🔴 Open — Troy assisting |
-| N6 | **Two algos were named — where's the line?** — "load-balancing" vs "market-making" (17-07); nobody has defined the boundary | Architecture | 🔴 Open |
+| N6 | ~~Two algos were named — where's the line?~~ **✅ DISSOLVED for v1, 31-07:** Edwin **dropped the load-balancing algo entirely** for NFL and NCAA season 1 — one application, same behaviour, stretched over a 5-day (NCAA) or 2-day (NFL) window. Deferred to the **NBA in October**. The live pair is now **maker vs taker**, and that boundary is defined (03-08): same entity, same wallet, same MPID, two execution styles; taker-only during the primary, both in tandem in secondary | Architecture | ✅ Dissolved for v1 |
 | N7 | **Service layout** — one MM service or several (valuation and quoting separate)? Where does it run? Ours, from scratch; the platform's offered plumbing is an input, not a constraint | Architecture | 🔴 Open |
 | N8 | **How much replay tooling at launch?** — recording everything is cheap and mandatory; the tools to replay it are not. Where's the v1 line? | Quoting engine | 🟡 Proposal: record all, defer tooling |
 | N9 | **The platform team's suggestions: accept or replace, one by one** — their prototype's formulas, their numbers, the 200ms full-refresh idea, the MM-as-a-user-account idea. All treated as input only; our from-scratch design accepts or replaces each explicitly | MM design | 🔴 Open |
@@ -130,3 +145,12 @@ T8 (replace = back of queue; top-up + crossing edge cases moot) · N10 (quote
 lifecycle: rest until gone, cancel + repost remaining on price move) · N12
 (v1: post-first, momentary self-cross tolerated) · cadence bifurcated by game
 state (supersedes flat 5–10/sec).
+
+**27-07 → 07-08 touchdown block:** S1 (probabilities contract signed, in
+production) · S2 (quota no longer a constraint) · S3 (we poll, 500ms in-game;
+next-game probabilities ~15 min after the prior game) · E4 (Edwin's code
+assessed, components extracted only) · N6 (load-balancing algo dropped for
+v1; maker-vs-taker boundary defined instead) · IPO market structure (two
+MPIDs, broker dealer holds and sells, taker buys ≥600k of 1M per team,
+randomised size and heartbeat, not participation-weighted) · RP anchoring
+confirmed correct by Edwin · RP formula agreed with kickoff-delta term.

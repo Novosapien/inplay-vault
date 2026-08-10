@@ -6,6 +6,18 @@
 
 **Thirteen components.** Customer Onboarding, Referral, Information Layer, Education, Third Space, and Challenge Website are now `Defined` (full component docs). **Market Maker added 2026-07-20** — the internal liquidity provider, promoted from a candidate trading sub-component after the 20-07 mechanics session with Edwin; currently `Collecting`, deep-dive scheduled Thu 23-07. InPlay Global Website is `In Design` (active design work). Withdrawal Flow was surfaced in the 12-06-2026 call as a separate component — currently `Stub`. Trading remains `Collecting` despite having a fleshed-out doc (open data + UX questions outstanding). IPO Module is now `Defined` (26-05-2026 deep-dive) with all six sub-components decomposed into entity journeys; it's the gating event that issues every tradeable asset before secondary trading opens (open items: tZERO ledger mechanics, unsold-share handling). Earnings Report is now `Defined` (27-05-2026 deep-dive) with all five sub-components decomposed into entity journeys; it's the recurring tradable event (Tue NFL / Wed NCAA) where each team's off-field earnings (EST vs ACT) re-price the market, built on the off-field mechanic seeded at IPO (open items: volume-allocation gaming, EST methodology).
 
+> **Update 10-08-2026 (27-07 → 07-08 touchdowns).** Three components moved
+> materially. **Trading** is now **working end to end** into tZERO (orders,
+> fills, partial fills, shorts, notifications) though it stays `Collecting`
+> until the open UX and data questions close. **Market Maker** has its IPO
+> market structure settled and runs end to end on a single pass, but has not
+> sent an order yet — blocked on tZERO tickers. **Customer Onboarding** splits
+> into **three trader tiers**, which is a structural change its sub-component
+> map has not caught up with yet. A new cross-cutting
+> [[compliance/compliance|Compliance]] section now holds the regulatory
+> constraints. Three items are flagged for focused sessions: **micro-challenges
+> / private leaderboards**, the **back-test lab**, and the **analyst portal**.
+
 ## Component Map
 
 ```mermaid
@@ -107,6 +119,16 @@ graph LR
 
 These are not standalone components — they overlay across multiple components:
 
+- **[[compliance/compliance|Compliance]]** _(section opened 10-08-2026)_:
+  the regulatory constraint layer over every component — what the app may say,
+  who may hold an account, which surfaces need a disclosure. Bites hardest on
+  [[ipo-module/ipo-module|IPO Module]] (language: "simulated IPO" only, no SEC
+  claims), [[customer-onboarding/customer-onboarding|Customer Onboarding]] (the
+  three trader tiers), [[withdrawal-flow/withdrawal-flow|Withdrawal Flow]]
+  (18+, KYC and US tax residency for any cash) and **Advertising** (non-KYC
+  users only see under-18-safe inventory). Full rules in
+  [[compliance/regulatory-positioning]] and
+  [[compliance/eligibility-and-age-gating]].
 - **Advertising / Ad Serving:**
   - Touches: websites, information, trading, referral, third space, education
   - Moment-based (touchdowns, interceptions), geo-targeted (within 3 miles), demographic-targeted (age ranges), time-targeted (post-game)

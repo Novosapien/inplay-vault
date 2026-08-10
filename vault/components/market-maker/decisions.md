@@ -10,6 +10,165 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-07-27 → 2026-08-07 — Touchdown block (Edwin + Troy + George) — [[27-07-2026-touchdown]] · [[31-07-2026-touchdown]] · [[03-08-2026-touchdown]] · [[07-08-2026-touchdown]]
+
+> Four touchdowns that between them settle the **IPO market structure** the MM
+> operates inside, and confirm the **valuation input chain end to end**. The
+> 31-07 and 03-08 calls are effectively the MM design session that 23-07 never
+> reached.
+
+### Market structure — who holds the shares
+
+- ✅ **Two distinct entities, two MPIDs, two wallets** (Troy, 31-07 + 03-08):
+  - **InPlay Markets — the broker dealer.** Client-facing. Holds the entire
+    primary issuance and posts it for sale. tZERO preloads **1,000,000 shares
+    per team company** into this MPID plus effectively unlimited buying power,
+    so there are no rejects. Analogous to the NYSE designated market maker
+    holding shares to be sold to the public.
+  - **InPlay Markets — the principal trading arm.** Non-client-facing. Runs
+    **both** the maker algo and the taker algo. **One wallet, one MPID, one
+    inventory, two execution styles.** Troy: "it's one firm, one company… you
+    have a taker algo and you have a maker algo. It's the same inventory, it's
+    just different actions in the market."
+  - ✂ **Supersedes the 31-07 morning framing** of separate taker and maker
+    wallets (Edwin said two, Troy corrected it on 03-08 and is configuring
+    tZERO the corrected way). George had modelled it wrongly off the Friday
+    call; resolved explicitly.
+- ✅ **The MM never sells the primary issuance.** Edwin, 31-07, cutting George
+  off: "the market maker is not going to open up and sell." The first sale is
+  always the issuing company via the broker dealer. This holds the
+  primary/secondary plane separation the MM has always had.
+
+### The taker's IPO mandate
+
+- ✅ **The taker is the largest IPO buyer of every team**, buying from the
+  broker dealer during the primary window. Target **≥600,000 of the 1,000,000
+  shares** per team (Edwin + Troy, 03-08).
+- ✅ **Only the taker algo runs during the primary.** No passive/maker algo
+  during the IPO window; maker and taker run in tandem only once secondary
+  opens (Troy, 03-08).
+- ✅ **Purchase pattern is randomised, not systematic** (Edwin, 31-07): Edwin
+  supplies a **range of shares** and a **block of time**; the algo randomises
+  both size and heartbeat inside them. Totals are ranges not exact figures —
+  "it's not going to be 650,000 exact, it's going to range between 600 and
+  650,000."
+- ✂ **Not participation-weighted in v1.** George asked whether a heavily traded
+  team should get more shares bought for liquidity; Edwin: "no, not at this for
+  our first run. We're going to keep it very very simple." Rebalancing happens
+  instead through **market operations once secondary opens**, deliberately as a
+  further information event for users to trade on.
+- ✅ **Rationale is failure avoidance, not liquidity optimisation.** With ~118
+  signups, without the taker "there'll be teams that don't sell any shares
+  whatsoever at an IPO. A complete failure of the IPO. We cannot have that for
+  the simulation" (Edwin, 03-08).
+- ✅ **Treasury holdback.** Float and public offering are two different numbers;
+  a reserve is held back in treasury exactly as it would be in production.
+  Modelled against a ~$75M cap (Troy). 1,000,000 issued per team for **both**
+  NFL and NCAA, with the unsold remainder simply not sold (Edwin overriding the
+  earlier 900k NFL / 1M NCAA split, 03-08).
+
+### IPO windows
+
+- ✅ **NCAA: one five-day window, all teams open at once.** NFL: two days.
+- ✂ **The load-balancing algo is dropped for season 1** (Edwin, 31-07). Same
+  application for both leagues, stretched over different window lengths.
+  Deferred to the **NBA in October**. This closes the long-standing N6
+  "load-balancing vs market-making" boundary question by removing one side of
+  it for v1.
+
+### Valuation inputs — now confirmed end to end
+
+- ✅ **Sport Radar live probabilities contract amendment signed** (Cody + Troy,
+  03-08), **no change in cost**, in the production account. The probabilities
+  feed was always meant to be in the first contract. Resolves the S1 blocker.
+- ✅ **The betting feed is NOT needed for this run.** It buys faster
+  play-by-play only, and the gamecast already runs off the betting feeds via
+  the Sport Radar live match tracker. Edwin: "we don't need anything over and
+  above the gamecast and the live probability."
+- ✅ **Probability is a separate poll, not in the play-by-play payload.**
+  Confirmed by Cody 27-07 and re-confirmed 03-08. The play-by-play push gives
+  the event ("five yards gained by the Chiefs") but never the probability
+  change, so the MM polls the probabilities endpoint on its own clock.
+- ✅ **Poll cadence: start at 500ms during games**, tune up or down from there
+  (Edwin, 03-08). Outside games it still gets called, because the taker makes
+  the market 24/7, but at a slower rate. ⚠ Note this is **finer than the 2s
+  George proposed on 27-07** on API-quota grounds — quota stopped being the
+  constraint once the contract was amended ("there's no limit on requests").
+- ✅ **Next-game probabilities post ~15 minutes after the previous game ends**,
+  and typically faster (Cody, 03-08). They are an extrapolation of the posted
+  odds, so the moment the line posts, the probability can be pulled. Until
+  then the prior feed value carries. Resolves S3's practical shape.
+- ✅ **Reference-price formula restated and agreed** (George, 03-08):
+  `RP = ((P(win now) − P(win at kickoff)) + E[remaining wins]) × $5 + off-field`.
+  The in-game term is explicitly a **delta from the kickoff probability**, not
+  the raw probability — this is the piece that was ambiguous on 29-07 and is
+  now settled.
+- ✅ **Graceful degradation is designed in, not bolted on.** If the probability
+  is missing or stale, a reference price is still published from fallbacks, but
+  bounded: "if it's too far from reality then it's not going to post something
+  that could be destructive." Edwin's pro tip, accepted: **widen the bid/ask
+  rather than cancel** when an input dies — "if I'm relying on say 20 inputs and
+  one of them's down, my width of the bid ask automatically goes wide." Fills
+  in N3's shape (Edwin decides policy, we implement).
+- ✅ **Determinism reaffirmed** as a build property: a journal such that
+  replaying the same inputs a year later reproduces the same output exactly
+  (George, 03-08). Consistent with the working guide's day-one rule.
+
+### Reference-price anchoring — Edwin's correction
+
+- ✅ **The RP anchor is correct behaviour, not a bug.** George raised that
+  because the MM provides most of the liquidity, its quotes will keep dragging
+  price back to the reference price, which acts like an anchor. Edwin: "that's
+  exactly how a real market works." A forced exit rips price away temporarily
+  (**toxic flow**), the MM absorbs it, and the market returns toward fair value.
+  "That's how every market in the world works." **No change needed.**
+- ✅ **Underlying-vs-basis framing** (Edwin, 31-07): InPlay is the
+  **underlying**; Kalshi and Polymarket trade **derivatives** of it, in binary
+  outcome form. Real markets deviate from fair value for structural reasons
+  (rates, expiries, deliverables) and InPlay's probability input is the
+  aggregate of all such inputs for a team.
+- ✅ **The proprietary price feed is a product.** Once live, back-test past
+  seasons against actual share prices to learn which on-field and off-field
+  events move fair value most. Edwin sees Kalshi, Polymarket and the
+  sportsbooks licensing it — "it's not a probability feed, it's actually a
+  price feed that they can translate into betting odds in real time." Recorded
+  as strategy, not a v1 build item.
+
+### Build status and Edwin's code
+
+- ✅ **MM runs end to end** as of 03-08, on a single run: it takes the inputs
+  and emits an order book. **No orders are produced yet.** Remaining work is
+  connections, scheduling and deployment — "testing the connections… making
+  sure if we need it to run every 200 milliseconds during a game, is it going
+  to do that."
+- ✅ **Edwin's Python cannot be used as-is** (George, 31-07). Components will be
+  extracted — the volatility calculation named specifically — and the rest
+  replaced. There is too much missing above and below it, plus the technical
+  layer (200ms scheduling, cancel behaviour, state persistence). E4 closes as
+  "received and assessed", not "adopted".
+- ✅ **Edwin ran ~5,000 simulations per team across ~5 seasons** on the maker
+  and taker (31-07). Calibration evidence, not code to lift.
+- ✅ **Spread width comes from the volatility equation, not a lookup table**
+  (George, 03-08) — a time-decaying volatility number feeds the width. Edwin
+  did not confirm the ~20s half-life George floated; it stays 🔴.
+
+### Dates
+
+- ✂ **The 6 August dry run slipped.** George called it "looking unlikely" on
+  31-07.
+- ✅ **13 August is the new dry-run target** — a preseason game with live data,
+  on TestFlight, with the InPlay team and friends and family trading it as if
+  live (Troy, 31-07 + 03-08). Multiple team companies possible; several games
+  that night.
+- ✅ **The 13 August run is secondary trading only.** Troy: "we're not going to
+  do a dry run of the IPO process… we just want to do a dry run of secondary
+  trading during a game event." ⚠ **Edwin overrode the implication**: "I want
+  one test run at least before" launch on the IPO too. So an IPO dry run is
+  required, just not first.
+- ✅ **Trading previously played games is an accepted fallback** for testing
+  when no live game is available (Edwin, 31-07), alongside the SR simulation
+  games already agreed 23-07.
+
 ## 2026-07-30, SNT-1 Synthetic Noise Taker added (Edwin email), [[market-maker/systems/synthetic-noise-taker]]
 
 > Edwin delivered a spec-quality reference implementation (`sources/snt1_noise_taker.py`, ~349 lines) for a **second house agent**. Session note: `sessions/2026-07-30-snt1-noise-taker.md`.
