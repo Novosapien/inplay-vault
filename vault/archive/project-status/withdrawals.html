@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Withdrawals & Payouts</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html" class="current">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Withdrawals &amp; payouts <span class="pill spec">NOT STARTED — NEEDS A SESSION</span></h1>
+<p class="sub">Converting winnings into real money — the least-specified launch-critical surface</p>
+
+<h2>Where it stands</h2>
+<div class="callout warn">
+  This is the honest gap in the programme. The component is a stub: the
+  design intent is agreed, but <strong>no build has started, the payment
+  provider is unsigned, and a dedicated specification session with InPlay has
+  not yet happened</strong>. The 24 July ranking was explicit — no trading
+  would be a far worse launch outcome than no payout capability — so payouts
+  sit in the launch remainder, with an agreed safety net.
+</div>
+
+<h2>What is agreed</h2>
+<ul>
+  <li><strong>Capture at withdrawal, not signup</strong> — bank details, crypto wallet address and US tax (1099) information are collected at the first withdrawal request, keeping signup friction-free. A deliberate, repeated decision.</li>
+  <li><strong>Cash wallet lives on the tZERO chain</strong>, not on InPlay infrastructure — avoiding store-of-value licensing exposure.</li>
+  <li><strong>The safety net (Edwin, 24 July)</strong> — if the provider is not signed in time, users always see the amount they are owed in the app, and payment runs on an interim manual rail (Zelle or wire) with a delay of up to a couple of weeks.</li>
+  <li>Eligibility is checked against the referral component's rules with a transparent checklist — requirements are shown, never hidden.</li>
+</ul>
+
+<h2>Open — the list is long, and known</h2>
+<ul>
+  <li><strong>Payment provider</strong> — unsigned; several candidates from the June conference; Edwin owns the relationship.</li>
+  <li><strong>Eligibility ruling</strong> — international students and visa holders without a US tax ID currently fail verification; whether cash prizes are limited to US persons with a tax ID is with counsel. Flagged urgent 8 July.</li>
+  <li>The withdrawal UX itself: minimum threshold, frequency limits, holding periods, KYC re-verification, FX handling, failure modes, fraud review, support routing — eleven recorded unknowns awaiting the dedicated session.</li>
+  <li>Cash-wallet host confirmation with tZERO (stablecoin mechanics per the May integration call).</li>
+  <li>Tax-form generation (1099) process and ownership.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li><strong>Book the dedicated withdrawal session with InPlay</strong> — the single action that unblocks specification.</li>
+  <li>Provider signature → integration build; until then, stand up the owed-amounts display and the manual-rail process.</li>
+  <li>Get the eligibility ruling before the first prize cycle pays out.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Research Module</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html" class="current">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Research module <span class="pill build">IN BUILD — V1 DEMOED</span></h1>
+<p class="sub">The subscription product: Bloomberg-grade research over the Sportradar dataset, with a trade button on every report</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  Version 1 — pre-canned weekly reports with sortable columns and click-in
+  definitions — was <strong>demoed live in the app on 13 July</strong>. Edwin
+  asked (24 July) for the subscription piece to land in the next weeks so
+  influencer marketing can talk about it. The AI companion is deliberately
+  phase 2.
+</div>
+
+<h2>The product ladder (agreed 26 June, refined 13 July)</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Step</th><th>What</th><th>Phase</th></tr>
+  <tr><td>1 · Pre-canned reports</td><td>Weekly Sportradar roll-ups, built once, near-zero marginal cost — the free tasters that pull users in</td><td><span class="pill build">IN BUILD</span> demoed 13-07</td></tr>
+  <tr><td>2 · Saved custom reports</td><td>User-built reports from a data-point catalog; column limits are the upsell lever</td><td>Phase 1</td></tr>
+  <tr><td>3 · Outlier analysis</td><td>An LLM layer that flags anomalies across the data before the full agent exists</td><td>Phase 1.5</td></tr>
+  <tr><td>4 · AI companion</td><td>Conversational research agent over the whole dataset</td><td>Phase 2 · $49.99 tier</td></tr>
+</table>
+</div>
+
+<h2>Decisions locked</h2>
+<ul>
+  <li><strong>Pricing</strong>: 99c for the first month (to capture the card), then $14.99/month; the AI tier at $49.99 (Cody, 26 June).</li>
+  <li><strong>In-app payment</strong> — Edwin's ruling: accept the store fee of up to 30% rather than bounce users to a web flow; split-test later.</li>
+  <li><strong>Trade hand-off</strong> — every team named in a report carries its team ID, so users can trade directly from the research page.</li>
+  <li>Resourcing follows usage metrics: each ladder step is funded by demand at the previous one.</li>
+</ul>
+
+<h2>In flight / open</h2>
+<ul>
+  <li>The subscription and billing build — Edwin wants it live within weeks; Cody's subscription-packages document (mid-tier ~$39.99 under discussion) is the pricing input.</li>
+  <li>Data-point catalog scope and the custom-report column limit.</li>
+  <li>Report ideas backlog from Cody feeding the pre-canned set.</li>
+  <li>Timing honesty: phase 1 targets "as soon as possible" and <em>may slip past launch by design</em> — it does not gate trading.</li>
+  <li>Related but separate: <strong>analyst prices</strong> (guest analysts publishing fair-value prices on team pages, Preferred Walk-Ons first) needs its own scoping session and a broker-dealer/advisory separation, per Edwin's 10 July ruling.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Ship the subscription wrapper around the pre-canned reports.</li>
+  <li>Define the data-point catalog with Cody.</li>
+  <li>Schedule the analyst-prices scoping session once Edwin's sample page arrives.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>
