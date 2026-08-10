@@ -30,6 +30,15 @@ Customer Onboarding
 
 Some detail in Discovery & App Acquisition will live in [[components/challenge-website/challenge-website]] — the web entry point itself is a separate component. The handoff (web → app install) is the onboarding concern.
 
+> ⚠ **The map above assumes one path. As of 03-08 there are three** — Trader
+> Full, Trader Medium and Trader Light — and a **first-open explainer tour plus
+> a fork screen** now sit ahead of Registration + KYC. Registration + KYC
+> branches by tier, Wallet Provisioning is blocked for Trader Light by tZERO's
+> 18+ date-of-birth validation, and Holding State only applies to the KYC'd
+> tiers. See the two update blocks below and
+> [[compliance/eligibility-and-age-gating]]. Redrawing the sub-component map
+> properly needs a focused session, not a digest.
+
 **Audiences:**
 
 The flow is identical for all four audiences. The differences are **acquisition channel** and **trust-signal sensitivity**, not the onboarding mechanic itself. See [[audiences]] for full audience definitions.
@@ -52,6 +61,106 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_):** **Same initial capital of 100K InPlay$ for all users reconfirmed** (every account is treated equally, Troy). **Payouts/subscriptions processor: Pay.com** is the leading vendor, with a **redundant processor** in discussion for cash-out optionality; requires **no tZERO direction** for launch. (Payout mechanics themselves live in [[components/withdrawal-flow/withdrawal-flow]]; Pay.com is recorded as an integration in [[integrations]].)
 
 > **Update (24-07-2026, _[[24-07-2026-touchdown]]_):** **KYC-less app variant being scoped, but de-prioritised for launch.** George is investigating a **no-KYC version of the app** (the effort/lift, and whether it needs a **fresh Apple review**). Edwin: **not** the highest priority, launch readiness (trading) comes first. Troy: it is **not needed until the first/second week of September**, when the **first academic presentation** runs, so there is roughly **a month** to solve it; the KYC-less path is intended as a **different login route for the academic portion** of the competition. Immediate priority remains getting the **trading functionality pushed, tested, and live for the 22nd** (Aug 22 sim launch, see [[23-07-2026-tZERO-weekly]]).
+
+> ### ⚠ Update (03-08 / 07-08 touchdowns): onboarding is now **three tiers**, not one
+>
+> The single "sign up → Persona KYC → trade" path is superseded. The KYC-less
+> variant scoped on 24-07 has been promoted from an academic-only side door into
+> **the main funnel's first stage**. Rules and legal reasoning live in
+> [[compliance/eligibility-and-age-gating]]; the journeys are this component's.
+>
+> **Why it changed.** Two forcing problems, both surfaced 03-08. First, KYC is
+> killing conversion: Edwin's own brother-in-law and sister-in-law reached the
+> KYC step and stopped, having previously had their identities stolen; signups
+> sat at ~118, majority friends and family. Second, Troy's university programme
+> is full of **international students** who are not US tax residents and can
+> never receive a cash payout, so gating them behind full KYC excludes them for
+> no benefit. Edwin: _"in order to qualify for any money payouts, you're going
+> to have to fill out the KYC. That's a must. Now if you want to trade on the
+> public forum, the one with no money, no rewards, you should be able to do that
+> too."_
+>
+> **The three tiers (named 07-08).** George's names, with Troy's legal framing
+> alongside:
+>
+> | Tier | Who | Verification | Cash prizes | Legal framing (Troy) |
+> |---|---|---|---|---|
+> | **Trader Full** | US tax resident, 18+ | Full Persona KYC | **Yes** | Skill-based trading competition |
+> | **Trader Medium** | International student / non-US-tax-resident, 18+ | Persona KYC, identity only | No | Educational purposes |
+> | **Trader Light** | Anyone 13+ | **Email only** + a 13+ attestation | No | Entertainment purposes only |
+>
+> **Persona now has two KYC paths** (07-08): one for tax residents, one for
+> non-tax-residents. Spoken to already.
+>
+> **Everyone still gets an account and can trade.** Troy: _"Everyone can get an
+> account. It's a simulator. The only people that can get cash payouts are
+> people that go through the full KYC and validate that they're 18 and over."_
+> Edwin's funnel logic: free play → taste it → give KYC for cash → eventually
+> open a real brokerage account. _"The KYC thing right in your face just to
+> start out is putting people off before they get a taste of the app."_
+>
+> **⚠ Hard blocker — tZERO's onboarding API (07-08).** tZERO already relax
+> validation on most of their ~20 onboarding fields for InPlay (we send three).
+> **Date of birth is still mandatory and must be 18+**, so a Trader Light user
+> cannot be allocated a tZERO account ID or wallet ID, and therefore cannot
+> trade at all. The ask — turn off DOB validation the way the other fields were
+> turned off — is with tZERO via the shared Slack channel. Until it lands,
+> Trader Light does not exist. Tracked as G1 in
+> [[compliance/eligibility-and-age-gating]].
+>
+> **Ad consequence.** Non-signed-in and non-KYC users may only be served
+> **under-18-safe inventory** — no alcohol, no gambling adjacency (George,
+> 03-08). Constraint on [[advertising/advertising]].
+>
+> **App-store rating** should be set to **13+** so parental controls can block
+> upstream (Troy, 07-08).
+>
+> **Long-term warning on file (Brett, 29-07).** A mixed population of
+> not-logged-in, logged-in-not-KYC'd and KYC'd users is exactly the problem
+> Google spent ~two years and enormous engineering resource solving after
+> acquiring products with no login. It bites on ad targeting, house ads,
+> impression tracking and upsell: a not-logged-in user still has to be served
+> something, still has to be tracked, and still has to be pushed through to the
+> next tier. Brett's framing: rolling users in tier by tier is probably right
+> for now, but the difficulty is getting anyone to move **up** a tier once
+> they're comfortable — the Robinhood problem. Recorded as a known future cost,
+> not a launch blocker.
+>
+> _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
+> [[29-07-2026-touchdown]]._
+
+> ### Update (07-08-2026): first-open tour + the fork screen
+>
+> Edwin built a UI prototype over ~30 hours and ~80 iterations, and named one
+> piece of it **non-negotiable**: _"when the app is opened, we need the talk
+> basically of what the f\*\*\* they're looking at. That is a non-negotiable. We
+> need to get that in as soon as possible."_
+>
+> Today the first screen a new user sees is a stadium image and a referral bank,
+> which tells a referred user nothing about what InPlay is. The replacement is a
+> **four-card explainer carousel**:
+>
+> 1. **Trade sports for free** — what the app is
+> 2. **You own the company, not the bet** — what a team company is
+> 3. **Why it's different** — four tabs
+> 4. **Your opportunity** — $100,000 InPlay dollars, free to play, no deposit
+>    ever, trade live games play-by-play, real cash prizes if verified, plus
+>    partner logos as qualification
+>
+> Then the **fork screen**, which is where the three tiers become visible to the
+> user: **left** = no cash prizes, 13+, join with an email; **right** = get
+> verified with Persona. Edwin, on the users who refuse ID: _"there's too many
+> of these people are like, they want to steal my thoughts… I want those out."_
+>
+> Also in the prototype: a **per-tab tour** for each surface, and a **rewarded
+> ad** — watch 30 seconds, earn 100 InPlay dollars — positioned as a recovery
+> mechanic for users having a bad trading day (see
+> [[advertising/advertising]]). Copy change: "trading capital" becomes
+> **"trading reserve"**.
+>
+> Priority context: George confirmed front-end changes of this shape are days,
+> not weeks; the back-test lab in the same prototype is **not** achievable
+> before launch. _Source: [[07-08-2026-touchdown]]._
 
 > **Adoption snapshot (24-07-2026):** on **Wed 22-07 there were 37 first-time downloads** (a reporting lag means 23-07/24-07 are not yet known); running total logged-in ~130. Cody: **83 approved KYCs** (up from 64), so ~19 of the 37 had passed KYC, but some downloads are **already-KYC'd** people (the team, family members), so genuinely-new signups are lower still. A **newsletter goes out 24-07** to re-engage prior signups; Hasan exporting an updated registrations CSV (~25 more via email). Edwin pushing app signups hard (< 1 month to launch).
 

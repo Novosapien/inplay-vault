@@ -15,6 +15,7 @@ A simulated sports equity trading platform where users trade team stocks during 
 | [[vision]] | Product vision -- what we're building and why | Defined |
 | [[audiences]] | Canonical audience definitions (4 audiences) | Defined |
 | [[architecture]] | Cross-cutting technical decisions -- tech stack, infrastructure, integrations | Not started |
+| [[compliance/compliance\|Compliance]] | The regulatory posture and the constraints it puts on product, copy and eligibility | Collecting |
 | [[components]] | Component map -- all major parts of the product | In progress |
 | [[whats-new]] | Latest updates and changes | Rolling |
 | [[product/pages/PAGES\|App Pages]] | All 21 screens — what users see, navigation flows | Living |
@@ -25,6 +26,7 @@ A simulated sports equity trading platform where users trade team stocks during 
 
 | Date | What happened |
 |------|--------------|
+| 2026-08-10 | **Five touchdowns digested (27-07 → 07-08)**: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]], [[31-07-2026-touchdown]], [[03-08-2026-touchdown]], [[07-08-2026-touchdown]]. **New [[compliance/compliance|Compliance]] section** opened. Headlines: onboarding becomes **three trader tiers**; the **IPO primary market structure is settled** (broker-dealer MPID sells 1M shares/team, the taker buys ≥600k); **Sport Radar probabilities contract signed** and the valuation input chain confirmed end to end; **trading works end to end** into tZERO; **Android app live**; AdMob serving and the SSP ladder set; **Avalara** chosen for W-9; app restructured into tabs with a first-open tour. Flagged for focused sessions: micro-challenges, the back-test lab, the analyst portal. |
 | 2026-07-30 | **SNT-1 Synthetic Noise Taker** added to the [[market-maker/market-maker]] component (Edwin email + reference code). A second house agent: a taker-only "controlled loser" that crosses the spread so every book trades from IPO onward. Spec in [[market-maker/systems/synthetic-noise-taker]]; code in `sources/`; decisions/parameters/open-questions + session note updated per the working guide. |
 | 2026-07-29 | **IPO pricing model v1.0 from Edwin** stored + processed ([[ipo-pricing-2026]]): listed IPO prices for all 32 NFL + 138 NCAA team companies, plus parameters and methodology (IPO = $5·E[Wins] + $2.50·E[Ties] + $2.50/game·capture). Source workbook safe-copied to `ipo-module/sources/`. |
 | 2026-07-29 | tZERO OMS Q&A from Rob Colucci + the IPLY risk-settings matrix processed ([[29-07-2026-tZERO-rob-qa]], [[tzero-oms-risk-settings]]): IPLY carries positions overnight, account-scoped positions fixed, bid/ask driven by FIX (MM sets the market), ticker `IPTCCONH` created, Stop Wash Trades ON, price-band tiers captured; primary-issuance metrics need a dedicated cap-table stack. Resolves two 23-07 open items. |

@@ -26,16 +26,38 @@
 > a past game in ~4h) instead of waiting for preseason. E11 + E12 still
 > unasked — another MM call expected.
 
+> **Update 10-08 (27-07 → 07-08 touchdown block):** the **IPO market structure
+> is settled** — two MPIDs (broker dealer holds and sells the 1M/team issuance;
+> principal trading arm runs maker + taker off one wallet), the **taker is the
+> primary's biggest buyer** (≥600k/team, randomised size and heartbeat), and the
+> **load-balancing algo is dropped** for season 1 (deferred to NBA in October).
+> The **valuation input chain is confirmed end to end**: the SR probabilities
+> contract amendment is signed at no extra cost and live in production, we poll
+> at **500ms in-game**, and the RP formula is agreed with a kickoff-delta term.
+> **Phase 0's biggest blockers cleared** (S1, S2, S3, E4, N6). The MM now runs
+> end to end on a single pass — inputs in, order book out, **no orders sent
+> yet**. Remaining work is connections, scheduling and deployment. **6 Aug
+> slipped; 13 Aug is the dry run.** E11 and E12 remain unasked after three more
+> calls.
+
 ## Phase 0 — Unblock (now, parallel)
 
 The build can't start in earnest until these move; none are code.
 
-- [ ] **Sport Radar probabilities feed fixed** (S1/S2) — the valuation
-  engine's primary input. Cody chasing.
+- [x] ~~**Sport Radar probabilities feed fixed** (S1/S2)~~ — **done 03-08**:
+  contract amendment signed at no change in cost, live probabilities in the
+  production account, quota no longer a constraint.
+- [ ] **Team company tickers from tZERO** (T13) — **the immediate blocker.**
+  No order testing can start without them. Chased 07-08.
+- [ ] **The two MPIDs stood up** (T12) — broker dealer preloaded with 1,000,000
+  shares/team + unlimited buying power; principal trading arm with one wallet
+  for maker + taker. Troy configuring.
 - [ ] **Synthetic MM entity in tZERO QA** (T1) — asked 20-07, Tue/Thu calls.
-- [ ] **Thursday 23-07 deep-dive** — extract E1–E10 (the numbers, the trigger
-  script, conformance bar). Bring [[market-maker/parameters]] as the agenda:
-  every 🔴 row is a question.
+- [ ] **Taker requirements doc from Edwin** (E19) + **daily-report schema**
+  (E20) + **taker share range and time blocks** (E22).
+- [ ] ~~Thursday 23-07 deep-dive~~ — happened, but E11/E12 were never reached;
+  still owed. Bring [[market-maker/parameters]] as the agenda: every 🔴 row is
+  a question.
 - [ ] **tZERO throughput + bands answers** (T2–T5).
 - [ ] **Gateway cancel system (35=F/35=G)** — committed 22-07, owner Hasan.
   A hard prerequisite for any re-quoting: without it every replaced quote
@@ -43,14 +65,29 @@ The build can't start in earnest until these move; none are code.
 - [ ] **E11 settlement definition + E12 NCAA scope** from Edwin — E11 anchors
   the valuation semantics, E12 decides the load profile and book count.
 - [ ] Draft the **merged profile table** (N2) structure — values are Edwin's.
-- [ ] **Verify Sport Radar fit (S5):** live win probability readable ~every
-  200ms per live game, quota to match, + simulation games for testing.
+- [x] ~~**Verify Sport Radar fit (S5)**~~ — **answered 03-08**: probability is
+  a separate poll (never in the play-by-play payload), polled at 500ms in-game,
+  next-game values ~15 min after the prior game ends.
 - [ ] **Betting-feed parity (S4)** — probabilities must not lag
-  DraftKings/FanDuel; Cody owns.
+  DraftKings/FanDuel; Cody owns. ⚠ Re-scoped 03-08: the betting feed (faster
+  play-by-play) was **explicitly ruled out for this run**, so no faster path has
+  been bought. Lag is now purely a function of SR's odds ingestion.
 - [ ] **Wednesday data-drop pipeline** — agree format/delivery for the weekly
   off-field index + remaining-game probabilities (InPlay → us).
-- [ ] **Edwin's Python files** — receive + read the original MM simulation
-  code (E4, in motion).
+- [x] ~~**Edwin's Python files**~~ — **received and assessed 31-07 (E4 closed)**.
+  Not usable as-is; we extract components (the volatility calculation) and
+  replace the rest.
+
+### Dry runs
+
+- [ ] **13 Aug — secondary-trading dry run.** A live preseason game, TestFlight
+  build, InPlay team plus friends and family trading it as if live. Several
+  games that night, so multiple team companies are possible. (6 Aug slipped.)
+- [ ] **IPO dry run — date TBD.** The 13 Aug run is deliberately secondary-only,
+  but Edwin overrode the implication that there would be no IPO test: "I want
+  one test run at least before" launch.
+- [ ] Fallback testing routes if no live game is available: **replay previously
+  played games** (31-07) and the SR **simulation games** agreed 23-07.
 
 ## Phase 1 — Valuation engine walking skeleton
 
