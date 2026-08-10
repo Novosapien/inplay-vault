@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Project Status — Flight Plan</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html" class="current">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Flight plan</h1>
+<p class="sub">The path from today to a fully trading season · dates per IPO Draft Requirements v2 (28 Jul)</p>
+
+<h2>Launch calendar</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Date</th><th>Event</th><th>What must be true</th></tr>
+  <tr><td>Wed 19 Aug</td><td>NCAA IPO price freeze</td><td>All 138 NCAA listing prices final in the app</td></tr>
+  <tr><td>Sat 22 Aug, 1:00pm ET</td><td><strong>NCAA IPO opens</strong> — 138 team companies, 1,000,000 shares each, five-day offering</td><td>IPO draft flow, buy execution, wallets and buying power live</td></tr>
+  <tr><td>26–27 Aug*</td><td>NCAA offering closes; <strong>NCAA secondary trading opens</strong> 9:30am ET</td><td>Full trading path live; <strong>market maker quoting on all NCAA names</strong>; opening inventory loaded</td></tr>
+  <tr><td>Wed 2 Sep</td><td>NFL IPO price freeze</td><td>32 NFL listing prices final</td></tr>
+  <tr><td>Sat 5 – Sun 6 Sep, 1–6pm ET</td><td><strong>NFL IPO</strong> — 18 one-minute rounds per day; pre-buy book, water-line load balancing, MM completion sweep (rounds 1–10)</td><td>Round engine, pre-buy book, per-participant caps (2,500/team/round), MM sweep</td></tr>
+  <tr><td>Mon 7 Sep, 9:30am ET</td><td><strong>NFL secondary trading opens</strong></td><td>Market maker quoting all 170 names</td></tr>
+  <tr><td>~7–9 Sep onward</td><td>NFL season begins; first live-game trading</td><td>Live probability feed, synthetic market order, live-game quote cadence (~200ms)</td></tr>
+</table>
+</div>
+<p><em>* The requirements document gives two readings for the NCAA close/secondary dates (open item E25) — shown as a range pending InPlay reconciliation.</em></p>
+
+<h2>The critical path</h2>
+<p>Everything below must land in sequence. Trading and the market maker are the two
+long poles; both Edwin and Troy have stated trading readiness for 22 August is
+the top priority, ahead of every other request.</p>
+<ol>
+  <li><strong>Trading execution</strong> — complete cancel and cancel-replace, wire fill notifications, finish simulation-replay testing against tZERO QA. <a class="cardlink" href="trading.html">Detail →</a></li>
+  <li><strong>IPO draft engine</strong> — five-day NCAA offering first (simpler), then the NFL round engine with pre-buy book and water line. <a class="cardlink" href="ipo.html">Detail →</a></li>
+  <li><strong>Market maker</strong> — quote construction now; then the probability poller, market state, and venue sync to tZERO. Quoting live by NCAA secondary open. <a class="cardlink" href="market-maker.html">Detail →</a></li>
+  <li><strong>Opening inventory hand-off</strong> — the IPO close must publish each team's unsold-share position into the market maker (open item E27).</li>
+  <li><strong>Live-game switch-on</strong> — flip the data platform's live worker from simulation to production feeds before the first game. <a class="cardlink" href="data-platform.html">Detail →</a></li>
+  <li><strong>Synthetic market order</strong> — the app-side "just buy it" button, required before the first NFL game.</li>
+</ol>
+
+<h2>Week by week</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Week</th><th>Focus</th></tr>
+  <tr><td><strong>1 – w/c 3 Aug</strong></td><td>Trading: cancel + cancel-replace complete; simulation replays running daily. Market maker: quote construction (Chapter 5). IPO: NCAA offering engine. Sportradar entitlement fixes. Google Play listing submitted.</td></tr>
+  <tr><td><strong>2 – w/c 10 Aug</strong></td><td>End-to-end IPO dry run (friends-and-family). Market maker: probability poller + market state. Notifications build. Education intermediate tier regeneration begins. SSP adapters live behind house ads.</td></tr>
+  <tr><td><strong>3 – w/c 17 Aug</strong></td><td>NCAA price freeze (19th). Full-dress rehearsal on tZERO QA: IPO → close → inventory hand-off → quoting. Scope freeze per release governance; staged store builds. Launch campaigns fire.</td></tr>
+  <tr><td><strong>4 – w/c 24 Aug*</strong></td><td>NCAA offering closes; secondary opens with the market maker quoting. Monitoring: MM read-only dashboard (positions/holdings). Begin NFL round-engine hardening for 5–6 Sep.</td></tr>
+  <tr><td><strong>5 – w/c 31 Aug</strong></td><td>NFL price freeze (2nd). NFL IPO rehearsal with mandate rounds and water line. Synthetic market order ships. Earnings-report engine build starts.</td></tr>
+  <tr><td><strong>6 – w/c 7 Sep</strong></td><td>NFL IPO (5–6), NFL secondary opens (7). First live games: live-game cadence, Watch Mode on real data. First weekly earnings cycle prepared (Tue NFL / Wed NCAA).</td></tr>
+</table>
+</div>
+<p><em>* Exact hand-over day inside week 4 depends on the E25 date reconciliation.</em></p>
+
+<h2>Deliberately after launch</h2>
+<ul>
+  <li><strong>KYC-less academic app variant</strong> — needed first/second week of September; ranked below trading readiness by Edwin and Troy (24-07).</li>
+  <li><strong>Withdrawals / payouts</strong> — build follows payment-provider signature; interim manual rail agreed. Users always see the amount owed.</li>
+  <li><strong>Community / chat</strong> — threshold-gated; Discord under evaluation as the interim space.</li>
+  <li><strong>Research tab AI tier</strong> — phase 2 of the report ladder; subscription reports land first.</li>
+  <li><strong>MM operations UI beyond read-only</strong> — parameters stay static in v1 by Edwin's instruction.</li>
+  <li><strong>Season-end settlement</strong> — not needed at launch; correctness bar as high as the buy flow, scheduled well before season close.</li>
+  <li><strong>Kevel + direct-deal serving</strong> — configured within 1–2 weeks of the first direct deal.</li>
+  <li><strong>NBA challenge</strong> — planned late October.</li>
+</ul>
+
+<footer>Prepared by Novosapien · 31-07-2026 · Companion pages: <a class="cardlink" href="index.html">overview</a> and per-component detail via the navigation above</footer>
+
+</div>
+</body>
+</html>

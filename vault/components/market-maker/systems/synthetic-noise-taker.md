@@ -4,6 +4,13 @@ description: "SNT-1, Edwin's taker-only house agent that manufactures noise flow
 
 # Synthetic Noise Taker (SNT-1)
 
+> ⚠ **Snapshot, not the live doc (merge note 10-08).** This page is the
+> 30-07 meeting-digest capture of Edwin's SNT-1 delivery. The live concept
+> outline + venue-reality mapping is
+> [[market-maker/systems/snt-1-noise-taker]], and SNT-1 has since been
+> BUILT (08-08, `src/snt/`) — see [[market-maker/market-taker-requirements]]
+> and [[market-maker/decisions]] from 2026-08-08b onward.
+
 > **Component:** [[market-maker/market-maker]]
 > **Status:** Reference implementation v1.0 delivered by Edwin (2026-07-30). Spec-quality Python; our side is the `ExchangeAdapter` + production hardening.
 > **Owner:** Edwin (design) / George + Novosapien (implementation)

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Data Platform</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html" class="current">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Sportradar data platform <span class="pill live">LIVE</span></h1>
+<p class="sub">The sports-data backbone: one service owns the Sportradar relationship for the whole platform</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  Deployed and serving production traffic. The service fronts Sportradar for
+  NFL and NCAA across <strong>18 data domains</strong> — schedules, standings,
+  rosters, players, injuries, news and AP editorial, win probabilities,
+  rankings, leaders, draft, transactions and more — with caching so the
+  platform never exposes Sportradar's rate limits to user traffic. It was the
+  most actively developed service in July.
+</div>
+
+<h2>Delivered</h2>
+<ul>
+  <li>Production deployment with infrastructure-as-code, continuous integration, and a strong automated test suite (500+ tests, 80% coverage gate).</li>
+  <li>The live-game worker (real-time state, pipeline, publisher for the websocket layer) is built and deployed alongside the API.</li>
+  <li>First-game go-live runbook and live testing protocol written.</li>
+  <li>Performance audit completed 29 July; news-image delivery identified as the main cost and already being optimised.</li>
+  <li>Entity-ID join model established: one ID ties play-by-play, news, headshots and win probability together across the app.</li>
+</ul>
+
+<h2>In flight</h2>
+<ul>
+  <li><strong>Live-game switch-on</strong> — the production worker currently points at Sportradar's simulation host with no live games configured. This is deliberate; flipping to live feeds is a scheduled, separately approved change before the first game.</li>
+  <li><strong>Production entitlements with Sportradar</strong> — win probabilities in production, the v2 bulk endpoint, and quota levels are being driven with Sportradar (Scott/David); a consolidated list of blocked products has been sent.</li>
+  <li><strong>Feed tier</strong> — the in-app Gamecast runs on the licensed media feeds; Sportradar's faster betting-side feeds are licensed to sportsbooks only. Mitigation agreed: the probability API rides the faster path, and the market maker consumes probabilities directly, so pricing never lags the visuals. Cody continues to lobby for betting-feed access.</li>
+  <li>Weekly internal data drop: InPlay produces remaining-season win probabilities (Sportradar does not compute them); Edwin supplies the model and the Wednesday refresh.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Close the entitlement list with Sportradar ahead of the IPO window.</li>
+  <li>Schedule and execute the live-feed switch-on with the first-game runbook.</li>
+  <li>Keep the news/image performance work rolling before season traffic.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

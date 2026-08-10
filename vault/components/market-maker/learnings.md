@@ -13,12 +13,277 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-08-06b — the watermark that was secretly a liveness filter
+
+- **Dedup on the publish side strips the liveness signal.** The
+  publisher's "send only new readings" watermark looked like a polite
+  optimisation. But on the push path, the ONLY way the consumer can know
+  "the source answered just now" is a message arriving — so a watermark
+  turns every quiet stretch into apparent silence, and the halftime trap
+  (E38: 2,862 s with no new reading) comes back one layer down, after
+  being carefully engineered out of the freshness rules. The general
+  form: **whenever a signal is derived from message ARRIVAL, any
+  filtering upstream of the consumer changes the signal's meaning.**
+  Dedup belongs at the consumer (§7.3), where the identity lives.
+- **A dedup id must name what it protects against.** JetStream's msg-id
+  first named the READING — which made the server swallow deliberate
+  re-offers along with accidental retries. Naming the publish ATTEMPT
+  (reading + fetch stamp) dedups exactly the accidents and nothing else.
+  Ask of any dedup key: "which repeats are accidents, which are on
+  purpose?" — the key must separate them.
+- **The ack is the durability boundary, so its position is a design
+  decision, not plumbing.** Ack after journal makes every crash window
+  safe (before → redelivery; after → §7.3 discards). Ack before journal
+  would quietly re-open the exact loss JetStream was adopted to close.
+  The same shape as write-the-object-then-the-row (03-08): order the
+  irreversible step last.
+- **Structural parity beats tested parity.** Two code paths that must
+  emit identical envelopes (file replay vs the wire) drift eventually if
+  parity is only asserted in tests; giving both paths ONE constructor
+  makes drift impossible and turns the tests into proof of the callers'
+  argument derivation only. The 1,089-reading equality test then guards
+  the contract, not the construction.
+
+## 2026-08-05c — the drift George caught
+
+- **A drift can be fully documented and still be a drift.** The 24-07
+  ingestion decision says the hot path never calls SR — a poller at the
+  edge, pushing onto the bus. Across four sessions the build absorbed
+  polling into the engine, each step logged in the vault, and no step
+  checked itself against the ARCHITECTURE decision — only against the
+  previous session's state. The stop-condition ("contradicts a recorded
+  decision") never fired because each increment was small and locally
+  consistent. **Reconcile the built shape against the decisions log,
+  not just against the last session note.** George caught it in review;
+  the seam meant the correction was cheap — which is the second lesson:
+  a well-placed seam is what makes an architecture mistake survivable.
+
+- **A handover is context, not consent.** This session started
+  autonomously because the handover said "fully unblocked", carrying
+  yesterday's ruling forward as authorization. George had not approved
+  the run. Spend that cannot be un-spent (API quota, external calls)
+  deserves a fresh confirmation at session start, even when a recorded
+  ruling appears to cover it.
+
+## 2026-08-03→05 — the deployment thread, the runtime, and the liveness lesson
+
+- **Two different facts were fused into one number, and it took George
+  pushing back twice to see it.** "How old is the probability" and "when
+  did the source last answer us" are different questions. Sportradar sends
+  no heartbeat — 98 % of timeline entries change the number, so its
+  timestamp advances only when the game moves. Measured on the real game:
+  halftime is a 2,862 s gap. §3.3.1 as written suspends every book for all
+  of it. The fix is not new bands — it is applying the same bands to the
+  right fact (the fetch, not the reading). **When a rule misbehaves, ask
+  which FACT it measures before touching its values.** And the second
+  correction mattered as much as the first: a confirmed number is not
+  a *degraded* form of fresh — it is fresh. Nothing to discount.
+
+- **Clock-driven work in an event-sourced core has exactly one honest
+  shape: a producer.** The sweep needed to run every 2 s; the orchestrator
+  reads no wall clock; therefore the scheduler lives OUTSIDE, mints a
+  journalled event, and replay consumes what it minted. Same relationship
+  the poller already had. Corollary learned the same day: keep every
+  clock-reader in ONE module (`runtime/loop.py`), because a second one can
+  creep in silently and nothing will flag that replay broke.
+
+- **The dedup system fights liveness signals, correctly.** A source that
+  republishes the same probability every 2 s produces duplicates from the
+  second copy on — recorded, then ignored. So "proof of life" can never
+  ride an existing fact's identity; it needs its own (the sweep's
+  observations map, or a fetch-stamp in a push message's key). We nearly
+  built it twice the wrong way: a fetch-time in the key would re-mint the
+  whole re-fetched timeline as new facts; in the payload alone it would
+  CONFLICT-alarm every 2 s. **The identity design IS the feature.**
+
+- **Estimates were wrong by 22× in the safe direction, and one benchmark
+  ended the argument.** ~140 ms per pass was the carried belief; 6.3 ms is
+  the measurement. The compute case for a Go port evaporated in a minute
+  of running code. Meanwhile the Mac's fsync figure was 35k/s — invalid,
+  because macOS `fsync` does not flush the drive cache. **Benchmarks only
+  count on the hardware that will run the thing** (N31 waits for the VM).
+
+- **The restart drill demonstrated a gap no test had reached:** events
+  that publish into our absence are simply gone (core NATS, no JetStream
+  on that subject) — the replayed record believed three swept levels still
+  rested. Replay is honest about what the journal SAW, not about what
+  happened. Venue truth needs either a snapshot at boot or a healer that
+  re-derives it — both known, both parked with eyes open.
+
+- **Docs-vs-reality is a live failure mode, twice in one session.** The
+  vault's VPC draft had every address wrong (the deployed proxy's env was
+  the truth), and the "reading time vs last_updated" confusion came from
+  me trusting my own earlier summary over the adapter's code. The working
+  mode's third stop condition (reality ≠ docs) earns its place.
+
+- **The tail-pipe gotcha bit AGAIN.** Piping gates through `tail` in an
+  `&&` chain masked a broken import and let a commit through; caught on
+  the unpiped rerun. Two sessions, same trap. Never pipe a gate.
+
+- **The tests were shaped like the bug.** Every test ran one side of a game
+  at a time, so the head-on collision between two per-team events sharing a
+  game-level idempotency key never occurred in the suite. There *was* an
+  away-side test — it built the envelopes and checked the probabilities were
+  flipped, but never put them through an acceptor. A passing suite proved
+  the translation right and the architecture wrong. **Ask what shape the
+  tests are, not just whether they pass.**
+
+- **Storing answers instead of ingredients is the root of a whole bug
+  class.** The engine kept each game's computed expected value and a running
+  banked total, not the probabilities and results that produced them. From
+  that single choice came: a corrected official result double-banking (a
+  win corrected to a loss still reads $5.00), a finished game resurrecting
+  when a late probability arrives ($10.00 → $14.50 on a game already over),
+  and configured values that could change without any stored price
+  noticing. §2.5 says it in one line — *"incremental valuation state is
+  prohibited"* — and it turns out to be a bug-prevention rule, not an
+  aesthetic one.
+
+- **A silent skip and a silent failure can be the same code path.** The
+  engine dropped unknown teams deliberately, because NCAA sides play FCS
+  schools with no Team Company. That correct behaviour made a *missing map
+  entry* invisible: an unmapped Chiefs would have looked exactly like a
+  legitimate FCS opponent, priced never, alarmed never. Whenever "ignore
+  this" is correct for one reason, check what else it now hides.
+
+- **Belt-and-braces belongs on the output, not the input.** George asked for
+  a second validation pass as a safety net. Measured, the same triple
+  validated from either side can't disagree — 0 differences over 1,001
+  splits, because addition commutes. The check that *does* earn its place
+  is on the result: the two teams' expected values must sum to exactly
+  $5.00. That catches swapped sides, broken repairs and a wrong payout
+  constant, none of which double-validation would see. **The instinct was
+  right and the mechanism was wrong — worth separating those.**
+
+- **⭐ The per-game breakdown cancels out of the price.** Because every win
+  pays a flat $5, the sum of per-game win probabilities and the total
+  expected wins are the same number times five. Nine months of "we need a
+  probability for all ~2,400 games" turns into "we need 170 numbers." The
+  hard problem was an artefact of how the formula is written, not of what
+  the formula needs. (George.)
+
+- **A betting line is not a forecast.** The over/under is set where the money
+  balances, which makes it the *median* outcome, not the mean — a different
+  number, and worth up to a few dollars a share on a ~$57 share when our
+  whole spread is $0.10. And these particular lines are known to be biased:
+  too high for very strong teams, too low for very weak ones, missing final
+  records by ~2 wins on average (Woodland & Woodland 2013). Using market
+  data is fine; **using it without knowing what object it is** is not.
+
+- **A frozen input can cancel a live one exactly.** Season win totals don't
+  move during a game. Subtract the current live probability from one and the
+  in-game price movement vanishes completely — $60.00 at 60%, $60.00 at 90%.
+  It would have looked like a working system with a dead price. Whenever
+  two terms are derived from overlapping information and one is stale, check
+  whether the update is being subtracted from itself.
+
+- **"Not in the feed" and "doesn't exist" are different findings.** Our
+  16-07 pull proved SR's NCAAFB futures feed has no win totals. A research
+  agent then reported the market is near-universal across all five books SR
+  already sources, and concluded our evidence must be wrong. Both were
+  right — the market exists, SR just isn't carrying it. That distinction
+  turns an impossible ask into a coverage complaint, and it's the difference
+  between building a model for 138 teams and sending an email.
+
 ## 2026-07-30
 
 - **A dead book is the real launch risk, and the fix is a house taker, not more makers.** SNT-1 exists because a real exchange with few users looks empty. The MM alone does not solve this: it posts liquidity, but liquidity nobody hits still reads as "no trading." SNT-1 manufactures the *taking* side so prints actually happen. Two house agents, opposite roles: maker (MM) and taker (SNT-1).
 - **Noise is bought, not free.** SNT-1 is a deliberate controlled loser; its cost is literally the spread it crosses, metered against a $100k/team/session budget. That spread cost is the **subsidy that seeds the market** and is largely captured by the MM on the other side. The budget is a spend cap on that subsidy, not a P&L target.
 - **Uninformed-by-construction is the safety property.** The realism (disposition-effect profit-taking) conditions only on SNT-1's own cost basis vs mid, never on book state or participant data. That is what keeps its flow noise rather than a signal participants could reverse-engineer or that could push price toward a target.
 - **The off-field rule already handled this.** Because SNT-1 carries no participant side, its MM-facing prints fall outside the >= 1-participant-side off-field-volume rule automatically. A well-drawn rule needed no amendment for a new agent, worth remembering when the next house agent appears.
+
+## 2026-07-24 (b) — build day + ingestion research
+
+- **Measure the feed; don't reason about it.** We recorded twice that SR
+  probabilities move "per play, ~30–40 s" — plausible, repeated, and wrong by
+  an order of magnitude. Counting gaps in our own captured game gave a
+  **4 s median**, because win probability decays with the game *clock*, not
+  only on plays (~6–7 updates per play). The 2 s conclusion survived, but the
+  *reason* inverted — 2 s matches the median rather than oversampling. Any
+  claim about a feed's behaviour should come with the measurement.
+
+- **"Is there a push feed?" is answerable definitively, and worth answering.**
+  Four independent checks (schema, 414 captured messages, published contract,
+  vendor docs) beat one plausible assumption. Answer: SR has no probabilities
+  push product for **any** sport — pull only. Knowing that is worth more than
+  a faster guess, because it closes an architecture debate permanently.
+
+- **Fan-out planes have contracts; pick the one whose contract you need.**
+  Centrifugo is at-most-once, history off, recovery-by-refetch — perfect for
+  showing a phone the score, disqualifying for a price input whose recovery
+  path must never be "go fetch something". Backend-to-backend belongs on the
+  durable bus. Same layer, same data, wrong contract.
+
+- **A cache is not a feed.** The SR service's Redis probability keys look
+  like a free push source and are actually TTL cache-aside artefacts, written
+  only when a *user* happens to hit the API and refreshed by nothing. "The
+  data is in Redis" says nothing about whether it's current.
+
+- **Placeholders travel as facts unless you label them.** A "50 msg/s"
+  governor from a colleague's message became, in my head, "our budget" — and
+  briefly promoted diff-publishing from optimisation to requirement. It was a
+  placeholder; the venue spec contains **no rate language at all**. Check
+  where a number came from before designing against it.
+
+- **Verify a vendor claim against the vendor's own document.** Two minutes
+  with the tZERO PDF confirmed ClOrdID ≤20/no-leading-zeroes, revealed that
+  replace and cancel each carry **two** such ids, and confirmed the odd
+  `HandlInst` asymmetry (banned on new orders, mandatory on replaces). It
+  also proved a negative — no rate limits documented — which redirected T2
+  from "read the spec" to "ask tZERO with T1".
+
+- **Golden fixtures are cheap certainty.** The spec shipped one worked
+  example for the quantity seed; reproducing it byte-exact before writing
+  anything else validated both the document's precision and our reading of
+  it. Do this first with any spec that ships fixtures.
+
+- **Keep the translator pure and the fetcher separate.** The SR adapter takes
+  parsed data and returns envelopes — no network, no clock. So a captured
+  game is a deterministic test input *and* the live poller inherits an
+  already-proven translation path. The messy part (retries, quota, timing)
+  stays quarantined in the part that can't be unit-tested anyway.
+
+- **Enforce invariants at the border, not in the middle.** Floats are refused
+  by the money/probability constructors, by the payload hasher, *and* by
+  parsing SR's JSON with `parse_float=str`. Three chokepoints mean no code
+  path downstream has to remember the rule.
+
+## 2026-07-24
+
+- **A written spec can overturn call decisions — the protocol held.** The
+  v1.3 Build Spec contradicted three things Edwin said five days earlier
+  (lifecycle, cadence, probability source). Because the rule is "surface
+  every conflict, never silently adopt", they became E17–E19 instead of
+  silent rewrites. The doc is the baseline; the conflicts stay visible.
+
+- **"Priced" = probabilities published, and SR prices rolling.** A game can
+  be scheduled without being priced; SR attaches probabilities as games
+  approach (NCAA: 70 of ~1,700 today). Consequence: full-season Σ GEV(g) is
+  impossible from SR alone — and since Σ P_win(g) ≡ expected remaining wins,
+  the fix is a source swap for the unpriced tail (SR win-total futures, or
+  InPlay-internal weekly — Edwin's original model), not a formula change.
+
+- **Polling rate ≠ cycle rate.** The probability only moves per play
+  (~30–40 s). The decision cycle reads memory at any speed; the poller polls
+  at the freshness band (~2 s per live game). Edwin's 200 ms and the spec's
+  2 s stop being a fight about polling — the remaining question is purely
+  how fast the *cycle* must react (E18).
+
+- **Derive the quota ask, don't guess it.** Freshness band × concurrent live
+  games × season = the number: per-game polling on the current product ≈
+  2.5M calls/mo at ~20 QPS peak; the v2 product's live-bulk endpoint (all
+  live games, one call) ≈ 200k/mo at 0.5 QPS. The product choice IS the
+  quota ask (S7).
+
+- **Probe the real API before trusting any requirement on it.** Thirty
+  minutes with the trial key found: no tie probability exists (spec requires
+  it, forbids inferring it → S6), NFL's seasons listing is empty but the
+  date-schedule endpoint prices it fine, and 403 means per-product
+  entitlement, not a broken API.
+
+- **Verify golden fixtures on arrival.** The spec's SHA-256 quantity-seed
+  fixture was reproduced locally before adopting anything else in the doc —
+  cheap, and it certifies both the doc's precision and our reading of it.
 
 ## 2026-07-23
 

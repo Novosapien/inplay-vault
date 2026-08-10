@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Onboarding & KYC</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html" class="current">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Customer onboarding &amp; KYC <span class="pill live">LIVE</span></h1>
+<p class="sub">From "I just heard about InPlay" to logged in and ready to trade</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  The app is <strong>live on the Apple App Store as "InPlay Challenge"</strong>
+  (since ~22 July), with over-the-air updates delivering improvements without
+  store review. Onboarding runs end to end in production: create account →
+  email verification → Persona identity check → land on the IPO page.
+</div>
+<ul>
+  <li><strong>83 approved KYCs</strong> as of 24 July (up from 64 the week before); 37 first-time downloads on 22 July.</li>
+  <li>Persona identity verification is contracted and performing: roughly 99.5% automated, face-scan callback in 2–3 seconds.</li>
+  <li>Signup captures email and password only — every other identity field comes from the government document. Three taps or fewer to start trading remains the design rule.</li>
+  <li>Users in the holding state get full browse access with trading buttons greyed out, never hidden.</li>
+</ul>
+
+<h2>Delivered</h2>
+<ul>
+  <li>Onboarding flow locked (17 June) and built into the app; demoed 10 June, iterated through July.</li>
+  <li>Persona contract signed and integrated (early June).</li>
+  <li>Wallet allocation moved off the signup critical path — wallets can be provisioned the day before trading starts.</li>
+  <li>Referral popup and code issuance wired to KYC completion.</li>
+  <li>Apple review objection (age verification) answered and cleared; app approved and live.</li>
+</ul>
+
+<h2>In flight</h2>
+<ul>
+  <li><strong>Google Play listing</strong> — screenshots and a frozen build in preparation; the submission is framed to avoid a gambling classification, which would trigger much heavier review. Apple is expected to carry 70–80% of users.</li>
+  <li><strong>KYC drop-off nudges</strong> — users who abandon mid-KYC (common at crowded campus signups) get a reminder push notification.</li>
+  <li><strong>Eligibility question</strong> — international students and visa holders without a US tax ID fail verification; whether participation is limited to US persons with a tax ID is with InPlay and counsel.</li>
+  <li>KYC-failure handling (retry policy, soft vs hard fail, support route) and the Persona-outage fallback flow are still to be defined.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Complete the Google Play listing.</li>
+  <li>Ship the KYC nudge notifications.</li>
+  <li>Confirm the eligibility ruling with counsel before prize payouts begin.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

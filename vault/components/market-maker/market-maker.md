@@ -6,14 +6,16 @@ description: "Component hub for the internal market maker and SNT-1 — system m
 
 > **Vision:** [[vision]]
 > **Date:** 2026-07-20 · restructured 2026-07-21 · v1 model set 2026-07-23
-> **Status:** v1 model set (23-07) · **IPO market structure settled + valuation inputs confirmed (27-07 → 07-08 touchdown block)** · running end to end on a single pass, no orders sent yet · **13 Aug dry run** · E11 settlement + E12 NCAA still unasked
+> **Status (06-08b): the ingestion move is BUILT on both sides and drilled end to end.** The sportradar service polls SR and publishes on JetStream (⭐ George: **every successful fetch publishes** — the re-offer is the liveness signal; msg-id names the publish attempt); the MM consumes the bus — adapter parity with the file path proven 1,089/1,089 on the real capture, finals minted MM-side (N16), acks batched after the journal, and the local docker drill passed incl. restart with zero redelivery. **534 MM tests · 577 service tests**, all commits local. The in-engine poller retires **at go-live** (George) — the live composition switches to the bus then. Earlier state (05-08c): the machine RUNS, all 170 sr-id bindings verified in code — ⭐ George's ingestion ruling re-cut the live path. Chapters 3–8 + 12, the sweep event (N28), the clock-owning runtime, tiered polling, the 170-security universe, the composition, the live `HttpSource` + the seam's failure contract, and `mm/bindings.py::TEAM_BINDINGS` (163 exact + 6 profile-verified + the Rams via the mappings bridge) — **512 tests**, drill-proven on the rig 05-08. ⭐ E38 deviation built: **a successful fetch confirms the number** — full status through halftime; 20 s of true silence suspends. ⭐ **Ingestion ruling (George, 05-08c): the sportradar SERVICE polls SR and publishes on NATS — the MM consumes the bus and never calls SR itself.** The build had drifted from the 24-07 ingestion decision (polling absorbed into the engine); the move is **scoped in writing and approved before any build** (service work: git pull → branch off `dev`). Live mode refuses until: S1/S7 · the ingestion move · Edwin's file delivery (N19). ⚠ The 05-08b/c MM commits are LOCAL, deliberately unpushed. External: **T1** (→ Hasan, with N30 + the governor) · **E27** (the day-one book) · the unsent round **E29–E38**. Still owed: §10.3 checkpoints (required — every deploy is a restart) · the boot-reconcile healer (parked) · §3.6 off-field · Ch 9 IPO · Ch 11 settlement. Baseline: the **v1.3 Build Spec** (24-07), superseded where [[market-maker/decisions]] says so. Repo: `inplay-market-maker` (Python), branch `feat/position-engine` · **Meeting block (27-07 → 07-08, merged 10-08): IPO market structure settled + valuation inputs confirmed · 13 Aug dry run target · E11 settlement + E12 NCAA still unasked**
 > **Owner:** Kevin Murray (Head Execution Trader) / George Westbrook (engineering) / Edwin (co-build, domain expertise)
-> **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
+> **Sources:** _[[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]], [[24-06-2026-touchdown]], [[29-06-2026-touchdown]], [[15-07-2026-touchdown]], [[17-07-2026-touchdown]], [[20-07-2026-touchdown]], [[24-07-2026-touchdown]]_ · [[standards/README|the CTS/PTS standards]]
 
 > ⚠️ **Custom structure.** This component deliberately does NOT follow the
 > standard component/sub-component pattern. It's an internal engineering
-> system, not a user-facing feature — so it's organised as `systems/` (one doc
-> per buildable system) plus living working docs (decisions, open questions,
+> system, not a user-facing feature — so it's organised as `build/` (the
+> as-built source of truth, one page per part) + `systems/` (design docs for
+> the UNBUILT systems only; built systems' design narratives are in
+> `archive/`) plus living working docs (decisions, open questions,
 > parameters, plan, glossary). Promoted from a candidate `trading/market-maker`
 > sub-component on 20-07-2026 after the market-maker Q&A with Edwin and Troy.
 
@@ -97,29 +99,41 @@ Plus two satellites: the [[market-maker/systems/mm-ops-ui|MM Ops UI]]
 
 | System | What it does | Status |
 |--------|--------------|--------|
-| [[market-maker/systems/valuation-engine\|Valuation Engine]] | Computes each team's fair value (ESV) from win probabilities + the revenue model | Inputs resolved 23-07 (SR live pull + Wednesday drop) · $5/win sign-off + E11 pending |
-| [[market-maker/systems/market-state\|Market State]] | Publishes the Reference Price; classifies market condition; selects profile + liquidity session | Shape known · classifier ours to design |
-| [[market-maker/systems/quoting-engine\|Quoting Engine (SDMM)]] | The bot: decision cycle, reservation prices, ladders, inventory skew, randomizer, cancel-replace | v1 model set 23-07 (rest-until-gone · bifurcated cadence) · numbers owed |
-| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with tZERO |
-| [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game |
-| [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last |
-| [[market-maker/systems/synthetic-noise-taker\|Synthetic Noise Taker (SNT-1)]] | Second house agent: a taker-only noise account that crosses the spread so every book trades from IPO onward. A controlled loser by design (spread cost = liquidity subsidy) | Reference impl v1.0 from Edwin 30-07; our side = ExchangeAdapter + hardening |
+| [[market-maker/build/valuation\|Valuation Engine]] | Computes each team's fair value from win probabilities + Edwin's daily T | ✅ **Built** (Edwin's on-field leg, freshness/status/confidence §3.3–§3.5, replay-proven on the real Chiefs–Ravens game) · off-field §3.6 still mocked |
+| [[market-maker/build/market-state\|Market State]] | Permission to quote: Stable/Active/Defensive/Suspended per security, kill switch, promotion ladder | ✅ **Built 01-08** (Ch 6; classifier superseded by σ² — decisions 30-07b) · Active/Defensive widening awaits E31 |
+| [[market-maker/build/quoting\|Quoting Engine (SDMM)]] | The bot: σ² → width → ladder → sizes → publish-or-hold → reconcile → gateway | ✅ **Built + wire-proven 02-08** (loopback test 5/5 vs the real gateway) · values 🟡 pending E31 · §5.5/§5.9 gated (Ch 8 book feed / E17) |
+| [[market-maker/systems/market-supervision\|Market Supervision]] | Price bands, halts, trade busting — orderly-markets enforcement | Policy TBD with tZERO (T3–T5) · busts currently refuse-and-raise (T4) |
+| [[market-maker/systems/synthetic-market-order\|Synthetic Market Order]] | App-side market-order emulation via price-through crossing | Needed pre first NFL game — not ours to build in the MM repo |
+| [[market-maker/systems/mm-ops-ui\|MM Ops UI]] | Desktop monitoring/control: algo params, order lookup, positions, P&L | Deliberately last · will own CONFIGURATION_ACTIVATION + the N19 upload page |
+| [[market-maker/systems/snt-1-noise-taker\|SNT-1 — the Market Taker]] | Edwin's house noise taker: crosses the MM's spread with random clips so every book prints trades | ⭐ **Built 08-08** (`src/snt/`, MM PR #10) · **NOT deployed** — blocked on the IPLP account, E32 rulings, E33/T13 compliance · requirements: [[market-maker/market-taker-requirements]] |
 
 ## Working Docs
 
 - **[[market-maker/working-guide]] — READ FIRST, every session.** The process:
   reading order, ground rules, the session loop.
+- **[[market-maker/build/index|build/]] — how the machine is ACTUALLY
+  built.** The as-built SOURCE OF TRUTH, one page per part of the machine:
+  key equations as implemented, real-vs-mocked-vs-gated, what we build
+  next, the module map. For agents and humans; the anchor for changes.
 - `sessions/` — one note per working session: what we did, learned, what went
   wrong, next. Newest note = where to pick up.
 - [[market-maker/decisions]] — dated log of confirmed decisions + standard-doc supersessions
 - [[market-maker/open-questions]] — live blockers with owners (Edwin / tZERO / Sport Radar / us)
 - [[market-maker/parameters]] — every tunable number: value, status, source
+- **[[market-maker/requirements]] — the MM's normative go-live list** (what MUST
+  be true), sourced and status-tracked; change it only through its dated addendum
+- **[[market-maker/market-taker-requirements]] — the same for SNT-1**, the market
+  taker. The build document for the taker phase
+- **[[market-maker/test-plan]] — the live test matrix** (lifecycle · ops ·
+  failure drills), with a status per case
 - [[market-maker/plan]] — build phases, dependencies, timeline anchors
 - [[market-maker/glossary]] — terms + equation symbols in plain English
 - [[market-maker/learnings]] — running log of distilled understanding (concepts that clicked, traps caught) — add every session
 
 ## Reference Material
 
+- **THE spec (24-07):** `standards/MM-build-spec-v1.3.html` (+ source `.docx`) —
+  the single authoritative build spec. Everything below is historical context.
 - Plain-English guides: [[standards/CTS-001-plain-english-guide]] ·
   [[standards/CTS-002-plain-english-guide]] · [[standards/PTS-001-plain-english-guide]]
   (HTML renderings alongside each)
