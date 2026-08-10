@@ -343,6 +343,9 @@ ruling. Code: `inplay-market-maker/src/snt/config.py`.
 | IOC substitute window | cancel after 1.5 s | 🟡 | ours — tZERO has no IOC |
 | Book staleness gate | 30 s | 🟡 | ours — the 08-08 MD evidence |
 | Reject quiet guard | 5 consecutive → 60 s quiet | 🟡 | ours — interim until reject-backoff |
+| **IPO float per team** | **5,000 sh** | 🟡 **E39** | ours, 09-08 — an ASSUMPTION, not a number anyone gave us. Sized so the holding wanders ~3,500–6,500 against the 1,500 drift cap and never nears zero. `float_shares` in `snt/config.py`; per-team overrides exist |
+| **Float cost per share** | — | 🔴 **E39** | UNKNOWN. The IPO price is not settled, so the profit tilt still reads the VWAP of what the taker itself traded, not the true cost of the whole holding. Which basis the tilt uses once the price lands is Edwin's call |
+| **Per-order notional cap** | **$25,000** | 🟡 **E32** | ours, 09-08 — Edwin named the cap (hardening pt 1) but no value. 400 sh × the $127.50 venue cap ≈ $51k worst case; $25k halves it, a median order (~$2k) never feels it. Cuts, never skips |
 
 ## Venue risk + price bands — live-verified 08-09
 

@@ -10,6 +10,106 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-09c — the taker's hardening round: notional cap · kill switch · state lever · deploy artifacts
+
+George: *"most of this looks like standard work… just get on with it"* —
+with one carve-out: **T-S05 (reconciliation) is his to understand
+before it is built.** Same branch (`feat/snt-1-float-and-sell-gate`);
+628 tests, ruff + mypy-strict green. All routine calls below are OURS,
+recorded here.
+
+- ✅ **T-M03 — the per-order notional cap: $25,000, cut-not-skip.**
+  Edwin named the cap but never a value; $25k halves the 400-share ×
+  $127.50 worst case and a median order (~$2k) never feels it. Same
+  posture as the sell gate: cut to fit, quiet below min size. 🟡 in
+  parameters, ruling rides E32.
+- ✅ **T-R01 — the kill switch is a NATS control subject, and it is
+  JOURNALED.** `snt.control.{bot_id}`: halt stops new arrivals and
+  cancels every live order at once; resume re-arms with redrawn
+  schedules (no burst). Halt/resume marks replay at boot, so **a
+  restart cannot silently re-arm a halted bot** — state that lives only
+  in a running process dies with it (the MM's dead-man lesson).
+- ✅ **T-F07's lever, not its requirement:** activity state is settable
+  at runtime (`{"cmd":"state","value":"LIVE"}`), journaled, reschedules
+  all arrivals on change (an OVERNIGHT draw can sit 40 min out; a
+  switch to LIVE must not wait for it). **The journaled mark outranks
+  the env boot default** — it is the later operator action; a fresh
+  journal (new deploy) starts from env. T-F07 itself stays 🔴: nothing
+  DERIVES the state from the schedule yet.
+- ✅ **Deploy artifacts, no deploy:** `deploy/snt-1.service` +
+  `snt-1.env.example` + `docs/SNT-RUNBOOK.md`. Operating rules inherit
+  the MM's: bump `SNT_CONFIG_VERSION` + fresh journal dir per deploy,
+  journal on the journal disk, **halt before stop** (a plain stop
+  leaves an in-window order resting with nobody left to cancel it).
+- ⭐ **The QA posture has a hole, now recorded in the runbook:** the
+  venue's sell check is PER ACCOUNT, so on the shared MM account the
+  taker's holding arithmetic is fiction and the MM's resting asks eat
+  the taker's sellable quantity (and vice versa). **A QA run on the MM
+  account is a wiring test, not an inventory test.** The clean run
+  needs the IPLP account, or T-S05 first.
+- 📝 **T-S05's input path exists after all:** the gateway publishes
+  `position.{userId}` per symbol (size, cost basis) whenever tag 9383
+  rides an execution report — found in the gateway source
+  (`oe_adapter.go`, `nats_publisher.go`). The 08-09 caveat stands: 9383
+  was observed not moving per fill, so whether it is a LIVE position is
+  Rob's question (T15). Reconciliation gets built fail-safe against
+  that unknown.
+
+## 2026-08-09b — ⭐ SNT-1 PARTICIPATES IN THE IPO (George) — the float + the sell gate BUILT
+
+George redirected the session: *"the market maker is already built — it's
+the market taker that we need to be concerned with"*, then *"assume the
+shares are not a problem… build what we can build according to the
+documentation we've got, and the questions we ask after."* Branch
+`feat/snt-1-float-and-sell-gate`; 620 tests green, ruff + mypy-strict
+clean.
+
+- ⭐ **THE RULING: the taker holds an IPO allocation before it trades.**
+  SNT-1 participates in the IPO like any other holder, so it starts long.
+  This is what makes its sells legal at all — the venue caps a sell at
+  `Pos − livS` (decoded 08-09) and the taker's first sell from zero was
+  always going to be rejected. No purchase, no seeding script, no
+  opening trade of its own. The mechanism is unknown → **E39**.
+- ✅ **The float is CONFIGURATION, not journaled state** (ours, recorded).
+  `pos` keeps its meaning — net shares from own fills — and the holding
+  is `float + pos`. So a journal replay can never double the float, and
+  the journal schema does not change. The alternative (seed `pos` at
+  boot) would have made every restart a correctness risk.
+- ✅ **T-O08 needed no new inventory rule.** The soft cap and the
+  disposition tilt both act on `pos`, and `pos` is drift from the float
+  — so both already mean "return to the float". They flatten the drift;
+  they never drain the float. ⚠ This corrects a claim I made to George
+  mid-session — that the tilt would have to be switched off or it would
+  sell the float away. It would not; it mean-reverts to the float.
+- ✅ **The sell gate CUTS rather than skips** (ours, recorded). Over the
+  bound the venue rejects the whole order, so the taker sends the
+  smaller sell instead. Below the 5-share minimum there is nothing to
+  cut to and the arrival passes quietly. Reasoning: order size is noise
+  either way, whereas silence exactly when inventory is low would be
+  informative — and T-F05 is the requirement the taker exists to protect.
+- ✅ **`livS` is our own un-settled sells, counted at FULL quantity.**
+  The IOC substitute leaves a marketable DAY order resting for up to
+  1.5 s, so two arrivals inside that window would otherwise stack past
+  the holding. A partially filled sell still counts whole, which
+  over-counts — the safe direction, since the venue rejects whole.
+- 📝 **Two numbers are OURS and unverified → E39:** the float size
+  (**5,000/team**, 🟡 — sized so the holding wanders ~3,500–6,500
+  against the 1,500 drift cap) and the float's **cost per share**
+  (🔴 — unknown). While the cost is unknown the tilt keeps comparing mid
+  against the VWAP of what the taker itself traded, not against the true
+  cost of the holding. We did not invent a basis; which one to use is
+  Edwin's call once the IPO price lands.
+- ⚠ **The gate trusts our own arithmetic.** If the float is not
+  verifiably on the account, the bound we compute is not the bound the
+  venue applies. That is **T-S05** (reconcile, halt the book on
+  divergence), still unbuilt, and it is now the taker's most valuable
+  remaining item.
+- 📝 **Not done, and deliberately: the MM's half.** R-Q08 (the ask
+  ladder respecting `Pos − livS`) and R-Q09 (the stale-book crossing
+  guard) are market-maker items and stay open. The 08-09b handover's
+  build queue put R-Q09 first; George's ruling reorders it behind the
+  taker.
+
 ## 2026-08-08c — T10 ANSWERED: permanent test symbols exist — real ticker + `.TEST` (Rob Colucci)
 
 Direct from Rob (tZERO) to George, Slack, same day (venue facts, gospel).
