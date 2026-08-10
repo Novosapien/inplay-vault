@@ -15,7 +15,7 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
-| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown** to the IPO on every page, a **Countdown Board** (one cross-team must-land list: engine room, the three live-game proving runs on 13, 20 and 27 Aug, advertising on AdMob alone because AppLovin MAX has not responded, tax forms and payouts, identity and compliance, the scale ramp, and go to market), a **Backlog** page (60 items in three bands, sized and confidence-rated), and a **deliverable-bearing critical timeline** where every date states what must be finished by it. Evidence refreshed from all 21 repos |
+| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Now also folds in the 31-07 **Website Punch List 1** and **Messaging House v2.0**. Adds a live **countdown** to the IPO on every page, a **Countdown Board** (one cross-team must-land list: engine room, the three live-game proving runs on 13, 20 and 27 Aug, advertising on AdMob alone because AppLovin MAX has not responded, tax forms and payouts, identity and compliance, the scale ramp, and go to market), a **Backlog** page (60 items in three bands, sized and confidence-rated), and a **deliverable-bearing critical timeline** where every date states what must be finished by it. Evidence refreshed from all 21 repos |
 | 2026-08-05 | [flight-plans/2026-08-05-inplay-app-flight-plan.html](flight-plans/2026-08-05-inplay-app-flight-plan.html) | 17 days to the NCAA IPO; launch mode active; trading path is the long pole |
 
 ## The Countdown Board (added 2026-08-10)
@@ -45,6 +45,12 @@ bands with an owner, a due date and a definition of done on every row.
 7. **Go to market**: agency, referral multiplier, influencer analysts, campus,
    tailgate activations and PR, each with what delivery needs from it. Every
    campaign date is an infrastructure date.
+8. **Website and brand**: the remainder of **Website Punch List 1 v1.3** (the P2
+   items travelling with the counsel package, the P3 pre-kickoff close-out, and
+   the Insights section that must exist before Founder Memo No. 1), plus
+   applying the **Messaging House v2.0** lexicon to the app, which has never
+   been swept against it. Both documents are Edwin's, dated 31-07, and live in
+   `shared/clients/inplay/outbound-campaigns/`. See [[compliance/compliance]].
 
 ## How the plan is structured (stable conventions)
 
