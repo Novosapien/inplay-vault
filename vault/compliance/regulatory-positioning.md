@@ -39,7 +39,7 @@ On 31-07 New York's Attorney General sued Kalshi. The sequence matters:
 
 1. Kalshi sought a temporary restraining order to stop New York shutting it
    down, on federal-preemption grounds.
-2. **The judge denied the TRO** — read on its face as the court thinking Kalshi
+2. **The judge denied the TRO**: read on its face as the court thinking Kalshi
    is unlikely to win on the merits.
 3. That denial green-lit New York's full lawsuit.
 
@@ -86,7 +86,7 @@ for ~$1.2bn, evidence of how the category is being valued.
 
 | Do not say | Say instead |
 |-----------|-------------|
-| "regulated by the SEC" | nothing — the claim comes out entirely |
+| "regulated by the SEC" | nothing, the claim comes out entirely |
 | "IPO" | **"simulated IPO"** |
 | "securities" (unqualified, in marketing) | avoid; frame as the simulated challenge |
 

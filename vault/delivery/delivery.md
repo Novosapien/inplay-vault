@@ -1,12 +1,12 @@
 ---
-description: "Delivery hub for the InPlay app flight plan — the Novosapien/InPlay working agreement — with committed snapshots, structure conventions and key launch dates"
+description: "Delivery hub for the InPlay app flight plan, the Novosapien/InPlay working agreement, with committed snapshots, structure conventions and key launch dates"
 ---
 
 # Delivery · InPlay App Flight Plan
 
 > **Status:** Living · updated per working session
 > **Owner:** Novosapien (product owner: Brett StClair)
-> **Live copy:** `shared/inplay/inplay-app-flight-plan/{date}/inplay-app-flight-plan.html` (updated in place during a day; a new dated folder per session)
+> **Live copy:** `shared/clients/inplay/flight-plans/inplay-app-flight-plan-{date}-{HHMM}.html` (a new timestamped file per build; prior versions stay as the audit trail)
 > **Master:** `Programming/inplay/inplay-app-flight-plan/` (source + build script)
 
 The flight plan is the delivery working agreement between Novosapien and InPlay: what has shipped, what is committed, what capacity exists, and the live risks into each launch. It is produced with the `/novosapien-product-owner` skill from three reconciled sources: the build repositories, the partnership proposal, and this vault. This section holds the committed snapshots; each weekly review runs off the newest one.
@@ -15,7 +15,7 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
-| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown**, a **Countdown Board**, a **Backlog** page (60 items in three bands, sized and confidence-rated), and a **deliverable-bearing critical timeline**: every date now carries what must be *finished* by it, not just what happens on it: one cross-team must-land list covering the engine room, the **three live-game proving runs** (13, 20, 27 Aug), advertising on **AdMob alone** (AppLovin MAX has not responded), tax forms and payouts, identity and compliance, the **scale ramp**, and **go to market**. Evidence refreshed from all 21 repos |
+| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown** to the IPO on every page, a **Countdown Board** (one cross-team must-land list: engine room, the three live-game proving runs on 13, 20 and 27 Aug, advertising on AdMob alone because AppLovin MAX has not responded, tax forms and payouts, identity and compliance, the scale ramp, and go to market), a **Backlog** page (60 items in three bands, sized and confidence-rated), and a **deliverable-bearing critical timeline** where every date states what must be finished by it. Evidence refreshed from all 21 repos |
 | 2026-08-05 | [flight-plans/2026-08-05-inplay-app-flight-plan.html](flight-plans/2026-08-05-inplay-app-flight-plan.html) | 17 days to the NCAA IPO; launch mode active; trading path is the long pole |
 
 ## The Countdown Board (added 2026-08-10)
@@ -25,24 +25,24 @@ The flight plan now opens with a **live countdown to the NCAA IPO** (22 Aug,
 cross-team list of everything that must land before it, grouped into seven
 bands with an owner, a due date and a definition of done on every row.
 
-1. **The trading engine room** — tickers, the two MPIDs, market maker complete
+1. **The trading engine room**: tickers, the two MPIDs, market maker complete
    and tested, market taker complete and tested, the offering engine.
-2. **The three live-game proving runs** — 13, 20 and 27 Aug, each with what it
+2. **The three live-game proving runs**: 13, 20 and 27 Aug, each with what it
    proves. Deliberately three, not one: run 1 proves the wiring, run 2 proves
    concurrency with the market maker quoting, run 3 is the unattended dress
    rehearsal before real users trade on 29 Aug.
-3. **Advertising and revenue** — **AdMob across every surface, on its own.**
+3. **Advertising and revenue**: **AdMob across every surface, on its own.**
    AppLovin MAX has not responded in over two weeks and is downgraded from
    committed to attempting, off the launch path.
-4. **Money out** — the Avalara W-9 embed, and the still-unresolved payment
+4. **Money out**: the Avalara W-9 embed, and the still-unresolved payment
    processor.
-5. **Identity, eligibility and compliance** — the three trader tiers, tZERO's
+5. **Identity, eligibility and compliance**: the three trader tiers, tZERO's
    18+ date-of-birth block, the language sweep.
-6. **Scale ramp** — the VMs. Measured, not guessed: the market maker journal
+6. **Scale ramp**: the VMs. Measured, not guessed: the market maker journal
    sustains ~579 events/s against ~2,100 needed, so group commit is now
    required; Centrifugo (an e2-small) fans every tick to every user and its
    connection limit has never been measured.
-7. **Go to market** — agency, referral multiplier, influencer analysts, campus,
+7. **Go to market**: agency, referral multiplier, influencer analysts, campus,
    tailgate activations and PR, each with what delivery needs from it. Every
    campaign date is an infrastructure date.
 
@@ -67,16 +67,16 @@ the subscription features. George's argument, accepted by Edwin and Cody:
 premium features are critical for revenue but the app **functions** without
 them, whereas without trading and the market maker _"people can't use it."_
 Edwin's counter-position, also accepted: not everything has to be live at
-launch — _"if the subscriptions become available in week two of the NFL, so be
+launch, _"if the subscriptions become available in week two of the NFL, so be
 it."_
 
 **Dry runs.**
 
 | Date | What | Status |
 |------|------|--------|
-| 6 Aug | First dry run on a preseason game | ✂ Slipped — George called it "looking unlikely" on 31-07 |
+| 6 Aug | First dry run on a preseason game | ✂ Slipped, George called it "looking unlikely" on 31-07 |
 | **13 Aug** | **Secondary-trading dry run** on a live preseason game, TestFlight, InPlay team plus friends and family. Several games that night, so multiple team companies possible | 🟡 Target |
-| TBD | **IPO dry run.** The 13 Aug run is deliberately secondary-only; Edwin overrode the implication that there would be no IPO test at all — _"I want one test run at least before"_ | 🔴 Unscheduled |
+| TBD | **IPO dry run.** The 13 Aug run is deliberately secondary-only; Edwin overrode the implication that there would be no IPO test at all, _"I want one test run at least before"_ | 🔴 Unscheduled |
 
 Fallbacks if no live game is available: replay previously played games, or the
 Sport Radar simulation games agreed 23-07.
@@ -92,7 +92,7 @@ is being spent… it's not an attack, it's more just clarity."_
 
 **⚠ Support and maintenance is an unfilled gap (Brett, 29-07).** There is no
 support-and-maintenance contract, and Brett flagged it as the one thing missing
-from InPlay's coverage — not for launch, but for when volumes rise. CTO-level
+from InPlay's coverage, not for launch, but for when volumes rise. CTO-level
 coverage is in place and a CIO is not needed at this size. The problem is that
 conventional support means humans watching screens around the clock, which he
 has built for mobile operators and banks and considers neither cost-effective
