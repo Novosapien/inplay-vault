@@ -1,3 +1,7 @@
+---
+description: "Scaling strategy — what auto-scales vs stays fixed, why the FIX Gateway never scales with users, and per-game-day min-instance schedules"
+---
+
 # Scaling Strategy
 
 > **Architecture:** [[architecture]]

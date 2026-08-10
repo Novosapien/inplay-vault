@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Order Placed success screen — order summary, View Portfolio and Back to Game exits, with filled-market vs pending-limit states"
+---
+
 # Order Placed
 
 > **Tab:** Trade

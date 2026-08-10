@@ -1,3 +1,7 @@
+---
+description: "The process for every MM work session — mandatory reading order, ground rules, the session loop, note format and where each doc lives"
+---
+
 # Market Maker — Working Guide
 
 > **Component:** [[market-maker/market-maker]]

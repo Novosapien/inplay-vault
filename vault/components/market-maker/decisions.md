@@ -1,3 +1,7 @@
+---
+description: "Dated log of confirmed market-maker decisions and standard-doc supersessions — SNT-1 scope, v1 quote lifecycle, venue FIX facts and IPO-sheet economics"
+---
+
 # Market Maker — Decisions Log
 
 > **Component:** [[market-maker/market-maker]]

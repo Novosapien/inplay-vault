@@ -1,3 +1,7 @@
+---
+description: "Runbook to build the InPlay GCP VPC — gcloud commands for the FIX gateway VM, NATS JetStream, Centrifugo, firewall, IAP SSH, plus cost and production gaps"
+---
+
 # InPlay VPC Setup Guide
 
 Infrastructure setup for the FIX gateway VM, NATS JetStream, Centrifugo, and VPC networking on GCP.

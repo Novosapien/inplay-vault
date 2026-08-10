@@ -1,3 +1,7 @@
+---
+description: "The desktop cockpit for the market maker operator (Kevin) — algo parameters, order lookup, positions and P&L, supervision flags — deliberately last in build"
+---
+
 # MM Ops UI
 
 > **Component:** [[market-maker/market-maker]]

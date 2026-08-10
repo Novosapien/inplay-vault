@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the IPO system clock — per-league 72h windows (NCAA ~Aug 20, NFL ~Sept), staggered mixed state, and the close-time handover to trading"
+---
+
 # InPlay Trading Challenge — IPO Scheduling & Windows
 
 > **Component:** [[ipo-module]]

@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Trade History screen — chronological log of executed buys and sells with price, date and realised P&L on sells"
+---
+
 # Trade History
 
 > **Tab:** Trade

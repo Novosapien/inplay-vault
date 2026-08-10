@@ -6,6 +6,7 @@ extracted-to:
   - "[[digests/touchdowns-01-10-jun-2026]]"
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[trading/trading]]"
+description: "Transcript of the 2026-06-03 touchdown call — Persona signed, Apple dev account reset, referral build, tZERO VPC and FIX gateway, Kevel vs Booster ad serving"
 ---
 
 ## Post-Call Analysis

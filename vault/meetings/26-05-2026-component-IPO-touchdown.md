@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-26 InPlay IPO-module call — static-ask 72-hour IPO windows, end-of-season settlement, and the 10 sponsor ad territories"
+---
+
 **
 
 May 26, 2026

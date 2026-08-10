@@ -1,3 +1,7 @@
+---
+description: "Education component spec — card-based course library (36 modules, 3 tiers), quizzes gating 100-coin rewards, tier certification badges and sponsor slide groups"
+---
+
 # InPlay Trading Challenge -- Education
 
 > **Vision:** [[vision]]

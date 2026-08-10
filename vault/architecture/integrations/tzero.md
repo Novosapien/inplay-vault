@@ -1,3 +1,7 @@
+---
+description: "The tZERO trading-engine implementation doc — FIX session topology, message bus, DFA state machines, recovery, dedup, latency budget, and SIM deployment notes"
+---
+
 # InPlay Trading Platform - Implementation Documentation
 
 > Bloomberg-terminal-style interface for tZERO trading engine

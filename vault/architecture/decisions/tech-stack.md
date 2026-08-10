@@ -1,3 +1,7 @@
+---
+description: "The full tech-stack decision table — Expo, FastAPI, Centrifugo, NATS JetStream, PostgreSQL, Redis on GCP — with alternatives considered and rejection reasons"
+---
+
 # Tech Stack Decisions
 
 > **Architecture:** [[architecture]]

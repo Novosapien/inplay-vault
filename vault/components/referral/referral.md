@@ -1,3 +1,7 @@
+---
+description: "Component doc for the referral growth engine — code lifecycle, share surfaces, bonus campaign calendar, cash-eligibility rules, wallet mechanics and open gaps"
+---
+
 # InPlay Trading Challenge — Referral
 
 > **Vision:** [[vision]]

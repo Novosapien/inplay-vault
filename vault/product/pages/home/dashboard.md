@@ -1,3 +1,7 @@
+---
+description: "Home-tab Dashboard page spec — wallet balances, ranking cards per competition vertical, today's games, positions P&L, plus navigation targets and states"
+---
+
 # Dashboard (Home)
 
 > **Tab:** Home

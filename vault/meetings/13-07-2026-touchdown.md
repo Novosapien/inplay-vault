@@ -14,6 +14,7 @@ extracted-to:
   - "[[components/components]]"
   - "[[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]"
   - "[[architecture/open-questions]]"
+description: "Transcript and analysis of the 2026-07-13 touchdown call — education videos cut under 2 min, house ads, Watch Mode conceived, Research Tab demo, Hard Rock"
 ---
 
 ## Post-Call Analysis

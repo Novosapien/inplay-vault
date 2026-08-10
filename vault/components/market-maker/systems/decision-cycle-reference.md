@@ -1,3 +1,7 @@
+---
+description: "Companion to the quoting engine — every function in one MM decision cycle written as pseudocode, with placeholder constants and the 23-07 v1 supersessions"
+---
+
 # Decision Cycle — Every Function Written Out
 
 > **Component:** [[market-maker/market-maker]] · companion to [[market-maker/systems/quoting-engine]]

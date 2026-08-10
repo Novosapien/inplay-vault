@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Order Entry modal — context-aware team defaults, persistent buy/sell buttons, limit-only orders, journeys, risks and open questions"
+---
+
 # InPlay Trading Challenge -- Order Entry
 
 > **Component:** [[trading]]

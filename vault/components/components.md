@@ -1,3 +1,7 @@
+---
+description: "Master register of all 13 components — status table, component map and system layout, plus cross-cutting concerns like advertising, push/CRM and analytics"
+---
+
 # InPlay Trading Challenge — Components
 
 > **Vision:** [[vision]]

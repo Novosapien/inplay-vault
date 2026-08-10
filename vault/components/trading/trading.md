@@ -1,3 +1,7 @@
+---
+description: "Trading component doc — the execution engine: limit orders via tZERO FIX, context-aware 3-click trade modal, wallets, fill notifications, and sub-component map"
+---
+
 # InPlay Trading Challenge -- Trading
 
 > **Vision:** [[vision]]

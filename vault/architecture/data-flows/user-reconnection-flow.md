@@ -1,3 +1,7 @@
+---
+description: "Reconnection flow after a WebSocket drop — server-side FIX sessions unaffected, Centrifugo last-value cache restores current data in ~1s, mobile notes"
+---
+
 # Data Flow: User Reconnection
 
 > **Architecture:** [[architecture]]

@@ -1,3 +1,7 @@
+---
+description: "Spec for the app-side synthetic market order — a limit priced N levels through the book, its fallback walk, and how it composes with the price band"
+---
+
 # Synthetic Market Order
 
 > **Component:** [[market-maker/market-maker]] · ships in [[trading/trading]]

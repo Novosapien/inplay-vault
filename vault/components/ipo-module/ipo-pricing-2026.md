@@ -1,3 +1,7 @@
+---
+description: "Authoritative 2026 IPO pricing reference (v1.0) — the formula, parameters, and listed prices for all 32 NFL and 138 NCAA team companies, with model caveats"
+---
+
 # InPlay IPO Pricing 2026 (v1.0)
 
 > **Component:** [[ipo-module]]

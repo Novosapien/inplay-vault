@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-28 InPlay touchdown — multi-sport data debate, tZERO white-label app idea, KYC/referral priorities, and a 3x-week standup cadence"
+---
+
 **
 
 May 28, 2026

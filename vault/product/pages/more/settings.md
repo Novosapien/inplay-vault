@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Settings page — notification toggles, dark/light theme, account info, support link and sign out"
+---
+
 # Settings
 
 > **Tab:** More

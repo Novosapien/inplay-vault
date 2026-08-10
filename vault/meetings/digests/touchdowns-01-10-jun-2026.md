@@ -1,3 +1,7 @@
+---
+description: "Digest of the 1–10 June 2026 touchdown syncs — Persona contract signed, referral system demoed, tZERO wallet/buying-power split, and the $25M compliance control"
+---
+
 # Touchdown Sweep — 1–10 June 2026
 
 > **Type:** Consolidated digest of touchdown (sync) meetings

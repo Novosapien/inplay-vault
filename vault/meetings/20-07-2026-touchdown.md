@@ -13,6 +13,7 @@ extracted-to:
   - "[[vision]]"
   - "[[architecture/open-questions]]"
   - "[[information-layer/sub-components/single-game-page/single-game-page]]"
+description: "Transcript of the 2026-07-20 touchdown — Edwin's market-maker mechanics Q&A (resting liquidity, offsets, synthetic market orders), Watch page ad UX, week focus"
 ---
 
 ## Post-Call Analysis

@@ -1,3 +1,7 @@
+---
+description: "Component doc for the weekly Earnings Report — EST vs ACT off-field earnings, batched Bloomberg-style release feed, trade-from-report, and its sub-components"
+---
+
 # InPlay Trading Challenge — Earnings Report
 
 > **Vision:** [[vision]]

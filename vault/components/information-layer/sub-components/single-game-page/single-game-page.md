@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Single Game Page — the core live-trading screen: journeys, data needs, dependencies, and the July Watch Mode (landscape) evolution"
+---
+
 # InPlay Trading Challenge -- Single Game Page
 
 > **Component:** [[information-layer]]

@@ -1,3 +1,7 @@
+---
+description: "Stub component doc for the withdrawal flow — known decisions (bank/crypto/1099 capture at first withdrawal, W9 automation by 29 Aug) plus open questions"
+---
+
 # InPlay Trading Challenge — Withdrawal Flow
 
 > **Vision:** [[vision]]

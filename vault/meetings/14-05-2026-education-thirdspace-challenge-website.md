@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-14 InPlay module workshop — education (TikTok-style clips, quizzes), third-space chat and moderation, challenge website, ad moments"
+---
+
 **
 
 May 14, 2026

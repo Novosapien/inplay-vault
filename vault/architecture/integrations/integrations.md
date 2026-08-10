@@ -1,3 +1,7 @@
+---
+description: "Register of third-party integrations — Sportradar, tZERO ATS, Persona, Pay.com — with SR feed/probabilities/contract detail and tZERO SIM/PROD notes"
+---
+
 # InPlay Trading Challenge -- Integrations
 
 > **Architecture:** [[architecture]]

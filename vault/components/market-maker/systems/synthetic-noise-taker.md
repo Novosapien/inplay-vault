@@ -1,3 +1,7 @@
+---
+description: "SNT-1, Edwin's taker-only house agent that manufactures noise flow so books look alive — v1.0 design, loss budget, guards, and the ExchangeAdapter we build"
+---
+
 # Synthetic Noise Taker (SNT-1)
 
 > **Component:** [[market-maker/market-maker]]

@@ -1,3 +1,7 @@
+---
+description: "The eight-section product vision — the path-dependent sports equity asset class, audiences, competitor analysis, revenue model, constraints, risks and gaps"
+---
+
 # InPlay Trading Challenge Vision
 
 > **Client:** InPlay

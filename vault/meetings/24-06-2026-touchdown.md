@@ -9,6 +9,7 @@ extracted-to:
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[trading/trading]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-24 InPlay touchdown — the pivot to participation-gated prize payouts, the referral-program launch, and app-store progress"
 ---
 
 ## Post-Call Analysis

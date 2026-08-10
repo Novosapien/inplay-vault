@@ -1,3 +1,7 @@
+---
+description: "Service map for the backend — 5 Cloud Run APIs plus FIX Gateway and Centrifugo, the monorepo shared-package layout, and why services never call each other"
+---
+
 # Service Architecture Overview
 
 > **Architecture:** [[architecture]]

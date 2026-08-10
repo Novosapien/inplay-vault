@@ -9,6 +9,7 @@ extracted-to:
   - "[[earnings-report/earnings-report]]"
   - "[[components/components]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-15 InPlay touchdown call — payment-provider debrief, zero-advertising crisis, pre-launch data preview, and earnings-report placement"
 ---
 
 ## Post-Call Analysis

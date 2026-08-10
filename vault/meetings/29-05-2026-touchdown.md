@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-29 InPlay touchdown — website bios and B2B positioning, LinkedIn/PR strategy, and ad placements on six key pages for a bank pitch"
+---
+
 **
 
 May 29, 2026

@@ -1,3 +1,7 @@
+---
+description: "Register of the Apple and Google Play developer accounts and live app identity — store URLs, bundle ID, App ID, and support contacts for InPlay Challenge"
+---
+
 # App Store Accounts & Live App Identity
 
 Reference for the store accounts and published app identifiers. Both listings went live on 22 July 2026. Last updated: 4 August 2026.

@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Third Space social layer — Game Day, Team and Research AI chats, moderation, admin backend, and the future sentiment-data product"
+---
+
 # InPlay Trading Challenge -- Third Space
 
 > **Vision:** [[vision]]

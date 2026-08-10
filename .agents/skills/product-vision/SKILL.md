@@ -34,6 +34,8 @@ Extract vision-level content from client call transcripts and structure it into 
 
 5. **Build the knowledge graph.** Create wikilinks, update parent READMEs, backfill routing tables.
 
+6. **Description frontmatter.** Every markdown document this skill creates or updates carries a one-line `description:` in its YAML frontmatter — the canonical rule ("## Description frontmatter") lives in the vault's `CLAUDE.md` and `AGENTS.md`. Write the description in the same edit that creates the file; on a material edit, re-read it and rewrite it if it no longer matches the page. Format: one line, at most 160 characters, double-quoted, a sentence that says what the document IS — never a quote, a table fragment, or dialogue. If you cannot summarise the page faithfully, leave `description:` absent and say so. Exempt: changelog files, template files, empty files.
+
 ## Flow
 
 ```

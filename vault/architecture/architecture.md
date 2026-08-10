@@ -1,3 +1,7 @@
+---
+description: "Top-level architecture doc for the trading challenge — system diagrams, price and order flows, tech stack table, and an index of every architecture sub-page"
+---
+
 # InPlay Trading Challenge -- Technical Architecture
 
 > **Project:** [[index]]

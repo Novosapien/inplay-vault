@@ -12,6 +12,7 @@ extracted-to:
   - "[[market-maker/parameters]]"
   - "[[market-maker/plan]]"
   - "[[market-maker/learnings]]"
+description: "Digest and transcript of the 2026-07-23 market-maker follow-up call — simplified quote lifecycle, game-state cadence, App Store launch status and KYC pushback"
 ---
 
 ## Post-Call Analysis

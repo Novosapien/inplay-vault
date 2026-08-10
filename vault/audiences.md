@@ -1,3 +1,7 @@
+---
+description: "Canonical definitions of the four audiences — Crypto-Savvy Trader, Analytical Fan, Finance-Curious Student, Veteran Trader-Bettor — pains and channels"
+---
+
 # InPlay Trading Challenge — Audiences
 
 > **Vision:** [[vision]]

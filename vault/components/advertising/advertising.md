@@ -1,3 +1,7 @@
+---
+description: "Hub for advertising as a cross-cutting concern — the two revenue motions, direct-sold sponsorship vs programmatic SSP inventory, and its sub-component index"
+---
+
 # InPlay Trading Challenge — Advertising
 
 > **Vision:** [[vision]]

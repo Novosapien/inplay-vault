@@ -1,3 +1,7 @@
+---
+description: "The vault index — project status summary, a table of the core documents, and a dated recent-activity log of extractions and decisions"
+---
+
 # InPlay Trading Challenge
 
 > **Client:** InPlay (Edwin, Cody, Troy, Skye)

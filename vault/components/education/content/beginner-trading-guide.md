@@ -1,3 +1,7 @@
+---
+description: "Kevin's raw 16-module beginner guide for the Learning Center — capital markets through tokenization, with quizzes, glossary and Trading Challenge framing"
+---
+
 # Beginner Trading Guide (Source Content)
 
 > **Component:** [[education]]

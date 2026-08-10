@@ -1,3 +1,7 @@
+---
+description: "Component hub for the internal market maker and SNT-1 — system map, the seven-system table, working-doc index and ownership boundaries"
+---
+
 # InPlay Trading Challenge — Market Maker
 
 > **Vision:** [[vision]]

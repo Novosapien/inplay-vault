@@ -1,3 +1,7 @@
+---
+description: "Canonical record of the Unity LevelPlay (ironSource) SSP account — app keys, publisher and advertiser IDs, app-ads.txt status and open onboarding items"
+---
+
 # Unity LevelPlay Account
 
 Canonical record of the Unity LevelPlay (ironSource) SSP account for InPlay Challenge. Onboarding started 4 August 2026. Ad units to follow: same 8-unit set as AdMob (native inline, native MREC, native image strip, banner, per platform). Tracker: `Programming/inplay/ssp-ad-units/`. Last updated: 4 August 2026.

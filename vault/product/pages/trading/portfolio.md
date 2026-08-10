@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Portfolio screen — trading and referral wallet balances, open positions with unrealised P&L, and links to Orders, History and Wallet"
+---
+
 # Portfolio
 
 > **Tab:** Trade

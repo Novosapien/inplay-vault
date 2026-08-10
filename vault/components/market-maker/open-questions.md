@@ -1,3 +1,7 @@
+---
+description: "Live MM blocker list by owner — Edwin, tZERO, Sport Radar and Novosapien items with what each blocks, status, and the next-call priority order"
+---
+
 # Market Maker — Open Questions
 
 > **Component:** [[market-maker/market-maker]]

@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Team Page — persistent team research profile with stats, price history, news, trade CTA, live-game banner and analyst-prices swipe"
+---
+
 # InPlay Trading Challenge -- Team Page
 
 > **Component:** [[information-layer]]

@@ -1,3 +1,7 @@
+---
+description: "Page spec for the public Trader Profile — rank, P&L, Sharpe, win rate, anonymised activity, plus public-username rules and privacy limits"
+---
+
 # Trader Profile
 
 > **Tab:** Ranks

@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Position Detail screen — one team's holding, entry price, unrealised P&L, per-team trade history, and Sell / Buy More actions"
+---
+
 # Position Detail
 
 > **Tab:** Trade

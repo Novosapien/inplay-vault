@@ -1,3 +1,7 @@
+---
+description: "Ad Service spec — Google Ad Manager at launch, then the custom moment-based sponsor system with pre-computed Redis targeting, endpoints and privacy notes"
+---
+
 # Ad Service
 
 > **Architecture:** [[architecture]]

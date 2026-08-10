@@ -1,3 +1,7 @@
+---
+description: "FIX Gateway spec — the Compute Engine VM holding 4 FIX 4.2 sessions to tZERO, its adapter internals, dedup, HA failover and links to the tZERO state machines"
+---
+
 # FIX Gateway
 
 > **Architecture:** [[architecture]]

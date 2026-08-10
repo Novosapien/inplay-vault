@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Cancel Order confirmation screen — order details shown, Confirm Cancel vs Keep Order actions, both returning to Open Orders"
+---
+
 # Cancel Order
 
 > **Tab:** Trade

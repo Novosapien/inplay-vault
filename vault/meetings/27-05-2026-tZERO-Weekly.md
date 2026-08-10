@@ -1,3 +1,7 @@
+---
+description: "Fragmentary, garbled transcript of a tZERO weekly call dated May 22 — API test session setup, price improvement goes to the taker, and app demo chatter"
+---
+
 Date: May 22
 Meeting participants: Brett StClair
 

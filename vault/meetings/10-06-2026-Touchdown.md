@@ -9,6 +9,7 @@ extracted-to:
   - "[[inplay-global-website/inplay-global-website]]"
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[components/components]]"
+description: "Transcript of the 2026-06-10 InPlay touchdown — guaranteed-prize-money compliance incident, website go-live review, Persona KYC demo, and tZERO wallet split"
 ---
 
 ## Post-Call Analysis

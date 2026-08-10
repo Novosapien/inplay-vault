@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-12 InPlay call — onboarding/KYC via Persona, tZERO wallet provisioning, referral program design, and the global website first draft"
+---
+
 **
 
 May 12, 2026

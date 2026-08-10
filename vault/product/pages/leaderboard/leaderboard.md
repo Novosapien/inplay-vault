@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Ranks-tab Leaderboard — gap-to-earn hero metric, three competition verticals, four time horizons, ranked list and header-glow states"
+---
+
 # Leaderboard
 
 > **Tab:** Ranks

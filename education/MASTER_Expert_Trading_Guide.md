@@ -1,3 +1,7 @@
+---
+description: "10-module expert trading guide — statistical edge, systematic strategy design, information theory, relative value, regimes and the institutional mindset"
+---
+
 __INPLAY GLOBAL__
 
 __Expert Trading__

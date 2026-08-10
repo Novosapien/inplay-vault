@@ -1,3 +1,7 @@
+---
+description: "Transcript of the first tZERO–Rebel Labs integration call (May 2026) — onboarding soft-KYC, wallet pre-provisioning, FIX vs REST APIs, blockchain data schema"
+---
+
 Meeting Title: tZERO and Rebel Labs — trading challenge integration, wallet provisioning, and API architecture
 Date: May 15
 Meeting participants: Brett StClair

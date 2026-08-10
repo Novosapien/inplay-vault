@@ -1,3 +1,7 @@
+---
+description: "Centrifugo spec — the WebSocket fan-out layer on a Managed Instance Group, with the channel map, NATS broker mode, SDK snippets and the game-day VM schedule"
+---
+
 # Centrifugo (Real-Time Delivery)
 
 > **Architecture:** [[architecture]]

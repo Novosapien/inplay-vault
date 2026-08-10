@@ -11,6 +11,7 @@ extracted-to:
   - "[[education/education]]"
   - "[[components/components]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-12 touchdown with extraction table — site analytics, tZERO real-time P&L, market-making kickoff, and AI education video plans"
 ---
 
 ## Post-Call Analysis

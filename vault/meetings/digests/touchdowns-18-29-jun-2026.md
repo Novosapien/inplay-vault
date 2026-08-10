@@ -1,3 +1,7 @@
+---
+description: "Digest of the 18–29 June 2026 sync calls — participation-gated prize payouts, the referral launch with KYC, SSP registration, and AI-drafted legal T&C pages"
+---
+
 # Touchdown Sweep — 18–29 June 2026
 
 > **Type:** Consolidated digest of sync / strategy meetings

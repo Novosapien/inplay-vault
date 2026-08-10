@@ -1,3 +1,7 @@
+---
+description: "Digest of the 12–17 June 2026 touchdown syncs — onboarding flow locked, IPO draft naming, launch dates (CFB 22 Aug / NFL 2 Sept), and the SSP-first ad stack"
+---
+
 # Touchdown Sweep — 12–17 June 2026
 
 > **Type:** Consolidated digest of touchdown (sync) meetings

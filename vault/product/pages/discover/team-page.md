@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Team Page research dashboard — price chart, season stats, standings, schedule, injuries, player spotlight, news and the user's position"
+---
+
 # Team Page
 
 > **Tab:** Discover

@@ -13,6 +13,7 @@ extracted-to:
   - "[[education/education]]"
   - "[[components/components]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-17 InPlay touchdown — Brett's programmatic SSP playbook, Hasan's onboarding and IPO demo, IPO draft naming, up-to-$25M prize pool"
 ---
 
 ## Post-Call Analysis

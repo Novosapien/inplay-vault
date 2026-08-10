@@ -1,3 +1,7 @@
+---
+description: "Canonical record of the Vungle (Liftoff Monetize) SSP account — account and app IDs, the verified app-ads.txt line, and open ad-unit onboarding items"
+---
+
 # Vungle (Liftoff Monetize) Account
 
 Canonical record of the Vungle SSP account for InPlay Challenge, managed at `publisher.vungle.com`. Onboarding started 4 August 2026. Ad units to follow: same 8-unit set as AdMob (native inline, native MREC, native image strip, banner, per platform). Tracker: `Programming/inplay/ssp-ad-units/`. Last updated: 4 August 2026.

@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Portfolio View position dashboard — real-time P&L from tZERO position fields, entity journeys, data needs, risks and open questions"
+---
+
 # InPlay Trading Challenge -- Portfolio View
 
 > **Component:** [[trading]]
