@@ -9,6 +9,7 @@ extracted-to:
   - "[[inplay-global-website/inplay-global-website]]"
   - "[[trading/trading]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-05 touchdown call — referral system demo, live Sportradar data in the prototype, website redesign walkthrough, and in-app ad mockups"
 ---
 
 ## Post-Call Analysis
@@ -24,10 +25,10 @@ extracted-to:
 | Demo strategy — demo on mock-data branch (production-like), not incomplete live-SR branch | [[information-layer/information-layer]] | Touchdown note added |
 | Global Website redesign — exact deck copy, brand colours, imagery-last; hero, partners, team, football-challenge; outline font; CTA→form reason-routing to DLs | [[inplay-global-website/inplay-global-website]] | Update block + Page Map updated |
 | App ad placements designed (Coca-Cola/Gatorade/etc.; MX banner across game screens); header lock vs scroll as advertiser options | Advertising (cross-cutting) via digest | Noted |
-| T0 homework — buying-power/referral-wallet operation + look/feel; NOVO-vs-T0 responsibility split | [[architecture/open-questions]] | Row added |
+| tZERO homework — buying-power/referral-wallet operation + look/feel; NOVO-vs-tZERO responsibility split | [[architecture/open-questions]] | Row added |
 | **Affiliate revenue (FanDuel-style rev-share); $25M operator raise at conference** | digest triage | New commercial lever — noted |
 | **Multi-sport view-only re-raised** (one-email trial); George's focus concern vs Edwin's monetise-the-minutes | digest triage | May "not doing" stands; revisit v2.0 |
-| Press release — Skye's T0 draft + tZERO draft, merge for Tuesday | [[inplay-global-website/inplay-global-website]] | Noted in update block |
+| Press release — Skye's tZERO draft + tZERO draft, merge for Tuesday | [[inplay-global-website/inplay-global-website]] | Noted in update block |
 
 ---
 
@@ -72,8 +73,8 @@ Edwin Johnson: Brett?
 Brett StClair: Everyone's coming now. Sorry, we all got caught up here.  
 Edwin Johnson: You got  
 Max Kingaby: That's  
-Edwin Johnson: T0.  
-Brett StClair: Uh T0 call. Yeah, I think quite a bit got discussed and went through.  
+Edwin Johnson: tZERO.  
+Brett StClair: Uh tZERO call. Yeah, I think quite a bit got discussed and went through.  
 Max Kingaby: Yeah.  
 Brett StClair: So, it was a good session.  
 Edwin Johnson: Was it a good call or did we have a fire?  
@@ -90,7 +91,7 @@ Troy McDonald Kane: you know, um the NOBO team has really gotten things up very 
 ### 00:02:07
 
    
-Troy McDonald Kane: Um, you know, and how what part does the NOVO team do and what part does the T0 team do? And that's the homework before next week's meeting.  
+Troy McDonald Kane: Um, you know, and how what part does the NOVO team do and what part does the tZERO team do? And that's the homework before next week's meeting.  
 Edwin Johnson: All right, great. There they are. Kevin,  
 Troy McDonald Kane: Yeah.  
 Edwin Johnson: Gary, George E. Boy.  
@@ -183,7 +184,7 @@ Troy McDonald Kane: Yeah.
 Edwin Johnson: I could see that at about 10,000 ft. I know where to go. Where is that? All right. So, um, who's in charge? Who's running the show?  
 Brett StClair: I'll I'll kick it off.  
 Edwin Johnson: Where we at?  
-Brett StClair: Um, I think we've got a lot to demonstrate today. Um it's just so just giving us a little bit of time just so thank you the the test of just reducing the amount of catchups has given us time to just you know doing dev work you just need that focus period like hours and hours and hours so the team have done quite a bit um uh sun has absolutely smashed the T0 integration got everything working got all the backend dashboards testing got all the scale kind of testing ready as well so that we can really push the integration and make sure that it's working at scale.  
+Brett StClair: Um, I think we've got a lot to demonstrate today. Um it's just so just giving us a little bit of time just so thank you the the test of just reducing the amount of catchups has given us time to just you know doing dev work you just need that focus period like hours and hours and hours so the team have done quite a bit um uh sun has absolutely smashed the tZERO integration got everything working got all the backend dashboards testing got all the scale kind of testing ready as well so that we can really push the integration and make sure that it's working at scale.  
    
  
 
@@ -537,7 +538,7 @@ Edwin Johnson: And the other thing, uh,
 Max Kingaby: Okay.  
 Edwin Johnson: Troy,  
 Cody Haugen: this  
-Edwin Johnson: Sky sent over a press release for T0. Maybe we coordinate a press release around Tuesday, um, that we signed with T0  
+Edwin Johnson: Sky sent over a press release for tZERO. Maybe we coordinate a press release around Tuesday, um, that we signed with tZERO  
    
  
 

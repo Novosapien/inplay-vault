@@ -1,10 +1,18 @@
+---
+description: "Sub-component spec for the IPO buy engine — static-ask buy-only mechanics, 5M float with 20% holdback, direct-mint issuance via the transfer-agent workspace"
+---
+
 # InPlay Trading Challenge — Primary Offering Execution
 
 > **Component:** [[ipo-module]]
 > **Date:** 2026-05-26
 > **Status:** Defined
-> **Owner:** Edwin (client-facing — mechanics) + Troy (T0 / on-chain ledger) + George (engineering)
+> **Owner:** Edwin (client-facing — mechanics) + Troy (tZERO / on-chain ledger) + George (engineering)
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]]_
+
+> **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_), issuance path decided:** the group resolved the long-open "how does the issuance ledger work" question. The IPO adopts a **standard primary-issuance model: bypass the Matching Engine (MS) and mint tokens directly to investor wallets** via the **transfer-agent workspace**, treated like a **security with a primary raise**. The offering is **long-only at a single price** (consistent with the static-ask model below). Chris Russell and Rob Colucci weighed using the MS to set prices via buy orders vs. direct minting; consensus landed on the **direct-mint path**. **Blocker/action:** **Novo needs minting access provisioned in the tokenization engine** (transfer-agent workspace) before this can be exercised.
+
+> **Clarification (29-07-2026, _[[29-07-2026-tZERO-rob-qa]]_), where issuance metrics live:** Rob confirmed the OMS can set a preliminary **IPO Reference Price** for Market Data and Risk Management (set the Previous Close Price, or rest a BUY order at the set price so it becomes eligible for execution), but the OMS is **not** the system of record for **primary-issuance metrics**. To track **total capital raised and shares remaining available**, the challenge should use a **dedicated cap-table management tech stack**. This sits alongside the direct-mint path: mint to wallets on-chain, seed the reference price in the OMS, and track raise/float on the cap table. **New open item:** select or build that cap-table stack (see [[open-questions]]).
 
 ---
 
@@ -12,16 +20,16 @@
 
 **Functional purpose:**
 
-Primary Offering Execution is the buy engine of the IPO — the mechanism by which a user takes shares out of a team company's float at the offering price, and by which the float is issued, decremented, and exhausted. It is the most mechanically precise part of the IPO Module and the one with the hardest correctness requirements, because it touches the T0 ledger and on-chain issuance.
+Primary Offering Execution is the buy engine of the IPO — the mechanism by which a user takes shares out of a team company's float at the offering price, and by which the float is issued, decremented, and exhausted. It is the most mechanically precise part of the IPO Module and the one with the hardest correctness requirements, because it touches the tZERO ledger and on-chain issuance.
 
 The model is intentionally simple, and Edwin specified it precisely. Each team company floats **5,000,000 shares** at a **single static ask price** that does not move. There is no bid — InPlay, acting through the team company's treasury as the issuer of record, is the **only seller**. A user crosses the ask and clicks **buy** (never sell — there is no sell action in this phase), enters a quantity, and that quantity is matched and removed from the float. Edwin's worked example: 100,000 shares at $40; a user buys 1,000 → 99,000 remain; the next buyer takes 10,000 → 89,000 remain; and so on until the float is gone. There is **no per-user limit** — a user may spend their entire 100,000 InPlay$ on one team. InPlay **holds back ~20% (≈1M shares)** of each float to enable shorting on the secondary market without users over-shorting. When the float is exhausted (or the window closes — see [[ipo-scheduling]]), the team stops being buyable at IPO.
 
-Even in the simulated challenge, the shares are **issued by the team company's treasury** and that issuance must be represented on-chain — the buyer's purchase is their first ownership of the security (Troy: _"they're the issuer even in the simulated environment… that has to be represented on the chain"_). Resolving exactly how that ledger works is an open item with the T0 team.
+Even in the simulated challenge, the shares are **issued by the team company's treasury** and that issuance must be represented on-chain, the buyer's purchase is their first ownership of the security (Troy: _"they're the issuer even in the simulated environment… that has to be represented on the chain"_). **Resolved 23-07 (see update note above):** issuance **bypasses the Matching Engine and mints tokens directly to investor wallets via the transfer-agent workspace**, pending Novo being granted minting access in the tokenization engine.
 
 **Entities that interact with it:**
 
 - **User (verified, funded)** — initiates buys at the static ask.
-- **Ledger/matching agent (T0)** — issues from treasury, matches buys, decrements float, records ownership on-chain.
+- **Ledger/matching agent (tZERO)** — issues from treasury, matches buys, decrements float, records ownership on-chain.
 
 ---
 
@@ -94,15 +102,15 @@ graph TD
 
 ### 3b. Cross-Component Journeys
 
-#### Journey 1: Issue and decrement against the T0 ledger
+#### Journey 1: Issue and decrement against the tZERO ledger
 
-**Entity:** Ledger/matching agent (T0) + team treasury
+**Entity:** Ledger/matching agent (tZERO) + team treasury
 
 **Input:** A confirmed user buy.
 
-**Handoff point:** IPO Module → T0 ledger. State passed: team, quantity, price, buyer. On return: confirmed fill + new float state + on-chain ownership record.
+**Handoff point:** IPO Module → tZERO ledger. State passed: team, quantity, price, buyer. On return: confirmed fill + new float state + on-chain ownership record.
 
-**Components involved:** IPO Module → T0 ATS / chain → IPO Module
+**Components involved:** IPO Module → tZERO ATS / chain → IPO Module
 
 **Outcome:** Shares are issued from the treasury to the buyer, recorded on-chain, and the authoritative float is updated.
 
@@ -110,7 +118,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Confirmed buy] --> B[HANDOFF: order to T0 ledger]
+    A[Confirmed buy] --> B[HANDOFF: order to tZERO ledger]
     B --> C[Treasury issues N shares]
     C --> D[Record ownership on-chain]
     D --> E[Decrement authoritative float]
@@ -151,9 +159,9 @@ _Owned by [[ipo-scheduling]] — at window close the team transitions from buy-o
 | Static ask price | Out | Fixed offering price per team | InPlay valuation model |
 | Buy quantity | In | User-entered share count | User input |
 | Wallet balance | In/Out | Funds available; debited on buy | Trading wallet ([[trading]]) |
-| Float remaining | In/Out/Stored | Authoritative shares left (of 80% buyable) | T0 ledger |
-| Holdback reserve | Stored | ~20% (≈1M) reserved for shorting | T0 ledger |
-| Ownership / issuance record | Stored | Treasury → buyer, on-chain | T0 / chain |
+| Float remaining | In/Out/Stored | Authoritative shares left (of 80% buyable) | tZERO ledger |
+| Holdback reserve | Stored | ~20% (≈1M) reserved for shorting | tZERO ledger |
+| Ownership / issuance record | Stored | Treasury → buyer, on-chain | tZERO / chain |
 | Holding (position) | Out/Stored | Shares now owned by user | Portfolio ([[trading]]) |
 
 ---
@@ -162,7 +170,7 @@ _Owned by [[ipo-scheduling]] — at window close the team transitions from buy-o
 
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
-| T0 ATS | Ledger, treasury issuance, on-chain ownership, float accounting | Yes |
+| tZERO ATS | Ledger, treasury issuance, on-chain ownership, float accounting | Yes |
 | Trading wallet ([[trading]]) | Funded balance to debit | Yes |
 | InPlay valuation model | Static ask price | Yes |
 | [[ipo-scheduling]] | Window-open state; close trigger | Yes |
@@ -196,7 +204,7 @@ _Owned by [[ipo-scheduling]] — at window close the team transitions from buy-o
 
 **Must-have at launch?** Yes — this *is* the IPO. Highest correctness bar in the component.
 
-**Sequencing rationale:** Build first among the sub-components; [[draft-board]] and [[team-ipo-detail]] depend on its live float state. The T0 ledger integration is the long-pole and should be de-risked early.
+**Sequencing rationale:** Build first among the sub-components; [[draft-board]] and [[team-ipo-detail]] depend on its live float state. The tZERO ledger integration is the long-pole and should be de-risked early.
 
 ---
 

@@ -1,3 +1,7 @@
+---
+description: "Running log of distilled MM understanding — why SNT-1 exists, the rest-until-gone v1 lifecycle, hot-path and event-log design, and the Edwin remit line"
+---
+
 # Market Maker — Learnings
 
 > **Component:** [[market-maker/market-maker]]
@@ -181,6 +185,13 @@
   turns an impossible ask into a coverage complaint, and it's the difference
   between building a model for 138 teams and sending an email.
 
+## 2026-07-30
+
+- **A dead book is the real launch risk, and the fix is a house taker, not more makers.** SNT-1 exists because a real exchange with few users looks empty. The MM alone does not solve this: it posts liquidity, but liquidity nobody hits still reads as "no trading." SNT-1 manufactures the *taking* side so prints actually happen. Two house agents, opposite roles: maker (MM) and taker (SNT-1).
+- **Noise is bought, not free.** SNT-1 is a deliberate controlled loser; its cost is literally the spread it crosses, metered against a $100k/team/session budget. That spread cost is the **subsidy that seeds the market** and is largely captured by the MM on the other side. The budget is a spend cap on that subsidy, not a P&L target.
+- **Uninformed-by-construction is the safety property.** The realism (disposition-effect profit-taking) conditions only on SNT-1's own cost basis vs mid, never on book state or participant data. That is what keeps its flow noise rather than a signal participants could reverse-engineer or that could push price toward a target.
+- **The off-field rule already handled this.** Because SNT-1 carries no participant side, its MM-facing prints fall outside the >= 1-participant-side off-field-volume rule automatically. A well-drawn rule needed no amendment for a new agent, worth remembering when the next house agent appears.
+
 ## 2026-07-24 (b) — build day + ingestion research
 
 - **Measure the feed; don't reason about it.** We recorded twice that SR
@@ -296,7 +307,7 @@
   before posting creates a gap Edwin explicitly doesn't want; a fleeting
   cross during a price adjustment is accepted on the first iteration. Wash
   blockers "can be used very predatorily" — policy for users is rulebook +
-  order queries + removal, not venue tech (Troy checking T0's self-match
+  order queries + removal, not venue tech (Troy checking tZERO's self-match
   prevention anyway, T11).
 
 - **Edwin's ingestion model is pull, not push.** He talks in "calls" — we
@@ -315,7 +326,7 @@
 - **Aggregated book = queue position is invisible.** tZERO's feed shows only
   the total per price level (plus an order count) — never individual orders.
   We can never observe where our own order sits in the queue, so T8.1 (does
-  an update keep queue position?) can only be answered by T0 directly or by
+  an update keep queue position?) can only be answered by tZERO directly or by
   a two-account experiment in QA.
 
 - **Opening auctions exist in the venue.** Some markets open by collecting

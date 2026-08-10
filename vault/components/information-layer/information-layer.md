@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Information Layer — discovery, game and team pages, leaderboard, research tab — with SR/tZERO sourcing, build-vs-buy calls and open gaps"
+---
+
 # InPlay Trading Challenge -- Information Layer
 
 > **Vision:** [[vision]]
@@ -17,7 +21,7 @@ The Information Layer is the main stage of the InPlay app -- the data and intell
 
 The component spans multiple interconnected pages. Users land on a discovery homepage where they browse today's slate of games, search for specific teams, and see featured matchups. From there they can drill into a game day overview showing all live and upcoming games, or click directly into a single game page where sports data and market data converge -- a Sport Radar live match tracker, an annotated price chart mapping game events to price movements, real-time stats, and market data (bid/offer, order book depth). Team pages provide historical context: season performance, head-to-head matchup data, and stock price history over time. A leaderboard system tracks competition across three verticals (best P&L, best risk-adjusted return, comeback trader) and four time horizons (daily, weekly, monthly, full event), showing users where they rank and what they need to do to reach payout positions.
 
-The component pulls from three data sources: Sport Radar (sports events, stats, live match tracker, news), T0 ATS (prices, order book, trade events), and InPlay's own data store (leaderboard rankings, cross-correlated volatility data, user preferences). The cross-correlation layer -- game events mapped to price movements -- is InPlay's proprietary IP. A research tab hosts the **AI Research Agent** (manual chat, scheduled reports, event-triggered proactive research over SR/T0/InPlay data); free during the simulation challenge and paywalled (~$99.99/mo) in production.
+The component pulls from three data sources: Sport Radar (sports events, stats, live match tracker, news), tZERO ATS (prices, order book, trade events), and InPlay's own data store (leaderboard rankings, cross-correlated volatility data, user preferences). The cross-correlation layer -- game events mapped to price movements -- is InPlay's proprietary IP. A research tab hosts the **AI Research Agent** (manual chat, scheduled reports, event-triggered proactive research over SR/tZERO/InPlay data); free during the simulation challenge and paywalled (~$99.99/mo) in production.
 
 The Information Layer also hosts shared elements that appear across multiple pages: a news feed (AP-style editorial from Sport Radar), large block trade alerts, leaderboard position widgets, and market data snippets. Advertising surfaces within this component as a cross-cutting concern -- volatility moment animations, sponsored pages, and game-adjacent ad placements all live here but are governed by the advertising strategy, not this component.
 
@@ -32,7 +36,7 @@ Information Layer
 │   └── All live/upcoming games today
 ├── Single Game Page
 │   ├── Sport Radar live match tracker (embed)
-│   ├── Annotated price chart (SR events x T0 prices)
+│   ├── Annotated price chart (SR events x tZERO prices)
 │   ├── Real-time game stats
 │   ├── Market data (bid/offer, order book depth)
 │   ├── Trading widget (owned by Trading component)
@@ -95,7 +99,7 @@ Information Layer
 **Edge cases and error states:**
 
 - What happens when Sport Radar data feed goes down during a live game?
-- What happens when T0 price feed is delayed or unavailable?
+- What happens when tZERO price feed is delayed or unavailable?
 - Games spanning midnight -- how does the leaderboard handle the cutoff? (Edwin and Troy agreed to resolve offline; decision pending)
 - User searching for a team that exists in both NFL and NCAA (e.g., Buffalo) -- disambiguation needed
 
@@ -136,8 +140,8 @@ Data-rich but not overwhelming. The core tension: Edwin wants Bloomberg-level de
 | Real-time sports data (play-by-play, stats, historical) | Access | Sport Radar APIs (push + REST) | Licensed. 10-15 years historical depth, real-time push every 1-2 seconds, covers NFL + NCAA. Cody: "any data point that lives in a sports ecosystem, we will have access to it" |
 | Win probabilities | Access | Sport Radar | Live probability calculations during games, included in existing licensing |
 | Team logos in match tracker | Access | Sport Radar widget (toggle switch) | Included via Associated Press visualisation loophole at no extra cost. Can be toggled on/off. Risk of league pushback. **Decision pending:** use logos for authenticity vs. sell that ad space to sponsors. To be raised in SR client setup call |
-| Market data (prices, order book, bid/offer) | Access | T0 ATS | T0 provides the trading engine and all price/order data. Information Layer consumes and displays; does not own |
-| Annotated price chart (game events x price movements) | Build | InPlay proprietary | Cross-correlation of SR game events with T0 price data to produce annotated charts showing _why_ prices moved. This is InPlay's IP -- no third party provides this. Requires a data store for the cross-correlated dataset ("mem store" per Brett) |
+| Market data (prices, order book, bid/offer) | Access | tZERO ATS | tZERO provides the trading engine and all price/order data. Information Layer consumes and displays; does not own |
+| Annotated price chart (game events x price movements) | Build | InPlay proprietary | Cross-correlation of SR game events with tZERO price data to produce annotated charts showing _why_ prices moved. This is InPlay's IP -- no third party provides this. Requires a data store for the cross-correlated dataset ("mem store" per Brett) |
 | News feed (editorial) | Access | Sport Radar AP-style newswire | Player news, injuries, free agent signings, team news. Included in SR licensing |
 | Leaderboard engine (rankings, calculations, proximity) | Build | InPlay internal | Three verticals, four time horizons, proximity calculations, prize distribution rules, special event day logic -- all custom business logic |
 | Search (team lookup with type-ahead) | Build | InPlay internal | Type-ahead across ~163 teams with disambiguation for overlapping names |
@@ -156,11 +160,11 @@ Data-rich but not overwhelming. The core tension: Edwin wants Bloomberg-level de
 | Win probabilities | In | Sport Radar | Live probability calculations, updated in real time during games |
 | Game schedule / fixtures | In | Sport Radar | Which games are on, when, where. Drives discovery page and game day overview |
 | AP-style news content | In | Sport Radar newswire | Player news, injuries, signings, team news |
-| Current prices (bid/offer/last) | In | T0 ATS | Real-time during live games |
-| Order book depth | In | T0 ATS | Number of orders at each price level |
-| Large block trade events | In | T0 ATS / Trading component | Anonymous alerts generated when large trades execute |
+| Current prices (bid/offer/last) | In | tZERO ATS | Real-time during live games |
+| Order book depth | In | tZERO ATS | Number of orders at each price level |
+| Large block trade events | In | tZERO ATS / Trading component | Anonymous alerts generated when large trades execute |
 | User positions / P&L summary | In | Trading component | Displayed on game page and discovery. Owned by Trading, consumed here |
-| Cross-correlated volatility data | Stored | InPlay internal | SR game events mapped to T0 price movements. InPlay's proprietary dataset. Powers the annotated price chart. Requires precise timestamping between both data sources |
+| Cross-correlated volatility data | Stored | InPlay internal | SR game events mapped to tZERO price movements. InPlay's proprietary dataset. Powers the annotated price chart. Requires precise timestamping between both data sources |
 | Leaderboard rankings | Stored | InPlay internal | Calculated from Trading component P&L data across three verticals and four time horizons |
 | User favourites / followed teams | Stored | InPlay internal | Personalisation for discovery page ordering and featured content |
 
@@ -195,7 +199,7 @@ Data-rich but not overwhelming. The core tension: Edwin wants Bloomberg-level de
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
 | Sport Radar | Data feeds (push + REST), live match tracker widget, news feed, historical data, win probabilities | Yes -- no SR, no information layer |
-| T0 ATS | Real-time prices, order book data, trade event stream (for block alerts) | Yes -- no T0, no market data |
+| tZERO ATS | Real-time prices, order book data, trade event stream (for block alerts) | Yes -- no tZERO, no market data |
 | Trading component | User P&L and position data (for display on game pages and leaderboard calculations) | No -- can mock with simulated data during build |
 | Customer Onboarding | Authenticated user identity | Yes -- need to know who the user is |
 | Sport Radar client setup call | Widget customisation (colours, fonts, logo toggle decision) | No -- can proceed with defaults, customise later |
@@ -216,7 +220,7 @@ Data-rich but not overwhelming. The core tension: Edwin wants Bloomberg-level de
 
 **Sequencing rationale:**
 
-Brett identified this as the right component to build first: "We can figure out the brand experience, the user experience, the colors, the mechanisms. We can pull out a lot of design components, design systems. There's enough spread across elements... it's the core central model." Building this first exposes the Sport Radar and T0 integration challenges early, establishes the design system that cascades into all other modules, and validates the core user experience before building the surrounding components.
+Brett identified this as the right component to build first: "We can figure out the brand experience, the user experience, the colors, the mechanisms. We can pull out a lot of design components, design systems. There's enough spread across elements... it's the core central model." Building this first exposes the Sport Radar and tZERO integration challenges early, establishes the design system that cascades into all other modules, and validates the core user experience before building the surrounding components.
 
 ---
 
@@ -230,9 +234,9 @@ Brett identified this as the right component to build first: "We can figure out 
 **Data risks:**
 
 - SR data has 30-40 second delay from real-world events -- users watching live TV see events before the app reflects them, creating information asymmetry between users with and without broadcast access
-- T0 price data latency during high-volume moments (e.g., touchdowns affecting multiple games simultaneously could spike load)
+- tZERO price data latency during high-volume moments (e.g., touchdowns affecting multiple games simultaneously could spike load)
 - Cross-correlation accuracy -- mapping the right SR event to the right price movement requires precise timestamping between two independent data sources
-- SR or T0 feed outages during live games -- partial data is worse than no data if users make decisions on stale information
+- SR or tZERO feed outages during live games -- partial data is worse than no data if users make decisions on stale information
 
 **Compliance:**
 
@@ -244,7 +248,7 @@ Brett identified this as the right component to build first: "We can figure out 
 
 - Data freshness indicators on UI -- if data is delayed, users must see a "delayed" label so they don't trade on stale information
 - Rate limiting on search and API calls to prevent scraping
-- Graceful degradation if SR or T0 feeds go down during a live game (show last known state with timestamp and "delayed" indicator)
+- Graceful degradation if SR or tZERO feeds go down during a live game (show last known state with timestamp and "delayed" indicator)
 - Bot detection on information consumption patterns (e.g., programmatic polling of price data at inhuman speeds)
 
 ---
@@ -257,7 +261,7 @@ Brett identified this as the right component to build first: "We can figure out 
 | Game Day Overview | Today's full slate of games -- all live/upcoming, scores, price movements, mini P&L for active positions | Collecting | [[sub-components/game-day-overview/game-day-overview]] |
 | Single Game Page | Deep view of one matchup -- match tracker, annotated chart, real-time stats, market data (bid/offer, order book), embedded trading widget, leaderboard widget | Collecting | [[sub-components/single-game-page/single-game-page]] |
 | Team Page | Persistent team view -- historical data (10-15 years), season stats, head-to-head matchups, stock price history. Enriched with live game data when applicable | Collecting | [[sub-components/team-page/team-page]] |
-| Research Tab | Home of the **AI Research Agent** — manual chat (= Third Space Research AI Chat), scheduled reports, and event-triggered proactive research over SR/T0/InPlay data. Plus historical/volatility research. Free in simulation, ~$99.99/mo in production | Collecting | [[sub-components/research-tab/research-tab]] |
+| Research Tab | Home of the **AI Research Agent** — manual chat (= Third Space Research AI Chat), scheduled reports, and event-triggered proactive research over SR/tZERO/InPlay data. Plus historical/volatility research. Free in simulation, ~$99.99/mo in production | Collecting | [[sub-components/research-tab/research-tab]] |
 | Leaderboard | Full rankings view across three verticals and four time horizons. Proximity alerts ("you need $X to reach payout position"). Widgets embedded across other pages. Special event days (Thanksgiving, Christmas) with enhanced prizes | Collecting | [[sub-components/leaderboard/leaderboard]] |
 
 ---

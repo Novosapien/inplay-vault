@@ -1,3 +1,7 @@
+---
+description: "Kevin's raw 10-module intermediate trading guide (.docx conversion) — RSI/MACD, order management, microstructure, Kelly sizing, drawdown rules, plus quizzes"
+---
+
 # Intermediate Trading Guide (Source Content)
 
 > **Component:** [[education]]

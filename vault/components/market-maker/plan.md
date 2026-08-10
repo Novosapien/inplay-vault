@@ -1,3 +1,7 @@
+---
+description: "MM build plan — Phase 0 unblockers through ops UI and calibration, exit tests per phase, and the mid-August launch anchors"
+---
+
 # Market Maker — Build Plan
 
 > **Component:** [[market-maker/market-maker]]
@@ -45,6 +49,24 @@
 > get ([[market-maker/systems/mm-ops-ui]]). Testing reaffirmed: replay a past
 > game (e.g. Chiefs–Ravens), runnable multiple times a day — check both the
 > user's view and the MM's side.
+
+> **Update 10-08 (27-07 → 07-08 touchdown block):** the **IPO market structure
+> is settled** — two MPIDs (broker dealer holds and sells the 1M/team issuance;
+> principal trading arm runs maker + taker off one wallet), the **taker is the
+> primary's biggest buyer** (≥600k/team, randomised size and heartbeat), and the
+> **load-balancing algo is dropped** for season 1 (deferred to NBA in October).
+> The **valuation input chain is confirmed end to end**: the SR probabilities
+> contract amendment is signed at no extra cost and live in production, we poll
+> at **500ms in-game**, and the RP formula is agreed with a kickoff-delta term.
+> **Phase 0's biggest blockers cleared** (S1, S2, S3, E4, N6). The MM now runs
+> end to end on a single pass — inputs in, order book out, **no orders sent
+> yet**. Remaining work is connections, scheduling and deployment. **6 Aug
+> slipped; 13 Aug is the dry run.** E11 and E12 remain unasked after three more
+> calls.
+> ⚠ Merge note (10-08): the "runs end to end on a single pass — no orders
+> sent yet" line is the meeting block's frame and is overtaken by the branch
+> record — the MM quoted live on the real venue from 07-08 (six books
+> two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
 > **Update 06-08b (the ingestion move, MM side: the consumer BUILT +
 > DRILLED):** the MM consumes the bus end to end — reading + finals
@@ -313,13 +335,21 @@
 
 The build can't start in earnest until these move; none are code.
 
-- [ ] **Sport Radar probabilities feed fixed** (S1/S2) — the valuation
-  engine's primary input. Cody chasing.
-- [ ] **Synthetic MM entity in T0 QA** (T1) — asked 20-07, Tue/Thu calls.
-- [ ] **Thursday 23-07 deep-dive** — extract E1–E10 (the numbers, the trigger
-  script, conformance bar). Bring [[market-maker/parameters]] as the agenda:
-  every 🔴 row is a question.
-- [ ] **T0 throughput + bands answers** (T2–T5).
+- [x] ~~**Sport Radar probabilities feed fixed** (S1/S2)~~ — **done 03-08**:
+  contract amendment signed at no change in cost, live probabilities in the
+  production account, quota no longer a constraint.
+- [ ] **Team company tickers from tZERO** (T17) — **the immediate blocker.**
+  No order testing can start without them. Chased 07-08.
+- [ ] **The two MPIDs stood up** (T16) — broker dealer preloaded with 1,000,000
+  shares/team + unlimited buying power; principal trading arm with one wallet
+  for maker + taker. Troy configuring.
+- [ ] **Synthetic MM entity in tZERO QA** (T1) — asked 20-07, Tue/Thu calls.
+- [ ] **Taker requirements doc from Edwin** (E42) + **daily-report schema**
+  (E43) + **taker share range and time blocks** (E45).
+- [ ] ~~Thursday 23-07 deep-dive~~ — happened, but E11/E12 were never reached;
+  still owed. Bring [[market-maker/parameters]] as the agenda: every 🔴 row is
+  a question.
+- [ ] **tZERO throughput + bands answers** (T2–T5).
 - [x] **Gateway cancel system (35=F/35=G)** — ✅ **DONE 24-07 (Hasan):** live,
   QA-passed 7/7 against real tZERO, ~11 ms round trips. Follow-ons in
   progress: dead-man switch · TransactTime pass-through · rejection NAK ·
@@ -327,14 +357,29 @@ The build can't start in earnest until these move; none are code.
 - [ ] **E11 settlement definition + E12 NCAA scope** from Edwin — E11 anchors
   the valuation semantics, E12 decides the load profile and book count.
 - [ ] Draft the **merged profile table** (N2) structure — values are Edwin's.
-- [ ] **Verify Sport Radar fit (S5):** live win probability readable ~every
-  200ms per live game, quota to match, + simulation games for testing.
+- [x] ~~**Verify Sport Radar fit (S5)**~~ — **answered 03-08**: probability is
+  a separate poll (never in the play-by-play payload), polled at 500ms in-game,
+  next-game values ~15 min after the prior game ends.
 - [ ] **Betting-feed parity (S4)** — probabilities must not lag
-  DraftKings/FanDuel; Cody owns.
+  DraftKings/FanDuel; Cody owns. ⚠ Re-scoped 03-08: the betting feed (faster
+  play-by-play) was **explicitly ruled out for this run**, so no faster path has
+  been bought. Lag is now purely a function of SR's odds ingestion.
 - [ ] **Wednesday data-drop pipeline** — agree format/delivery for the weekly
   off-field index + remaining-game probabilities (InPlay → us).
-- [ ] **Edwin's Python files** — receive + read the original MM simulation
-  code (E4, in motion).
+- [x] ~~**Edwin's Python files**~~ — **received and assessed 31-07 (E4 closed)**.
+  Not usable as-is; we extract components (the volatility calculation) and
+  replace the rest.
+
+### Dry runs
+
+- [ ] **13 Aug — secondary-trading dry run.** A live preseason game, TestFlight
+  build, InPlay team plus friends and family trading it as if live. Several
+  games that night, so multiple team companies are possible. (6 Aug slipped.)
+- [ ] **IPO dry run — date TBD.** The 13 Aug run is deliberately secondary-only,
+  but Edwin overrode the implication that there would be no IPO test: "I want
+  one test run at least before" launch.
+- [ ] Fallback testing routes if no live game is available: **replay previously
+  played games** (31-07) and the SR **simulation games** agreed 23-07.
 
 ## Phase 1 — Valuation engine walking skeleton
 
@@ -384,7 +429,7 @@ Goal: orderly markets + the user-facing "market" button. **Gate: before first
 NFL game.**
 
 - Band checks at order entry (app-side) + out-of-band execution detector;
-  bust workflow per the T0 procedure (T4); manual halt/resume.
+  bust workflow per the tZERO procedure (T4); manual halt/resume.
 - Synthetic market order in the Trading Service (N levels through, Troy's
   logic) — designed together with the band so N can't sweep outside it.
 - **Exit test:** deliberately fat-finger in QA; detector flags; bust reverses
@@ -408,7 +453,7 @@ market order ride the existing Trading Service / FIX GW work. Ops UI last.
 ## Standing cadence
 
 - **Mon/Wed/Fri:** internal touchdowns.
-- **Tue/Thu:** T0 tech calls (entity, throughput, bands, busts).
+- **Tue/Thu:** tZERO tech calls (entity, throughput, bands, busts).
 - **Thu 23-07:** Edwin deep-dive — parameters + conformance sign-off.
 - After every session: update [[market-maker/decisions]],
   [[market-maker/open-questions]], [[market-maker/parameters]].

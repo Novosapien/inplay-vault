@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Team Page — persistent team research profile with stats, price history, news, trade CTA, live-game banner and analyst-prices swipe"
+---
+
 # InPlay Trading Challenge -- Team Page
 
 > **Component:** [[information-layer]]
@@ -194,8 +198,8 @@ When a live game is in progress, the page should feel energised at the top (live
 | Current season stats | In | Win/loss record, standings, key performance metrics | Sport Radar |
 | Historical performance | In | 10-15 years of team stats, season records, notable results | Sport Radar REST API |
 | Head-to-head matchup data | In | Historical results and stats against specific opponents | Sport Radar |
-| Stock price history | In | Price over time since IPO, with annotated volatility moments for past games | T0 ATS + InPlay internal (annotations) |
-| Current stock price | In | Bid/offer/last, direction indicator | T0 ATS |
+| Stock price history | In | Price over time since IPO, with annotated volatility moments for past games | tZERO ATS + InPlay internal (annotations) |
+| Current stock price | In | Bid/offer/last, direction indicator | tZERO ATS |
 | Team news | In | Injuries, signings, coaching changes, AP-style editorial | Sport Radar newswire (filtered to this team) |
 | Upcoming schedule | In | Next games, dates, opponents | Sport Radar |
 | Live game data (when applicable) | In | Score, quarter, game status for current game | Sport Radar |
@@ -208,7 +212,7 @@ When a live game is in progress, the page should feel energised at the top (live
 | Depends on | What we need | Blocking for build? |
 |-----------|-------------|----------|
 | Sport Radar | Team stats, historical data, matchup data, news, schedule, live game data | Yes -- no SR, no team page |
-| T0 ATS | Stock price history and current price | Yes -- no T0, no price chart |
+| tZERO ATS | Stock price history and current price | Yes -- no tZERO, no price chart |
 | Trading component | User's position in this team | No -- page works without position data |
 | InPlay internal store | Historical volatility annotations for past games | No -- chart works without annotations |
 | Single Game Page (sibling) | Navigation target when user taps live game banner | No -- can stub |
@@ -242,28 +246,18 @@ When a live game is in progress, the page should feel energised at the top (live
 
 **Must-have at launch?** Yes -- users need team-level research to make informed trades. Without it, trading decisions are uninformed.
 
-**Sequencing rationale:** Can be built in parallel with Single Game Page. Less complex technically (mostly read-only data display from SR and T0) but shares the same data integrations. The live game enrichment can be added after the base page is functional.
+**Sequencing rationale:** Can be built in parallel with Single Game Page. Less complex technically (mostly read-only data display from SR and tZERO) but shares the same data integrations. The live game enrichment can be added after the base page is functional.
 
 ---
 
-## Analyst Prices (swipeable) — flagged 24-07, needs focused session
+## Update (24-07-2026): Analyst Prices swipeable page
 
-> ⚠️ **New surface, not yet scoped.** Edwin (24-07): add one more swipeable
-> panel to the team page — **analyst prices** — where 4–5 guest analysts
-> publish their prices for the team. First analysts: **Preferred Walk-Ons**
-> (college-football podcast/stream, ex-PFF, ~200k reach) — onboard and
-> willing to start quickly; an NFL analyst still being sought (Cody + Kevin).
-> Cody's content shape: **short video clips for the top 25** teams,
-> 2–3-cent text blurbs for the next ~110, refreshed weekly against that
-> week's pricing and matchup; if video can't live in-app it goes to socials
-> instead. Edwin delivering a sample page by Monday (27-07). George's open
-> pipeline questions: where do analysts upload, how do we consume/serve/label
-> the data, weekly cadence mechanics. Ties directly into the **subscription
-> packages** Cody is sending (mid-tier ~$39.99 floated; ~$2M/month
-> subscription-revenue math from 24-07) and the research/subscriptions work
-> Edwin wants inserted "in the next week or two" — same family as the
-> Research Tab paid tiers. **Flagged for a focused session** — not written
-> into requirements here. (Source: standup 2026-07-24)
+> Source: [[24-07-2026-touchdown]]. New surface requested by Edwin; sample due Monday (from Edwin).
+
+- Edwin wants **one more swipeable page** on the team surface: alongside the existing schedule/details swipe, add an **"analyst prices"** page showing **guest analysts' prices** for that team, one analyst per view.
+- Model: recruit **4–5 guest analysts** who publish prices in exchange for a **distribution forum** in-app; InPlay hosts one house view plus guest views. First target is **Preferred Walk-Ons** (a college-football creator group, ~200k social base, ~2 months independent after splitting from **PFF**), providing an **NCAA analyst piece**; Cody + Kevin still sourcing an **NFL** equivalent. They can start quickly.
+- **Open build questions (George):** where do analysts **upload** each week, how does InPlay **consume**, **serve**, and **label/attribute** that data. The weekly ingestion pipeline is undefined.
+- Cody will send **subscription packages + pricing** to George since this content is tied to the paid/research offering. **Pricing and the research/subscription module are owned separately** (see [[information-layer/sub-components/research-tab/research-tab]]); this page's product mechanic is captured here, the monetisation is not.
 
 ## Sub-Sub-Components
 

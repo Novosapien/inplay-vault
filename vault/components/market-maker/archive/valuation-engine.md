@@ -1,3 +1,7 @@
+---
+description: "The valuation engine (IVS) — computes each team's ESV from live win probability, remaining wins and off-field value, with the resolved 23-07 input table"
+---
+
 # Valuation Engine (IVS)
 
 > **Component:** [[market-maker/market-maker]]

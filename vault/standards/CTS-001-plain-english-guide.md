@@ -1,3 +1,7 @@
+---
+description: "Plain-English companion to CTS-001 — the ESV valuation system explained, plus Edwin's actual formula from the 20-07 call and the season-1 build reality"
+---
+
 # CTS-001 in Plain English — The Valuation System (what a team is worth)
 
 > **Companion to:** [[standards/CTS-001-financial-valuation-standard]] (the authoritative source)
@@ -167,7 +171,7 @@ off-field = marketing / advertising revenue component
 - **Who publishes the Reference Price** is ambiguous between CTS-001 and CTS-002 (each seems to point at the other). Irrelevant in practice — we build both — but the ESV→RP pipe needs a concrete design (push cadence? bus topic? per-play?).
 - The **"Board-approved," trade-secret, formal-approval framing** throughout reads as aspirational corporate scaffolding for a company of six. Treat as context, not process to implement.
 
-**Genuinely open (for Thursday / T0 calls):**
+**Genuinely open (for Thursday / tZERO calls):**
 1. **$/win — the actual number(s)**, and whether it differs NFL vs NCAA.
 2. **The off-field revenue model** — what moves it, how often, who supplies the number.
 3. **IPO Initial Valuations** — who computes the opening ESV per team, from what (preseason win totals?).

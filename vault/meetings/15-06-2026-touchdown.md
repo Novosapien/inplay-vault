@@ -9,6 +9,7 @@ extracted-to:
   - "[[earnings-report/earnings-report]]"
   - "[[components/components]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-15 InPlay touchdown call — payment-provider debrief, zero-advertising crisis, pre-launch data preview, and earnings-report placement"
 ---
 
 ## Post-Call Analysis
@@ -1397,7 +1398,7 @@ George Westbrook: And it's only going to get
 
 Edwin Johnson: man.
 
-Troy McDonald Kane: well, when T when you guys are done with your integration into T0,
+Troy McDonald Kane: well, when T when you guys are done with your integration into tZERO,
 
 George Westbrook: better.
 

@@ -1,9 +1,13 @@
+---
+description: "2026-05-09 draft architecture for the Trading Challenge — system diagrams, tech decisions with rejected alternatives, scaling, ad serving, and open questions"
+---
+
 # InPlay Trading Challenge -- Technical Architecture
 
 **Status:** Draft
 **Date:** 2026-05-09
 **Owner:** Novosapien
-**Sources:** Vision document, T0 integration spec, architecture workshop sessions
+**Sources:** Vision document, tZERO integration spec, architecture workshop sessions
 
 ---
 
@@ -460,7 +464,7 @@ DOES NOT GO THROUGH THE API GATEWAY:
 │  │  SESSION MANAGER                                  │    │
 │  │  Manages logon, heartbeats, sequence numbers      │    │
 │  │  Stores seq nums in Redis for failover            │    │
-│  │  Handles disconnect/reconnect per T0 spec DFAs    │    │
+│  │  Handles disconnect/reconnect per tZERO spec DFAs    │    │
 │  └──────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌────────────────┐ ┌────────────────┐ ┌──────────────┐  │
@@ -494,7 +498,7 @@ DOES NOT GO THROUGH THE API GATEWAY:
 │  │  DEDUPLICATION                                    │    │
 │  │  MsgSeqNum tracking per session                   │    │
 │  │  PossDupFlag / PossResend handling                │    │
-│  │  ExecID / IOIid dedup per T0 spec Section 7       │    │
+│  │  ExecID / IOIid dedup per tZERO spec Section 7       │    │
 │  └──────────────────────────────────────────────────┘    │
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐    │
@@ -657,7 +661,7 @@ Maintains persistent FIX 4.2 sessions to tZERO. Must be co-located or on a low-l
 - OE Adapter -- sends orders to tZERO, receives execution reports, publishes to `order.{userId}.{orderId}` and `position.{userId}`
 
 **Message Bus Envelope:**
-Every message published to Redis follows the envelope schema from the T0 spec: UUID messageId, topic, source feed, source sequence number, timestamps (ours and tZERO's), idempotency key, schema version.
+Every message published to Redis follows the envelope schema from the tZERO spec: UUID messageId, topic, source feed, source sequence number, timestamps (ours and tZERO's), idempotency key, schema version.
 
 **High Availability:**
 - Active/standby VM configuration
@@ -687,7 +691,7 @@ Real-time delivery layer. Holds all WebSocket connections from clients. Subscrib
 - JWT authentication (validates tokens issued by Main API)
 - Auto-reconnection handling (critical for mobile users with unstable connections)
 
-**Channel Mapping (from T0 spec topic design):**
+**Channel Mapping (from tZERO spec topic design):**
 
 | Centrifugo Channel | Data | Source |
 |-------------------|------|--------|
@@ -842,7 +846,7 @@ Historical data, account management, symbol reference
 
 ---
 
-## 10. Latency Budget (from T0 Spec)
+## 10. Latency Budget (from tZERO Spec)
 
 | Hop | Component | Target |
 |-----|-----------|--------|
@@ -855,7 +859,7 @@ Historical data, account management, symbol reference
 
 ---
 
-## 11. Throughput Estimates (from T0 Spec)
+## 11. Throughput Estimates (from tZERO Spec)
 
 | Metric | Estimate |
 |--------|----------|
@@ -966,7 +970,7 @@ The React Native app runs on user devices, so there is no server-side frontend t
 |---------|---------|----------|
 | Rapid price updates | 10 updates/sec/symbol x 10 symbols = 100 re-renders/sec. Kills battery and frame rate. | Client-side throttling -- batch UI updates to 4-5/sec. Centrifugo delivers at 10/sec, app renders at a comfortable rate. |
 | Reconnection | Mobile users lose signal constantly (walking, subway, switching WiFi/cellular). | Centrifugo JS SDK handles automatically -- auto-reconnects, resubscribes, recovers missed messages via last-value cache. |
-| Subscription management | Subscribing to full order book depth for all watchlist symbols wastes bandwidth. | Full depth only for the actively viewed symbol. Watchlist gets top-of-book only. Unsubscribe on navigate away. (Matches T0 spec lazy subscription pattern.) |
+| Subscription management | Subscribing to full order book depth for all watchlist symbols wastes bandwidth. | Full depth only for the actively viewed symbol. Watchlist gets top-of-book only. Unsubscribe on navigate away. (Matches tZERO spec lazy subscription pattern.) |
 | Background/lock screen | User locks phone or switches app during a game. | Drop WebSocket on background, reconnect on foreground. Last-value cache means instant catch-up. |
 
 ### 12.6 Deployment Targets

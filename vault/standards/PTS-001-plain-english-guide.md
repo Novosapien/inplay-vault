@@ -1,3 +1,7 @@
+---
+description: "Plain-English companion to PTS-001 — the SDMM bot explained: decision cycle, pricing profiles, inventory skew, worked example, and source-doc quirks"
+---
+
 # PTS-001 in Plain English — The Simulated Market Maker (SDMM)
 
 > **Companion to:** [[standards/PTS-001-simulated-designated-market-maker-standard]] (the authoritative source)

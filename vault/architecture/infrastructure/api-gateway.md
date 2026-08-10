@@ -1,3 +1,7 @@
+---
+description: "Google Cloud API Gateway plan — path routing to the 5 Cloud Run services, edge JWT validation, per-route rate limits, Cloud Armor, and rejected alternatives"
+---
+
 # API Gateway
 
 > **Architecture:** [[architecture]]

@@ -1,3 +1,7 @@
+---
+description: "The project to-do list — open IA, leaderboard, data and integration questions, each linked to its component doc"
+---
+
 # InPlay Trading Challenge -- To-Dos
 
 > **Project:** [[index]]
@@ -19,7 +23,7 @@
 
 ## Architecture
 
-- [ ] Data source matrix: map what comes from Sport Radar, what from T0, what InPlay stores internally
+- [ ] Data source matrix: map what comes from Sport Radar, what from tZERO, what InPlay stores internally
 - [ ] Define the cross-correlation data store ("mem store" per Brett) for volatility annotations
 - [ ] Tech stack decisions -- not started
 

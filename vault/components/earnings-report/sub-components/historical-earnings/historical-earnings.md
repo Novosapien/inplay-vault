@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for per-team earnings archives and the distinct earnings dot on the price chart — journeys, data contracts and Information Layer dependencies"
+---
+
 # InPlay Trading Challenge — Historical Earnings & Chart Annotation
 
 > **Component:** [[earnings-report]]

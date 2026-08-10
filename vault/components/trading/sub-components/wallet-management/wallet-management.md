@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the two-wallet system — 100K trading wallet, referral reserve, sub-25K reload flow, and the pre-order balance checks Order Entry needs"
+---
+
 # InPlay Trading Challenge -- Wallet Management
 
 > **Component:** [[trading]]

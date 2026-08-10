@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the IPO system clock — per-league 72h windows (NCAA ~Aug 20, NFL ~Sept), staggered mixed state, and the close-time handover to trading"
+---
+
 # InPlay Trading Challenge — IPO Scheduling & Windows
 
 > **Component:** [[ipo-module]]
@@ -128,7 +132,7 @@ _Mostly non-UI. The only user-visible surface is per-team state badges (upcoming
 | League season start dates | In | Anchor for window scheduling | Cody / Sport Radar schedule |
 | Window start/end timestamps | Stored | Per-league 72h window | InPlay scheduler |
 | Per-team state | Out/Stored | upcoming / open / sold-out / trading | InPlay → board, countdown, Information Layer |
-| Final float + holdback | Out | Handed to secondary market at close | T0 ledger → Trading |
+| Final float + holdback | Out | Handed to secondary market at close | tZERO ledger → Trading |
 | Opening reference price | Out | IPO price seeds secondary open | InPlay model → Trading |
 
 ---

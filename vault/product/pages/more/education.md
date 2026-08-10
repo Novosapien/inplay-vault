@@ -1,3 +1,7 @@
+---
+description: "Page spec for the More-tab Education Hub — learning modules on trading basics, charts, risk management and leaderboard strategy for trading novices"
+---
+
 # Education Hub
 
 > **Tab:** More

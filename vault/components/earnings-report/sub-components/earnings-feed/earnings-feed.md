@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the live earnings feed — batched Tue/Wed 7:30 release, pop-to-top behaviour, favourites pinned, search and conference filters"
+---
+
 # InPlay Trading Challenge — Earnings Feed / Release Page
 
 > **Component:** [[earnings-report]]

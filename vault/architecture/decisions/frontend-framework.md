@@ -1,3 +1,7 @@
+---
+description: "Decision record for React Native (Expo) as the app frontend — how client-side Expo differs from Next.js, plus framework comparison tables and rejections"
+---
+
 # Frontend Framework Decision
 
 > **Architecture:** [[architecture]]

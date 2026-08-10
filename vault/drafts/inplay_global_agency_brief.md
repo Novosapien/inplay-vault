@@ -1,3 +1,7 @@
+---
+description: "Agency brief for the Trading Challenge launch — seeks B2C growth to 750K active users and a B2B partner to close $40-60M in media and sponsorship revenue"
+---
+
 InPlay Global
 Agency Brief: B2C Growth and B2B Media Sales
 1. Introduction

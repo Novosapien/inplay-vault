@@ -1,9 +1,13 @@
+---
+description: "The SDMM bot — turns Reference Price plus profile into two-sided ladders in tZERO, ~200ms live cadence, inventory skew, and the 23-07 v1 quote-lifecycle rules"
+---
+
 # Quoting Engine (SDMM)
 
 > **Component:** [[market-maker/market-maker]]
 > **Standard:** [[standards/PTS-001-simulated-designated-market-maker-standard|PTS-001]] · guides: [[standards/PTS-001-plain-english-guide]] · [[standards/PTS-001-comprehensive-guide]]
 > **Status:** v1 model set (23-07 MM call) — pricing numbers owed; fill-response logic (N14) to design
-> **One-liner:** The bot. Turns a Reference Price + a profile into two-sided limit-order ladders resting in T0's book — refreshed ~200ms during live games, every 30–60s otherwise — skewed to shed inventory. v1 mantra (Edwin): "really simple to start."
+> **One-liner:** The bot. Turns a Reference Price + a profile into two-sided limit-order ladders resting in tZERO's book — refreshed ~200ms during live games, every 30–60s otherwise — skewed to shed inventory. v1 mantra (Edwin): "really simple to start."
 > **Companion:** [[market-maker/systems/decision-cycle-reference]] — every function in the cycle written out as concrete pseudocode with proposed default values.
 
 ---
@@ -24,14 +28,14 @@ staggered).
 ATS). IPOs fill on the internal primary plane and never touch it — the MM's
 IPO role is limited to warehousing unsold float delivered to it afterwards.
 
-## The Entity (in T0)
+## The Entity (in tZERO)
 
-- A **synthetic market-maker entity inside T0** — technically the same as a
+- A **synthetic market-maker entity inside tZERO** — technically the same as a
   user account, with two differences: effectively **unlimited buying power**
   (~$100M+, Edwin: "never a limit"), and **exemption from short-locate
   restrictions**. (Source: standup 2026-07-20)
-- **Ask in flight:** T0 to stand up this entity in the **QA environment** so
-  testing can start (Tue/Thu T0 calls).
+- **Ask in flight:** tZERO to stand up this entity in the **QA environment** so
+  testing can start (Tue/Thu tZERO calls).
 - Whether it persists into production as one of many participants is
   undecided — depends on how the challenge goes and whether external MMs sign.
 - **Portfolio capital allocation (PTS-001 Ch 5) is descoped** — unlimited
@@ -46,7 +50,7 @@ trigger (new RP · fill · state change · session change · ~200ms heartbeat)
   → price    (reservation bid/offer around RP)
   → build    (ladders: N levels/side, spacing, sizes, randomization)
   → validate (never crossed, in bands, within limits)
-  → publish  (cancel-replace into T0)
+  → publish  (cancel-replace into tZERO)
   → commit   (immutable record for replay)
 ```
 
@@ -107,7 +111,7 @@ repeated failure → forced defensive profile, still two-sided.
 
 ## Inventory Feedback
 
-Fills against MM quotes come back from T0 as execution reports → inventory
+Fills against MM quotes come back from tZERO as execution reports → inventory
 changes → next cycle's skew. This closed loop is what keeps the maker from
 accumulating a runaway position while never leaving the market.
 
@@ -123,7 +127,7 @@ can come later (scope call for Thursday).
   are short, and to balance how many shares get pushed into the market.
   Edwin: **"we're going to start with the IPO"** — sequencing signal; fuller
   session promised. Earlier framing (float warehousing, max clips ~50k,
-  ~35–50% guarantee) stands as the mechanism sketch; T0 ledger mechanics
+  ~35–50% guarantee) stands as the mechanism sketch; tZERO ledger mechanics
   open (T6). (See [[ipo-module/ipo-module]])
 - **Load-balancing vs market-making algo split** (named 17-07) — boundary
   unclear, clarify Thursday.
@@ -132,5 +136,5 @@ can come later (scope call for Thursday).
 
 Tracked in [[market-maker/open-questions]] / [[market-maker/parameters]]:
 all pricing parameters (spreads, λ, ladder geometry, sizes), quote-replace
-throughput ceiling on T0's FIX session, aggressive-order bounds, calibration
+throughput ceiling on tZERO's FIX session, aggressive-order bounds, calibration
 approach, week-zero policy.

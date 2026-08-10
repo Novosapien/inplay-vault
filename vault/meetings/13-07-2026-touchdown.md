@@ -14,6 +14,7 @@ extracted-to:
   - "[[components/components]]"
   - "[[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]"
   - "[[architecture/open-questions]]"
+description: "Transcript and analysis of the 2026-07-13 touchdown call — education videos cut under 2 min, house ads, Watch Mode conceived, Research Tab demo, Hard Rock"
 ---
 
 ## Post-Call Analysis
@@ -22,13 +23,13 @@ extracted-to:
 
 | Finding | Destination | Action |
 |---------|-------------|--------|
-| **Research Tab v1 demoed** — weekly pre-canned SR roll-ups, sortable columns, click-in definitions; ladder refined to 4 steps (pre-canned → custom → LLM outlier layer → AI agent); resourcing follows usage metrics; SR-probability × T0-price cross-correlation is the "no other platform" differentiator; Cody sending report ideas | [[information-layer/sub-components/research-tab/research-tab]] | Updated §1 + changelog |
+| **Research Tab v1 demoed** — weekly pre-canned SR roll-ups, sortable columns, click-in definitions; ladder refined to 4 steps (pre-canned → custom → LLM outlier layer → AI agent); resourcing follows usage metrics; SR-probability × tZERO-price cross-correlation is the "no other platform" differentiator; Cody sending report ideas | [[information-layer/sub-components/research-tab/research-tab]] | Updated §1 + changelog |
 | **Education verdict** — modules too long / too much scrolling / blank filler panels (Jared); all videos to be regenerated **under 2 min**; Troy found 5–7 refinement areas (performance-security script, concept ordering); Troy+Kevin re-slicing source docs → **3–4× module count** expected; Skye: let post-launch metrics drive further cuts | [[education/education]] | Updated §2 rules + §3 |
 | **Short-form / AI-UGC content** — deferred until post-launch metrics; three production routes mapped (AI video, creator collabs, AI UGC avatars ~$2/video); doubles as social-channel content; social agency search running | [[education/education]] | Updated §3 (parked v2 note) |
 | **House-ads strategy** — run house ads day one to avoid the no-ads→ads flip; "What is InPlay?" hype-video unit + referral link; education re-entry video ad (Cody, 15/30s video CPM); Gamecast/Pepsi replay ad approved as-is; IAB aspect-ratio scaling confirmed | [[components/components]] Advertising + [[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]] | Updated |
 | **Watch Mode conceived** — Edwin: win probability + Gamecast + share price + trade on one screen; George proposed landscape "watch mode" | [[information-layer/sub-components/single-game-page/single-game-page]] §9 | Captured (with 15/17-07) |
 | **App Store** — Apple in review; Play Store next: research gambling-classification avoidance (Apple = 70–80% of users) | [[architecture/open-questions]] | Row updated |
-| **Priorities restated** — trading (T0 QA env end-to-end + load testing + simulation) and ads (SSP setup, in-app serving to IAB standards) are the two non-negotiables; market-making algo call Wed; Brett to redo proposal with real numbers Fri | Post-call analysis | Noted — no doc change |
+| **Priorities restated** — trading (tZERO QA env end-to-end + load testing + simulation) and ads (SSP setup, in-app serving to IAB standards) are the two non-negotiables; market-making algo call Wed; Brett to redo proposal with real numbers Fri | Post-call analysis | Noted — no doc change |
 | **Hard Rock meeting** — went very well (head of sportsbook + COO attended; Rafi Ashkenazi champion; more info requested + follow-up; Edwin/Troy/Brian building detailed business model); potential trajectory-changer | — | Parked — commercial |
 | Action items: outreach offer/messaging/ICPs (Skye+George, email warm-up in progress); education revision docs (Troy/Kevin → George); Brett↔Edwin SSP-timeline session; Cody pre-canned report ideas | — | Action items — tracked in transcript |
 

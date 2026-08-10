@@ -1,3 +1,7 @@
+---
+description: "The layer between valuation and quoting — publishes the Reference Price, classifies the operating condition, and picks the profile per session"
+---
+
 # Market State
 
 > **Component:** [[market-maker/market-maker]]

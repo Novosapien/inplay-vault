@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Order Entry modal — context-aware team defaults, persistent buy/sell buttons, limit-only orders, journeys, risks and open questions"
+---
+
 # InPlay Trading Challenge -- Order Entry
 
 > **Component:** [[trading]]
@@ -248,7 +252,7 @@ graph TD
     B --> C[User taps Buy/Sell]
     C --> D[HANDOFF: Order Entry modal opens]
     D --> E[Team pre-selected from IL context]
-    E --> F[Best bid/offer from T0 market data]
+    E --> F[Best bid/offer from tZERO market data]
     F --> G[User enters quantity and price]
     G --> H[Execute - order submitted]
     H --> I[HANDOFF: Trade Confirmation takes over]

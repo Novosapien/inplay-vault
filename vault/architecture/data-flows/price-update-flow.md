@@ -1,3 +1,7 @@
+---
+description: "Step-by-step price-update flow from a tZERO FIX message to the user's screen, with the latency budget per hop"
+---
+
 # Data Flow: Price Update (tZERO to User Screen)
 
 > **Architecture:** [[architecture]]

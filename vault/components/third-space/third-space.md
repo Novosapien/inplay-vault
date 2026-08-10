@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Third Space social layer — Game Day, Team and Research AI chats, moderation, admin backend, and the future sentiment-data product"
+---
+
 # InPlay Trading Challenge -- Third Space
 
 > **Vision:** [[vision]]
@@ -346,6 +350,17 @@ Each surface has its own design personality:
 | Chat Admin Backend | Internal dashboard: stats, moderation queue, campaign / notification injection | Collecting | [[sub-components/chat-admin-backend/chat-admin-backend]] |
 | Sentiment / Data Packaging | _(FUTURE)_ Thematic narrative extraction from chat data, sold to advertisers / Omnicom-style buyers | Stub | [[sub-components/sentiment-data-packaging/sentiment-data-packaging]] |
 | Influencer Broadcast Channels | _(FUTURE)_ Discord-style channel ownership for top traders / influencers | Stub | [[sub-components/influencer-broadcast-channels/influencer-broadcast-channels]] |
+
+---
+
+## Feature Direction, Groups & Leagues, Streaks (24-07-2026, [[jared-app-feedback-jul-2026]])
+
+Jared Sapirman's written feedback names a social layer as **critical to retention** and proposes concrete directions. Captured here as feature direction / candidate sub-components, **not yet specced**; flagged as candidates for a focused session (Groups & Leagues may warrant its own component).
+
+- **Groups & Leagues (item 2):** even if a full chat feature is not feasible at launch, there must be **some social mechanism that lets users compare performance with friends** and drives usage through friendly competition. Recommended shape: **groups or leagues**, friends and people who know each other join a shared group and compete against one another, like a **fantasy football league**.
+- **Influencer-hosted groups (item 2):** trading influencers bring their audiences into the app and those communities compete against each other, with **prizes attached**. **GameStock** runs this model successfully, with **creator-hosted tournaments** as a primary acquisition and engagement channel. This extends the existing future-state **Influencer Broadcast Channels** sub-component from broadcast into **competition**.
+- **Streak experience (item 4):** the streak reward should be a **base multiplier that increases over time** (not a flat number of InPlay Dollars), and extending a streak should be a **celebrated, animated moment** rather than a plain "streak continued" screen. **A fuller streak-system document is to follow** from Jared. Flagged as a candidate for its own session/component (engagement mechanic spanning Third Space + rewards).
+- **Dependency, public usernames (item 6):** all of the above depend on **public usernames**, which Jared calls foundational to the social features. Public-username identity + vulgarity filter + impersonation guardrails are captured in [[trader-profile]]; Groups & Leagues cannot ship without them.
 
 ---
 

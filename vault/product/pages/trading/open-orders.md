@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Open Orders screen — pending limit orders with price, quantity and cancel buttons, plus the empty state when nothing is queued"
+---
+
 # Open Orders
 
 > **Tab:** Trade

@@ -1,3 +1,7 @@
+---
+description: "How to use the brand/ folder — supported asset file types, subfolder-to-category mapping for the admin CI page, and the optional manifest.json overrides"
+---
+
 # Brand / Corporate Identity
 
 Drop InPlay's corporate identity (CI) deliverables here. The admin panel's

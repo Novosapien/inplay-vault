@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-12 InPlay call — onboarding/KYC via Persona, tZERO wallet provisioning, referral program design, and the global website first draft"
+---
+
 **
 
 May 12, 2026
@@ -331,23 +335,23 @@ Edwin Johnson: Is that Is that how we see it as a group, Brad
 Brett StClair: So,  
 Edwin Johnson: George?  
 Brett StClair: I'm gonna just quick one  
-Troy McDonald Kane: So for the cash wallet, do we want T0 to just have the digital wallets created for that? Because, you know, that's I mean, we're creating synthetic digital wallets for the trading challenge. But if we're also talking about adding a third for cash balances then and and we want to tie it to crypto in some way then we probably should just see if T0 can create cash digital wallets that that fund those funds get deposited into and then they can just manage it through T0.  
+Troy McDonald Kane: So for the cash wallet, do we want tZERO to just have the digital wallets created for that? Because, you know, that's I mean, we're creating synthetic digital wallets for the trading challenge. But if we're also talking about adding a third for cash balances then and and we want to tie it to crypto in some way then we probably should just see if tZERO can create cash digital wallets that that fund those funds get deposited into and then they can just manage it through tZERO.  
    
  
 
 ### 00:20:46
 
    
-Edwin Johnson: Oh, and you're saying so then Rebel can manage that balance through T0.  
+Edwin Johnson: Oh, and you're saying so then Rebel can manage that balance through tZERO.  
 Troy McDonald Kane: Well, or yeah,  
-Edwin Johnson: T0 will interface with Yeah.  
+Edwin Johnson: tZERO will interface with Yeah.  
 Troy McDonald Kane: just so they don't have to build it out.  
 Brett StClair: Wait,  
 Edwin Johnson: Yeah. No, that  
 Troy McDonald Kane: Like we should leverage what's already there and that's to to your point,  
 Edwin Johnson: makes  
-Troy McDonald Kane: Edwin, it's the user experience as close to prod as possible and that's how it's going to work in prod. They're all going to have digital wallets on T0.  
-Edwin Johnson: Yeah, that makes sense. So, why don't we put that on T0 for  
+Troy McDonald Kane: Edwin, it's the user experience as close to prod as possible and that's how it's going to work in prod. They're all going to have digital wallets on tZERO.  
+Edwin Johnson: Yeah, that makes sense. So, why don't we put that on tZERO for  
 Troy McDonald Kane: All right.  
 Edwin Johnson: now?  
 Troy McDonald Kane: I will add that to my list of things to go through with them in my next  
@@ -356,14 +360,14 @@ Troy McDonald Kane: meeting.
 Edwin Johnson: does that make sense or is that good for  
 Brett StClair: I Yeah.  
 Edwin Johnson: you?  
-Brett StClair: I think that's a good thing getting T0 to do that third cash balance. So in the UK and throughout Europe and most of AMIA if you're carrying a cash balance of any sort that's called a store value.  
+Brett StClair: I think that's a good thing getting tZERO to do that third cash balance. So in the UK and throughout Europe and most of AMIA if you're carrying a cash balance of any sort that's called a store value.  
    
  
 
 ### 00:21:32
 
    
-Brett StClair: If you're running a store of value you're playing a very different game now regulatory wise. And so in different countries stores of values require different licenses different regulations. And so I would caution on that cash value and T0 is going to be your partner in that space. It feels like the right thing to do to leverage their capability, compliance and everything that they would have to have in place for a store of  
+Brett StClair: If you're running a store of value you're playing a very different game now regulatory wise. And so in different countries stores of values require different licenses different regulations. And so I would caution on that cash value and tZERO is going to be your partner in that space. It feels like the right thing to do to leverage their capability, compliance and everything that they would have to have in place for a store of  
 Troy McDonald Kane: Yeah.  
 Brett StClair: value.  
 Troy McDonald Kane: And it might speed up the the delivery mechanism too because if we can audit the results because it's on their chain and then we say, "Okay, these this week's payouts are here. Here here's the ledger. Deposit this into their their cash wallet." We have a master one for the trading competition where all the funds are are um  
@@ -426,11 +430,11 @@ Brett StClair: I just want to walk this through again because I don't think it's
 
    
 Brett StClair: I suggest that you have a selection of register with your email. So you capture that email from Word Go before taking them into a persona experience or sign in with a single sign on capability. So your single sign on is your Facebook X Twitter that provides you that link and then take them into a persona. Thoughts?  
-Cody Haugen: Uh yeah. So the thoughts were we we loved the single sign on originally and then Troy remind me why we couldn't do single oh because T0 is manually creating the accounts once someone signs on. That's why we couldn't do single sign on.  
+Cody Haugen: Uh yeah. So the thoughts were we we loved the single sign on originally and then Troy remind me why we couldn't do single oh because tZERO is manually creating the accounts once someone signs on. That's why we couldn't do single sign on.  
 Brett StClair: This is the  
-Cody Haugen: So we yeah we can't we can't do single sign on Brett because T0 once someone  
+Cody Haugen: So we yeah we can't we can't do single sign on Brett because tZERO once someone  
 Brett StClair: fire.  
-Cody Haugen: registers and goes through approval process on the KYC T0 is manually creating that digital wallet and account for them in the the platform.  
+Cody Haugen: registers and goes through approval process on the KYC tZERO is manually creating that digital wallet and account for them in the the platform.  
 Edwin Johnson: How in the world could they do  
 Troy McDonald Kane: Well,  
 Cody Haugen: Yeah.  
@@ -471,7 +475,7 @@ Brett StClair: So, I've just got to put an idea out there in the on boarding to 
 Skye Capazorio: That's  
 Brett StClair: our wallet creation at time of I have money,  
 Skye Capazorio: it.  
-Brett StClair: I'm a winner now, then do the wallet creation. So, and my thinking there is by doing wallet creation, T0 sign on, we're just extending that time before they can trade by doing a we're going to get you with an email or single sign on straight.  
+Brett StClair: I'm a winner now, then do the wallet creation. So, and my thinking there is by doing wallet creation, tZERO sign on, we're just extending that time before they can trade by doing a we're going to get you with an email or single sign on straight.  
 Skye Capazorio: Okay.  
 Brett StClair: And the reason why I'm pushing the single sign on, it makes it a lot easier in the future just to click a switch to turn on on device uh biometric authentication. These platforms come with it built in. So it's a hell of a lot easier than having to do server side authentication like the  
 Skye Capazorio: Is that good?  
@@ -543,7 +547,7 @@ Brett StClair: I'm now an actual official trader because I'm out of the simulati
 Skye Capazorio: I smell.  
 Brett StClair: get them interested, get and then we layer on these kind of authentication and KYC stacks. Is that where you're going with this, George?  
 Skye Capazorio: Let's  
-George Westbrook: I think I was viewing it more the whole process end to end happens for on boarding. It's just the waiting for T0 to provision that digital wallet. It could I mean we don't know what the timings could be. It could be 5 minutes. It could be 2 hours.  
+George Westbrook: I think I was viewing it more the whole process end to end happens for on boarding. It's just the waiting for tZERO to provision that digital wallet. It could I mean we don't know what the timings could be. It could be 5 minutes. It could be 2 hours.  
 Skye Capazorio: see.  
 George Westbrook: It could be a day or two. Um, we probably need to test that. Um, but obviously for a user, if they log into an app and then they've got to wait an hour, that's not good enough to be able to do anything. If it's a couple of days, even worse.  
    
@@ -560,7 +564,7 @@ Cody Haugen: um is is it's I mean the longest time is you walking to your wallet
 Skye Capazorio: Okay.  
 George Westbrook: What what I meant by that was the the digital wallets for um  
 Cody Haugen: The team zero  
-George Westbrook: T0 cuz  
+George Westbrook: tZERO cuz  
 Troy McDonald Kane: Yeah, I think it's going to be it's I mean that the digital wallet creation may be a 24-hour lead time.  
    
  
@@ -612,7 +616,7 @@ Cody Haugen: Absolutely. Yeah. Agreed, Edwin. We could try and get ahead of it a
 Edwin Johnson: her.  
 Cody Haugen: through this whole summer referral program and signing up and joining us. I mean, we could try and work that massage that messaging as much as possible to get ahead of it. Just just an idea as well.  
 Edwin Johnson: Yeah.  
-Cody Haugen: Is it possible to maybe get T0 to preund a certain amount of accounts and then when people sign up they get assigned to them? So  
+Cody Haugen: Is it possible to maybe get tZERO to preund a certain amount of accounts and then when people sign up they get assigned to them? So  
 Edwin Johnson: Yeah, that's right. That's all  
 George Westbrook: That's a really good  
 Cody Haugen: this  
@@ -737,7 +741,7 @@ Troy McDonald Kane: I'm not familiar with Android OS, but yeah.
 Cody Haugen: Yeah. So, I'm not sure if I answered your full question or if we answered your full question there,  
 Brett StClair: We didn't. That's okay. We'll park it and we'll deal with it um when we get to it a bit more.  
 Cody Haugen: Brett  
-Brett StClair: I think we need to get some questions answered on the T0 side which will help us understand how the authentication's working, how we going to log in, how we going to integrate with them and that'll settle a lot of the questions and then we'll also understand constraints on device on what we need to build to be able to make that work or not work.  
+Brett StClair: I think we need to get some questions answered on the tZERO side which will help us understand how the authentication's working, how we going to log in, how we going to integrate with them and that'll settle a lot of the questions and then we'll also understand constraints on device on what we need to build to be able to make that work or not work.  
    
  
 
@@ -926,7 +930,7 @@ Edwin Johnson: Yes.
 Brett StClair: So you get a double win out of it.  
 George Westbrook: That's that's that's one that's the potentially one of the ways that we could let's let's say  
 Cody Haugen: Yeah.  
-George Westbrook: with T0 it's a two-day on uh two-day process to get the digital wallet going what we can do is potentially let's say there's a big game day on a Saturday and a Sunday um on a Tuesday Monday and a Tuesday we up the we up the referral percentage so maybe it's one and a half times so then that's the day in which people are most likely to get referred so then we can it's not going to work out perfectly but if say it's one and a half times on a Tuesday they're going to send out the referral codes on a Tuesday people are going to sign up on a Tuesday so by Friday they're going to be on boarded.  
+George Westbrook: with tZERO it's a two-day on uh two-day process to get the digital wallet going what we can do is potentially let's say there's a big game day on a Saturday and a Sunday um on a Tuesday Monday and a Tuesday we up the we up the referral percentage so maybe it's one and a half times so then that's the day in which people are most likely to get referred so then we can it's not going to work out perfectly but if say it's one and a half times on a Tuesday they're going to send out the referral codes on a Tuesday people are going to sign up on a Tuesday so by Friday they're going to be on boarded.  
    
  
 
@@ -1406,7 +1410,7 @@ Edwin Johnson: I think we still want to develop structure and then we can come b
 Skye Capazorio: Yeah. Yeah.  
 Edwin Johnson: Um, so agreed with all that. I think in terms of the the news or newsroom or press, this goes to Brett and your team,  
 Max Kingaby: Oops.  
-Edwin Johnson: you know, at some point I am going to want announce that Rebel Labs and Inplay has has a partnership. Sky is working with a new press release group. We want to stage those um strategically. So, we're going to have a T0 announcement for our agreement for the technology, a T0 announcement for them buying advertising separately.  
+Edwin Johnson: you know, at some point I am going to want announce that Rebel Labs and Inplay has has a partnership. Sky is working with a new press release group. We want to stage those um strategically. So, we're going to have a tZERO announcement for our agreement for the technology, a tZERO announcement for them buying advertising separately.  
 Max Kingaby: Sit.  
 Edwin Johnson: Okay. Then also the sport radar agreement. Cody, I need you to get them to sign off on a press release there. And then obviously the rebel lab. So we want that news to be uh fresh and then um you know what are  
    

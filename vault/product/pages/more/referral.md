@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Referral Program — Get 1,000 / Give 500 InPlay dollars, personal code, share and QR actions, referral stats and history"
+---
+
 # Referral Program
 
 > **Tab:** More

@@ -1,3 +1,7 @@
+---
+description: "The tZERO trading-engine implementation doc — FIX session topology, message bus, DFA state machines, recovery, dedup, latency budget, and SIM deployment notes"
+---
+
 # InPlay Trading Platform - Implementation Documentation
 
 > Bloomberg-terminal-style interface for tZERO trading engine
@@ -1187,3 +1191,81 @@ Data source: **Order Entry v2.2 feed** (per-user, per-order)
 | **Binary encoding** | Protobuf/FlatBuffers instead of JSON on WebSocket | Client delivery |
 | **Top-of-Book default** | Subscribe MarketDepth=1 unless user explicitly opens full depth | Per-symbol subscriptions |
 | **Lazy symbol subscription** | Only subscribe to FIX v8 detail when user opens symbol view | FIX v8 per-symbol requests |
+
+---
+
+## 10. Deployment & Operations Notes (SIM launch prep)
+
+> Additive operational facts from the weekly tZERO tech syncs. These sit above the protocol spec above and are dated + sourced. Source unless noted: _[[23-07-2026-tZERO-weekly]]_.
+
+### 10.1 Environments (23-07-2026)
+
+- **SIM / PROD split locked.** The **current environment becomes SIM**; a **separate PROD environment will be stood up** for the customer-facing production system.
+- **Test/dummy assets live inside SIM** (named after **non-existent teams**) so market-maker and feature testing runs without new infrastructure. Rob Colucci cautioned that **heavy testing strains shared resources**; keep test load **off the customer-facing side** where possible.
+
+### 10.2 Symbology (23-07-2026)
+
+- SIM keeps the current symbols; **production truncates symbols** to meet standards. Front ends can reconfigure display symbols; the **backend requires no specific symbol format**.
+- Back-end mapping uses **system-generated / descriptive IDs decoupled from team names** (avoids regulatory issues and cross-season naming conflicts).
+- A **background symbol-to-asset mapping is retained** for auditing and historical purposes.
+
+### 10.3 Rate limiting & order-flow throttling (23-07-2026)
+
+- **No throttles exist today.** tZERO will implement **rate limiters on incoming traffic and order flow on SIM**, especially for the **internal test accounts**, to prevent resource exhaustion.
+- George proposed using **custom FIX fields to prioritise live-user orders over test orders** if resources become constrained. (Design idea, not yet built.)
+
+### 10.4 Risk controls / account defaults (23-07-2026)
+
+- All users treated equally with the **same initial capital of 100K**.
+- **Rob Colucci to send** a list of relevant **risk controls + default template settings** to apply to new accounts. High-frequency messaging is a lesser concern since most users won't have API access. **Delivered 29-07:** the IPLY OMS risk-settings matrix is captured in [[tzero-oms-risk-settings]] (margin 1x = cash, carry overnight, Stop Wash Trades ON, four-tier price band, 100 orders/sec cap). Final flag config still to be aligned.
+
+### 10.5 Stock-loan (short) fee (23-07-2026)
+
+- Development **complete and functioning in the segregated environment**. Rate = **$1.20 per share (adjustable)**.
+- **Novo to test:** verify the **FIX tags on the gateway** and confirm **data flows correctly to the blockchain**.
+
+### 10.6 IPO issuance path (23-07-2026)
+
+- IPO adopts a **standard primary-issuance model: bypass the Matching Engine and mint tokens directly to investor wallets** via the **transfer-agent workspace** (IPO = **single-price, long-only** primary raise). **Novo needs minting access in the tokenization engine.** Owned by [[primary-offering-execution]].
+- **Clarified 29-07 (Rob):** the OMS can set a preliminary **IPO Reference Price** (via the Previous Close Price, for Market Data + Risk Management) by resting BUY orders on the book, but **primary-issuance metrics (total capital raised, shares remaining) belong in a dedicated cap-table management tech stack**, not the OMS. Selecting/building that stack is an open item. See [[29-07-2026-tZERO-rob-qa]].
+
+### 10.7 App Store approval (23-07-2026)
+
+- App released to the Apple App Store as a **light-beta build** to clear initial approval. **In-app trading will require a second, separate approval round.** Minor updates push OTA; major changes trigger re-review.
+
+### 10.8 Cross-references (not duplicated here)
+
+- **Cancel-replace is synthetic at the FIX gateway and loses queue priority** (modify becomes a new order at the back of the queue). Reconfirmed on the 23-07 call (Rob; Troy: "common practice on essentially every matching engine"). Owned by [[market-maker/decisions]] (T8.1). See also the Cancel/Replace Request DFA (§3.8) and Order Lifecycle DFA (§3.6).
+- **Market maker = a standard user account with much higher buying power**, consuming **Market Data V8** (FIX v8 feed, §3.2). Owned by [[market-maker/market-maker]].
+- **Payouts/subscriptions** run through **Pay.com (+ a redundant processor)**, needing **no tZERO direction** for launch. Recorded in [[integrations]].
+
+## 11. tZERO OMS Q&A and Risk Settings (Rob, 29-07-2026)
+
+> Written Q&A from Rob Colucci (tZERO) after a Novo QA testing session, plus the IPLY risk-settings matrix. Full record: [[29-07-2026-tZERO-rob-qa]]. Risk matrix: [[tzero-oms-risk-settings]].
+
+### 11.1 Position carryover
+
+- Accounts can carry or flatten overnight positions; **IPLY accounts carry overnight by default**. The earlier "shares reset to 0" was the firm-account credential bug (§11.3), not the intended config.
+- **Do not** inject positions via UEPR (Tag 9381 Qto / Tag 9382 Eto) on a user's first order of the day; rely on automatic carry-over. Editing position criteria on order messages risks race conditions in risk management. Use UEPR only to deliberately modify an account's position criteria.
+
+### 11.2 UEPR / UEAR and EOD reconciliation
+
+- **UEPR and UEAR are both enabled** for account/position updates via the Order Entry Service.
+- There is **no direct query to retrieve all account positions at once**. EOD reconciliation via Edit Account Requests is a non-standard workaround; if relied on heavily, tZERO recommends a **dedicated session isolated from live order-entry messaging**. Open item.
+
+### 11.3 Account-scoped positions (fixed)
+
+- Positions had aggregated at the **firm level** because test accounts used **TEST-environment credentials** and were never created in STAGE / passed into OMS SIM, so trades fell back to a default firm account (also set to not carry). tZERO and Novo **corrected the credential routing** during the QA session; **account-scoped position tracking now works** (Tag 1 / wallet-level Tag 9829).
+
+### 11.4 Market data and pricing
+
+- **Bid/ask are driven by FIX orders**; a **market maker** maintains liquidity and sets the market alongside organic flow (confirms the internal-MM model, owned by [[market-maker/market-maker]]). No pre-set price list is pushed.
+- Ticker **`IPTCCONH`** was missing from the OMS SIM asset setup and has now been **created and configured** in OMS SIM.
+
+### 11.5 Risk settings matrix (IPLY defaults)
+
+- The IPLY default OMS risk-flag matrix is captured in [[tzero-oms-risk-settings]]. Highlights: margin account ON at **1x (cash-equivalent)**, **carry overnight** (Don't-Carry OFF), **Short List Lookup ON** (easy-to-borrow), **Stop Wash Trades ON** (self-match prevention), **Enforce Limit Price Range %** ON with four price tiers (the OMS price band), **Reject Crossed Orders OFF** (crossing allowed), **Max Order Rate 100/s** plus **Max Duplicate Order Rate 20/s**, **Stock Loan Fee ON** (ties to the $1.20/share short fee, §10.5). Final flag config to be aligned with tZERO.
+
+### 11.6 Process
+
+- Real-time troubleshooting to run through the shared **Slack channel**; **QA sessions scheduled** as needed.

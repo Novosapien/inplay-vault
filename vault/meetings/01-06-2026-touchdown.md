@@ -4,6 +4,7 @@ type: standup
 status: extracted
 extracted-to:
   - "[[digests/touchdowns-01-10-jun-2026]]"
+description: "Transcript of the 2026-06-01 touchdown call — realistic helmet art for 163 teams, header lock vs scroll for ads, the PWA review tool, and launch timing"
 ---
 
 ## Post-Call Analysis
@@ -462,7 +463,7 @@ Brett StClair: So, I just want to make sure you've got all the links. Um because
 ### 00:24:15
 
    
-Brett StClair: Um, and just so that when you're kind of using the platform, when you're using the PWA or um, on the website, you're feeling comfortable. You can spot something and instead of going, s***, I must remember X, Y, and Zed. Can literally just log it right then and there. Um, okay. Awesome. Um, good session with the T0 guys. Thank you. That was valuable. We're actually really enjoying those sessions. Um, they're pretty rockstar team to be honest. Um, so it's really really good to be able to get into the reads with a lot of the APIs and all that kind of stuff. So, we're working and progressing that. Uh, a goal that we need to hit is we've got to get some version of an app out which has um onboarding, referrals and a information stack which we will will be the kind of homepage so they can browse and consume um sports radar data. Um, we've got all the information. We've loading it into the vault.  
+Brett StClair: Um, and just so that when you're kind of using the platform, when you're using the PWA or um, on the website, you're feeling comfortable. You can spot something and instead of going, s***, I must remember X, Y, and Zed. Can literally just log it right then and there. Um, okay. Awesome. Um, good session with the tZERO guys. Thank you. That was valuable. We're actually really enjoying those sessions. Um, they're pretty rockstar team to be honest. Um, so it's really really good to be able to get into the reads with a lot of the APIs and all that kind of stuff. So, we're working and progressing that. Uh, a goal that we need to hit is we've got to get some version of an app out which has um onboarding, referrals and a information stack which we will will be the kind of homepage so they can browse and consume um sports radar data. Um, we've got all the information. We've loading it into the vault.  
    
  
 
@@ -476,7 +477,7 @@ George Westbrook: Nothing.
 Brett StClair: and that was for the referral and for the IPO. But the key thing for us is referral right now. The ability to on board and then we'll get the inplay stuff plugged in properly and I mean not in place or trade off. That's the kind of goal,  
 George Westbrook: Yeah. Yeah. The main thing is persona.  
 Brett StClair: right?  
-George Westbrook: Just getting that sorted. Okay. So, you speak to T0 about what they what they need for us. So, we've got a onboarded user. Once that's done, then it'll be the referral stuff in the background. The sports radar um stuff as well. Um, so yeah, it should be should when I say quite soon, not tomorrow, um, but in the next few  
+George Westbrook: Just getting that sorted. Okay. So, you speak to tZERO about what they what they need for us. So, we've got a onboarded user. Once that's done, then it'll be the referral stuff in the background. The sports radar um stuff as well. Um, so yeah, it should be should when I say quite soon, not tomorrow, um, but in the next few  
    
  
 

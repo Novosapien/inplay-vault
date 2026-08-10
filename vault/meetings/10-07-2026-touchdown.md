@@ -3,6 +3,7 @@ date: 2026-07-10
 type: standup
 status: raw
 extracted-to:
+description: "Gemini notes and action items from the 2026-07-10 InPlay touchdown — broker-dealer Chinese wall, influencer analysts, App Store launch, IPO dry run, Discord"
 ---
 
 Jul 10, 2026

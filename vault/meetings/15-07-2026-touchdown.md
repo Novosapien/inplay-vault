@@ -14,6 +14,7 @@ extracted-to:
   - "[[components/components]]"
   - "[[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-07-15 InPlay touchdown call — Watch Mode 3D stadium demo, all-138 D1 IPO scope, media-plan calculator, and the Hard Rock fundraise"
 ---
 
 ## Post-Call Analysis

@@ -1,3 +1,7 @@
+---
+description: "Component doc for the Challenge Website — the pre-app funnel that pushes visitors to app download: holding page, main-site pages, form-to-CRM bridge, updates"
+---
+
 # InPlay Trading Challenge -- Challenge Website
 
 > **Vision:** [[vision]]
@@ -64,10 +68,10 @@ Challenge Website
 
 | Audience | How they use this component | What they need from it |
 |---------|---------------------------|----------------------|
-| **Crypto-Savvy Sports Trader** | Skims fast, verifies legitimacy via SEC / SIPC / T0 / Sport Radar mentions and partner logos, then downloads | Trust signals (SEC reg, SIPC, partners) above the fold. Direct app-store CTAs |
+| **Crypto-Savvy Sports Trader** | Skims fast, verifies legitimacy via SEC / SIPC / tZERO / Sport Radar mentions and partner logos, then downloads | Trust signals (SEC reg, SIPC, partners) above the fold. Direct app-store CTAs |
 | **Analytical Fan / Armchair GM** | Hits the site after seeing a social post or friend referral. Wants to confirm "is this a real thing?" before downloading | Marquee partner logos for legitimacy. Clear "what can I win" framing on the Prizes page. App-store CTA |
 | **Finance-Curious Student** | Hits the site via Troy's campus QR codes. May share with friends from this surface before downloading | Mobile-optimised. Fast download CTA. Social proof (campus tour photos? testimonials? gap). Some education excerpts to feel "I learned something already" |
-| **Veteran Trader-Bettor** | Arrives via press / podcast / industry network. Wants to verify the SEC / T0 / Sport Radar partnerships are real before engaging | Partner logos, regulatory framing, links to detailed product info on the Global Website |
+| **Veteran Trader-Bettor** | Arrives via press / podcast / industry network. Wants to verify the SEC / tZERO / Sport Radar partnerships are real before engaging | Partner logos, regulatory framing, links to detailed product info on the Global Website |
 | **Advertisers** (not a vision-doc audience but explicitly addressed in this session) | Arrives via Skye / Cody outreach. Wants to validate the platform is real and serious before booking ad inventory | Marquee partner logos. Clear sense of "what's happening, who's behind it." Edwin: _"hey, what the f***** going on? Okay, they got this up. Great."_ |
 
 ---
@@ -93,7 +97,7 @@ _Holding Page (interim surface, live ~15 May):_
 _Homepage (main site, ships end of week following holding page):_
 
 - Hero with value proposition and visual brand promise
-- Marquee partner ticker / row of logos at the top of the page (lead advertisers + T0 + Sport Radar + Persona partnerships) -- Skye's proposal, Edwin endorsed _"100%"_
+- Marquee partner ticker / row of logos at the top of the page (lead advertisers + tZERO + Sport Radar + Persona partnerships) -- Skye's proposal, Edwin endorsed _"100%"_
 - App store CTAs (iOS + Android) prominently above the fold
 - Brief explainer (what this is) -- enough to qualify a download, not the full pitch
 - Trust signals: SEC regulation, SIPC insurance, partnerships

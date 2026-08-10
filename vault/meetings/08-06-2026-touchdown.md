@@ -8,6 +8,7 @@ extracted-to:
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[inplay-global-website/inplay-global-website]]"
   - "[[architecture/open-questions]]"
+description: "Transcript of the 2026-06-08 touchdown — Sportradar moments demo, Persona onboarding flow, website publish, deck tooling; with an extraction findings table"
 ---
 
 ## Post-Call Analysis

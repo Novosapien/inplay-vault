@@ -3,6 +3,7 @@ date: 2026-07-08
 type: standup
 status: raw
 extracted-to:
+description: "Gemini meeting notes for the 2026-07-08 touchdown — decisions and next steps on house ads, flat team colors, competition eligibility, and store submission"
 ---
 
 Jul 8, 2026

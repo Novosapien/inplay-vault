@@ -1,3 +1,7 @@
+---
+description: "Chapter-by-chapter walkthrough of the PTS-001 SDMM spec — every engine, priority list and formula in plain English, with source quirks and a build checklist"
+---
+
 # PTS-001 Comprehensive Guide — The Simulated Designated Market Maker (SDMM)
 
 > **Companion to:** [[standards/PTS-001-simulated-designated-market-maker-standard]] (the authoritative source)

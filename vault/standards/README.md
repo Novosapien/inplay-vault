@@ -1,3 +1,7 @@
+---
+description: "Index for the standards folder — registry of CTS-001, CTS-002 and PTS-001 with their plain-English guides, plus confidentiality and PDF-conversion provenance"
+---
+
 # InPlay Core Technical Standards
 
 > ⚠️ **SUPERSEDED FOR MM IMPLEMENTATION (2026-07-24).** The **v1.3

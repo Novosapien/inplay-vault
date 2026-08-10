@@ -12,6 +12,7 @@ extracted-to:
   - "[[market-maker/parameters]]"
   - "[[market-maker/plan]]"
   - "[[market-maker/learnings]]"
+description: "Digest and transcript of the 2026-07-23 market-maker follow-up call — simplified quote lifecycle, game-state cadence, App Store launch status and KYC pushback"
 ---
 
 ## Post-Call Analysis
@@ -33,9 +34,9 @@ extracted-to:
 | 7 | **Off-field = Edwin's popularity-index value** (~$14–30 range; Dallas ~$30, Carolina/Arizona ~$14), static at start, already in the NFL IPO prices | [[market-maker/open-questions]] E2 · [[market-maker/parameters]] | E2 substantially resolved |
 | 8 | **Weekly Wednesday data drop:** Edwin/InPlay deliver the updated off-field metric + remaining-game win probabilities every Wednesday, plugged into the algo | [[market-maker/decisions]] · [[market-maker/parameters]] | New operational cadence |
 | 9 | **Betting-feed parity requirement** — probabilities must not lag DraftKings/FanDuel or the MM gets picked off; Cody owns getting the feeds | [[market-maker/open-questions]] · [[market-maker/plan]] Phase 0 | New item, InPlay-owned |
-| 10 | **Queue position answered (T8.1):** replace = cancel + new order at the back of the queue (T0 call earlier that day + Troy: standard on every matching engine); Edwin: "we don't care about that" | [[market-maker/open-questions]] T8 | T8.1 resolved |
+| 10 | **Queue position answered (T8.1):** replace = cancel + new order at the back of the queue (tZERO call earlier that day + Troy: standard on every matching engine); Edwin: "we don't care about that" | [[market-maker/open-questions]] T8 | T8.1 resolved |
 | 11 | ⚠ **v1 crossing tolerance:** Edwin — "on the first iteration, if we have to cross in order to make the adjustment in price, I don't care"; use cancel-replace. Exact sequencing he rejected is ambiguous in the transcript | [[market-maker/decisions]] | Pending George's confirmation of the reading |
-| 12 | **User wash-trading policy:** rulebook prohibition + order-query on high-volume accounts + removal from event; Troy checking what self-match prevention T0 employs | [[market-maker/systems/market-supervision]] · [[market-maker/open-questions]] | New T-item |
+| 12 | **User wash-trading policy:** rulebook prohibition + order-query on high-volume accounts + removal from event; Troy checking what self-match prevention tZERO employs | [[market-maker/systems/market-supervision]] · [[market-maker/open-questions]] | New T-item |
 | 13 | **IPO buyer role firmed + sequencing signal:** MM buys at every IPO when buyers are short / to balance shares pushed into the market; Edwin wants to "start with the IPO"; fuller session promised | [[market-maker/decisions]] · [[market-maker/plan]] | To capture |
 | 14 | **Edwin sending the original MM simulation Python files** ("functional, not a heavy lift") | [[market-maker/open-questions]] E4 | In motion |
 | 15 | **Testing via SR simulation games** — replay a past game in a ~4-hour window instead of waiting for preseason | [[market-maker/plan]] | Testing approach |
@@ -311,7 +312,7 @@ Brett StClair: I'll pop some in your diary, Cody.
 
 George Westbrook: So I suppose there we've got so back…
 
-George Westbrook: what are we doing first it's understand the algorithm what's happening at each stage where we're seeing some of the complexity is the technical architecture so obviously this is something it's not like every 10 seconds or every minute or even every five seconds that this is happening. It's across all 160 teams simultaneously taking in all of the market state for all of them and then doing that and then cancelling orders then replacing orders because I think one thing we learned from T0 today which is a bit annoying and I don't know if this is how it would typically function in the market is that obviously every time there is a new cycle let's call it for the market maker all of the old orders need to be cancelled and then recreated with the new orders that the market maker
+George Westbrook: what are we doing first it's understand the algorithm what's happening at each stage where we're seeing some of the complexity is the technical architecture so obviously this is something it's not like every 10 seconds or every minute or even every five seconds that this is happening. It's across all 160 teams simultaneously taking in all of the market state for all of them and then doing that and then cancelling orders then replacing orders because I think one thing we learned from tZERO today which is a bit annoying and I don't know if this is how it would typically function in the market is that obviously every time there is a new cycle let's call it for the market maker all of the old orders need to be cancelled and then recreated with the new orders that the market maker
 
 George Westbrook: One of the ways that we were thinking about doing it is updating in place. So, let's say there was a 500 500 bid at $6. and it was partially filled, so 250 were filled. the new market maker says, "Right, we're going to do a new quote for 500 at six again." so what we would do is take the 250 that is not filled and then basically take the difference between what's been filled, what's not been filled, and then get it back up to 500.
 
@@ -547,7 +548,7 @@ George Westbrook: the new quotes that are sitting there. Or we could flip it so 
 
 Edwin Johnson: Yeah, I don't want that.
 
-Edwin Johnson: Yeah, I don't. So, Troy and George, reach out to T0 and find out if they support an order type court called cancel replace.
+Edwin Johnson: Yeah, I don't. So, Troy and George, reach out to tZERO and find out if they support an order type court called cancel replace.
 
 George Westbrook: They do one of the not issues cancel and replace would mean that let's say there's 100 items in the queue. there's an order that's at number 10.
 
@@ -563,7 +564,7 @@ Troy McDonald Kane: Yeah. And that and…
 
 George Westbrook: Okay.
 
-Troy McDonald Kane: and by the way, George, that's common practice on just about every match engine. So that's not unique to T0. So yeah,…
+Troy McDonald Kane: and by the way, George, that's common practice on just about every match engine. So that's not unique to tZERO. So yeah,…
 
 George Westbrook: 
 
@@ -603,7 +604,7 @@ George Westbrook: Did you say it was self wash or self
 
 Troy McDonald Kane: But one thing I need to check in on Edwin is…
 
-Troy McDonald Kane: what type of self-match prevention T0 employs if we want to block wash trading.
+Troy McDonald Kane: what type of self-match prevention tZERO employs if we want to block wash trading.
 
 Edwin Johnson: Yeah, I think that we're going to have it in the rule book that we're going to say it's not acceptable.
 
@@ -645,7 +646,7 @@ George Westbrook: Yeah. and then because this is one of the things we're using k
 
 Edwin Johnson: Cool.
 
-George Westbrook: it's really really helpful. and then along with this we'll be mapping out the more technical stuff. but I think we were saying on the T0 call that what we can do is with Sports Radar, they provide the simulation games that we can use.
+George Westbrook: it's really really helpful. and then along with this we'll be mapping out the more technical stuff. but I think we were saying on the tZERO call that what we can do is with Sports Radar, they provide the simulation games that we can use.
 
 George Westbrook: So rather than having to wait for an actual game to happen, and then testing the market makers thing in real time, for the preseason game, what we can do is just set a 4hour period…
 

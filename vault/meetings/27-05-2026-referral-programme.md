@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-27 referral programme call — multiplier-event calendar and KYC cutoffs, PWA fallback for App Store risk, agentic follow/share checks"
+---
+
 **
 
 May 27, 2026

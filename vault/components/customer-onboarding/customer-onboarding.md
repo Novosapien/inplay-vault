@@ -1,3 +1,7 @@
+---
+description: "Component doc for the onboarding journey — discovery, Persona KYC, tZERO wallet provisioning, holding state and returning login, with the 3-clicks-to-trade rule"
+---
+
 # InPlay Trading Challenge — Customer Onboarding
 
 > **Vision:** [[vision]]
@@ -13,9 +17,9 @@
 
 **Functional purpose:**
 
-Customer Onboarding is the journey from "I just heard about InPlay" to "I'm logged in and trading." It spans discovery on the web, app download, registration combined with KYC verification, wallet provisioning by T0, the holding state during which wallets are being created, and the returning-user authentication flow. The product imperative is **three clicks or less to start trading** — Edwin: _"the fastest we can get them into the app the better."_ A user who hears about the challenge ten minutes before kickoff must be trading at kickoff. Failure here is fatal: _"the worst thing we could do is have someone try to sign up Sunday morning, say at 9:00 am, and they can't trade till Monday."_
+Customer Onboarding is the journey from "I just heard about InPlay" to "I'm logged in and trading." It spans discovery on the web, app download, registration combined with KYC verification, wallet provisioning by tZERO, the holding state during which wallets are being created, and the returning-user authentication flow. The product imperative is **three clicks or less to start trading** — Edwin: _"the fastest we can get them into the app the better."_ A user who hears about the challenge ten minutes before kickoff must be trading at kickoff. Failure here is fatal: _"the worst thing we could do is have someone try to sign up Sunday morning, say at 9:00 am, and they can't trade till Monday."_
 
-The journey crosses three systems: the InPlay app (UI and product surface), **Persona** (the KYC vendor — gov-doc scan + biometric), and **T0** (the trading venue — manages all wallets and authentication credentials). The user should feel one seamless experience despite each system's constraints. Where T0's wallet creation takes time, the user does not wait on a blank screen — they enter a **holding state** with full browse-only access to the app while trading is grayed out.
+The journey crosses three systems: the InPlay app (UI and product surface), **Persona** (the KYC vendor — gov-doc scan + biometric), and **tZERO** (the trading venue — manages all wallets and authentication credentials). The user should feel one seamless experience despite each system's constraints. Where tZERO's wallet creation takes time, the user does not wait on a blank screen — they enter a **holding state** with full browse-only access to the app while trading is grayed out.
 
 Sub-component map:
 
@@ -23,12 +27,21 @@ Sub-component map:
 Customer Onboarding
 ├── Discovery & App Acquisition       (landing page → app store → install)
 ├── Registration + KYC                 (email + password + Persona gov-doc + biometric, one combined step)
-├── Wallet Provisioning                (T0 creates trading + referral + cash wallets)
+├── Wallet Provisioning                (tZERO creates trading + referral + cash wallets)
 ├── Holding State                      (KYC passed, wallets pending — browse, trade grayed out)
-└── Returning Login                    (T0-issued credentials + phone biometric auto-fill)
+└── Returning Login                    (tZERO-issued credentials + phone biometric auto-fill)
 ```
 
 Some detail in Discovery & App Acquisition will live in [[components/challenge-website/challenge-website]] — the web entry point itself is a separate component. The handoff (web → app install) is the onboarding concern.
+
+> ⚠ **The map above assumes one path. As of 03-08 there are three** — Trader
+> Full, Trader Medium and Trader Light — and a **first-open explainer tour plus
+> a fork screen** now sit ahead of Registration + KYC. Registration + KYC
+> branches by tier, Wallet Provisioning is blocked for Trader Light by tZERO's
+> 18+ date-of-birth validation, and Holding State only applies to the KYC'd
+> tiers. See the two update blocks below and
+> [[compliance/eligibility-and-age-gating]]. Redrawing the sub-component map
+> properly needs a focused session, not a digest.
 
 **Audiences:**
 
@@ -45,9 +58,115 @@ The flow is identical for all four audiences. The differences are **acquisition 
 >
 > **Update (1–8 June touchdowns):** **Persona contract SIGNED** (was "in legal review") — implementation begins on intro to their tech engineer; **still awaiting API keys** to wire into the flow. The **onboarding flow is now built into the app** (Hassan): create-account → optional referral-code entry → Persona ID check (placeholder until keys land) → approved → QR/referral screen → into app. **KYC is required in the first iteration** (not optional) — the first version is referrals + wallet + signup + KYC + some live data, not full in-app trading. **Persona speed validated:** gov-ID + face-scan ~99.5% AI-automated, approval in seconds. **App stores:** **Google Play set up** (verification = identity + org-website + phone, via `appdevelopment@inplayglobal.com`); **Apple developer account reset to the beginning** — Apple must call/email **Edwin** to approve **Troy as company signatory** before the dev agreement can be signed and the team added (~48–72h last time). **Demoed 10-06** (Hassan): full flow is email → password → referral-code entry (deep-link via QR being wired) → Persona ID check → **pass/reject** → face scan (**~2–3s callback**) → QR/referral screen → into app; Persona **implementation engineer onboard for ~8 weeks**. _Sources: [[03-06-2026-touchdown]], [[05-06-2026-touchdown]], [[08-06-2026-touchdown]], [[10-06-2026-Touchdown]]._
 >
-> **Update (12–17 June touchdowns):** **Onboarding flow locked (17-06):** create account, then an **email verification code** (auto-fills on mobile), then the **Persona ID check**, then the user lands inside the app on the **IPO page** (first action is browse and buy, buy-only during the IPO phase). **Persona is effectively done (12-06)** and the T0-side wallet allocation is "grab an ID from the pool and allocate"; a details call with the T0 engineers (Hassan / Abhishek) was set for the following week. **Wallet allocation can be day-before, not at signup (17-06):** wallet IDs do not need to be provisioned during onboarding. They can be allocated the **day before trading starts** by feeding a small payload to T0, which returns a pre-generated wallet ID (Troy has set up the wallets); this is off the pre-launch critical path. **Launch blocker = the Apple developer account (17-06):** the single biggest gating item for the pre-launch app; target end-of-June to early-July if Apple approval clears, with Google Play running in parallel. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+> **Update (12–17 June touchdowns):** **Onboarding flow locked (17-06):** create account, then an **email verification code** (auto-fills on mobile), then the **Persona ID check**, then the user lands inside the app on the **IPO page** (first action is browse and buy, buy-only during the IPO phase). **Persona is effectively done (12-06)** and the tZERO-side wallet allocation is "grab an ID from the pool and allocate"; a details call with the tZERO engineers (Hassan / Abhishek) was set for the following week. **Wallet allocation can be day-before, not at signup (17-06):** wallet IDs do not need to be provisioned during onboarding. They can be allocated the **day before trading starts** by feeding a small payload to tZERO, which returns a pre-generated wallet ID (Troy has set up the wallets); this is off the pre-launch critical path. **Launch blocker = the Apple developer account (17-06):** the single biggest gating item for the pre-launch app; target end-of-June to early-July if Apple approval clears, with Google Play running in parallel. _Sources: [[12-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
 
 > **Update (18–29 June touchdowns):** **App-store status (24-06):** **Apple is moving again** — the $99/yr developer fee paid and the app processing ("we figured out where everything was sitting"); **Android Play Store verification is stuck** on **website + phone-number verification** (requires **owner**, not admin, access — the Novo team are admins; Brett offered Play Store contacts to unstick it). Continues the standing "**Apple developer account = launch blocker**". **TestFlight up (26-06):** a build is running; distribution needs each tester's **Apple ID** (up to **100 users**), not device IMEIs. The **pre-launch build strips functionality** (first-time user, referrals, IPO browse) and **removes the demo ad units** (demo ads stay on a separate branch for sales demos, not the production app); PWA vs TestFlight builds are being **synced** so education etc. appears consistently. **Referral program now runs through the challenge website with full KYC (24-06)** — the web KYC is the gate that powers the referral activation. **KYC opt-in (29-06):** signup copy should explicitly read as **opting in** to communications. _Sources: [[24-06-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[29-06-2026-touchdown]]. See [[digests/touchdowns-18-29-jun-2026]]._
+
+> **Update (23-07-2026, _[[23-07-2026-tZERO-weekly]]_):** **Same initial capital of 100K InPlay$ for all users reconfirmed** (every account is treated equally, Troy). **Payouts/subscriptions processor: Pay.com** is the leading vendor, with a **redundant processor** in discussion for cash-out optionality; requires **no tZERO direction** for launch. (Payout mechanics themselves live in [[components/withdrawal-flow/withdrawal-flow]]; Pay.com is recorded as an integration in [[integrations]].)
+
+> **Update (24-07-2026, _[[24-07-2026-touchdown]]_):** **KYC-less app variant being scoped, but de-prioritised for launch.** George is investigating a **no-KYC version of the app** (the effort/lift, and whether it needs a **fresh Apple review**). Edwin: **not** the highest priority, launch readiness (trading) comes first. Troy: it is **not needed until the first/second week of September**, when the **first academic presentation** runs, so there is roughly **a month** to solve it; the KYC-less path is intended as a **different login route for the academic portion** of the competition. Immediate priority remains getting the **trading functionality pushed, tested, and live for the 22nd** (Aug 22 sim launch, see [[23-07-2026-tZERO-weekly]]).
+
+> ### ⚠ Update (03-08 / 07-08 touchdowns): onboarding is now **three tiers**, not one
+>
+> The single "sign up → Persona KYC → trade" path is superseded. The KYC-less
+> variant scoped on 24-07 has been promoted from an academic-only side door into
+> **the main funnel's first stage**. Rules and legal reasoning live in
+> [[compliance/eligibility-and-age-gating]]; the journeys are this component's.
+>
+> **Why it changed.** Two forcing problems, both surfaced 03-08. First, KYC is
+> killing conversion: Edwin's own brother-in-law and sister-in-law reached the
+> KYC step and stopped, having previously had their identities stolen; signups
+> sat at ~118, majority friends and family. Second, Troy's university programme
+> is full of **international students** who are not US tax residents and can
+> never receive a cash payout, so gating them behind full KYC excludes them for
+> no benefit. Edwin: _"in order to qualify for any money payouts, you're going
+> to have to fill out the KYC. That's a must. Now if you want to trade on the
+> public forum, the one with no money, no rewards, you should be able to do that
+> too."_
+>
+> **The three tiers (named 07-08).** George's names, with Troy's legal framing
+> alongside:
+>
+> | Tier | Who | Verification | Cash prizes | Legal framing (Troy) |
+> |---|---|---|---|---|
+> | **Trader Full** | US tax resident, 18+ | Full Persona KYC | **Yes** | Skill-based trading competition |
+> | **Trader Medium** | International student / non-US-tax-resident, 18+ | Persona KYC, identity only | No | Educational purposes |
+> | **Trader Light** | Anyone 13+ | **Email only** + a 13+ attestation | No | Entertainment purposes only |
+>
+> **Persona now has two KYC paths** (07-08): one for tax residents, one for
+> non-tax-residents. Spoken to already.
+>
+> **Everyone still gets an account and can trade.** Troy: _"Everyone can get an
+> account. It's a simulator. The only people that can get cash payouts are
+> people that go through the full KYC and validate that they're 18 and over."_
+> Edwin's funnel logic: free play → taste it → give KYC for cash → eventually
+> open a real brokerage account. _"The KYC thing right in your face just to
+> start out is putting people off before they get a taste of the app."_
+>
+> **⚠ Hard blocker — tZERO's onboarding API (07-08).** tZERO already relax
+> validation on most of their ~20 onboarding fields for InPlay (we send three).
+> **Date of birth is still mandatory and must be 18+**, so a Trader Light user
+> cannot be allocated a tZERO account ID or wallet ID, and therefore cannot
+> trade at all. The ask — turn off DOB validation the way the other fields were
+> turned off — is with tZERO via the shared Slack channel. Until it lands,
+> Trader Light does not exist. Tracked as G1 in
+> [[compliance/eligibility-and-age-gating]].
+>
+> **Ad consequence.** Non-signed-in and non-KYC users may only be served
+> **under-18-safe inventory** — no alcohol, no gambling adjacency (George,
+> 03-08). Constraint on [[advertising/advertising]].
+>
+> **App-store rating** should be set to **13+** so parental controls can block
+> upstream (Troy, 07-08).
+>
+> **Long-term warning on file (Brett, 29-07).** A mixed population of
+> not-logged-in, logged-in-not-KYC'd and KYC'd users is exactly the problem
+> Google spent ~two years and enormous engineering resource solving after
+> acquiring products with no login. It bites on ad targeting, house ads,
+> impression tracking and upsell: a not-logged-in user still has to be served
+> something, still has to be tracked, and still has to be pushed through to the
+> next tier. Brett's framing: rolling users in tier by tier is probably right
+> for now, but the difficulty is getting anyone to move **up** a tier once
+> they're comfortable — the Robinhood problem. Recorded as a known future cost,
+> not a launch blocker.
+>
+> _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
+> [[29-07-2026-touchdown]]._
+
+> ### Update (07-08-2026): first-open tour + the fork screen
+>
+> Edwin built a UI prototype over ~30 hours and ~80 iterations, and named one
+> piece of it **non-negotiable**: _"when the app is opened, we need the talk
+> basically of what the f\*\*\* they're looking at. That is a non-negotiable. We
+> need to get that in as soon as possible."_
+>
+> Today the first screen a new user sees is a stadium image and a referral bank,
+> which tells a referred user nothing about what InPlay is. The replacement is a
+> **four-card explainer carousel**:
+>
+> 1. **Trade sports for free** — what the app is
+> 2. **You own the company, not the bet** — what a team company is
+> 3. **Why it's different** — four tabs
+> 4. **Your opportunity** — $100,000 InPlay dollars, free to play, no deposit
+>    ever, trade live games play-by-play, real cash prizes if verified, plus
+>    partner logos as qualification
+>
+> Then the **fork screen**, which is where the three tiers become visible to the
+> user: **left** = no cash prizes, 13+, join with an email; **right** = get
+> verified with Persona. Edwin, on the users who refuse ID: _"there's too many
+> of these people are like, they want to steal my thoughts… I want those out."_
+>
+> Also in the prototype: a **per-tab tour** for each surface, and a **rewarded
+> ad** — watch 30 seconds, earn 100 InPlay dollars — positioned as a recovery
+> mechanic for users having a bad trading day (see
+> [[advertising/advertising]]). Copy change: "trading capital" becomes
+> **"trading reserve"**.
+>
+> Priority context: George confirmed front-end changes of this shape are days,
+> not weeks; the back-test lab in the same prototype is **not** achievable
+> before launch. _Source: [[07-08-2026-touchdown]]._
+
+> **Adoption snapshot (24-07-2026):** on **Wed 22-07 there were 37 first-time downloads** (a reporting lag means 23-07/24-07 are not yet known); running total logged-in ~130. Cody: **83 approved KYCs** (up from 64), so ~19 of the 37 had passed KYC, but some downloads are **already-KYC'd** people (the team, family members), so genuinely-new signups are lower still. A **newsletter goes out 24-07** to re-engage prior signups; Hasan exporting an updated registrations CSV (~25 more via email). Edwin pushing app signups hard (< 1 month to launch).
 
 ---
 
@@ -62,12 +181,12 @@ The flow is identical for all four audiences. The differences are **acquisition 
 - Registration screen has an **optional referral code input** with deep-link support: clicking a referral link bypasses manual entry
 - KYC happens immediately on registration — there is no separate "registered, awaiting KYC" state. Persona scans gov ID (passport or driver's licence), captures biometric face scan, returns name, address, location, age, citizenship, identity-match status
 - KYC must complete in "a couple of minutes" (typical Persona turnaround)
-- On KYC pass, T0 provisions three digital wallets: **trading** (100,000 InPlay$), **referral** (0), **cash** (0)
+- On KYC pass, tZERO provisions three digital wallets: **trading** (100,000 InPlay$), **referral** (0), **cash** (0)
 - During wallet provisioning (typically fast, worst case up to 24 hours), the user enters a **holding state**: full read-only access to the app (information layer, education, browse) but trading buttons **grayed out, not hidden**
 - When a user taps a grayed-out trade button in the holding state, a message displays: _"account pending approval"_
 - On wallet ready: trading enabled; referral code popup appears with copy button, share buttons (messages / email / socials), and "Get 1,000, Give 500" framing in InPlay orange
-- Returning user logs in via T0-issued credentials (email + password); device biometric (FaceID / passkeys / Android equivalent) auto-fills credentials
-- No SSO at launch (T0 manual account-creation step is incompatible). Magic link parked
+- Returning user logs in via tZERO-issued credentials (email + password); device biometric (FaceID / passkeys / Android equivalent) auto-fills credentials
+- No SSO at launch (tZERO manual account-creation step is incompatible). Magic link parked
 - **No waitlist, ever** — Cody: _"weight lists really scared me. They are the death of social gaming apps."_
 
 ```mermaid
@@ -78,7 +197,7 @@ graph TD
     C -->|No| E[Registration: email + password + optional referral code]
     E --> F[Persona KYC: gov doc scan + biometric]
     F -->|Fail| G[KYC failed — fallback flow undefined ⚠️]
-    F -->|Pass| H[T0 provisions 3 wallets: trading / referral / cash]
+    F -->|Pass| H[tZERO provisions 3 wallets: trading / referral / cash]
     H --> I{Wallets ready?}
     I -->|No, waiting| J[Holding State: full browse, trading grayed out]
     J --> I
@@ -91,16 +210,16 @@ graph TD
 
 - Email is the only manually-entered profile field at signup
 - Bank info, crypto wallet address, and 1099 tax info are captured **at first withdrawal**, not at signup — handled in [[components/withdrawal-flow/withdrawal-flow]]
-- Cash wallet is held on the T0 chain (not on InPlay infrastructure). This intentionally avoids store-of-value licensing exposure in EMEA and other jurisdictions
-- The cash wallet may also support crypto payout (Coinbase or similar) at withdrawal time, leveraging T0's wallet infrastructure
+- Cash wallet is held on the tZERO chain (not on InPlay infrastructure). This intentionally avoids store-of-value licensing exposure in EMEA and other jurisdictions
+- The cash wallet may also support crypto payout (Coinbase or similar) at withdrawal time, leveraging tZERO's wallet infrastructure
 - Referral code generated for the new user is **lifetime-stable** — it never regenerates
 - For a referrer to receive the 1,000 InPlay$ reward, the referee must complete **full KYC** — not just registration (rule from vision)
-- T0 manages user authentication credentials (decision from this call — to confirm with T0 Friday)
+- tZERO manages user authentication credentials (decision from this call — to confirm with tZERO Friday)
 
 **Edge cases and error states:**
 
 - **Persona outage during signup** — fallback flow undefined. ⚠️ **Gap.** Brett raised: _"persona could go down, right? We need to think a bit about those kind of cycles."_
-- **T0 wallet creation latency** — could be minutes or hours. Mitigation: pre-funded wallet pool. Cody's proposal, agreed in principle: T0 pre-creates 3,000–5,000 wallets at 100,000 InPlay$, assigned post-KYC. **Pending T0 cost confirmation in Friday session.**
+- **tZERO wallet creation latency** — could be minutes or hours. Mitigation: pre-funded wallet pool. Cody's proposal, agreed in principle: tZERO pre-creates 3,000–5,000 wallets at 100,000 InPlay$, assigned post-KYC. **Pending tZERO cost confirmation in Friday session.**
 - **High-volume signup spike** (Sunday morning before kickoff) — graceful degradation if pre-funded pool depletes. **No waitlist allowed.** Brett suggested a "weightless mode" placeholder — to design
 - **KYC failed** — multiple open questions for InPlay team: do we let them retry? How many attempts? Soft fail (Persona uncertain) vs hard fail (gov doc rejected)? What support route exists? ⚠️ **Gap.**
 - **Cyber / data sensitivity** — Troy flagged: _"the more data we collect, the more sensitive it gets and the more susceptible we are to cyber attacks."_
@@ -139,13 +258,13 @@ The holding state must feel like a tour, not a waiting room — the user is brow
 | Capability | Build / Buy / Access | Provider | Rationale |
 |---|---|---|---|
 | Identity verification (KYC) | Access | **Persona** | Selected vendor. Scans government doc (passport / driver's licence) + biometric face scan. Returns name, address, location, age, citizenship, identity-match. "Couple of minutes" turnaround (Cody, validated on other social gaming platforms). |
-| Authentication & credentials | Access | **T0** | T0 owns login credentials (email + password). Confirmed in call, **to be validated with T0 Friday session**. No SSO at launch — T0 manual account creation step incompatible. |
-| Wallet provisioning | Access | **T0** | T0 creates synthetic digital wallets on chain for all three balances: trading (100K InPlay$), referral, cash. Sim wallets behave like production. |
-| Cash wallet hosting | Access | **T0** (decision moved mid-call from InPlay to T0) | T0 hosting the cash balance sidesteps store-of-value licensing exposure in EMEA and other jurisdictions. Removes a payment-processing partner conversation (Cody: _"one less partner we got to work with"_). Easier crypto / FX flexibility. |
-| Pre-funded wallet pool | Build (on T0 side) | **T0** (Cody's proposal) | T0 pre-creates 3,000–5,000 wallets at 100K InPlay$, assigned to users post-KYC. Mitigates "Sunday 9am, kickoff at 1pm" scenario. Status: agreed in principle, **pending T0 cost confirmation Friday**. |
+| Authentication & credentials | Access | **tZERO** | tZERO owns login credentials (email + password). Confirmed in call, **to be validated with tZERO Friday session**. No SSO at launch — tZERO manual account creation step incompatible. |
+| Wallet provisioning | Access | **tZERO** | tZERO creates synthetic digital wallets on chain for all three balances: trading (100K InPlay$), referral, cash. Sim wallets behave like production. |
+| Cash wallet hosting | Access | **tZERO** (decision moved mid-call from InPlay to tZERO) | tZERO hosting the cash balance sidesteps store-of-value licensing exposure in EMEA and other jurisdictions. Removes a payment-processing partner conversation (Cody: _"one less partner we got to work with"_). Easier crypto / FX flexibility. |
+| Pre-funded wallet pool | Build (on tZERO side) | **tZERO** (Cody's proposal) | tZERO pre-creates 3,000–5,000 wallets at 100K InPlay$, assigned to users post-KYC. Mitigates "Sunday 9am, kickoff at 1pm" scenario. Status: agreed in principle, **pending tZERO cost confirmation Friday**. |
 | Mobile app | Build | **Rebel / Novosapien** | Mobile-first, web-portable architecture. _"We're putting a lot of the Headspace mobile first, but it's easily portable into a web-based version as well."_ (George) |
 | Landing page → app handoff | Build | Rebel / Novosapien | Desktop detection prompts app install; fallback emails the install link with deep-link to bypass referral code re-entry. Detail in [[components/challenge-website/challenge-website]]. |
-| Device biometric auto-fill | Access (OS) | iOS Keychain / Android passkeys | Native phone-level facial recognition fills T0 credentials on returning login. No server-side biometric build needed at launch. Note: this is distinct from Persona's biometric, which is a one-time KYC artifact. |
+| Device biometric auto-fill | Access (OS) | iOS Keychain / Android passkeys | Native phone-level facial recognition fills tZERO credentials on returning login. No server-side biometric build needed at launch. Note: this is distinct from Persona's biometric, which is a one-time KYC artifact. |
 
 ---
 
@@ -153,18 +272,18 @@ The holding state must feel like a tour, not a waiting room — the user is brow
 
 | Data | Direction | Source / Destination | Notes |
 |---|---|---|---|
-| Email | In (user input) | App → T0 | Only manually-entered profile field at signup. |
-| Password | In (user input) | App → T0 | T0 manages credentials (to be confirmed Friday). |
+| Email | In (user input) | App → tZERO | Only manually-entered profile field at signup. |
+| Password | In (user input) | App → tZERO | tZERO manages credentials (to be confirmed Friday). |
 | Government ID image | In (Persona SDK) | Persona | Passport or driver's licence. Image held by Persona, not InPlay. |
 | Biometric face scan (KYC) | In (Persona SDK) | Persona | One-time identity-match artifact. |
 | First name, last name | Out (Persona) | Persona → InPlay | Returned post-KYC pass. Never separately captured. |
 | Address, location (residence) | Out (Persona) | Persona → InPlay | Returned post-KYC. Required for compliance + location-during-trade rule (lives in [[components/referral/referral]]). |
 | Age | Out (Persona) | Persona → InPlay | Used for 18+ gate. |
 | Citizenship / jurisdiction | Out (Persona) | Persona → InPlay | Gates US-only vs global access. Global pending Marlin's regulatory ruling. |
-| KYC pass/fail status | Out (Persona) | Persona → InPlay → T0 | Critical event. Triggers wallet provisioning. Webhook + retry contract needed. |
-| Trading wallet (100K InPlay$) | Out (T0) | T0 → user account | Synthetic, on chain. From pre-funded pool. |
-| Referral wallet (0) | Out (T0) | T0 → user account | Synthetic, on chain. |
-| Cash wallet (0) | Out (T0) | T0 → user account | Synthetic, on chain. Will fund as user wins prizes. |
+| KYC pass/fail status | Out (Persona) | Persona → InPlay → tZERO | Critical event. Triggers wallet provisioning. Webhook + retry contract needed. |
+| Trading wallet (100K InPlay$) | Out (tZERO) | tZERO → user account | Synthetic, on chain. From pre-funded pool. |
+| Referral wallet (0) | Out (tZERO) | tZERO → user account | Synthetic, on chain. |
+| Cash wallet (0) | Out (tZERO) | tZERO → user account | Synthetic, on chain. Will fund as user wins prizes. |
 | Referral code (entered by referee) | In (user input or deep link) | App → InPlay | Optional. Deep link bypasses manual entry. Validated against existing codes. |
 | Referral code (generated for new user) | Out | InPlay → user | Auto-generated, lifetime-stable. Triggered on KYC pass. Detail in [[components/referral/referral]]. |
 | Bank info, crypto wallet, 1099 | — | — | Deferred to [[components/withdrawal-flow/withdrawal-flow]]. NOT captured at signup. |
@@ -174,8 +293,8 @@ graph LR
     User[User] -->|Email + password| App[InPlay App]
     User -->|Gov ID + face| Persona[Persona KYC]
     Persona -->|Identity bundle + pass/fail| App
-    App -->|Trigger on KYC pass| T0[T0]
-    T0 -->|3 wallets provisioned| App
+    App -->|Trigger on KYC pass| tZERO[tZERO]
+    tZERO -->|3 wallets provisioned| App
     App -->|Referral code event| Referral[Referral Component]
 ```
 
@@ -203,7 +322,7 @@ Note: registration and KYC happen in the same step, so there is no standalone "r
 - [ ] **KYC pass rate**: ≥85% of started KYC flows pass on first attempt (industry baseline; below this signals friction, fraud, or audience mismatch)
 - [ ] **Holding state retention**: <5% of users who enter holding state abandon before wallets ready (validates the gray-out + browse-only UX)
 - [ ] **Referral code entry rate**: ≥40% of new signups enter a referral code (validates virality of the deep-link mechanism — feeds [[components/referral/referral]])
-- [ ] **Pre-funded wallet pool depletion alert**: pool never drops below 25% capacity during peak signup periods (operational metric, jointly owned with T0)
+- [ ] **Pre-funded wallet pool depletion alert**: pool never drops below 25% capacity during peak signup periods (operational metric, jointly owned with tZERO)
 - [ ] **Cyber / abuse signal**: <0.1% of accounts flagged for suspected bot/fraud post-KYC (validates Persona's effectiveness; addresses Troy's data-sensitivity concern)
 
 ### Cross-cutting: End-to-End Funnel Measurement
@@ -232,7 +351,7 @@ A pre-app warm-lead funnel was scoped in 14-05-2026:
 | Depends on | What we need | Blocking? |
 |---|---|---|
 | **Persona** | KYC SDK + webhook for pass/fail status + retry semantics | **Yes** — core path |
-| **T0** | Wallet provisioning API, auth credentials API, pre-funded wallet pool support | **Yes** — core path |
+| **tZERO** | Wallet provisioning API, auth credentials API, pre-funded wallet pool support | **Yes** — core path |
 | **[[components/challenge-website/challenge-website\|Challenge Website]]** | Hands users into app install (deep linking, app-store handoff). Also runs the pre-onboarding form-capture funnel that feeds CRM warm-leads. | No — app-side can build first |
 | **Referral component** | Lifetime-stable code generation; referral code lookup/validation on signup | No — can mock for early dev |
 | **App store presence (iOS + Android)** | Approved listings | **Yes** — for end-to-end test |
@@ -250,7 +369,7 @@ A pre-app warm-lead funnel was scoped in 14-05-2026:
 graph LR
     CW[Challenge Website] --> CO[Customer Onboarding]
     CO --> Persona
-    CO --> T0
+    CO --> tZERO
     CO --> Trading
     CO --> Referral
     CO --> Dashboard[Personal Dashboard]
@@ -265,7 +384,7 @@ graph LR
 
 **Must-have at launch?** **Yes — non-negotiable.** No onboarding, no users.
 
-**Sequencing rationale:** Build first. Onboarding gates every other component. Persona and T0 integration are the technical risk concentrators — they should be validated end-to-end as early as possible. The pre-funded wallet pool decision needs to happen with T0 in the Friday session before the implementation path is locked.
+**Sequencing rationale:** Build first. Onboarding gates every other component. Persona and tZERO integration are the technical risk concentrators — they should be validated end-to-end as early as possible. The pre-funded wallet pool decision needs to happen with tZERO in the Friday session before the implementation path is locked.
 
 ---
 
@@ -281,7 +400,7 @@ graph LR
 **Data risks:**
 
 - More data captured = more cyber exposure. Troy explicit: _"I don't want us to be in the press on all this personal data being leaked. That's my biggest concern."_
-- T0 holds the wallet ledger including the cash wallet — single point of failure for funds integrity
+- tZERO holds the wallet ledger including the cash wallet — single point of failure for funds integrity
 - Persona holds gov ID images + biometric — high-value breach target; we rely on their controls
 
 **Compliance:**
@@ -289,13 +408,13 @@ graph LR
 - 18+ age verification (Persona)
 - US-only vs global jurisdiction — pending Marlin's ruling
 - KYC standards: AML, identity, sanctions (Persona's framework)
-- Cash wallet on T0 chain — designed to avoid store-of-value licensing in EMEA / global
+- Cash wallet on tZERO chain — designed to avoid store-of-value licensing in EMEA / global
 - PII handling — encryption at rest, retention windows, GDPR exposure if global
 - Biometric data storage — local jurisdiction (Illinois BIPA in US, GDPR in EU)
 
 **Controls needed:**
 
-- Pre-funded wallet pool sizing + monitoring (joint with T0)
+- Pre-funded wallet pool sizing + monitoring (joint with tZERO)
 - Holding state UX: **gray out, never hide**
 - Rate limiting on signup attempts per IP / device
 - Persona webhook retry queue + dead-letter handling
@@ -310,10 +429,10 @@ graph LR
 | Sub-Component | Overview | Status | Link |
 |---|---|---|---|
 | Discovery & App Acquisition | Landing → app store → install. Detail also lives in [[components/challenge-website/challenge-website]]. | Collecting | _[[sub-components/discovery-and-app-acquisition]]_ |
-| Registration + KYC | Email + password + optional referral code + Persona KYC (gov doc + biometric) in one combined step. T0 owns credentials. | Collecting | _[[sub-components/registration-and-kyc]]_ |
-| Wallet Provisioning | T0 creates trading + referral + cash wallets, ideally from pre-funded pool. | Collecting | _[[sub-components/wallet-provisioning]]_ |
+| Registration + KYC | Email + password + optional referral code + Persona KYC (gov doc + biometric) in one combined step. tZERO owns credentials. | Collecting | _[[sub-components/registration-and-kyc]]_ |
+| Wallet Provisioning | tZERO creates trading + referral + cash wallets, ideally from pre-funded pool. | Collecting | _[[sub-components/wallet-provisioning]]_ |
 | Holding State | Post-KYC, pre-wallet. Full browse, trading grayed out. | Collecting | _[[sub-components/holding-state]]_ |
-| Returning Login | T0-issued credentials + phone biometric auto-fill (FaceID / passkeys). | Collecting | _[[sub-components/returning-login]]_ |
+| Returning Login | tZERO-issued credentials + phone biometric auto-fill (FaceID / passkeys). | Collecting | _[[sub-components/returning-login]]_ |
 
 ---
 
@@ -324,13 +443,13 @@ graph LR
 - KYC failure handling — retry policy? Soft fail (Persona uncertain) vs hard fail (rejected)? Support route? Communicate to user how?
 - Biometric data jurisdiction — Illinois BIPA, GDPR — where do we host?
 
-### T0 integration (cover in Friday session)
-- Authentication model — session token? Proxied through InPlay or direct app-to-T0?
-- Credential ownership — does T0 store email + password, or do we?
+### tZERO integration (cover in Friday session)
+- Authentication model — session token? Proxied through InPlay or direct app-to-tZERO?
+- Credential ownership — does tZERO store email + password, or do we?
 - Pre-funded wallet pool — cost per pre-created wallet? Refresh cadence? Capacity target?
 - Wallet creation latency — typical and worst-case timings
-- SSO — could it ever be enabled (would require non-manual account creation on T0 side)?
-- Migration path if we outgrow T0's 30,000-account current footprint
+- SSO — could it ever be enabled (would require non-manual account creation on tZERO side)?
+- Migration path if we outgrow tZERO's 30,000-account current footprint
 
 ### Withdrawal flow (separate component, not in this call)
 - Bank info capture journey — what fields, when, validation?

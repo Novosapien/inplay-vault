@@ -13,6 +13,7 @@ extracted-to:
   - "[[vision]]"
   - "[[architecture/open-questions]]"
   - "[[information-layer/sub-components/single-game-page/single-game-page]]"
+description: "Transcript of the 2026-07-20 touchdown — Edwin's market-maker mechanics Q&A (resting liquidity, offsets, synthetic market orders), Watch page ad UX, week focus"
 ---
 
 ## Post-Call Analysis
@@ -21,12 +22,12 @@ extracted-to:
 
 | Finding | Destination | Action |
 |---------|-------------|--------|
-| Market maker mechanics resolved: resting-liquidity bot in T0's book (users match each other directly), **market state** terminology, unlimited buying power, short-locate exemption, reference-price ± offsets + skew, randomizer, limit-order crossing, cancel-replace ~5–10×/sec, three liquidity sessions, subjective/learned event triggers | [[market-maker/market-maker]] | **New component created** (promoted from candidate trading sub-component — user-directed); backfilled into [[components/components]] + [[vision]] |
-| CTS1/CTS2 price engines — **InPlay builds them**, not consumed from T0; price drivers = today's-game probability + all-other-games + off-field revenue | [[market-maker/market-maker]] | Captured in component doc §2 |
+| Market maker mechanics resolved: resting-liquidity bot in tZERO's book (users match each other directly), **market state** terminology, unlimited buying power, short-locate exemption, reference-price ± offsets + skew, randomizer, limit-order crossing, cancel-replace ~5–10×/sec, three liquidity sessions, subjective/learned event triggers | [[market-maker/market-maker]] | **New component created** (promoted from candidate trading sub-component — user-directed); backfilled into [[components/components]] + [[vision]] |
+| CTS1/CTS2 price engines — **InPlay builds them**, not consumed from tZERO; price drivers = today's-game probability + all-other-games + off-field revenue | [[market-maker/market-maker]] | Captured in component doc §2 |
 | Markets truly isolated per team (pairs-trading frame); rankings/tiebreakers don't feed pricing | [[market-maker/market-maker]] | Captured in component doc §2 |
 | Synthetic market order re-scoped: **before first NFL game** (was post-MVP); price-through approach, Troy to help write logic | [[trading/trading]] | §2 business rule + §9 post-MVP list amended |
-| Price band (~30% TBD) + quote-bust authority with T0 | [[market-maker/market-maker]] + [[trading/trading]] | Captured both sides; detail deferred to coming sessions |
-| T0 cadence: tech calls now 2×/week (Tue/Thu); T0 asked to stand up synthetic MM entity in QA | [[market-maker/market-maker]] + [[trading/trading]] update block | Captured |
+| Price band (~30% TBD) + quote-bust authority with tZERO | [[market-maker/market-maker]] + [[trading/trading]] | Captured both sides; detail deferred to coming sessions |
+| tZERO cadence: tech calls now 2×/week (Tue/Thu); tZERO asked to stand up synthetic MM entity in QA | [[market-maker/market-maker]] + [[trading/trading]] update block | Captured |
 | MM ops UI = desktop version of the app, MM-first; Kevin likely operator | [[market-maker/market-maker]] | Captured in component doc §2 |
 | MM deep-dive moved to **Thu 23-07, 3–4pm London**; George mapping remaining PTS/CTS docs; Edwin's old trigger script to be located; week-zero NCAA valuation question for Edwin | [[market-maker/market-maker]] §4 + [[architecture/open-questions]] | Next-steps captured; MM open-question rows updated |
 | Watch page: scrollable right-hand graph stack + interlaced ads (~6–8 positions), team-selector ordering (playing → favourites → alphabetical), trade-sheet scroll-through built, intern app reviews starting | [[information-layer/sub-components/single-game-page/single-game-page]] | §9 Watch Mode 20-07 block + changelog entry |
@@ -36,7 +37,7 @@ extracted-to:
 | Sportradar futures API broken — 403 on wanted endpoint, only 8/32 NFL win totals, no probabilities returned; George emailed endpoints detail (re-sending reply-all to Cody); Cody chasing David/Scott + topping up probabilities-API trial quota (45% used). FanDuel shows NCAA win totals, so upstream data exists | — | Action item — Cody owns the chase |
 | SSP sequencing: AdMob first, then AppLovin (AdMob loaded into AppLovin as mediator/ad server) | — | No action — consistent with 13–17 Jul AppLovin MAX decision |
 | Investor deck + workbook approved by Edwin, out to Hard Rock + Israeli investor groups today; Max building an app to automate the deck-workbook workflow for Edwin | — | No action (status) |
-| Week focus: trade backend (once T0 hands over), notifications, app approval, first SSP live | — | No action (status) |
+| Week focus: trade backend (once tZERO hands over), notifications, app approval, first SSP live | — | No action (status) |
 
 ---
 
@@ -585,7 +586,7 @@ Brett StClair: approach
 
 Edwin Johnson: whatever I can trouble with, the boys got you.
 
-George Westbrook: it' be preliminary questions before a bigger a bigger session um because it's just yeah understanding because I I think we've we've got a better understanding of where it fits into it. So what we thought before was it was something that sits in between the user and T0 and effectively the user speaks to the market maker blah blah blah. Obviously now we're aware that it's not that but this is our current understanding. So a user places a places a trade or places an order um that goes to T0. T0 has an order book which has all of the orders. The market maker acts as like a a bot which would be placing orders, buy, sell orders um into the order book within um within T0 which has their matching algorithm which is going to match
+George Westbrook: it' be preliminary questions before a bigger a bigger session um because it's just yeah understanding because I I think we've we've got a better understanding of where it fits into it. So what we thought before was it was something that sits in between the user and tZERO and effectively the user speaks to the market maker blah blah blah. Obviously now we're aware that it's not that but this is our current understanding. So a user places a places a trade or places an order um that goes to tZERO. tZERO has an order book which has all of the orders. The market maker acts as like a a bot which would be placing orders, buy, sell orders um into the order book within um within tZERO which has their matching algorithm which is going to match
 
 Edwin Johnson: Correct.
 
@@ -645,7 +646,7 @@ George Westbrook: market state and then the market state determines the the orde
 
 Edwin Johnson: market state. So
 
-George Westbrook: the market maker's going to send to T0's order book,
+George Westbrook: the market maker's going to send to tZERO's order book,
 
 Edwin Johnson: you
 
@@ -711,17 +712,17 @@ Edwin Johnson: That's
 
 George Westbrook: Okay.
 
-Troy McDonald Kane: And when we meet with T0 tomorrow,
+Troy McDonald Kane: And when we meet with tZERO tomorrow,
 
 Edwin Johnson: correct.
 
 George Westbrook: Um
 
-Troy McDonald Kane: so we're now doing two a week with T0 for tech calls starting this week.
+Troy McDonald Kane: so we're now doing two a week with tZERO for tech calls starting this week.
 
 George Westbrook: Mhm.
 
-Troy McDonald Kane: So we have we're doing these calls Monday, Wednesday, Friday, and then we're doing the T0 calls on Tuesdays and Thursdays. We need to have them set up this synthetic market maker entity uh with that buying power so you guys can start to maybe test that in the QA
+Troy McDonald Kane: So we have we're doing these calls Monday, Wednesday, Friday, and then we're doing the tZERO calls on Tuesdays and Thursdays. We need to have them set up this synthetic market maker entity uh with that buying power so you guys can start to maybe test that in the QA
 
 George Westbrook: is what's what's the difference between a user and a synthetic market maker as a like
 
@@ -1024,7 +1025,7 @@ Edwin Johnson: So like the only way that so let's say you place a market order a
 
 George Westbrook: then
 
-Edwin Johnson: is you know it's 67 again six bit at seven and you get filled at a price of 85 you know likely that would be outside of our price band okay which would be a 30% or whatever we're going to come up with correction and we would as the exchange or with T0 we have a ability to quote bust a trade or say the trade didn't happen. So our our we have to maintain orderly markets, you know, for regulatory purposes because if everyone got banged out on these market orders, you know, you'd lose market participation really really quickly.
+Edwin Johnson: is you know it's 67 again six bit at seven and you get filled at a price of 85 you know likely that would be outside of our price band okay which would be a 30% or whatever we're going to come up with correction and we would as the exchange or with tZERO we have a ability to quote bust a trade or say the trade didn't happen. So our our we have to maintain orderly markets, you know, for regulatory purposes because if everyone got banged out on these market orders, you know, you'd lose market participation really really quickly.
 
   
   
@@ -1039,7 +1040,7 @@ George Westbrook: And one one last thing is the this the CTS1 and CTS2 are they 
 
 Edwin Johnson: two. Yep.
 
-George Westbrook: are they things that we would have to build as well or is they are they things that we would consume from T0.
+George Westbrook: are they things that we would have to build as well or is they are they things that we would consume from tZERO.
 
 Edwin Johnson: We will build them.
 
@@ -1352,7 +1353,7 @@ Troy McDonald Kane: It's it's feeding everything off market data.
 
 Brett StClair: zero.
 
-Troy McDonald Kane: It's going to feed off of the T0 market data. It's going to feed off of the sports radar data,
+Troy McDonald Kane: It's going to feed off of the tZERO market data. It's going to feed off of the sports radar data,
 
   
   
@@ -2381,7 +2382,7 @@ George Westbrook: Yeah.
 
 Brett StClair: soon.
 
-George Westbrook: Um cuz I think in terms of the the trading like watch stuff like that is we need to nail the the back end trading stuff once T0 have got everything over to us and then and then the trade pages that's where that's where we'll start iterating on that because obviously we we did the first hit where we didn't really know anything. Um now it's let's get what's actually going to be there um on a different version which people can get their hands on.
+George Westbrook: Um cuz I think in terms of the the trading like watch stuff like that is we need to nail the the back end trading stuff once tZERO have got everything over to us and then and then the trade pages that's where that's where we'll start iterating on that because obviously we we did the first hit where we didn't really know anything. Um now it's let's get what's actually going to be there um on a different version which people can get their hands on.
 
 Troy McDonald Kane: All
 

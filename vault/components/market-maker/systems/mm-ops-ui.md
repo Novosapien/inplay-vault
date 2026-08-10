@@ -1,3 +1,7 @@
+---
+description: "The desktop cockpit for the market maker operator (Kevin) — algo parameters, order lookup, positions and P&L, supervision flags — deliberately last in build"
+---
+
 # MM Ops UI
 
 > **Component:** [[market-maker/market-maker]]
@@ -29,7 +33,7 @@ Brett's warning on expectations: the first cut will be rough.
 4. **Supervision surface** — out-of-band execution flags, halt/resume
    controls, bust workflow (see
    [[market-maker/systems/market-supervision]]).
-5. **Health** — feed status (Sport Radar, T0 session), valuation freshness,
+5. **Health** — feed status (Sport Radar, tZERO session), valuation freshness,
    cycle rate per team.
 
 ## Phasing (from the 24-07 touchdown)

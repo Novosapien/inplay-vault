@@ -1,3 +1,7 @@
+---
+description: "Centrifugo spec — the WebSocket fan-out layer on a Managed Instance Group, with the channel map, NATS broker mode, SDK snippets and the game-day VM schedule"
+---
+
 # Centrifugo (Real-Time Delivery)
 
 > **Architecture:** [[architecture]]
@@ -33,7 +37,7 @@ With a Managed Instance Group:
 - Google auto-heals failed VMs
 - Existing VMs keep their connections untouched during scale-up
 
-## Channel Mapping (from T0 Spec)
+## Channel Mapping (from tZERO Spec)
 
 | Channel | Data | Source |
 |---------|------|--------|
