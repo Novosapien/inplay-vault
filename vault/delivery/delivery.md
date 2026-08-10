@@ -15,7 +15,36 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
+| 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Adds a live **countdown** and a **Countdown Board**: one cross-team must-land list covering the engine room, the **three live-game proving runs** (13, 20, 27 Aug), advertising on **AdMob alone** (AppLovin MAX has not responded), tax forms and payouts, identity and compliance, the **scale ramp**, and **go to market**. Evidence refreshed from all 21 repos |
 | 2026-08-05 | [flight-plans/2026-08-05-inplay-app-flight-plan.html](flight-plans/2026-08-05-inplay-app-flight-plan.html) | 17 days to the NCAA IPO; launch mode active; trading path is the long pole |
+
+## The Countdown Board (added 2026-08-10)
+
+The flight plan now opens with a **live countdown to the NCAA IPO** (22 Aug,
+1:00pm ET) on every page, and carries a **Countdown Board**: the single
+cross-team list of everything that must land before it, grouped into seven
+bands with an owner, a due date and a definition of done on every row.
+
+1. **The trading engine room** — tickers, the two MPIDs, market maker complete
+   and tested, market taker complete and tested, the offering engine.
+2. **The three live-game proving runs** — 13, 20 and 27 Aug, each with what it
+   proves. Deliberately three, not one: run 1 proves the wiring, run 2 proves
+   concurrency with the market maker quoting, run 3 is the unattended dress
+   rehearsal before real users trade on 29 Aug.
+3. **Advertising and revenue** — **AdMob across every surface, on its own.**
+   AppLovin MAX has not responded in over two weeks and is downgraded from
+   committed to attempting, off the launch path.
+4. **Money out** — the Avalara W-9 embed, and the still-unresolved payment
+   processor.
+5. **Identity, eligibility and compliance** — the three trader tiers, tZERO's
+   18+ date-of-birth block, the language sweep.
+6. **Scale ramp** — the VMs. Measured, not guessed: the market maker journal
+   sustains ~579 events/s against ~2,100 needed, so group commit is now
+   required; Centrifugo (an e2-small) fans every tick to every user and its
+   connection limit has never been measured.
+7. **Go to market** — agency, referral multiplier, influencer analysts, campus,
+   tailgate activations and PR, each with what delivery needs from it. Every
+   campaign date is an infrastructure date.
 
 ## How the plan is structured (stable conventions)
 
