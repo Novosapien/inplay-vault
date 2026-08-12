@@ -33,9 +33,12 @@ bands with an owner, a due date and a definition of done on every row.
    proves. Deliberately three, not one: run 1 proves the wiring, run 2 proves
    concurrency with the market maker quoting, run 3 is the unattended dress
    rehearsal before real users trade on 29 Aug.
-3. **Advertising and revenue**: **AdMob across every surface, on its own.**
-   AppLovin MAX has not responded in over two weeks and is downgraded from
-   committed to attempting, off the launch path.
+3. **Advertising and revenue**: live ads serve from AdMob **through the AppLovin
+   MAX ad-serving layer**, across all ad units. AppLovin have not responded
+   commercially despite repeated chasers, so their demand is not in the auction
+   yet, which costs yield rather than function. The units ride the next App
+   Store push; the **rewarded interstitial** has configuration issues and goes
+   on the push after.
 4. **Money out**: the Avalara W-9 embed, and the still-unresolved payment
    processor.
 5. **Identity, eligibility and compliance**: the three trader tiers, tZERO's

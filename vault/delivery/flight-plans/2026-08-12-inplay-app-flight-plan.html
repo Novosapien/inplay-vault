@@ -145,7 +145,7 @@
   <h1>InPlay App Flight Plan</h1>
   <div class="stamp">
     Prepared by <span style="font-weight:700; letter-spacing:.14em; color:var(--foreground)">NOVOSAPIEN</span><br>
-    Generated 2026-08-12 13:10 BST &middot; evidence: every branch in all 20 repositories swept today, George's review of the 10 Aug plan, Hassan's App Store readiness report of 11 Aug, the InPlay vault, and the 31 Jul Punch List + Messaging House
+    Generated 2026-08-12 15:45 BST &middot; evidence: every branch in all 20 repositories swept today, George's review of the 10 Aug plan, Hassan's App Store readiness report of 11 Aug, the InPlay vault, and the 31 Jul Punch List + Messaging House
   </div>
 </header>
 
@@ -190,7 +190,7 @@
     <div class="card kpi"><div class="n">3 live-game runs</div><div class="l">13, 20 and 27 Aug &middot; the proving sequence before real users trade a real game</div></div>
   </div>
 
-  <div class="flag" style="border-left-color:var(--destructive)"><strong>Headline, found by sweeping every branch in all 20 repositories on 12 August: the work is built, it is not shipped.</strong> There are <strong>276 finished commits sitting off the main line</strong>, 188 of them in the app alone, including every Edwin UI session, the two-track KYC, automatic tZERO account creation, per-league market phases and the new leaderboards. None of it is late work. All of it is done work waiting on a release, and the release is gated on an App Store build that is blocked on three fixes. <strong>Two tiers of user verification are already built</strong> (US and international), and the date-of-birth blocker the last plan called fatal was solved by choosing a different Persona template. <strong>One new dated item:</strong> international users can now trade, which means they also reach the cash-prize leaderboard, and that has to be split before 27 August. See band 0 on the <a href="#board">Countdown Board</a>.</div>
+  <div class="flag" style="border-left-color:var(--destructive)"><strong>Headline, found by sweeping every branch in all 20 repositories on 12 August: the work is built, it is not shipped.</strong> There are <strong>276 finished commits sitting off the main line</strong>, 188 of them in the app alone, including every Edwin UI session, the two-track KYC, automatic tZERO account creation, per-league market phases and the new leaderboards. None of it is late work. All of it is done work waiting on a release, and the release is gated on an App Store build that is blocked on three fixes. <strong>Two tiers of user verification are already built</strong> (US and international), and the date-of-birth blocker the last plan called fatal was solved by choosing a different Persona template. <strong>The ad stack is also further on than the last plan said:</strong> live ads are serving from AdMob through the MAX layer across all units, with only the rewarded interstitial still to configure. <strong>One new dated item:</strong> international users can now trade, which means they also reach the cash-prize leaderboard, and that has to be split before 27 August. See band 0 on the <a href="#board">Countdown Board</a>.</div>
 
   <div class="flag" style="border-left-color:var(--destructive)"><strong>This version is a correction pass. George reviewed the 10 August plan on 12 August and a lot of it was wrong.</strong> Corrected here: <strong>tZERO have already issued the tickers</strong> (they were listed as the top blocker) and the <strong>maker and taker wallets already exist</strong>. Share counts were wrong: it is <strong>900,000 per NFL team and 1,000,000 per NCAA team</strong>, not a million everywhere. The <strong>NFL IPO has no rounds</strong>, it opens for a few days like the NCAA one. <strong>Tax forms will not make the NCAA opening</strong> and have moved to 5 September. The <strong>200 millisecond figure</strong> was described as trading speed when it is the market maker's own quote rhythm, now stated as every 200 to 500 milliseconds in play. Seven <strong>infrastructure tasks were removed entirely</strong>: they came from Novosapien's internal drafts, not from anything agreed, and presenting them as commitments was wrong. The <strong>NBA challenge is downgraded</strong> from attempting to planned-to-drop. <strong>Research is promoted</strong> to committed. A new table on the Backlog page shows <strong>every feature InPlay have asked for and where it sits</strong>, because the near-term view made them look dropped. Full list on the Key Releases page.</div>
 
@@ -216,7 +216,7 @@
 
       <tr><td><strong>w/c 17 Aug</strong><br><span class="small muted">date to confirm<br>with Hassan</span></td><td><strong>App Store submission</strong><br><span class="small muted">currently blocked</span></td><td>Hassan's readiness report of 11 Aug says the next production build is <strong>blocked on three must-fix items</strong>, the sharpest being that the activate-trading flow opens a real brokerage account and asks for a typed legal-name signature while the agreement itself is never shown or linked. It also <strong>cannot go out over the air</strong>: the native surface changed, so it needs a full build, and there are 176 commits to promote. Nothing is in review today, so nothing is frozen</td><td><span class="chip dep">Blocked &middot; 3 must-fix</span></td></tr>
 
-      <tr><td><strong>Wed 19 Aug</strong></td><td>NCAA price freeze<br><span class="small muted">all 138 prices final</span></td><td><strong>Advertising:</strong> AdMob filling <em>every</em> ad surface in the app, fill rate and eCPM observed over a full day, on AdMob alone; under-18-safe inventory gating enforced and verified. <strong>IPO:</strong> NCAA offering engine complete, friends-and-family run passed, burst test run against the 1pm Saturday open. <strong>Compliance:</strong> language sweep complete, no SEC-regulation claims anywhere, simulated IPO throughout, Rule 255 disclaimer in place</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
+      <tr><td><strong>Wed 19 Aug</strong></td><td>NCAA price freeze<br><span class="small muted">all 138 prices final</span></td><td><strong>Advertising:</strong> the ad units already fill from AdMob through the MAX layer; what is needed here is a full day of fill and revenue observed with real users on the build, plus under-18-safe inventory gating enforced and verified. <strong>IPO:</strong> NCAA offering engine complete, friends-and-family run passed, burst test run against the 1pm Saturday open. <strong>Compliance:</strong> language sweep complete, no SEC-regulation claims anywhere, simulated IPO throughout, Rule 255 disclaimer in place</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
 
       <tr><td><strong>Thu 20 Aug</strong></td><td><strong>Live-game run 2</strong><br><span class="small muted">multi-game concurrency</span></td><td>Market maker quoting both sides through a full game across concurrent games. Spread widens rather than the book going dark when an input is stale. First run where a user can always buy and always sell</td><td><span class="chip committed">Committed</span></td></tr>
 
@@ -407,7 +407,7 @@
 
   <p class="small muted" style="margin-top:18px"><strong>Small print.</strong> Quarter frame is launch-anchored: Q1 starts 23 Aug 2026 (the day after the NCAA IPO opens) and quarters run three months each to 22 Aug 2027; the frame stays stable between reports. Sources, reconciled 10 Aug 2026: all 21 build repositories fetched from GitHub the same day (market maker, trading service, FIX gateway, app, admin panels, websites), the InPlay vault at commit <code>2a0b581</code> with five touchdowns digested through 7 Aug and a new Compliance section, and the partnership proposal. Logos: InPlay from the vault brand folder; Novosapien from the corporate brand set. This file lives in a dated folder and is updated in place during the day; a new dated folder opens on the next working session, so the folder series is the audit trail.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- =========================== COUNTDOWN BOARD =========================== -->
@@ -490,16 +490,16 @@
   <h3>3 &middot; Advertising and revenue</h3>
   <p class="small muted">The plan was two networks. AppLovin MAX has gone quiet, so the launch has to work on AdMob alone, and the second network becomes a fast-follow rather than a dependency.</p>
   <div class="card">
-    <div class="flag"><strong>Position: single-network launch.</strong> AdMob is verified and serving. <strong>AppLovin MAX has not responded in over two weeks</strong> of chasing, so we are no longer planning around it: every ad surface in the app must be filled and revenue-proven on AdMob by itself before 22 August. AppLovin returns as a fill-rate and yield upgrade the moment they sign, not as a launch blocker. A warm intro is being pursued through Kevin (Rich Ballance's son), and Smart is the fallback second network through Brett's former colleague, now their VP.</div>
+    <div class="flag"><strong>Position, corrected 12 August: the ad stack is working.</strong> <strong>Live ads are serving from AdMob through the AppLovin MAX ad-serving layer, across all the ad units.</strong> The mediation is in place and filling, so the previous framing of a single-network launch with no mediation was wrong. Two things are still outstanding, and they are different from each other: <strong>AppLovin have not come back commercially</strong> despite repeated chasers, so their own demand is not yet in the auction; and <strong>the units have to reach users</strong>, which means they ride the next App Store build. Smart remains the candidate third network through Brett's former colleague, now their VP.</div>
     <table class="board">
       <tr><th style="width:26%">Item</th><th>Done means</th><th style="width:16%">Owner</th><th style="width:11%">Due</th></tr>
-      <tr><td><span class="gate a"></span><strong>AdMob live across every ad surface</strong></td><td>Every placement in the app filled from AdMob, not just the ads lab: home feed, team page, discover, trade confirmation, gamecast, rankings, education. Fill rate and eCPM observed over a full day and reported</td><td class="own">Brett + Novosapien</td><td class="due">19 Aug</td></tr>
-      <tr><td><span class="gate a"></span>Ad-serving app release</td><td>The App Store build carrying the ad SDKs approved and live, with the policy updates the ad code requires. 24 to 48 hours per submission, so this cannot be left late</td><td class="own">Novosapien</td><td class="due">17 Aug</td></tr>
-      <tr class="blocked"><td><span class="gate r"></span>AppLovin MAX onboarding</td><td>Account approved and one unit serving. <strong>No response in two weeks.</strong> Downgraded from committed to attempting; not on the launch path</td><td class="own"><span class="chip dep">AppLovin</span></td><td class="due">Post-launch</td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>Ads serving across all units</strong></td><td><strong>Working.</strong> Live ads filling from AdMob through the MAX ad-serving layer, across all the ad units. What remains is not integration but observation: fill rate and revenue per thousand watched over a full day once real users are on the build</td><td class="own">Brett + Novosapien</td><td class="due">Done</td></tr>
+      <tr><td><span class="gate a"></span><strong>Get the ad units in front of users</strong></td><td><strong>All the AdMob ad units ride the next App Store push.</strong> They exist and they fill, but nothing reaches a real user until that build ships, which makes this dependent on the three must-fix items in band 0. Ads earn nothing while they sit on a branch</td><td class="own">Novosapien &middot; Hassan owns the build</td><td class="due">Next push</td></tr>
+      <tr class="blocked"><td><span class="gate r"></span>AppLovin commercial response</td><td>The MAX serving layer is integrated and working. What is missing is AppLovin themselves: <strong>several chasers sent, still no feedback.</strong> Until they come back, their demand is not competing in the auction, which costs yield rather than function. Not a launch blocker</td><td class="own"><span class="chip dep">AppLovin</span></td><td class="due">When they reply</td></tr>
       <tr><td><span class="gate n"></span>Third network (Smart)</td><td>Application in and progressing via Brett's contact. Cap stays at three networks in the first three months</td><td class="own">Brett</td><td class="due">Sep</td></tr>
       <tr><td><span class="gate a"></span>Kochava MMP integration</td><td>Attribution live. Kochava has no direct AdMob integration, so the workaround has to be built and proven, not assumed</td><td class="own">Novosapien + Cody</td><td class="due">21 Aug</td></tr>
       <tr><td><span class="gate a"></span>Under-18-safe inventory gating</td><td>Non-KYC and signed-out users only receive age-appropriate categories: no alcohol, no gambling adjacency. Enforced at the network, verified by inspection</td><td class="own">Brett + Novosapien</td><td class="due">19 Aug</td></tr>
-      <tr><td><span class="gate n"></span>Rewarded video unit</td><td>Watch 30 seconds, earn 100 InPlay dollars. Proposed 7 Aug, not yet scoped or built</td><td class="own">Novosapien</td><td class="due">Q1 P2</td></tr>
+      <tr><td><span class="gate a"></span><strong>Rewarded interstitial, the one missing unit</strong></td><td>The only ad unit not yet serving. Configuration issues are being worked through now. <strong>It will not make the next App Store push and will go on the one after</strong>, so the watch-for-InPlay-dollars mechanic arrives a release later than the rest of the stack. Everything else is in</td><td class="own">Novosapien</td><td class="due">Push after next</td></tr>
       <tr><td><span class="gate a"></span>Click discipline during testing</td><td>Nobody on either team clicks a live test ad. A CTR spike reads as fraud to AdMob and gets the account banned, which would remove the launch revenue path entirely</td><td class="own">Everyone</td><td class="due">Standing</td></tr>
     </table>
   </div>
@@ -555,7 +555,7 @@
     <table class="board">
       <tr><th style="width:24%">Activity</th><th style="width:14%">When</th><th>What it is &middot; what delivery needs from it</th><th style="width:14%">Owner</th></tr>
       <tr><td><span class="gate a"></span><strong>Plexus Media agency</strong></td><td class="due">Commercials open</td><td>Prospective marketing agency (Jason). Negotiations under way since 29 July; also holds the direct Kochava relationship and expects to beat their standard rates. <strong>Delivery needs: the campaign start date and the daily spend curve</strong>, because that is the load forecast</td><td class="own">Edwin + Cody</td></tr>
-      <tr><td><span class="gate a"></span><strong>5x referral multiplier</strong></td><td class="due">Ends 22 Aug</td><td>Live on the website and in the service. ⚠ The window is set to <strong>close on 22 August</strong>, the day the offering opens, not to run through the month as the last plan said. Worth a deliberate decision rather than letting it lapse on the busiest day of the campaign. Referral is expected to bite properly only once users start losing trading money, which is after the IPO, not before</td><td class="own">Cody</td></tr>
+      <tr><td><span class="gate a"></span><strong>5x referral multiplier</strong></td><td class="due">Ends 22 Aug</td><td>Live on the website and in the service, and set to close on <strong>22 August</strong>, the day the offering opens. Confirmed as intended: extending it later is a small change if InPlay want it. Referral is expected to bite properly only once users start losing trading money, which is after the IPO rather than before</td><td class="own">Cody</td></tr>
       <tr><td><span class="gate a"></span><strong>Influencer analysts</strong></td><td class="due">From ~17 Aug</td><td>Six to ten recruited analysts talking a target price on their podcasts, doubling as user acquisition. <strong>Delivery dependency: the analyst portal.</strong> There is no ingestion route today, the Analyst tab in the app is empty, and email submissions are not workable</td><td class="own">Cody + Kevin</td></tr>
       <tr><td><span class="gate a"></span><strong>Campus programme</strong></td><td class="due">Sep, term start</td><td>DePaul curriculum inclusion, plus Harvard, Texas A&amp;M, OSU and others. 70 ambassadors and 7 university partners in the plan. Troy hopes for tens of thousands of signups. <strong>Delivery dependency: micro-challenges and the no-KYC tier</strong>, neither of which exists yet, and international students cannot take cash at all</td><td class="own">Troy</td></tr>
       <tr><td><span class="gate n"></span><strong>Texas vs Oklahoma tailgate</strong></td><td class="due">Oct</td><td>On-the-ground activation with frats and alumni associations, school-versus-school leaderboard promoted live. <strong>Delivery dependency: private group leaderboards</strong>, which are partly built already (see the note below)</td><td class="own">Cody</td></tr>
@@ -604,9 +604,7 @@
     <p class="small muted">Mailboxes have to be warmed before they can send at volume, or they land in spam and the domain reputation is spent before the first campaign. This runs in parallel with everything above, and it is the long pole nobody can compress.</p>
     <table class="board">
       <tr><th style="width:24%">Item</th><th>Position</th><th style="width:13%">Owner</th><th style="width:11%">Due</th></tr>
-      <tr class="blocked"><td><span class="gate r"></span><strong>The warmed mailbox list</strong></td><td>⚠ <strong>I could not evidence this.</strong> Cody has sent mailboxes across and warming is under way, but there is no record of which addresses, on which domains, at what stage of warming, anywhere in the vault or the shared drive. The list needs to come from Brett before it can be stated here, because inventing it in a client-facing plan is exactly the failure the workforce method forbids. <em>This row is a placeholder for a real list, not a status.</em></td><td class="own">Brett &rarr; the plan</td><td class="due">Owed</td></tr>
-      <tr><td><span class="gate a"></span>Warming in progress</td><td>Sending reputation built gradually across the estate. Typical runway is two to four weeks from a cold start before volume sending is safe, which puts a campaign start in <strong>early September</strong> if warming began in mid August</td><td class="own">Novosapien</td><td class="due">~1 Sep</td></tr>
-      <tr class="blocked"><td><span class="gate r"></span><strong>LinkedIn profiles paired to mailboxes</strong></td><td>Each sending identity needs a matching LinkedIn presence, or the first thing a prospect does after an email lands is fail to find the sender. Same position as the row above: the pairing exists in someone's head and not in any record I can find</td><td class="own">Brett &rarr; the plan</td><td class="due">Owed</td></tr>
+      <tr><td><span class="gate a"></span><strong>Mailbox warming under way</strong></td><td>Mailboxes from Cody are being warmed now. Sending reputation is built gradually, and the runway is typically two to four weeks from a cold start before volume sending is safe. The specific addresses and their paired LinkedIn profiles are with George and will be listed here once confirmed</td><td class="own">Novosapien</td><td class="due">~1 Sep</td></tr>
       <tr><td><span class="gate n"></span>Domain authentication</td><td>SPF, DKIM and DMARC on every sending domain. Note the corporate site carries the same requirement for the newsletter under punch list item G20, so it is one job done once</td><td class="own">Novosapien</td><td class="due">~1 Sep</td></tr>
     </table>
   </div>
@@ -630,7 +628,7 @@
     <p class="muted">Red items are not late by our hand: each one is waiting on tZERO, AppLovin, Sportradar, counsel or an InPlay decision. They are listed with owners so the chase is visible rather than assumed.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ KEY RELEASES ============================ -->
@@ -669,7 +667,7 @@
       <tr><td class="pos">3</td><td>Live-game run 1 (13 Aug) passes</td><td>Secondary trading on a real preseason game, no dropped fills, no stale prices, defects written up</td><td>Both teams</td></tr>
       <tr><td class="pos">4</td><td>Market maker quoting unattended, then the taker's IPO mandate</td><td>Two-sided quotes on every named book with no intervention; the taker absorbs its target share of every team</td><td>Novosapien &middot; E22 from Edwin</td></tr>
       <tr><td class="pos">5</td><td>NCAA offering engine complete + friends-and-family dry run</td><td>Load and allocation verified end to end under a burst</td><td>Novosapien</td></tr>
-      <tr><td class="pos">6</td><td>AdMob filling every ad surface in the app</td><td>Fill rate and eCPM observed over a full day on AdMob alone, with the ad-carrying build approved by Apple</td><td>Brett + Novosapien</td></tr>
+      <tr><td class="pos">6</td><td>Ad units reach real users</td><td>Already filling from AdMob through the MAX layer. Done means the ad-carrying build is approved and a full day of fill and revenue observed with real users. The rewarded interstitial follows on the push after</td><td>Brett + Novosapien</td></tr>
       <tr><td class="pos">7</td><td>Opening-inventory hand-off defined and rehearsed</td><td>Each team's post-IPO position published to the MM</td><td><span class="chip dep">E27 &middot; InPlay owner needed</span></td></tr>
       <tr><td class="pos">8</td><td>Live-game run 2 (20 Aug): concurrency with the MM quoting</td><td>Quotes hold through a full game at cadence across concurrent games</td><td>Both teams</td></tr>
       <tr><td class="pos">9</td><td>Infrastructure sizing pass on the four VMs</td><td>Gateway, NATS, Centrifugo sized with a headroom target; Centrifugo connection limit measured, not assumed</td><td>Novosapien</td></tr>
@@ -697,7 +695,7 @@
     <table class="small">
       <tr><th></th><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Position and mitigation</th><th>Owner</th></tr>
       <tr><td class="pos">NEW</td><td><strong>Infrastructure sized for a demo, not a season</strong></td><td><span class="chip risk">High</span></td><td><span class="chip risk">Critical</span></td><td><strong>Measured, not suspected.</strong> The market maker's journal disk sustains ~579 events per second; the 200ms in-game cadence needs ~2,100. Group commit is now required engineering work, not an option. Alongside it: Centrifugo, which fans every price tick out to every watching user, runs on an e2-small and its per-instance connection limit has never been measured, and the offering engine has never been load-tested against the 1pm Saturday burst. If the go-to-market spend works, this is what breaks. Mitigation: group-commit build committed for 24 Aug, sizing pass on all four VMs by 18 Aug, burst test on the offering engine by 19 Aug, and the load-test target tied to whatever number the campaigns are meant to deliver</td><td>Novosapien</td></tr>
-      <tr><td class="pos">NEW</td><td><strong>Single-network ad launch</strong></td><td><span class="chip risk">High</span></td><td><span class="chip attempting">Medium</span></td><td>AppLovin MAX has not responded in over two weeks, so launch revenue rests entirely on AdMob. A single network means lower fill and no competitive pressure on price, and if AdMob suspends the account for any reason (a CTR spike from internal clicking is the realistic cause) there is no fallback at all. Mitigation: every surface proven on AdMob alone by 19 Aug, standing no-click instruction across both teams, warm intro to AppLovin pursued through Kevin, Smart lined up as the fallback second network. Accepted position: AppLovin is downgraded from committed to attempting and is off the launch path</td><td>Brett</td></tr>
+      <tr><td class="pos">NEW</td><td><strong>Ad revenue rests on one demand source</strong></td><td><span class="chip attempting">Medium</span></td><td><span class="chip attempting">Medium</span></td><td><strong>Improved since 10 Aug.</strong> The MAX serving layer is integrated and live ads are filling from AdMob across all units, so this is no longer about whether ads work. It is about concentration: AppLovin have not responded to repeated chasers, so their demand is not competing in the auction, which costs yield rather than function. If AdMob suspended the account (a click-through spike from internal testing is the realistic cause) there would be no fallback. Mitigation: standing no-click instruction across both teams, chasers continuing, Smart lined up as a third network. The units still have to reach users on the next App Store build</td><td>Brett</td></tr>
       <tr><td class="pos">NEW</td><td><strong>Only one live-game rehearsal before real users trade</strong></td><td><span class="chip attempting">Medium</span></td><td><span class="chip risk">High</span></td><td>The plan now carries three proving runs (13, 20, 27 Aug), but run 1 is gated on tZERO issuing tickers and run 3 sits on the same days as the NCAA secondary open. If tickers slip a week, the sequence collapses to a single rehearsal and the first genuine multi-game test becomes the 29 August NCAA opener with real users on it. Mitigation: tickers chased daily as the top must-land item; fallback is replaying previously played games and Sportradar simulation games, which proves the wiring but not the crowd</td><td>Both teams</td></tr>
       <tr><td class="pos">1</td><td><strong>tZERO production readiness</strong></td><td><span class="chip attempting">Medium</span></td><td><span class="chip risk">Critical</span></td><td>All trading is proven against tZERO QA only; production promotion sits on the venue's own late-August target, and the launch date cannot move. Open venue items compound it: MM account permissioning (T1), self-match prevention between the two InPlay house accounts, wash-trade blocking behaviour, cash-wallet host. Mitigation: dress rehearsal w/c 17 Aug on QA, daily simulation replays, weekly escalation through Troy Kane; there is no engineering fallback for a venue that is not ready</td><td>tZERO / InPlay, chased by Novosapien</td></tr>
       <tr><td class="pos">2</td><td><strong>Market maker misses the secondary open</strong></td><td><span class="chip attempting">Medium</span></td><td><span class="chip risk">High</span></td><td>The hardest engineering deadline (26 to 27 Aug). Quote construction is in build now; poller, market state and venue sync are sequenced behind it. A miss means books with no liquidity on day one: users who bought at IPO cannot trade out. Mitigation: far stronger than a week ago (570 tests, byte-identical replay, per-security quarantine, checkpoint boot, deployed to its VM and drilled 16 of 16 on real disk), and the three live-game runs give three chances to find defects before real users. Residual risk is now venue permissions and the journal throughput ceiling, not the engine</td><td>Novosapien</td></tr>
@@ -732,7 +730,7 @@
 
   <div class="flag"><strong>Scope-add protocol is live.</strong> Any new ask before 22 August gets a written answer in this format: its slot after launch (the default), or what it displaces from the must-land list plus which risk family it raises and by how much. Agentic speed makes late adds possible; it does not make them safe.</div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ NEXT 8 WEEKS ============================ -->
@@ -832,7 +830,7 @@
     <p class="small muted" style="margin-top:6px">Beyond November the plan runs at quarter level: see the Q2 to Q4 pages. As each key date passes, the weekly window rolls forward and the next four weeks gain this level of detail.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q1 ================================ -->
@@ -887,7 +885,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q2 ================================ -->
@@ -942,7 +940,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q3 ================================ -->
@@ -1004,7 +1002,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q4 ================================ -->
@@ -1056,7 +1054,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== BACKLOG ============================== -->
@@ -1067,7 +1065,7 @@
   <div class="card" style="border-left:4px solid var(--primary)">
     <table class="small" style="margin:0">
       <tr>
-        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 13:10 BST</span></td>
+        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 15:45 BST</span></td>
         <td style="border:0; width:33%"><strong>Evidence base</strong><br><span class="muted">21 repositories re-fetched 12 Aug; George's review of the 10 Aug plan; Hassan's readiness report 11 Aug</span></td>
         <td style="border:0"><strong>Next regeneration</strong><br><span class="muted">At the next weekly review, or on any accepted scope change</span></td>
       </tr>
@@ -1200,9 +1198,9 @@
 
   <div class="flag"><strong>The rule that keeps this list honest.</strong> Anything InPlay wants pulled into band 1 before 22 August displaces something already in it. The displacement is named, written into the next version of this page, and carries a risk statement. Nothing moves silently, in either direction, and an item leaving band 1 always lands somewhere visible rather than disappearing.</div>
 
-  <p class="small muted">Backlog generated 2026-08-12 13:10 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
+  <p class="small muted">Backlog generated 2026-08-12 15:45 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
 
-  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== LEDGER ============================== -->
@@ -1238,7 +1236,7 @@
 
   <p class="small muted">Triangle notes: repos and vault agree throughout the pack; the one standing document conflict is E25/E24 inside InPlay's own Requirements v2 material, flagged on the Key Releases page as a decision, not a build item.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 15:45 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <script>
