@@ -145,7 +145,7 @@
   <h1>InPlay App Flight Plan</h1>
   <div class="stamp">
     Prepared by <span style="font-weight:700; letter-spacing:.14em; color:var(--foreground)">NOVOSAPIEN</span><br>
-    Generated 2026-08-12 16:40 BST &middot; evidence: the build repositories, the App Store readiness review, the InPlay vault, and Edwin's 31 July Punch List and Messaging House
+    Generated 2026-08-12 18:30 BST &middot; evidence: the build repositories, the App Store readiness review, the InPlay vault, and Edwin's 31 July Punch List and Messaging House
   </div>
 </header>
 
@@ -214,7 +214,7 @@
 
       <tr><td><strong>w/c 17 Aug</strong><br><span class="small muted">date to confirm<br>with Hassan</span></td><td><strong>App Store submission</strong><br><span class="small muted">currently blocked</span></td><td>Hassan's readiness report of 11 Aug says the next production build is <strong>blocked on three must-fix items</strong>, the sharpest being that the activate-trading flow opens a real brokerage account and asks for a typed legal-name signature while the agreement itself is never shown or linked. It also <strong>cannot go out as a quick over-the-air update</strong>, because the app's underlying components changed, so it needs a full store build. Nothing is in review today, so nothing is frozen yet</td><td><span class="chip dep">Blocked &middot; 3 must-fix</span></td></tr>
 
-      <tr><td><strong>Wed 19 Aug</strong></td><td>NCAA price freeze<br><span class="small muted">all 138 prices final</span></td><td><strong>Advertising:</strong> the ad units already fill from AdMob through the MAX layer; what is needed here is a full day of fill and revenue observed with real users on the build, plus under-18-safe inventory gating enforced and verified. <strong>IPO:</strong> NCAA offering engine complete, friends-and-family run passed, burst test run against the 1pm Saturday open. <strong>Compliance:</strong> language sweep complete, no SEC-regulation claims anywhere, simulated IPO throughout, Rule 255 disclaimer in place</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
+      <tr><td><strong>Wed 19 Aug</strong></td><td>NCAA price freeze<br><span class="small muted">all 138 prices final</span></td><td><strong>Advertising:</strong> the ad units already fill from AdMob through the MAX layer; what is needed here is a full day of fill and revenue observed with real users on the build. Age gating and advertiser filtering are already configured. <strong>IPO:</strong> NCAA offering engine complete, friends-and-family run passed, burst test run against the 1pm Saturday open. <strong>Compliance:</strong> language sweep complete, no SEC-regulation claims anywhere, simulated IPO throughout, Rule 255 disclaimer in place</td><td><span class="chip committed">Committed &middot; on track</span></td></tr>
 
       <tr><td><strong>Thu 20 Aug</strong></td><td><strong>Live-game run 2</strong><br><span class="small muted">multi-game concurrency</span></td><td>Market maker quoting both sides through a full game across concurrent games. Spread widens rather than the book going dark when an input is stale. First run where a user can always buy and always sell</td><td><span class="chip committed">Committed</span></td></tr>
 
@@ -356,6 +356,7 @@
       <h4><a href="#q2">Q2 &middot; Dec to Feb 27</a> <span class="chip committed">Season close</span></h4>
       <ul class="small">
         <li>Season-end settlement (~13 Jan), final leaderboard</li>
+        <li>Forecast: historical foundation; Analyst: publication</li>
         <li>Prize payouts at scale, 1099s</li>
         <li>Research ladder 2 to 3; NBA only if season 1 is stable</li>
         <li>4 P1 slots open (large + medium from mid-January)</li>
@@ -364,17 +365,19 @@
     <div class="card">
       <h4><a href="#q3">Q3 &middot; Mar to May 27</a> <span class="chip dropped">Planning surface</span></h4>
       <ul class="small">
+        <li>Forecast: playbook builder and backtest engine</li>
+        <li>Analyst: AI-generated analysts, track record scoring</li>
         <li>Season 2 foundations (pencilled)</li>
-        <li>Commits at the ~February reload</li>
-        <li>All 7 P1 slots open for loading</li>
+        <li>Commits firm at the ~February reload</li>
       </ul>
     </div>
     <div class="card">
       <h4><a href="#q4">Q4 &middot; Jun to Aug 27</a> <span class="chip dropped">Season 2 window</span></h4>
       <ul class="small">
+        <li>Forecast: the learning layer, playbooks running live</li>
+        <li>Analyst: alerts and the weekly digest</li>
         <li>Season 2 NCAA + NFL launch build-up</li>
-        <li>Platform hardening backlog</li>
-        <li>All 7 P1 slots open for loading</li>
+        <li>4 P1 slots open for loading</li>
       </ul>
     </div>
   </div>
@@ -405,7 +408,7 @@
 
   <p class="small muted" style="margin-top:18px"><strong>Small print.</strong> Quarter frame is launch-anchored: Q1 starts 23 Aug 2026 (the day after the NCAA IPO opens) and quarters run three months each to 22 Aug 2027; the frame stays stable between reports. Sources, reconciled 10 Aug 2026: all 21 build repositories fetched from GitHub the same day (market maker, trading service, FIX gateway, app, admin panels, websites), the InPlay vault at commit <code>2a0b581</code> with five touchdowns digested through 7 Aug and a new Compliance section, and the partnership proposal. Logos: InPlay from the vault brand folder; Novosapien from the corporate brand set. This file lives in a dated folder and is updated in place during the day; a new dated folder opens on the next working session, so the folder series is the audit trail.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- =========================== COUNTDOWN BOARD =========================== -->
@@ -494,7 +497,7 @@
       <tr class="blocked"><td><span class="gate r"></span>AppLovin commercial response</td><td>The MAX serving layer is integrated and working. What is missing is AppLovin themselves: <strong>several chasers sent, still no feedback.</strong> Until they come back, their demand is not competing in the auction, which costs yield rather than function. Not a launch blocker</td><td class="own"><span class="chip dep">AppLovin</span></td><td class="due">When they reply</td></tr>
       <tr><td><span class="gate n"></span>Third network (Smart)</td><td>Application in and progressing via Brett's contact. Cap stays at three networks in the first three months</td><td class="own">Brett</td><td class="due">Sep</td></tr>
       <tr><td><span class="gate a"></span>Kochava MMP integration</td><td>Attribution live. Kochava has no direct AdMob integration, so the workaround has to be built and proven, not assumed</td><td class="own">Novosapien + Cody</td><td class="due">21 Aug</td></tr>
-      <tr><td><span class="gate a"></span>Under-18-safe inventory gating</td><td>Non-KYC and signed-out users only receive age-appropriate categories: no alcohol, no gambling adjacency. Enforced at the network, verified by inspection</td><td class="own">Brett + Novosapien</td><td class="due">19 Aug</td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>Age gating and advertiser filtering</strong></td><td><strong>Configured and in place.</strong> The AdMob platform is set so served inventory is under-18 safe, and advertisers that do not meet InPlay's criteria are filtered out. This closes both the compliance constraint on non-verified users and the brand-safety position that betting, daily fantasy, sportsbook and casino are declined on every path</td><td class="own">Brett + Novosapien</td><td class="due">Done</td></tr>
       <tr><td><span class="gate a"></span><strong>Rewarded interstitial, the one missing unit</strong></td><td>The only ad unit not yet serving. Configuration issues are being worked through now. <strong>It will not make the next App Store push and will go on the one after</strong>, so the watch-for-InPlay-dollars mechanic arrives a release later than the rest of the stack. Everything else is in</td><td class="own">Novosapien</td><td class="due">Push after next</td></tr>
       <tr><td><span class="gate a"></span>Click discipline during testing</td><td>Nobody on either team clicks a live test ad. A CTR spike reads as fraud to AdMob and gets the account banned, which would remove the launch revenue path entirely</td><td class="own">Everyone</td><td class="due">Standing</td></tr>
     </table>
@@ -570,8 +573,8 @@
       <tr class="blocked"><td><span class="gate r"></span><strong>Counsel package, one review</strong></td><td>This is Part 5 of <strong>Edwin's Website Punch List 1 v1.3, dated 31 July</strong>, which sits in the outbound-campaigns folder. It bundles six things into one legal review: Messaging House approval plus standing pre-clearance for the memo series, Founder Memo No. 1, the testing-the-waters legend for the /updates page, site items G8, G12 and G14a, Challenge items C2, C3 and C4, and logo-use confirmations for the receipts strip. Edwin requested a 72-hour turn. <strong>Everything in the two rows below waits on it.</strong></td><td class="own"><span class="chip dep">Counsel</span></td><td class="due">14 Aug</td></tr>
       <tr><td><span class="gate n"></span>Punch list P2, on counsel return</td><td>Implemented the day the wording lands: G8 the "regulated" phrasing on page and in all three meta tags, G12 the footer permanence block (legal name and address, privacy policy, terms, X link, offering legend), G14 the Newsroom "SEC-regulated" rewording plus a media kit, C2 the $25M mechanism anchored to its funding, C3 the eligibility claim, C4 the official rules and T&amp;C audit</td><td class="own">Novosapien</td><td class="due">On return</td></tr>
       <tr><td><span class="gate a"></span>Verify the P0 five actually closed</td><td>G2 loading splash removed, G4 hero screenshot compliant, G10 injury items out of the ticker, C1 zero "IPO" hits on the Challenge site, C6 every domain variant 301ing to canonical. G4 and C1 are confirmed in the commit log; the other three need a check rather than an assumption</td><td class="own">Novosapien</td><td class="due">12 Aug</td></tr>
-      <tr class="done"><td><span class="gate g"></span>G18 Insights section</td><td><strong>Built already.</strong> The Insights section for the founder memos is implemented on the corporate site. What remains is the decision to push it live, which follows Founder Memo No. 1 clearing counsel</td><td class="own">Novosapien</td><td class="due">Built</td></tr>
-      <tr><td><span class="gate a"></span><strong>Blog, ready to switch on</strong></td><td>The blog is <strong>already built</strong> and not yet public. It goes live when InPlay want it, and it is what makes the site visibly update week to week, which is the whole point of the Phase 1 category campaign. Needs a date from InPlay rather than any further build</td><td class="own">Novosapien &rarr; InPlay to date it</td><td class="due">On request</td></tr>
+      <tr class="done"><td><span class="gate g"></span>G18 Insights section</td><td><strong>Live.</strong> The home for the founder memos is published on the corporate site. What remains is the first memo itself, which sits in the counsel package</td><td class="own">Novosapien</td><td class="due">Done</td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>Blog, live</strong></td><td><strong>Published and live on the corporate site.</strong> This is what lets the site visibly update week to week, which is the point of the Phase 1 category campaign. The remaining piece is cadence rather than build: the founder memo series needs its first post cleared by counsel</td><td class="own">Novosapien</td><td class="due">Done</td></tr>
       <tr><td><span class="gate n"></span>Punch list P3, before kickoff</td><td>G17 careers (real openings or an honest note; seven roles listed including CTO, Head of Advertising Sales and Market Surveillance), G19 cookie consent, G20 SPF/DKIM/DMARC before the first newsletter send, G21 OG image, G22 icons, G23 WCAG AA, G24 canonical, G25 the branded photo shoot, G26 a full mobile QA pass of every changed page</td><td class="own">Novosapien + Edwin</td><td class="due">29 Aug</td></tr>
       <tr><td><span class="gate a"></span><strong>Messaging House v2.0 applied to the app</strong></td><td>The lexicon is explicitly compliance, not preference: <em>always</em> investors, shares, buy/sell/hold, earnings, market price; <em>never</em> users, players, bettors, bets, picks, odds, win money, payout, cash out, risk-free, guaranteed, approved, or "own your team". The websites now follow it. <strong>The app has not been swept against it.</strong></td><td class="own">Novosapien</td><td class="due">19 Aug</td></tr>
     </table>
@@ -623,7 +626,7 @@
     <p class="muted">Red items are not late by our hand: each one is waiting on tZERO, AppLovin, Sportradar, counsel or an InPlay decision. They are listed with owners so the chase is visible rather than assumed.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ KEY RELEASES ============================ -->
@@ -725,7 +728,7 @@
 
   <div class="flag"><strong>Scope-add protocol is live.</strong> Any new ask before 22 August gets a written answer in this format: its slot after launch (the default), or what it displaces from the must-land list plus which risk family it raises and by how much. Agentic speed makes late adds possible; it does not make them safe.</div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ NEXT 8 WEEKS ============================ -->
@@ -825,7 +828,7 @@
     <p class="small muted" style="margin-top:6px">Beyond November the plan runs at quarter level: see the Q2 to Q4 pages. As each key date passes, the weekly window rolls forward and the next four weeks gain this level of detail.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q1 ================================ -->
@@ -880,7 +883,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q2 ================================ -->
@@ -890,17 +893,17 @@
 
   <div class="sizing" style="margin:2px 0 8px"><span>Standard frame, identical for every quarter and every band: <b>P1: 7 slots (3 large + 2 medium + 2 small)</b> &middot; <b>P2: 7 slots (3 large + 2 medium + 2 small)</b></span><span><b>Large</b> full component or venue-dependent, 6+ weeks</span><span><b>Medium</b> sub-component, 2 to 4 weeks</span><span><b>Small</b> screen, report or config, ~1 week</span></div>
 
-  <h3>P1 &middot; Committed &middot; 3 of 7 slots filled, 4 open</h3>
+  <h3>P1 &middot; Committed &middot; 6 of 7 slots filled, 1 open</h3>
   <div class="card">
     <table>
       <tr><th></th><th>What</th><th>How &middot; done means</th><th>Status</th></tr>
       <tr><td class="pos">L1</td><td>Season-end settlement <span class="muted">large</span></td><td>Credits longs, force-closes shorts, runs the final leaderboard. Correctness bar as high as the buy flow; rehearsed on replayed data well before ~13 Jan</td><td><span class="chip committed">Committed</span></td></tr>
       <tr><td class="pos">L2</td><td>Season operations to close <span class="muted">large</span></td><td>Earnings cycles, MM quoting, live-game cadence run without incident through bowl season and playoffs</td><td><span class="chip committed">Committed</span></td></tr>
-      <tr class="openrow"><td class="pos">L3</td><td><strong>Open slot</strong> &middot; large</td><td>Lands from mid-January, once settlement clears. Load through triage and it becomes committed</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">L3</td><td><strong>Forecast: the historical foundation</strong> <span class="muted">large</span></td><td>The substrate the whole Forecast product stands on: a reconstructed price and event history for every team company across the season, stored so it can be replayed quickly and repeatedly. This is the database work Brett flagged as potentially expensive, and it is deliberately first because nothing else in Forecast can be built or costed until it exists. Done: any past game can be replayed with prices, events and outcomes, fast enough to sit behind a user action</td><td><span class="chip committed">Committed</span></td></tr>
       <tr><td class="pos">M1</td><td>Prize payouts at scale <span class="muted">medium</span></td><td>Provider rail live (or the manual rail executed with the eligibility ruling applied); 1099 generation owned and running</td><td><span class="chip dep">Committed &middot; provider + eligibility gates</span></td></tr>
-      <tr class="openrow"><td class="pos">M2</td><td><strong>Open slot</strong> &middot; medium</td><td>Lands from mid-January</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">S1</td><td><strong>Open slot</strong> &middot; small</td><td>Can land any time a gap opens, including in-season</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">S2</td><td><strong>Open slot</strong> &middot; small</td><td>Can land any time a gap opens, including in-season</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">M2</td><td><strong>Analyst: publication and attribution</strong> <span class="muted">medium</span></td><td>Turns the Q1 submission portal into a published product: reviews are dated, versioned, attributed to a named analyst, and surfaced on the team page with history. Covers both the recruited human analysts and, later, the generated ones. Done: a rating published on Wednesday is live in the app, correctly attributed, with the previous one still readable</td><td><span class="chip committed">Committed</span></td></tr>
+      <tr><td class="pos">S1</td><td><strong>Analyst: the rating standard</strong> <span class="muted">small</span></td><td>Fixes the shape of a rating before anything is built on it: the call (underperform, neutral, overperform), the target price, the optional short rationale, and the wording rules it must obey. Small, and it gates the rest of the workstream. <strong>Needs a compliance read</strong>: a target price on a securities-adjacent product sits close to investment advice, and the Messaging House forbids performance promises</td><td><span class="chip dep">Committed &middot; counsel gate</span></td></tr>
+      <tr><td class="pos">S2</td><td><strong>Forecast: shape and pricing decision</strong> <span class="muted">small</span></td><td>The product and commercial decision before the expensive build: what a playbook is to a user, how it is presented, and whether it sits behind an additional charge on top of the existing subscription. Brett's expectation is that the running cost justifies its own paywall. Done: designs agreed and a price position taken, so the Q3 build has a target to hit</td><td><span class="chip dep">Committed &middot; InPlay decision</span></td></tr>
     </table>
   </div>
 
@@ -910,7 +913,7 @@
     <li class="openli"><strong>Open P2 slot</strong> &middot; large</li>
     <li class="openli"><strong>Open P2 slot</strong> &middot; large</li>
     <li>Research ladder step 2 and 3 <span class="muted">medium</span> &middot; saved custom reports, outlier analysis LLM layer</li>
-    <li class="openli"><strong>Open P2 slot</strong> &middot; medium</li>
+    <li>Forecast: voice input research spike <span class="muted">medium</span> &middot; prove that spoken intent can be turned into a structured strategy reliably enough to build on, before committing the Q3 slot</li>
     <li>Direct-deal ad pipeline <span class="muted">small</span> &middot; Kevel live if the first deal signs; season-1 ad calibration review after ~30 days of traffic</li>
     <li>Season-1 retrospective with InPlay <span class="muted">small</span> &middot; what the behavioural dataset says, MM parameter review</li>
   </ul></div>
@@ -935,7 +938,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q3 ================================ -->
@@ -945,14 +948,14 @@
 
   <div class="sizing" style="margin:2px 0 8px"><span>Standard frame, identical for every quarter and every band: <b>P1: 7 slots (3 large + 2 medium + 2 small)</b> &middot; <b>P2: 7 slots (3 large + 2 medium + 2 small)</b></span><span><b>Large</b> full component or venue-dependent, 6+ weeks</span><span><b>Medium</b> sub-component, 2 to 4 weeks</span><span><b>Small</b> screen, report or config, ~1 week</span></div>
 
-  <h3>P1 &middot; Committed &middot; 0 of 7 slots filled, all 7 open</h3>
+  <h3>P1 &middot; 4 of 7 slots loaded, 3 open &middot; commitments firm at the Q2 reload</h3>
   <div class="card">
     <table>
       <tr><th></th><th>What</th><th>How</th><th>Status</th></tr>
-      <tr class="openrow"><td class="pos">L1</td><td><strong>Open slot</strong> &middot; large</td><td>Commits at the Q2 reload (~February). Season 2 foundations are the natural claimant</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">L2</td><td><strong>Open slot</strong> &middot; large</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">L3</td><td><strong>Open slot</strong> &middot; large</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">M1</td><td><strong>Open slot</strong> &middot; medium</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">L1</td><td><strong>Forecast: the playbook builder</strong> <span class="muted">large</span></td><td>The part users actually see. A trader describes what they want a playbook to do, by typing or by speaking to the app, and the app turns that into a structured, runnable strategy: the conditions, the actions, the limits. The hard part is not the language, it is producing something precise enough to execute and honest enough that the user recognises their own intent in it</td><td><span class="chip attempting">Loaded &middot; firms in Feb</span></td></tr>
+      <tr><td class="pos">L2</td><td><strong>Forecast: the backtest engine</strong> <span class="muted">large</span></td><td>Runs a playbook against past games and reports how it would have performed. Sits directly on the Q2 historical foundation, and absorbs the back-test lab Edwin prototyped in August. Done: a user runs their own playbook over a chosen period and gets a result they can trust and compare</td><td><span class="chip attempting">Loaded &middot; firms in Feb</span></td></tr>
+      <tr><td class="pos">L3</td><td><strong>Analyst: AI-generated analysts</strong> <span class="muted">large</span></td><td>Generated ratings alongside the human ones, produced from the data platform on the same weekly rhythm and in the same fixed shape. Every generated rating passes a review gate before publication, and is visibly labelled as generated. This is where the analyst section stops depending on recruiting enough people to fill it</td><td><span class="chip attempting">Loaded &middot; firms in Feb</span></td></tr>
+      <tr><td class="pos">M1</td><td><strong>Analyst: track record scoring</strong> <span class="muted">medium</span></td><td>Scores every past call against what the share price actually did, so a reader can see which analysts, human or generated, have been right. It is also the quality signal the generated analysts are tuned against</td><td><span class="chip attempting">Loaded &middot; firms in Feb</span></td></tr>
       <tr class="openrow"><td class="pos">M2</td><td><strong>Open slot</strong> &middot; medium</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
       <tr class="openrow"><td class="pos">S1</td><td><strong>Open slot</strong> &middot; small</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
       <tr class="openrow"><td class="pos">S2</td><td><strong>Open slot</strong> &middot; small</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
@@ -997,7 +1000,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q4 ================================ -->
@@ -1007,16 +1010,16 @@
 
   <div class="sizing" style="margin:2px 0 8px"><span>Standard frame, identical for every quarter and every band: <b>P1: 7 slots (3 large + 2 medium + 2 small)</b> &middot; <b>P2: 7 slots (3 large + 2 medium + 2 small)</b></span><span><b>Large</b> full component or venue-dependent, 6+ weeks</span><span><b>Medium</b> sub-component, 2 to 4 weeks</span><span><b>Small</b> screen, report or config, ~1 week</span></div>
 
-  <h3>P1 &middot; Committed &middot; 0 of 7 slots filled, all 7 open</h3>
+  <h3>P1 &middot; 3 of 7 slots loaded, 4 open for the season 2 launch</h3>
   <div class="card">
     <table>
       <tr><th></th><th>What</th><th>How</th><th>Status</th></tr>
-      <tr class="openrow"><td class="pos">L1</td><td><strong>Open slot</strong> &middot; large</td><td>The season 2 launch will claim these as it firms up, the way season 1 claimed this August</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">L1</td><td><strong>Forecast: the learning layer</strong> <span class="muted">large</span></td><td>The machine learning Brett flagged. Two jobs: get better at turning a described intent into a playbook that behaves the way the user meant, and learn from a season of real prices which conditions actually moved a share price. Deliberately last in the workstream, because it needs a season of data behind it and everything before it has to work without it</td><td><span class="chip attempting">Loaded &middot; firms at the Q3 reload</span></td></tr>
       <tr class="openrow"><td class="pos">L2</td><td><strong>Open slot</strong> &middot; large</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
       <tr class="openrow"><td class="pos">L3</td><td><strong>Open slot</strong> &middot; large</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">M1</td><td><strong>Open slot</strong> &middot; medium</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">M2</td><td><strong>Open slot</strong> &middot; medium</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
-      <tr class="openrow"><td class="pos">S1</td><td><strong>Open slot</strong> &middot; small</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">M1</td><td><strong>Forecast: playbooks that run live</strong> <span class="muted">medium</span></td><td>The step from looking backwards to looking forwards: a playbook armed against a live game, watching for its own conditions and telling the user when they occur. Season 2 is the first honest window for it, because it needs the backtest to have earned trust first</td><td><span class="chip attempting">Loaded &middot; firms at the Q3 reload</span></td></tr>
+      <tr class="openrow"><td class="pos">M2</td><td><strong>Open slot</strong> &middot; medium</td><td>The season 2 launch will claim these as it firms up, the way season 1 claimed this August</td><td><span class="chip open">Open &middot; loadable</span></td></tr>
+      <tr><td class="pos">S1</td><td><strong>Analyst: alerts and the weekly digest</strong> <span class="muted">small</span></td><td>Push a rating change on a team the user holds or follows, and a weekly digest of what the analysts said. The cheapest way to turn a page people visit into a reason to come back</td><td><span class="chip attempting">Loaded &middot; firms at the Q3 reload</span></td></tr>
       <tr class="openrow"><td class="pos">S2</td><td><strong>Open slot</strong> &middot; small</td><td></td><td><span class="chip open">Open &middot; loadable</span></td></tr>
     </table>
   </div>
@@ -1049,7 +1052,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== BACKLOG ============================== -->
@@ -1060,7 +1063,7 @@
   <div class="card" style="border-left:4px solid var(--primary)">
     <table class="small" style="margin:0">
       <tr>
-        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 16:40 BST</span></td>
+        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 18:30 BST</span></td>
         <td style="border:0; width:33%"><strong>Evidence base</strong><br><span class="muted">the build repositories, the InPlay vault, and the App Store readiness review</span></td>
         <td style="border:0"><strong>Next regeneration</strong><br><span class="muted">At the next weekly review, or on any accepted scope change</span></td>
       </tr>
@@ -1118,7 +1121,7 @@
       <tr><td class="pos">13</td><td><strong>AdMob across every ad surface</strong></td><td>Medium</td><td><span class="chip delivered">High</span></td><td>Units exist and serve in the lab; this is placement and observation, not new integration</td><td class="due">19 Aug</td></tr>
       <tr><td class="pos">14</td><td>Ad-carrying App Store release</td><td>Small</td><td><span class="chip delivered">High</span></td><td>24 to 48 hours of review. Small build, unmovable wait</td><td class="due">17 Aug</td></tr>
       <tr><td class="pos">15</td><td>Kochava MMP, including the AdMob workaround</td><td>Medium</td><td><span class="chip risk">Low</span></td><td>No direct AdMob integration exists. The workaround has not been opened yet</td><td class="due">21 Aug</td></tr>
-      <tr><td class="pos">16</td><td>Under-18-safe ad gating</td><td>Small</td><td><span class="chip attempting">Medium</span></td><td>Enforcement is per network and has to be verified by inspection, not assumed</td><td class="due">19 Aug</td></tr>
+      <tr class="done"><td class="pos">16</td><td>Age gating and advertiser filtering</td><td>Small</td><td><span class="chip delivered">Done</span></td><td>Configured on the AdMob platform: inventory is under-18 safe and advertisers outside InPlay's criteria are filtered out</td><td class="due">Done</td></tr>
       <tr><td class="pos">17</td><td><strong>Three trader tiers</strong></td><td>Large</td><td><span class="chip attempting">Medium</span></td><td>Two Persona paths plus tier-aware gating throughout the app</td><td class="due">21 Aug</td></tr>
       <tr class="blocked"><td class="pos">18</td><td>tZERO relaxes the 18+ date-of-birth check</td><td>n/a</td><td><span class="chip dep">tZERO</span></td><td>Until it lands, Trader Light cannot hold a wallet and does not exist</td><td class="due">18 Aug</td></tr>
       <tr><td class="pos">19</td><td><strong>First-open tour and fork screen</strong></td><td>Medium</td><td><span class="chip delivered">High</span></td><td>Edwin's non-negotiable. Front-end only, which is the fast half</td><td class="due">18 Aug</td></tr>
@@ -1193,9 +1196,9 @@
 
   <div class="flag"><strong>The rule that keeps this list honest.</strong> Anything InPlay wants pulled into band 1 before 22 August displaces something already in it. The displacement is named, written into the next version of this page, and carries a risk statement. Nothing moves silently, in either direction, and an item leaving band 1 always lands somewhere visible rather than disappearing.</div>
 
-  <p class="small muted">Backlog generated 2026-08-12 16:40 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
+  <p class="small muted">Backlog generated 2026-08-12 18:30 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
 
-  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== LEDGER ============================== -->
@@ -1231,7 +1234,7 @@
 
   <p class="small muted">Triangle notes: repos and vault agree throughout the pack; the one standing document conflict is E25/E24 inside InPlay's own Requirements v2 material, flagged on the Key Releases page as a decision, not a build item.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 16:40 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 18:30 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <script>

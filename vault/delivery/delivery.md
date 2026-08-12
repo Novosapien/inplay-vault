@@ -64,6 +64,37 @@ bands with an owner, a due date and a definition of done on every row.
    been swept against it. Both documents are Edwin's, dated 31-07, and live in
    `shared/clients/inplay/outbound-campaigns/`. See [[compliance/compliance]].
 
+## Two workstreams loaded into Q2 to Q4 (Brett, 12-08-2026)
+
+Split deliberately, because they have different risk profiles and different
+owners of the unknowns.
+
+**InPlay Analyst.** Analyst reviews on team companies, from recruited human
+analysts and from generated ones. Sequenced: the rating standard and its
+compliance read (Q2 small), publication and attribution on top of the Q1
+submission portal (Q2 medium), generated analysts with a review gate before
+publication (Q3 large), track-record scoring of past calls against what the
+price did (Q3 medium), alerts and a weekly digest (Q4 small).
+
+⚠ The rating standard carries a **counsel gate**. A target price on a
+securities-adjacent product sits close to investment advice, and the Messaging
+House forbids performance promises. Settle the wording before anything is built
+on it. See [[compliance/compliance]].
+
+**Forecast, the AI playbooks.** A trader describes a playbook by typing or
+speaking, the app generates it, and it runs against past games to show how it
+would have performed. Sequenced: the historical price and event foundation plus
+the database work (Q2 large, and the expensive substrate everything waits on),
+the product shape and paywall decision (Q2 small), a voice-input research spike
+(Q2 P2), the playbook builder (Q3 large), the backtest engine (Q3 large, which
+absorbs the back-test lab Edwin prototyped in August), the learning layer (Q4
+large, last because it needs a season of real prices), and playbooks running
+live rather than only backwards (Q4 medium).
+
+Q3 and Q4 entries are **loaded, not committed**: they firm at the respective
+quarter reloads, per the year-ahead rule that commitments two quarters out are
+fantasy.
+
 ## Tone rule: this document is client facing (Brett, 12-08-2026)
 
 The flight plan goes in front of InPlay. It carries **delivery status, not the
