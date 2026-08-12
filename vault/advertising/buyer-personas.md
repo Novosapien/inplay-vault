@@ -4,9 +4,11 @@ description: "Six twelve-section buyer personas across the three InPlay advertis
 
 # InPlay Advertising: Buyer Personas
 
+> **Section:** [[advertising]]
+> **Upstream:** [[offer]], [[icps]]
 > **Status:** draft v1, authored 12 August 2026.
 > **Structure:** Buyer Persona 12-section structure, Cold Outreach Workforce (snapshot synced from the cofounder vault 2026-08-11).
-> **Grounded on:** `inplay-advertising-offer.md` and `inplay-advertising-icps.md`, same folder. Every persona is a child of exactly one ICP and inherits its dominant pain.
+> **Grounded on:** [[offer]] and [[icps]]. Every persona is a child of exactly one ICP and inherits its dominant pain.
 > **How these are scored:** Section 2 Role and Authority feeds Functional Fit at 40 per cent and Authority and Scope at 30 per cent. Section 5 Pains and Fears feeds Pain and Motivation at 30 per cent. Persona grading is stricter than ICP grading: an A is 80 per cent or above.
 
 > **⚠ Evidence warning, read before use.** InPlay has closed no advertising deals. Every first-person quote in Section 5 of every persona below was written by Novosapien from the offer, the ICPs and general category knowledge. **None came out of a real buyer's mouth.** Edwin and Cody confirmed in session that they do not have this evidence and want the personas built on assumptions. That is a legitimate starting point, but an invented quote and a remembered one are not the same artefact. Replace these quotes with real phrasing from real calls as soon as calls happen. The difference is the difference between a persona that grades and a persona that reads like a job description.
@@ -585,4 +587,4 @@ Run mechanically against the buyer persona guideline.
 
 ---
 
-*Authored 12 August 2026 by Novosapien, following the Cold Outreach Workforce buyer persona structure. Draft v1. Grounded on `inplay-advertising-offer.md` and `inplay-advertising-icps.md`. Built on assumptions at Edwin and Cody's explicit direction, in the absence of closed-deal evidence.*
+*Authored 12 August 2026 by Novosapien, following the Cold Outreach Workforce buyer persona structure. Draft v1. Grounded on [[offer]] and [[icps]]. Built on assumptions at Edwin and Cody's explicit direction, in the absence of closed-deal evidence.*

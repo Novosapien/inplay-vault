@@ -4,9 +4,12 @@ description: "Three tiered ICP definitions for InPlay advertising outbound: the 
 
 # InPlay Advertising: ICP Definitions
 
+> **Section:** [[advertising]]
+> **Upstream:** [[offer]]
+> **Downstream:** [[buyer-personas]]
 > **Status:** draft v1, authored 12 August 2026 in working session with Edwin Johnson and Cody Haugen.
 > **Structure:** ICP authoring structure, Cold Outreach Workforce (snapshot synced from the cofounder vault 2026-08-11).
-> **Grounded on:** `inplay-advertising-offer.md`, same folder. Built-for line, eight pains, nine outcomes, two component tracks.
+> **Grounded on:** [[offer]]. Built-for line, eight pains, nine outcomes, two component tracks.
 > **What this is:** the Tier 1, 2 and 3 weights below **are** the rubric the workforce grades every lead against. Tier 1 Business Type 50 per cent, Tier 2 Business Model 30 per cent, Tier 3 Firmographics 20 per cent. An A grade is 70 per cent or above. The ICP is authored in the shape it is scored.
 
 ## Segmentation
@@ -207,4 +210,4 @@ Run mechanically against the ICP guideline.
 
 ---
 
-*Authored 12 August 2026 by Novosapien with Edwin Johnson and Cody Haugen, following the Cold Outreach Workforce ICP authoring structure. Draft v1. Grounded on `inplay-advertising-offer.md`.*
+*Authored 12 August 2026 by Novosapien with Edwin Johnson and Cody Haugen, following the Cold Outreach Workforce ICP authoring structure. Draft v1. Grounded on [[offer]].*

@@ -4,6 +4,8 @@ description: "The seven-section factual-claims universe for InPlay advertising: 
 
 # InPlay Advertising: Offer
 
+> **Section:** [[advertising]]
+> **Downstream:** [[icps]], [[buyer-personas]]
 > **Status:** draft v1, authored 12 August 2026 in working session with Edwin Johnson and Cody Haugen.
 > **Structure:** Offer Structure v2 (`outbound-workforce-onboarding`, snapshot synced from the cofounder vault 2026-08-11).
 > **What this is:** the factual-claims universe for the Cold Outreach Workforce. No advertiser reads it. Everything in it becomes permitted truth agents may state and the critic will pass, in InPlay's name, at scale.
