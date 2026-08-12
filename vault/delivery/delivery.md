@@ -64,6 +64,20 @@ bands with an owner, a due date and a definition of done on every row.
    been swept against it. Both documents are Edwin's, dated 31-07, and live in
    `shared/clients/inplay/outbound-campaigns/`. See [[compliance/compliance]].
 
+## Tone rule: this document is client facing (Brett, 12-08-2026)
+
+The flight plan goes in front of InPlay. It carries **delivery status, not the
+work of assembling the plan**. Keep out of it:
+
+- Meta-commentary about earlier versions, what a previous plan got wrong, or
+  who corrected whom.
+- Internal engineering hygiene: repository names, branch names, commit counts,
+  promotion chains.
+- Attribution of findings to internal reviews.
+
+State the current position plainly and move on. Where something changed, change
+it silently in the artefact and record the reasoning here in the vault instead.
+
 ## How the plan is structured (stable conventions)
 
 - **Home:** two-month flight-plan diagram + quarterly release plan + people.
