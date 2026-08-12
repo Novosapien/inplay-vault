@@ -15,6 +15,7 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
+| 2026-08-12 (pm) | [flight-plans/2026-08-12-inplay-app-flight-plan.html](flight-plans/2026-08-12-inplay-app-flight-plan.html) | **Full branch sweep across all 20 repositories, plus a new outbound-campaign band.** Headline: **276 finished commits sit off the main line**, 188 in the app alone, so the constraint is release, not build. Adds the **onboarding/KYC/referral service**, absent from every prior ledger. Corrects the tiers: **two are built** (US `trader`, international `trader-lite`), the email-only tier is **not**, and the tZERO date-of-birth blocker was solved by choosing a Persona template that captures DOB. New dated item: **split the payout leaderboard before 27 Aug**, since international users can now trade and therefore reach the cash board. 5x referral window ends **22 Aug**, not month end |
 | 2026-08-12 | [flight-plans/2026-08-12-inplay-app-flight-plan.html](flight-plans/2026-08-12-inplay-app-flight-plan.html) | **Correction pass after George's review.** tZERO tickers and the maker/taker wallets already existed (they were listed as the top blocker); share counts corrected to **900k NFL / 1M NCAA**; **NFL IPO has no rounds**; tax forms moved to 5 Sep; the 200ms figure restated as the market maker's quote rhythm (200 to 500ms in play), not trade speed; **seven infrastructure tasks removed** as they came from internal drafts rather than agreed work; NBA downgraded to P3; research promoted to P1; App Store submission added as blocked on three must-fix items per Hassan's 11 Aug readiness report; new table showing every InPlay ask and its slot |
 | 2026-08-10 | [flight-plans/2026-08-10-inplay-app-flight-plan.html](flight-plans/2026-08-10-inplay-app-flight-plan.html) | 12 days to the NCAA IPO. Now also folds in the 31-07 **Website Punch List 1** and **Messaging House v2.0**. Adds a live **countdown** to the IPO on every page, a **Countdown Board** (one cross-team must-land list: engine room, the three live-game proving runs on 13, 20 and 27 Aug, advertising on AdMob alone because AppLovin MAX has not responded, tax forms and payouts, identity and compliance, the scale ramp, and go to market), a **Backlog** page (60 items in three bands, sized and confidence-rated), and a **deliverable-bearing critical timeline** where every date states what must be finished by it. Evidence refreshed from all 21 repos |
 | 2026-08-05 | [flight-plans/2026-08-05-inplay-app-flight-plan.html](flight-plans/2026-08-05-inplay-app-flight-plan.html) | 17 days to the NCAA IPO; launch mode active; trading path is the long pole |
@@ -46,6 +47,13 @@ bands with an owner, a due date and a definition of done on every row.
 7. **Go to market**: agency, referral multiplier, influencer analysts, campus,
    tailgate activations and PR, each with what delivery needs from it. Every
    campaign date is an infrastructure date.
+9. **Outbound campaign**: the Cold Outreach Workforce that sells ad inventory to
+   brands and agencies, distinct from the consumer go-to-market in band 7.
+   Foundations (offer, ICPs, buyer personas) are authored and blocked on four
+   InPlay answers; mailbox warming is under way but **the warmed-mailbox and
+   LinkedIn list is not recorded anywhere** and is owed; then configure, launch
+   ~1 Sep, measurement ~1 week later, first meaningful reporting ~1 week after
+   that.
 8. **Website and brand**: the remainder of **Website Punch List 1 v1.3** (the P2
    items travelling with the counsel package, the P3 pre-kickoff close-out, and
    the Insights section that must exist before Founder Memo No. 1), plus

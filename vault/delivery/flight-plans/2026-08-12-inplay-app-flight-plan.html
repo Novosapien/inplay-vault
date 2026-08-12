@@ -145,7 +145,7 @@
   <h1>InPlay App Flight Plan</h1>
   <div class="stamp">
     Prepared by <span style="font-weight:700; letter-spacing:.14em; color:var(--foreground)">NOVOSAPIEN</span><br>
-    Generated 2026-08-12 09:30 BST &middot; evidence: all 21 build repositories re-fetched today, George's review of the 10 Aug plan, Hassan's App Store readiness report of 11 Aug, the InPlay vault, and the 31 Jul Punch List + Messaging House
+    Generated 2026-08-12 13:10 BST &middot; evidence: every branch in all 20 repositories swept today, George's review of the 10 Aug plan, Hassan's App Store readiness report of 11 Aug, the InPlay vault, and the 31 Jul Punch List + Messaging House
   </div>
 </header>
 
@@ -186,9 +186,11 @@
 
   <div class="grid c3">
     <div class="card kpi hot"><div class="n">10 days</div><div class="l">To the NCAA IPO (22 Aug) &middot; launch mode active, scope freezes w/c 17 Aug</div></div>
-    <div class="card kpi"><div class="n">40 open items</div><div class="l">On the Countdown Board across engineering, ad ops, compliance, infrastructure, go to market and the websites</div></div>
+    <div class="card kpi hot"><div class="n">276 commits</div><div class="l">Built, tested, and not yet released. Across the app, onboarding, trading, data and the market maker</div></div>
     <div class="card kpi"><div class="n">3 live-game runs</div><div class="l">13, 20 and 27 Aug &middot; the proving sequence before real users trade a real game</div></div>
   </div>
+
+  <div class="flag" style="border-left-color:var(--destructive)"><strong>Headline, found by sweeping every branch in all 20 repositories on 12 August: the work is built, it is not shipped.</strong> There are <strong>276 finished commits sitting off the main line</strong>, 188 of them in the app alone, including every Edwin UI session, the two-track KYC, automatic tZERO account creation, per-league market phases and the new leaderboards. None of it is late work. All of it is done work waiting on a release, and the release is gated on an App Store build that is blocked on three fixes. <strong>Two tiers of user verification are already built</strong> (US and international), and the date-of-birth blocker the last plan called fatal was solved by choosing a different Persona template. <strong>One new dated item:</strong> international users can now trade, which means they also reach the cash-prize leaderboard, and that has to be split before 27 August. See band 0 on the <a href="#board">Countdown Board</a>.</div>
 
   <div class="flag" style="border-left-color:var(--destructive)"><strong>This version is a correction pass. George reviewed the 10 August plan on 12 August and a lot of it was wrong.</strong> Corrected here: <strong>tZERO have already issued the tickers</strong> (they were listed as the top blocker) and the <strong>maker and taker wallets already exist</strong>. Share counts were wrong: it is <strong>900,000 per NFL team and 1,000,000 per NCAA team</strong>, not a million everywhere. The <strong>NFL IPO has no rounds</strong>, it opens for a few days like the NCAA one. <strong>Tax forms will not make the NCAA opening</strong> and have moved to 5 September. The <strong>200 millisecond figure</strong> was described as trading speed when it is the market maker's own quote rhythm, now stated as every 200 to 500 milliseconds in play. Seven <strong>infrastructure tasks were removed entirely</strong>: they came from Novosapien's internal drafts, not from anything agreed, and presenting them as commitments was wrong. The <strong>NBA challenge is downgraded</strong> from attempting to planned-to-drop. <strong>Research is promoted</strong> to committed. A new table on the Backlog page shows <strong>every feature InPlay have asked for and where it sits</strong>, because the near-term view made them look dropped. Full list on the Key Releases page.</div>
 
@@ -405,7 +407,7 @@
 
   <p class="small muted" style="margin-top:18px"><strong>Small print.</strong> Quarter frame is launch-anchored: Q1 starts 23 Aug 2026 (the day after the NCAA IPO opens) and quarters run three months each to 22 Aug 2027; the frame stays stable between reports. Sources, reconciled 10 Aug 2026: all 21 build repositories fetched from GitHub the same day (market maker, trading service, FIX gateway, app, admin panels, websites), the InPlay vault at commit <code>2a0b581</code> with five touchdowns digested through 7 Aug and a new Compliance section, and the partnership proposal. Logos: InPlay from the vault brand folder; Novosapien from the corporate brand set. This file lives in a dated folder and is updated in place during the day; a new dated folder opens on the next working session, so the folder series is the audit trail.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- =========================== COUNTDOWN BOARD =========================== -->
@@ -417,6 +419,23 @@
     <div class="card kpi"><div class="n">7 done</div><div class="l">Landed and verified since the last plan</div></div>
     <div class="card kpi hot"><div class="n">23 in flight</div><div class="l">Being worked now, on or near track</div></div>
     <div class="card kpi"><div class="n">9 blocked</div><div class="l">Waiting on tZERO, AppLovin, counsel or an InPlay decision</div></div>
+  </div>
+
+  <!-- ---------------- 0. THE PROMOTION BACKLOG ---------------- -->
+  <h3>0 &middot; The work is built. It is not shipped.</h3>
+  <p class="small muted">Found by sweeping every branch in all 20 repositories on 12 August. This is the single most important thing on the plan and it was not on the last version.</p>
+  <div class="card">
+    <div class="flag" style="border-left-color:var(--destructive)"><strong>There is a very large amount of finished work sitting one step away from users.</strong> The app alone has <strong>188 commits</strong> built and tested on <code>prerelease</code> that have not reached <code>main</code>, and the promotion path is four stages deep. The same pattern repeats across the estate. None of this is late work: it is <em>done</em> work that has not been released, and the release is gated on an App Store build that is itself blocked. If nothing else on this page moves this week, this should.</div>
+    <table class="board">
+      <tr><th style="width:26%">Repository</th><th style="width:14%">Unreleased</th><th>What is waiting in it</th><th style="width:11%">Risk</th></tr>
+      <tr class="blocked"><td><span class="gate r"></span><strong>The app</strong></td><td class="due">188 commits</td><td>Every Edwin UI session, the home rework, the venue-only order book, groups and Ranks, the risk-adjusted and comeback boards, AdMob native fill, Firebase analytics, per-league price gating, and the KYC signature capture. Must ship as a full build, not over the air</td><td><span class="chip risk">High</span></td></tr>
+      <tr class="blocked"><td><span class="gate r"></span><strong>Onboarding and referral</strong></td><td class="due">39 commits</td><td>The two KYC tracks, the role tiers, automatic tZERO account creation with buying power set, the backfill for users approved before the change, and out-of-app push for order and account events. <strong>This service does not appear anywhere on the previous flight plan</strong></td><td><span class="chip risk">High</span></td></tr>
+      <tr><td><span class="gate a"></span><strong>Trading service</strong></td><td class="due">17 commits</td><td>Trader-lite made trading-eligible, per-league market phases derived from the offering windows, placement gated on role plus account plus phase, and the two new leaderboard verticals</td><td><span class="chip attempting">Medium</span></td></tr>
+      <tr><td><span class="gate a"></span><strong>Sportradar service</strong></td><td class="due">10 commits</td><td>The 500 millisecond live poll implementing George's 11 Aug ruling, production probabilities access, and the repaired infrastructure definitions</td><td><span class="chip attempting">Medium</span></td></tr>
+      <tr><td><span class="gate a"></span><strong>Market maker</strong></td><td class="due">18 commits</td><td>The maker and taker state publishers, a profit-and-loss meter, manual order placement, cancel and replace, and the redeploy runbook. Effectively the operator surface, arriving earlier than planned</td><td><span class="chip attempting">Medium</span></td></tr>
+      <tr><td><span class="gate a"></span><strong>The vault</strong></td><td class="due">4 commits</td><td>Evidence that the <strong>full order book is live and a real trade proved the path end to end</strong>, plus which tZERO account entitlements are switched on and which are not</td><td><span class="chip attempting">Low</span></td></tr>
+    </table>
+    <p class="small muted" style="margin-top:8px">Why it matters for the date: work that is not on the main line is not deployed, is not being exercised by anyone outside the team, and accumulates merge risk every day it waits. The 22 August offering does not care how much is written; it cares what is running.</p>
   </div>
 
   <!-- ---------------- 1. TRADING ENGINE ROOM ---------------- -->
@@ -503,8 +522,10 @@
   <div class="card">
     <table class="board">
       <tr><th style="width:26%">Item</th><th>Done means</th><th style="width:16%">Owner</th><th style="width:11%">Due</th></tr>
-      <tr class="blocked"><td><span class="gate r"></span><strong>tZERO relaxes the 18+ date-of-birth check</strong></td><td>tZERO already relax most onboarding fields for InPlay; date of birth is still mandatory and must be 18 or over, so a Trader Light user cannot be given an account or wallet and cannot trade at all. <strong>Until this lands the no-KYC tier does not exist</strong></td><td class="own"><span class="chip dep">tZERO</span></td><td class="due">18 Aug</td></tr>
-      <tr><td><span class="gate a"></span>Three trader tiers built</td><td>Trader Full (US tax resident, 18+, KYC, cash prizes), Trader Medium (international, KYC, no cash), Trader Light (email only, 13+, no cash). Persona now carries two KYC paths</td><td class="own">Novosapien</td><td class="due">21 Aug</td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>The date-of-birth problem is solved</strong></td><td><strong>Not by tZERO changing anything.</strong> The international Persona template ("International Government ID and Selfie") accepts IDs from any country and still captures date of birth, which tZERO requires at account creation and cannot be changed afterwards. Choosing that template removed the blocker. The 10 Aug plan said the tier could not exist until tZERO relented; that was wrong</td><td class="own">Novosapien</td><td class="due">Done</td></tr>
+      <tr><td><span class="gate a"></span><strong>Two verified tiers: built, waiting to ship</strong></td><td><strong>Built on 11 Aug and sitting on a branch.</strong> Two Persona tracks, two roles: <code>trader</code> (US tax resident, full payout eligibility) and <code>trader-lite</code> (international, full trading, no payouts). Both trade identically; they differ on payouts and which leaderboard they land on. Referral codes issue at signup for every tier. Done means promoted and deployed, not merely written</td><td class="own">Novosapien</td><td class="due">21 Aug</td></tr>
+      <tr><td><span class="gate n"></span><strong>The third tier is not built</strong></td><td>The email-only, no-KYC, 13-plus tier that Edwin described on 03-08 does not exist. Both tracks that were built run through Persona verification. If the campus programme depends on a genuinely unverified sign-up, that is a separate piece of work and it is not started</td><td class="own"><span class="chip dep">InPlay decision</span></td><td class="due">Needs a call</td></tr>
+      <tr class="blocked"><td><span class="gate r"></span><strong>Split the payout leaderboard, before 27 Aug</strong></td><td><strong>New, and dated.</strong> Now that international users can trade, they also reach the leaderboard endpoints, so <strong>non-US users will appear on the cash-prize board</strong> until a separate global board ships. The board is dark until secondary opens, so there is time, but this is a fairness and eligibility problem the moment it lights up</td><td class="own">Novosapien</td><td class="due">27 Aug</td></tr>
       <tr><td><span class="gate a"></span>First-open tour and fork screen</td><td>Edwin's stated non-negotiable: a four-card explainer then the choice between email-only and Persona-verified. Today a referred user's first screen is a stadium image that explains nothing</td><td class="own">Novosapien</td><td class="due">18 Aug</td></tr>
       <tr><td><span class="gate a"></span>Language compliance sweep</td><td>No claim of SEC regulation anywhere; every reference is to a <em>simulated</em> IPO; the Regulation A testing-the-waters disclaimer present. App, both websites and all outbound copy</td><td class="own">Novosapien + counsel</td><td class="due">19 Aug</td></tr>
       <tr><td><span class="gate a"></span>Team naming and tickers</td><td>Acronym convention (NYJ style) so no team company reads as the real franchise. A config change in the app, but it has to be agreed with counsel first</td><td class="own">Edwin + Novosapien</td><td class="due">17 Aug</td></tr>
@@ -534,7 +555,7 @@
     <table class="board">
       <tr><th style="width:24%">Activity</th><th style="width:14%">When</th><th>What it is &middot; what delivery needs from it</th><th style="width:14%">Owner</th></tr>
       <tr><td><span class="gate a"></span><strong>Plexus Media agency</strong></td><td class="due">Commercials open</td><td>Prospective marketing agency (Jason). Negotiations under way since 29 July; also holds the direct Kochava relationship and expects to beat their standard rates. <strong>Delivery needs: the campaign start date and the daily spend curve</strong>, because that is the load forecast</td><td class="own">Edwin + Cody</td></tr>
-      <tr><td><span class="gate a"></span><strong>5x referral multiplier</strong></td><td class="due">All August</td><td>Live now, on the website and the internal system. Deliberately generous because the base is small. Referral is expected to bite properly only once users start losing trading money, which is post-IPO, not pre</td><td class="own">Cody</td></tr>
+      <tr><td><span class="gate a"></span><strong>5x referral multiplier</strong></td><td class="due">Ends 22 Aug</td><td>Live on the website and in the service. ⚠ The window is set to <strong>close on 22 August</strong>, the day the offering opens, not to run through the month as the last plan said. Worth a deliberate decision rather than letting it lapse on the busiest day of the campaign. Referral is expected to bite properly only once users start losing trading money, which is after the IPO, not before</td><td class="own">Cody</td></tr>
       <tr><td><span class="gate a"></span><strong>Influencer analysts</strong></td><td class="due">From ~17 Aug</td><td>Six to ten recruited analysts talking a target price on their podcasts, doubling as user acquisition. <strong>Delivery dependency: the analyst portal.</strong> There is no ingestion route today, the Analyst tab in the app is empty, and email submissions are not workable</td><td class="own">Cody + Kevin</td></tr>
       <tr><td><span class="gate a"></span><strong>Campus programme</strong></td><td class="due">Sep, term start</td><td>DePaul curriculum inclusion, plus Harvard, Texas A&amp;M, OSU and others. 70 ambassadors and 7 university partners in the plan. Troy hopes for tens of thousands of signups. <strong>Delivery dependency: micro-challenges and the no-KYC tier</strong>, neither of which exists yet, and international students cannot take cash at all</td><td class="own">Troy</td></tr>
       <tr><td><span class="gate n"></span><strong>Texas vs Oklahoma tailgate</strong></td><td class="due">Oct</td><td>On-the-ground activation with frats and alumni associations, school-versus-school leaderboard promoted live. <strong>Delivery dependency: private group leaderboards</strong>, which are partly built already (see the note below)</td><td class="own">Cody</td></tr>
@@ -562,13 +583,54 @@
     <div class="flag"><strong>Conflict to resolve, and it is Edwin's own two documents disagreeing.</strong> The Messaging House bans <em>"play"</em> as the product verb and bans <em>"win money"</em> and <em>"payout"</em>. Punch list item C9 sets the approved Challenge phrasing as <strong>"Free to enter. Fully simulated. No real money at risk."</strong> But the first-open tour Edwin demoed on 7 August reads <strong>"It's free to play"</strong> and <strong>"real cash prizes if you're verified"</strong>. One of the two has to give before the app copy is frozen on the 19th. Novosapien's recommendation: follow C9, since it is the counsel-facing wording and the lexicon is the governing document by its own terms. This needs a one-line ruling from Edwin, not a discussion.</div>
   </div>
 
+  <!-- ---------------- 9. OUTBOUND CAMPAIGN ---------------- -->
+  <h3>9 &middot; Outbound campaign: selling the advertising</h3>
+  <p class="small muted">The Cold Outreach Workforce that sells InPlay's ad inventory. Separate from the consumer go-to-market in band 7: this one targets brands and agencies, not fans. Sequenced as foundations, then the sending estate, then configuration, then launch, then measurement.</p>
+
+  <div class="card">
+    <h4>Stage 1 &middot; Foundations: built</h4>
+    <p class="small muted">Authored 12 August in a working session with Edwin and Cody, from Edwin's three July reviews of the advertising forecasts, the Messaging House and the Website Punch List. Markdown in the vault is the source of truth; a branded HTML rendering sits on the shared drive.</p>
+    <table class="board">
+      <tr><th style="width:24%">Artefact</th><th>What it is, and why it exists in this order</th><th style="width:13%">Status</th></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>The offering</strong></td><td>The factual-claims universe: everything an agent is permitted to say, and nothing else. Seven sections, two component tracks (sponsorship, covering title, premium pages and Gamecast field naming; and programmatic, covering the header unit, volatility moments and video interstitials), and an honestly empty proof section. No advertiser ever reads it. Two rules govern it: zero fabrication, and no unverifiable quality adjectives</td><td><span class="chip delivered">Draft v1</span></td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>The ICPs</strong></td><td>Three tiered definitions of which companies to sell to. The tier weights are not commentary: they are literally the rubric the workforce grades every lead against. Replaces the June set, whose research was reusable but whose spine was wrong on all three of buyer, opening ask and lead message</td><td><span class="chip delivered">Draft v1</span></td></tr>
+      <tr class="done"><td><span class="gate g"></span><strong>The buyer personas</strong></td><td>Six personas, two per ICP, twelve sections each, weighted to the economic buyer. Replaces eight earlier personas of whom six were executives who, per Edwin, do not buy individual digital media packages</td><td><span class="chip delivered">Draft v1</span></td></tr>
+    </table>
+    <div class="flag"><strong>These cannot be loaded into the workforce yet, and that is deliberate.</strong> Four questions block them, all owned by InPlay: which ad surfaces have live unit IDs at kickoff (guaranteeing inventory that does not exist is a contractual liability, because every package carries a makegood); whether Open Measurement is integrated and which verification vendors are accepted; the declared refresh interval per unit and whether the timer starts on viewability; and the definition of an exposure, served, viewable or completed, per format. The Pilot promises five million qualified exposures, and that is a number in a contract rather than on a slide.</div>
+  </div>
+
+  <div class="card">
+    <h4>Stage 2 &middot; The sending estate: warming</h4>
+    <p class="small muted">Mailboxes have to be warmed before they can send at volume, or they land in spam and the domain reputation is spent before the first campaign. This runs in parallel with everything above, and it is the long pole nobody can compress.</p>
+    <table class="board">
+      <tr><th style="width:24%">Item</th><th>Position</th><th style="width:13%">Owner</th><th style="width:11%">Due</th></tr>
+      <tr class="blocked"><td><span class="gate r"></span><strong>The warmed mailbox list</strong></td><td>⚠ <strong>I could not evidence this.</strong> Cody has sent mailboxes across and warming is under way, but there is no record of which addresses, on which domains, at what stage of warming, anywhere in the vault or the shared drive. The list needs to come from Brett before it can be stated here, because inventing it in a client-facing plan is exactly the failure the workforce method forbids. <em>This row is a placeholder for a real list, not a status.</em></td><td class="own">Brett &rarr; the plan</td><td class="due">Owed</td></tr>
+      <tr><td><span class="gate a"></span>Warming in progress</td><td>Sending reputation built gradually across the estate. Typical runway is two to four weeks from a cold start before volume sending is safe, which puts a campaign start in <strong>early September</strong> if warming began in mid August</td><td class="own">Novosapien</td><td class="due">~1 Sep</td></tr>
+      <tr class="blocked"><td><span class="gate r"></span><strong>LinkedIn profiles paired to mailboxes</strong></td><td>Each sending identity needs a matching LinkedIn presence, or the first thing a prospect does after an email lands is fail to find the sender. Same position as the row above: the pairing exists in someone's head and not in any record I can find</td><td class="own">Brett &rarr; the plan</td><td class="due">Owed</td></tr>
+      <tr><td><span class="gate n"></span>Domain authentication</td><td>SPF, DKIM and DMARC on every sending domain. Note the corporate site carries the same requirement for the newsletter under punch list item G20, so it is one job done once</td><td class="own">Novosapien</td><td class="due">~1 Sep</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>Stages 3 to 6 &middot; From configured to reporting</h4>
+    <p class="small muted">The sequence after foundations and warming. Each stage gates the next, and the two measurement stages are the ones most often skipped and most missed later.</p>
+    <table class="board">
+      <tr><th style="width:8%">Stage</th><th style="width:22%">What happens</th><th>Done means</th><th style="width:13%">When</th></tr>
+      <tr><td class="pos">3</td><td><strong>Configure the system</strong></td><td>The three artefacts loaded as the workforce's fact base, the ICP tier weights wired as the lead-grading rubric, the target account list built and scrubbed against the category decline list (betting, daily fantasy, sportsbook and casino are refused outright, on every path), sequences written against the personas, and the critic tuned to reject anything outside the permitted claims. <strong>Gated on the four blocking answers above</strong></td><td class="due">Late Aug</td></tr>
+      <tr><td class="pos">4</td><td><strong>Kick off the campaign</strong></td><td>First sequences live from warmed mailboxes, at a deliberately low daily volume that steps up as reputation holds. Done means mail is landing in inboxes and replies are routing to a human</td><td class="due">~1 Sep</td></tr>
+      <tr><td class="pos">5</td><td><strong>Measurement in place</strong></td><td>About <strong>a week</strong> from kickoff. Deliverability and inbox placement, opens and replies by sequence and by persona, meetings booked, and lead grades against the ICP rubric so we can see which tier is actually responding rather than which one we hoped would</td><td class="due">~8 Sep</td></tr>
+      <tr><td class="pos">6</td><td><strong>First reporting</strong></td><td>About <strong>a week after measurement</strong>, so roughly two weeks from kickoff, which is the earliest point the numbers mean anything. First read on which ICP tier responds, which persona converts to a meeting, and what needs rewriting. Everything before this is anecdote</td><td class="due">~15 Sep</td></tr>
+    </table>
+    <div class="flag"><strong>Why this lands after the IPO, and why that is right.</strong> The campaign cannot honestly start before the four blocking answers exist, and it should not start before mailboxes are warm. Both point at early September. That is also the first moment InPlay has something an advertiser wants: a live market with real trading behaviour behind it, rather than a projection. Selling inventory in August would mean selling a promise; selling it in September means selling a product.</div>
+  </div>
+
   <h3>How to read the dates</h3>
   <div class="card small">
     <p style="margin-bottom:8px">Items due before <strong>17 August</strong> are inside the working window and are being actively pushed. Items dated <strong>17 to 22 August</strong> sit inside the freeze; anything landing there is a defect fix or a pre-agreed must-land, never new scope. Items dated after 22 August are deliberately after the IPO, and their being late does not threaten the launch.</p>
     <p class="muted">Red items are not late by our hand: each one is waiting on tZERO, AppLovin, Sportradar, counsel or an InPlay decision. They are listed with owners so the chase is visible rather than assumed.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ KEY RELEASES ============================ -->
@@ -670,7 +732,7 @@
 
   <div class="flag"><strong>Scope-add protocol is live.</strong> Any new ask before 22 August gets a written answer in this format: its slot after launch (the default), or what it displaces from the must-land list plus which risk family it raises and by how much. Agentic speed makes late adds possible; it does not make them safe.</div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ NEXT 8 WEEKS ============================ -->
@@ -770,7 +832,7 @@
     <p class="small muted" style="margin-top:6px">Beyond November the plan runs at quarter level: see the Q2 to Q4 pages. As each key date passes, the weekly window rolls forward and the next four weeks gain this level of detail.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q1 ================================ -->
@@ -825,7 +887,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q2 ================================ -->
@@ -880,7 +942,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q3 ================================ -->
@@ -942,7 +1004,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q4 ================================ -->
@@ -994,7 +1056,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== BACKLOG ============================== -->
@@ -1005,7 +1067,7 @@
   <div class="card" style="border-left:4px solid var(--primary)">
     <table class="small" style="margin:0">
       <tr>
-        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 09:30 BST</span></td>
+        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-12 13:10 BST</span></td>
         <td style="border:0; width:33%"><strong>Evidence base</strong><br><span class="muted">21 repositories re-fetched 12 Aug; George's review of the 10 Aug plan; Hassan's readiness report 11 Aug</span></td>
         <td style="border:0"><strong>Next regeneration</strong><br><span class="muted">At the next weekly review, or on any accepted scope change</span></td>
       </tr>
@@ -1138,9 +1200,9 @@
 
   <div class="flag"><strong>The rule that keeps this list honest.</strong> Anything InPlay wants pulled into band 1 before 22 August displaces something already in it. The displacement is named, written into the next version of this page, and carries a risk statement. Nothing moves silently, in either direction, and an item leaving band 1 always lands somewhere visible rather than disappearing.</div>
 
-  <p class="small muted">Backlog generated 2026-08-12 09:30 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
+  <p class="small muted">Backlog generated 2026-08-12 13:10 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
 
-  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== LEDGER ============================== -->
@@ -1163,6 +1225,7 @@
       <tr><td>Market maker</td><td><span class="chip inflight">Stood up</span></td><td><span class="chip added">Additional</span></td><td>Not in the proposal; now the hardest deadline in the programme. Quote construction, poller, market state, venue sync; opening inventory (E27); tZERO permissioning</td></tr>
       <tr><td>Consumer app</td><td><span class="chip inflight">Stood up &middot; late stage</span></td><td><span class="chip evolved">Evolved</span></td><td>Watch Mode became InPlay-owned 3D Gamecast IP (proposal assumed the embedded Sportradar widget). Real prices; P&amp;L display; release governance</td></tr>
       <tr><td>Education</td><td><span class="chip inflight">Stood up &middot; beginner tier delivered</span></td><td><span class="chip evolved">Evolved</span></td><td>Beginner tier proposed; 36-video produced library + re-slice to 3-4x module count grew it. Re-slice regeneration; tier refresh; content decisions</td></tr>
+      <tr><td><strong>Onboarding, KYC and referral service</strong></td><td><span class="chip inflight">Stood up &middot; 39 commits unreleased</span></td><td><span class="chip proposed">Proposed</span></td><td><strong>Absent from every previous version of this ledger.</strong> Carries KYC (now two Persona tracks), the role tiers, referral code issue and crediting, automatic tZERO account creation with buying power, and out-of-app push. Built and waiting on release</td></tr>
       <tr><td>Advertising</td><td><span class="chip inflight">Stood up</span></td><td><span class="chip evolved">Evolved</span></td><td>Workstream 2 as proposed, stack re-decided (GAM out, AppLovin MAX + SSP portfolio in). SSP accounts opening now (AdMob approved; LevelPlay + Vungle onboarding); MMP + GTM</td></tr>
       <tr><td>Research module</td><td><span class="chip inflight">Stood up &middot; v1 demoed</span></td><td><span class="chip proposed">Proposed</span></td><td>Named after-launch in the proposal. Subscription wrapper; data-point catalog; may trail launch by design</td></tr>
       <tr><td>Earnings report</td><td><span class="chip committed">Not started &middot; deepest spec</span></td><td><span class="chip evolved">Evolved</span></td><td>Proposed as the weekly cycle; specified into five sub-systems with tradable estimates. Engine build from ~w/c 31 Aug; anti-manipulation design</td></tr>
@@ -1175,7 +1238,7 @@
 
   <p class="small muted">Triangle notes: repos and vault agree throughout the pack; the one standing document conflict is E25/E24 inside InPlay's own Requirements v2 material, flagged on the Key Releases page as a decision, not a build item.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 09:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-12 13:10 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <script>
