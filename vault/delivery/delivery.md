@@ -95,6 +95,16 @@ Q3 and Q4 entries are **loaded, not committed**: they firm at the respective
 quarter reloads, per the year-ahead rule that commitments two quarters out are
 fantasy.
 
+**Outbound campaign dates pulled forward a week (Brett, 12-08).** Configure the
+system Thursday **20 August**, campaign opens Tuesday **25 August**, measurement
+in place ~**1 September**, first meaningful reporting ~**8 September**. Domain
+authentication moves to the 20th and warming to the 25th to match. The upside is
+that the first advertiser conversations happen while the market is live rather
+than weeks after it opens. The exposure is that **mailbox warming cannot be
+compressed by effort**: if it is not far enough along by the 25th, the honest
+move is to open at lower volume rather than send anyway and spend the domain
+reputation.
+
 ## Tone rule: this document is client facing (Brett, 12-08-2026)
 
 The flight plan goes in front of InPlay. It carries **delivery status, not the
