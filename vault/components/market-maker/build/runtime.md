@@ -22,6 +22,16 @@ preempt, so a synchronously blocking tick still starves the beat — that
 is exactly what the VM jitter measurement watches before the window
 tightens to ~1–1.5 s (the beat and the window move together).
 
+⭐ **Progress-aware since 08-13 (always-quoting step 3, MM PR #27):**
+the beat certifies "ticks are completing", never "the event loop is
+idle". `run()` stamps a progress anchor when a tick completes and its
+batch commits; the beat task WITHHOLDS the heartbeat once the anchor
+ages past `heartbeat_stall_threshold_s` (5 s, the dictionary). A loop
+that is alive but not advancing — a hung ack flush, a stuck await —
+goes silent, and the dead-man pulls the book ~threshold + 4 s after
+the wedge instead of never. Withhold/resume transitions log loudly
+(`HEARTBEAT WITHHELD` / `RESUMED`) — `[progress-beat]`.
+
 ## The tick (1 s, `loop.py`)
 
 In order, every second:

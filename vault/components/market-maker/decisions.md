@@ -54,6 +54,15 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   commit is deployed — the binding constraint becomes engine time and
   the venue cap must RISE for Saturday ack volume (~1,050/tick).
   Measure, then move the dictionary rows.
+- ✅ **Step 3 BUILT the same day (MM PR #27, stacked on #26) — the
+  progress-aware heartbeat.** The beat certifies "ticks are
+  completing", never "asyncio can schedule a coroutine": the beat task
+  WITHHOLDS once no tick has completed within
+  `heartbeat_stall_threshold_s` (5 s, 🟡 OURS), so a wedged engine's
+  book gets pulled by the dead-man ~9 s after the wedge instead of
+  never. Withhold/resume log loudly. Steps 4 (decoupled quote
+  publication — its own design pass) and 5 (the dead-man breaker)
+  remain.
 
 ## 2026-08-12b — the engine half BUILT: both publishers + the taker's manual orders
 
