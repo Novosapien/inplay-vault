@@ -260,3 +260,47 @@ the receipts:
   check still fails at 10× compression (engine-time floor, queued).
 - **Process lesson filed:** one session drives the VM at a time; the
   lock now enforces the machine half mechanically.
+
+---
+
+## Addendum 6 (23:4xZ) — FIRST LIVE GAMES: the path worked, then the spiral returned at live load, throttled mid-game
+
+**The milestone first:** at 23:03Z the FULL chain ran on a real game for
+the first time — SR → publisher → bus → engine reprice → venue → taker
+fills on the game books (BENG/LION within seconds). Readings ramped to
+~340/min across three live games.
+
+**The publisher nearly missed the games** (filed for post-mortem with
+the session that owns it): the production worker sat SILENT from its
+00:00Z discovery until 22:26Z — the pre-kickoff scheduler never fired.
+Two restarts failed ("user disabled instance" — new revisions lost the
+manual instance count); the fix was one update carrying BOTH
+`--instances=1` and an env bump (gen 7, 22:38Z). Polls then ran
+perfectly (15 s, zero errors). ⚠ Unexplained: why the original
+instance went quiet after midnight.
+
+**The spiral returned at live load (23:05–23:40Z):** live redraw +
+overnight churn pushed ticks past the 4 s beat window (asyncio cannot
+preempt a synchronous tick); the dead-man fired **47 times**
+(fire_count 89→136), each sweep cancelling the gateway's whole tracked
+set; the venue rejected cancels for long-dead ids (**20k+
+"DRAINED cancel-reject … untracked"**); the reject flood filled the
+venue drain cap (512/tick pinned), which lengthened ticks further. The
+"stable saturation" I rode from 23:06 was substantially this loop
+wearing a calm face — the alarms (DRAIN_CAPPED every tick,
+MISSED_SWEEPS 5–10) were real and I under-read them for ~30 min.
+
+**The intervention (23:39–23:41Z, ~2 min dark):** halt taker → stop →
+explicit cancel_all → **supervised27-era lever: `g2-throttle` branch,
+`converge_max_instructions_per_tick` 256→**128** → **supervised26 /
+CFG-0024** → resume. After: drains 39–161 (under cap), sent ~22–75,
+beats **445 ms**, dead-man silent (the +7 fires were the cutover window
+itself), 1,808 orders standing, taker filling live books again.
+
+**What tonight proves for the build queue:** the 4 s dead-man window ×
+synchronous ticks is the real fragility (N15's window/beat coupling +
+step 4 phase B + the per-event engine cost measurement are all the same
+fix); the gateway's cancel_all re-cancelling its full lifetime tracker
+set turns every fire into a reject storm (a gateway-side item for
+Hasan); and the throttle lever works as designed — stale-bounded, never
+absent, live books first.
