@@ -139,3 +139,50 @@ quotes never stopped and no cap was hit.
 
 **Health at 11:32Z:** tick 71,108 · RSS 190 MB (pruning holding) ·
 journal 2.67 GB ≈ 72 events/s, the supervised17 rate.
+
+---
+
+## Addendum 2 (11:5xZ) — live-game watch prep: our side is READY
+
+The path is hands-off by design; the prep was receipts, not actions.
+
+**Tonight's slate (probabilities schedule, fetched live):**
+`sr:sport_event:71548090` CIN–DET **23:00Z** ·
+`sr:sport_event:71548092` PIT–GB **23:00Z** ·
+`sr:sport_event:71548094` NE–IND **✂ 23:30Z** (the close note said
+23:00Z — the schedule says 23:30Z). HOU–LAC 00:00Z and SF–TEN 01:00Z
+sit on the 08-14 UTC schedule — adopted at the next 00:00Z discovery
+pass, the known gap, unchanged.
+
+**Receipts, our side:**
+
+- **Maker:** `MM_READINGS=bus` bound at boot ("durable bound to
+  SR_PROBABILITIES") · TEAM_BINDINGS verified for all ten teams
+  (tonight's six + the late four) · boundary survived · group commit
+  live. Nothing to do at kickoff.
+- **Taker:** up since 08-12 22:39Z, `sr.probabilities.reading.>`
+  subscribed (last-per-subject), **zero** "schedule feed unavailable"
+  in 7 days. ⚠ Operating rule: **no taker restarts during games** —
+  the boot-LIVE redelivery wrinkle (`fetched_at` fix still owed) only
+  bites on a restart.
+- **Publisher:** pool Ready · `MMPUB_POLL_LIVE_S=0.5` · the 00:00Z
+  discovery pass ran and fetched today's schedule (200 OK). Adoption
+  is not logged, so the FIRST verifiable receipt is the 15 s
+  pre-kickoff poll onset at ~22:00Z — the watch reports it.
+- **Stream:** SR_PROBABILITIES healthy (2,256 msgs retained,
+  subjects `sr.probabilities.>`).
+
+**The watch (the 03:59Z auth lesson applied):**
+
+- **On the VM** (survives local auth death): `~/gameday13_watch.sh` →
+  one line per minute into `~/gameday13.log` (stream seq · engine
+  readings/min · alarm counts · tick · engine/taker liveness), running
+  now through 04:35Z 08-14 — so it also covers tomorrow's 03:59Z
+  boundary.
+- **Locally**: a monitor from 21:50Z relays poll onset, reading-rate
+  transitions, alarms, and publisher errors; its POLL_FAILED lines
+  mean "reauth gcloud", never "the machine is sick".
+
+**Still genuinely untested until tonight:** the publisher's live
+polling loop during a real game — the one link with no prior
+production run.
