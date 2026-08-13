@@ -1,3 +1,7 @@
+---
+description: "The as-built runtime page — the tick and its bounded drains, the beat task, the sweep scheduler, the session clock, checkpoints, boot and composition"
+---
+
 # Build — Runtime
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/runtime/`
@@ -28,9 +32,18 @@ In order, every second:
    message's `Fetched-At` (its envelope `receive_time`) **before and
    regardless of the accept verdict** — a §7.3 duplicate IS the
    publisher's deliberate liveness confirmation.
-3. **Drain venue answers** to empty — a fill the machine has not
-   consumed means quoting inventory it no longer holds; a drained fill
-   can move the book within the same tick.
+3. **Drain venue answers** — a fill the machine has not consumed means
+   quoting inventory it no longer holds; a drained fill can move the
+   book within the same tick.
+   ⭐ **Both drains are BOUNDED since 08-13** (always-quoting step 1,
+   MM PR #25): each stops at its per-tick cap
+   (`drain_max_readings_per_tick` 256 · `drain_max_venue_per_tick` 512,
+   the dictionary) and the leftover waits one tick. A flooded queue
+   defers quotes by ticks instead of starving the heartbeat into a
+   dead-man sweep — the 08-12 storm's exact path. A capped tick shouts
+   `DRAIN_CAPPED` in the log line; unacked readings past the cap follow
+   the `[ack-flush]` rules (deferred, never lost). Reasoning:
+   `[drain-cap]` in `loop.py`.
 4. **Daily discovery** if due (first tick runs it immediately; the
    composition owns the wall-clock→monotonic conversion at the edge;
    `ensure_game` is idempotent and re-stamps moved kickoffs).
@@ -226,10 +239,12 @@ rows rather than restating them, so the two processes cannot drift.
 
 ## What changes here next
 
-[[market-maker/build/next|Next]]: the go-live switch (this page's live
-mode) · the boot-reconcile healer · N31 group commit (the journal's
-fsync ceiling) · N15's window retune after the VM jitter measurement.
-~~§10.3 checkpoints~~ built 06-08d, equality-proven.
+[[market-maker/build/next|Next]]: the always-quoting build order
+(George 08-13 — ~~1. bounded drain~~ built 08-13 · 2. N31 group commit ·
+3. progress-aware heartbeat · 4. decoupled quote publication · 5. the
+dead-man breaker) · the go-live switch (this page's live mode) · the
+boot-reconcile healer · N15's window retune after the VM jitter
+measurement. ~~§10.3 checkpoints~~ built 06-08d, equality-proven.
 
 ## The session clock and the detached checkpoint (08-12)
 

@@ -14,6 +14,30 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-13 — ⭐ THE ENGINE MUST ALWAYS BE QUOTING (George) · step 1 built
+
+- ✅ **George's ruling (08-13, closing the 08-12 incidents):** "busy"
+  starving the heartbeat is a **design flaw**, not an ops problem. Quote
+  publication must be architecturally unconditional. The agreed build
+  order: **1. bounded drain per tick → 2. N31 group commit → 3.
+  progress-aware heartbeat → 4. decoupled quote publication (own timer
+  over the latest consistent state) → 5. the dead-man breaker** as
+  defence-in-depth. (Ruled in the 08-11→08-13 session close; logged here
+  because this log is the state, the note is the narrative.)
+- ✅ **Step 1 BUILT (MM PR #25, stacked on #24):** both tick drains stop
+  at a per-tick cap; the leftover waits one tick (~500 ms). Quotes go
+  stale-bounded, never absent. A capped tick logs `DRAIN_CAPPED` — an
+  alarm, not a mode.
+- 🟡 **The cap numbers are OURS:** `drain_max_readings_per_tick` 256 ·
+  `drain_max_venue_per_tick` 512 — ~×3 above the largest observed loads
+  (post-sweep ack bursts ~134/tick · NCAA-Saturday readings ~70/tick);
+  worst-case capped tick at p99 fsync 2.47 ms stays inside the 4 s
+  dead-man window. Both tighten after group commit. Rows in
+  [[market-maker/parameters]].
+- ⚠ The cap bounds the DRAINS only — a sweep's own publish burst is
+  step 2/4's territory (the fsync ceiling is the sweep's, not the
+  drain's).
+
 ## 2026-08-12b — the engine half BUILT: both publishers + the taker's manual orders
 
 Session note:
