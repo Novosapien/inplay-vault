@@ -63,6 +63,17 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
   never. Withhold/resume log loudly. Steps 4 (decoupled quote
   publication — its own design pass) and 5 (the dead-man breaker)
   remain.
+- ✅ **George: DEPLOY TONIGHT (01:1x UTC), ahead of the boundary and
+  the live games** — "can't we just deploy it now". Cutover
+  supervised20/CFG-0019 → **supervised21/CFG-0020** (halt taker →
+  SIGTERM → dead-man swept 1,608 + explicit cancel_all → 28-order
+  floor → bundle `d5180eb` → 1,594 instructions re-stood → taker
+  resumed). First minutes: `committed=122` single-fsync batches,
+  **`MISSED_SWEEPS` gone** (supervised20 logged it every sweep tick —
+  the fsync ceiling was costing sweep cadence in NORMAL running). The
+  VM deliberately runs ahead of the PR reviews
+  (#21/#22/#24/#25/#26/#27). Receipts:
+  [[market-maker/sessions/2026-08-13-b-always-quoting-build-deploy]].
 
 ## 2026-08-12b — the engine half BUILT: both publishers + the taker's manual orders
 
