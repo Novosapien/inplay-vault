@@ -226,3 +226,37 @@ today DEFENSIVE is noise, and on a game day it would mask a real
 degradation. **George's ruling: fix this and redeploy** — the step-4
 converger design (drafts/always-quoting-step4-design.md) + the
 live-books-first priority George added in review.
+
+---
+
+## Addendum 5 (21:2xZ) — the evening: converger built+deployed, the DUAL-ENGINE incident, the 1.0 s ruling, the engine lock
+
+The full story is in [[market-maker/decisions]] (08-13 evening entry);
+the receipts:
+
+- **The converger built** (MM PR #30, 721→724 tests): stage/converge
+  with atomic books — the budget-splits-a-book defect was caught by
+  test (positional ClOrdID minting collides on a re-diff; see
+  `[atomic-book]`). Deployed first as supervised23/CFG-0022.
+- **The dual-engine discovery:** the "fresh" supervised22 dir held a
+  parallel session's 979 MB journal — two makers had run side by side
+  17:53–20:27Z. That session then built the UNION
+  (`deploy/g2-union-converger` — their state publishers + this
+  converger) and ran it as supervised24. George's panel symptom ("no
+  state snapshots on /mm") was the publisher dying in the crossfire.
+- **George's evening rulings:** `sweep_max_interval_s` → **1.0 s**
+  (restore absolute slack; ratio-tightening was capping every book at
+  ACTIVE) · **the single-engine lock** ("make sure there are not 2
+  market makers") · a full ghost-process sweep.
+- **State at 21:20Z: supervised25 / CFG-0023** — union + tolerance +
+  lock; fresh journal; 1,598 instructions / 180 books; **435 ticks,
+  ZERO missed sweeps**; second-start REFUSED (lock proven live); taker
+  resumed and filling; exactly one engine + one taker on the machine;
+  watch on `supervised25.log`.
+- ⚠ Standing facts for tonight: the taker restarted at 18:01Z (the
+  parallel session) — the boot-LIVE redelivery wrinkle is armed if it
+  restarts again near kickoff; `PUB_SHED` climbing is the publisher's
+  shed counter (their metric to judge); the A2 drill's starvation
+  check still fails at 10× compression (engine-time floor, queued).
+- **Process lesson filed:** one session drives the VM at a time; the
+  lock now enforces the machine half mechanically.

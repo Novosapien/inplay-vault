@@ -14,6 +14,50 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-13 evening — ⭐ THE DUAL-ENGINE INCIDENT · the converger deployed · the 1.0 s ruling · the engine lock
+
+- ⚠ **TWO MAKERS RAN SIMULTANEOUSLY, 17:53–20:27Z.** A parallel session
+  deployed its own `supervised22` (state publishers, 979 MB journal,
+  hourly checkpoints) while this session's `supervised21` still ran —
+  same account, same bot id, same books, and NOTHING refused. Both died
+  at 20:27Z in this session's cutover (the kill matched every
+  `mm.runtime`). Likely explains the afternoon's state weirdness and
+  "the maker stopped quoting". Root cause: several sessions with equal
+  authority over one machine and no machine-level guard.
+- ✅ **George: "we need to make sure there are not 2 market makers" →
+  the SINGLE-ENGINE LOCK built and deployed** (`mm/runtime/lock.py`):
+  an exclusive flock on `/var/lib/mm/engine.lock`; a second engine
+  REFUSES to start, loudly; the kernel drops the lock on any manner of
+  death. Proven live: a deliberate second start printed the refusal.
+- ✅ **George: deploy the converger before the games** ("deploy it now
+  and test it live"). Deployed via a UNION: the parallel session merged
+  its state publishers with this session's converger
+  (`deploy/g2-union-converger`) and ran it as `supervised24`; this
+  session then stacked the evening's two fixes on top → **supervised25
+  / CFG-0023** (halt → stop by exact pid → cancel_all → start → resume;
+  taker resumed 21:15Z). The cutover chain today:
+  CFG-0020 → 0021 (aborted on the dual-engine discovery) → 0022
+  (supervised23, converger alone) → **0023 (the union + tolerance +
+  lock)**.
+- ⭐ ✂ **George ruled `sweep_max_interval_s` 0.625 → 1.0 s** ("let's
+  do 1s"): restores §3.1.4's ABSOLUTE half-second slack — the 08-11
+  cadence ruling had kept the 1.25 RATIO and silently tightened the
+  tolerance to 125 ms, so ordinary ack churn (~44/tick under the
+  overnight dwell) tripped it on ~7% of ticks and the portfolio-wide
+  counter capped every book at ACTIVE (George's own catch on the
+  panel). Honest note: this relabels sub-second lateness as
+  acceptable; the per-event engine-cost work stays queued. **First
+  435 ticks on supervised25: ZERO misses.**
+- ✅ **Ghost sweep (George: "no ghost processing"):** eight stale
+  watcher processes from 08-12 and a duplicate watch script killed by
+  explicit pid; final census exactly one engine (the lock holder), one
+  taker service, one watch.
+- ⚠ Collateral recorded honestly: this session's cutover clobbered the
+  parallel session's `run_supervised22.sh` (their journal and
+  checkpoints are intact); the A2 drill on the converger build passed
+  10/11 with the starvation check failing at 10× compression (worst
+  2 missed intervals — the engine-time floor, known and queued).
+
 ## 2026-08-13 — ⭐ THE ENGINE MUST ALWAYS BE QUOTING (George) · step 1 built
 
 - ✅ **George's ruling (08-13, closing the 08-12 incidents):** "busy"
