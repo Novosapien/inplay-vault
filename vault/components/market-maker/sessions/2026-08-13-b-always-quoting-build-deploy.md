@@ -186,3 +186,18 @@ pass, the known gap, unchanged.
 **Still genuinely untested until tonight:** the publisher's live
 polling loop during a real game — the one link with no prior
 production run.
+
+---
+
+## Addendum 3 — the daily reference feed goes to its own session
+
+George: Edwin sent material on how the daily report may be created —
+analyse it in a DEDICATED session, design our side, **deploy nothing**.
+Brief written: `vault/drafts/daily-reference-feed-analysis-brief.md`
+(Edwin's 28-07 feed engine + the 08-09 EV handoff + N19/N23 gates).
+Also from the same conversation: the daily file is two real numbers per
+team — `expected_remaining_wins` sets the level, `sigma` sets the
+width; the engine derives everything else. A false alarm on "the maker
+stopped quoting" was checked to the metal: engine sweeping, 3,230 open
+orders, MD cache fresh to the second, taker filling — all healthy at
+12:43Z.
