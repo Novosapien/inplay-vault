@@ -14,6 +14,692 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-12b — the engine half BUILT: both publishers + the taker's manual orders
+
+Session note:
+[[market-maker/sessions/2026-08-12-b-engine-state-publishers-manual-orders]].
+Branch `feat/state-publishers-manual-orders`, 767 tests, ruff +
+mypy-strict green. **Nothing deployed — the VM was not touched.**
+Everything below is engineering mechanics, OURS under the 22-07 remit
+line, recorded because a later session will need the reasoning.
+
+- ✅ **A manual sell is always FIX side 2, never side 5.** The taker's
+  own sells choose between them by position (T-O10), but an operator
+  typing "sell" has asked to reduce a holding — a short opened by
+  inference is a position nobody decided to take. If the sell exceeds
+  the holding the venue rejects it whole and the operator sees why.
+- ✅ **Replace is cancel-then-new, not atomic**, and both `qty` and
+  `limit_px` are required. The taker has no replace path of its own and
+  the atomic `gateway.orders.mm.replace` lane is the maker's; after a
+  partial fill, inheriting the original quantity would re-buy what
+  already filled. ⚠ The honest consequence (EC16): a guard-rejected
+  place leg leaves the operator with NO order, and the engine does not
+  restore the original.
+- ✅ **Manual orders are exempt from the IOC cancel timer** (they are DAY
+  orders placed to rest) **but not from the kill switch** — halt and the
+  T-S05 reconcile halt sweep everything, which is what those levers are
+  for.
+- ✅ **The collar's last-trade fallback is age-bounded (🟡 1 h), and a
+  crossed book counts as no book.** JETS's "stale 18.65 ask" was a
+  LAST-TRADE fossil (decisions 10-08c) and EAGL was observed bid 145.25
+  against ask 77.80 — collaring against either would refuse a good
+  order. Past the bound the collar SKIPS; qty and notional still bind
+  and the ack says `collar_skipped`.
+- ✅ **`shed[]` added to R1's payload** — the spec mandates the
+  degradation (over budget → resting orders become per-book counts) but
+  gave the consumer no way to detect it, and an empty `resting_orders`
+  array must never read as "no orders resting".
+- ⭐ **MEASURED — the 256 KB budget holds:** `mm.state` is **208,250
+  bytes at 170 books** quoting two-sided ladders (~9.2 resting orders
+  each), ~220 KB extrapolated to 180. No shed on today's universe, ~14%
+  headroom.
+- ⭐ **THE TICK STAGES; A SEPARATE TASK ENCODES AND PUBLISHES** (the
+  lead's design call, taken after the first measurement). The tick keeps
+  only what needs tick consistency — the transition diff and the
+  projection, which read state that moves between ticks. The payload
+  build, the budget check and the `json.dumps` are pure functions of an
+  immutable frame and ride the publisher's own task.
+  **Measured: +1.98 ms (+43.7%) → +0.32–0.46 ms (+7–10%)**, i.e. ~4×
+  off the loop.
+  ⚠ **The honest caveat, recorded because it will be misread:** this
+  reduces TICK latency, not event-loop blocking. asyncio does not
+  preempt, so the encode still blocks the single loop for the same
+  time, and the beat task is starved either way ([beat-task] says so).
+  What the split genuinely buys beyond the number: the loop's cadence
+  accounting stops absorbing encode time, and an unpublished frame can
+  be **superseded** by a newer one — a state snapshot is worth nothing
+  late, and this is the same rule the proxy applies downstream.
+- ✂ **The perf AC re-cut (lead, 12-08b): ≤ 10 ms/tick AND ≤ 5% of the
+  500 ms tick interval**, replacing "within 10%". The original was a
+  ratio against a 4.5 ms base and could not survive one 208 KB
+  `json.dumps`. Engineering mechanics, 🟡 both before and after.
+- ✅ **N36 RULED (lead, 12-08b): publish BOTH activity states, and never
+  merge them into one badge.** Top level = the OPERATOR-level setting
+  (the pin, or AUTO) — what a human chose. Per book, inside
+  `books{SYM}` = the DERIVED T-F07 state — what the engine is doing
+  there. With only the bot-level value a cockpit cannot tell
+  "deliberately not trading this book" from "something is wrong with
+  this book", which is the exact ambiguity this build exists to remove;
+  with only the per-book value an operator cannot see whether the engine
+  is deriving or pinned. R2 and R9 amended. In code the two are named
+  apart (`operator_state` vs `BookState.activity_state`); the JSON keys
+  are both `activity_state`, at their two levels.
+- ✅ **The publishers' numbers moved into the Configuration Dictionary**
+  (boundary opened by the lead — `src/mm/config/` is not one of the five
+  determinism modules). Cadence, payload budget, hard ceiling, terminal
+  retention and the shipped on/off default now live there under
+  `[ops-publisher]`, per §1.6-5: they are 🟡 values that want tuning
+  after first run, and a module constant would make each tuning a code
+  change. The env-vs-dictionary split holds — env answers "is this
+  deployment publishing at all", the dictionary answers "how does it
+  behave". The taker's `SNTConfig` READS the same dictionary rather than
+  restating the numbers, so the two processes cannot drift.
+- ⚠ **`realized_pnl_total` has two limits, both now in the boot log.** A
+  fresh journal directory resets it (every deploy takes one — which is
+  why R9 labels the accumulation origin), and a §10.3 CHECKPOINT boot
+  under-counts it, because only the journal tail replays. The ops rule
+  hides the second: `load_latest` only accepts a checkpoint of the
+  running config version, and every deploy bumps it.
+- ⛔ **The real blocker is not code: NATS grants.** `market-maker` needs
+  publish on `mm.state`; `snt-taker` needs `snt.state.>` and
+  `snt.control.snt-1.reply.>`; the proxy's user needs the command
+  subject and the reply wildcard. **A missing grant is SILENT** — the
+  publish returns normally and the server drops the message, so the
+  symptom is a panel stuck on "engine not publishing yet" while the
+  engine's own log says the publisher is ON.
+- 📝 Opened **N36**: R2 publishes ONE bot-level `activity_state` while
+  the T-F07 build derives it per book, so a screen cannot see which
+  books are LIVE. Reported rather than patched — the spec's field list
+  is explicitly closed.
+
+## 2026-08-12d — ⭐ THE ADVERSARIAL REVIEW: the fix for the phantom ack was itself unsound
+
+Session note:
+[[market-maker/sessions/2026-08-12-b-engine-state-publishers-manual-orders]]
+(Round four). Eight findings, four serious; all closed. 818 tests. Still
+nothing deployed.
+
+**The lesson that outlives the code: three outcomes was the right SHAPE,
+and the implementation did not deliver it.** The 12-08c fix replaced a
+phantom ack with a classifier whose evidence was too weak to carry the
+claims it made. Asking for an independent review of one's own fix — on a
+path where the failure is money — is what caught it; the same session
+could not have caught it alone.
+
+- ⛔ **The worst one would have fired IN THE STATE WE DEPLOY INTO.**
+  REFUSED was decided from `nc.last_error`, which is ONE field on a
+  connection also carrying `snt.state.*`, the reply lane, `order.>`,
+  `market.trade.>` and a JetStream consumer. With the `snt.state.>` grant
+  missing — the documented current state — the state publisher draws a
+  fresh permissions error EVERY SECOND, so the comparison was true almost
+  always: it would have falsely refused MOST manual orders **while placing
+  all of them**, then dropped every fill silently because a refused order
+  is not tracked. The operator would have been told the order did not
+  exist and placed a second one.
+- ✅ **The fix is attribution by SUBJECT.** The server names the subject in
+  a denial, and permissions are per-user-per-subject, so a denial naming
+  `gateway.orders.mm.new` is a fact about the CREDENTIAL's ability to
+  publish there — not an inference about one message. The state
+  publisher's denials name a different subject and can never match. The
+  residual race is filed as **N37**, not engineered away.
+- ⚠ **"The flush proves it" was false in the window that mattered.**
+  Verified in the installed client: `_flush_pending` returns a resolved
+  future with NO round trip when not connected, and `publish()` in the
+  same state BUFFERS rather than raising. Both return cleanly for bytes
+  that never left the process — and the old code called that CONFIRMED.
+  CONFIRMED now requires connected at BOTH ends.
+- ⭐ **F4 was worse than the money bug, and this is the ruling to
+  remember: a kill switch must not consult state written by the paths
+  that failed.** `cancel_sent` was set before the publish and never
+  reset, so a refused cancel made the order permanently uncancellable —
+  the operator path refused every retry AND `force_all_cancels` skipped
+  it, so HALT and the T-S05 reconcile halt both walked past a live
+  resting order. `force_all_cancels` now filters on nothing at all.
+- ✅ **Absence of proof is the doubt, not absence of doubt the proof.**
+  `ManualOrder.submitted` defaulted TRUE, so a crash between the send
+  record and any outcome re-adopted as `working`. The note said a crash
+  "must leave us believing we MAY have sent it" — that is `unknown`. The
+  default was inverted; an explicit `manual_confirmed` record now sets it.
+- ✅ **A reply carries FACTS and OUTCOME ASSERTIONS and they cannot share
+  a dict.** A refused replace used to report `replaced: true` — one
+  payload asserting both that nothing reached the venue and that the
+  replacement happened. ⚠ **EC16 turned out to describe one case of
+  three**, now split: EC16 the guard rejection (`cancelled: true` — the
+  cancel really was published), EC16b the refused submission (both
+  **false**), EC16c the unconfirmed replace (**neither key present** —
+  and `false` vs "we do not know" rendering identically would have been a
+  silent-failure shape of its own).
+- ✅ **`unknown` resolves on ANY venue event, not only a fill.** A resting
+  DAY limit away from the market is acknowledged and never fills — i.e.
+  the COMMON manual order — and it used to stick at `unknown` forever,
+  with the panel saying "check the venue" permanently.
+- ⭐ **The root cause was test ORDER, and it is now a rule.** The three
+  commit methods were well tested; the classifier choosing between them
+  was not tested once, and every other finding lived in that gap. Writing
+  the tests FIRST this round changed the implementation — several failed
+  against the intended design. A test written after the code, from the
+  same misunderstanding, is the bug restated.
+- 📝 **N38 opened:** the journal flushes but does not `fsync`, so
+  journal-before-wire survives process death and not host death. Stated
+  honestly in code rather than claimed away; closing it costs an fsync per
+  record (p50 1.70 ms, N31) and needs its own decision.
+
+## 2026-08-12c — the Phase-1 review: ten findings, and one of them was a phantom ack
+
+Session note:
+[[market-maker/sessions/2026-08-12-b-engine-state-publishers-manual-orders]]
+(Round three). All ten closed; 795 tests. Still nothing deployed.
+
+- ⭐ **THE ONE THAT MATTERED — a failed venue publish produced a
+  journaled, dedup-locked ACK for an order that never left.** Everything
+  was committed before anything reached the wire, so R7 (which resolves
+  "landed" from the ref's PRESENCE in `open_orders`) reported LANDED, the
+  operator's resend replayed `{ok:true}` forever, and a cancel acked
+  `{cancelled:true}` having cancelled nothing. Root cause was a CONTRACT
+  mismatch: `open_orders` membership was evidence of engine INTENT and R7
+  read it as evidence of venue SUBMISSION.
+  ✅ **Fixed with THREE outcomes, not two** — confirmed / refused /
+  **unconfirmed** — because a flush timeout genuinely cannot be resolved
+  either way. `unknown` is §8.2's own word for it, and the doubt is
+  journaled so a restart re-adopts it as `unknown`, not `working`.
+- ⭐ **And the fix was incomplete without a `flush()`.** Core NATS
+  publishing is fire-and-forget: `publish()` returns without raising even
+  when the server refuses, and the violation arrives asynchronously. So
+  "publish then confirm" would STILL have acked an order refused for want
+  of a grant. **The same bug shape the platform stream caught in their own
+  health check** — in the ORDER path rather than the observability path,
+  which makes it a money bug rather than a monitoring one. One lesson,
+  two places; both now written down.
+- ⛔ **A FOURTH grant is owed: `market.trade.>` subscribe for
+  `snt-taker`.** Its absence degrades Hasan's ✅ ruled ±20% collar to
+  "skip" on every book without a fresh quote, and the ack says
+  `no_reference` — which reads as "empty book", the case the fallback
+  exists to serve. ✅ The engine now distinguishes them: zero prints ever
+  received reports `no_trade_feed`. A documentation-only fix would have
+  left the operator unable to tell.
+- ✅ **The off switch does NOT contain manual trading**, and the runbook
+  said otherwise. `SNT_STATE_PUBLISH=off` stops snapshots and nothing
+  else — the `order` command family stays live, so with it off you cannot
+  SEE orders that can still be placed. The containment lever is removing
+  the proxy's publish grant on `snt.control.snt-1`.
+- ✅ **A dead publisher does NOT stop the run** — the opposite answer to a
+  dead heartbeat, deliberately. A dead beat means the book is about to be
+  swept; a dead publisher means a dashboard went dark while 180 books
+  quote correctly. Stopping would turn an observability fault into a
+  trading outage.
+- ⭐ **MEASURED — the taker's payload is 58.4 KB at 180 books** (1.9 KB at
+  5). R2's "the taker's book set is small" is false: SNT-1 has run all 180
+  since 08-12. It now carries the maker's budget and shed.
+- ✅ **`qty: 0` on a replace used to DESTROY the resting order while
+  `qty: "abc"` left it alone.** Backwards — zero is what a fat finger
+  produces. EC16's partial-failure contract is for GUARD rejections on a
+  well-formed order, not for malformed input.
+- ✅ The venue's $127.50 cap now binds when the collar cannot measure
+  (`qty:1, limit_px:499999` passed every guard); `qty` refuses a
+  fractional value rather than truncating it (a share count is a money
+  field); a repeat cancel is refused rather than acked twice.
+- ✅ **The determinism property is locked by a TEST, not only by the AC's
+  diff.** A diff gate works while someone is reading diffs; the next
+  person who "fixes" a None market state with `.setdefault()` would get a
+  green CI run and a book that quotes differently because a dashboard
+  looked at it.
+- ⚠ **EC14 is a SPEC defect, confirmed:** it holds only on a same-journal
+  restart, and the ops rule takes a fresh journal on EVERY restart. A
+  drill would PASS it while proving nothing about production — worse than
+  not testing it. Recommendation: scope the criterion honestly rather than
+  build journal-cutover carryover for v1.
+
+## 2026-08-12 — ⭐ THE PANEL MATTERS NOW: observability discovery (Hasan) — engine publishing UN-PARKED
+
+Full record: `specs/2026-08-12-admin-trading-observability/discovery.md` +
+[[market-maker/sessions/2026-08-12-admin-panel-observability-discovery]].
+
+- ✅ **The MM Ops UI lives in the admin panel** (`inplay-admin-panel-trading`),
+  not the desktop app shell — closes the mm-ops-ui open item; consistent
+  with resolved N7 (stateless panel + in-VPC proxy).
+- ⭐ **"What the engine publishes" is UN-PARKED.** Both engines get state
+  publishers at the runtime edge: the maker publishes `Orchestrator.state()`
+  + tick stats on `mm.*`, the taker publishes `agent.snapshot()` on `snt.*`.
+  Periodic FULL snapshots (not deltas) — a joining panel needs no history.
+- ✅ **Live transport = Centrifugo WSS to the browser** (the mobile app's
+  proven path through the public LB); NATS → Centrifugo fan-out; polling is
+  fallback only. Verified 08-11: the proxy already runs INSIDE the VPC —
+  the "redeploy the proxy into the VPC" idea was checked and refuted.
+  New work: a token-minting route on the proxy (needs the Centrifugo HMAC
+  secret bound), `centrifuge-js` in the panel.
+- ✅ **Maker strictly read-only in the panel** — no controls, no kill switch
+  this phase (the maker has no control subject on the wire; wiring one is a
+  later phase).
+- ✅ **The taker gets the one control: a manual order ticket** — IPO buys +
+  manual secondary, TAKER ACCOUNT ONLY, the maker account hard-excluded.
+  **Manual orders route THROUGH the taker engine** as a control command and
+  journal flagged `manual` — so float = env float + journalled drift stays
+  true (the 08-11 cutover invariant), the ClOrdID gateway rule is respected,
+  and the venue-side hijack (an unregistered ack adopted and re-priced) is
+  sidestepped. Chosen over halt-gating and free-trading-with-reconcile.
+- ✅ **Unrealized P&L marks at the BOOK MID** (position × (mid − avg cost)),
+  derived panel-side — no engine computes it. Realized P&L = the sum of the
+  per-fill records. **P&L is the TAKER'S key metric** (controlled loser);
+  for the maker it is informational only — prominence follows.
+- ✅ **Buying power DEFERRED** — SSH-door only, no data path, $1bn cash makes
+  it rarely binding.
+- ✅ **Freshness: books + engine state live, positions/P&L slower** — every
+  live surface carries a staleness indicator (the venue book's ~5-min
+  churn-staleness and the never-cleared quote make this a requirement, not
+  polish).
+- ⚠ **Compliance flag:** manual panel trading of the taker account may fall
+  under the same E32/E33/T13 rulings that gate taker deployment — rides
+  that round, not assumed clear.
+- ⚠ **No order attribution** — panel auth is three shared passwords; N35
+  opened (operator identity on manual orders).
+- ✅ **No hard date** — the 13 Aug dry run is NOT the target.
+- ➕ **Spec-review rulings (Hasan, same day, after review-001):**
+  **`house:*` data + the ticket are ADMIN-ONLY** (viewer keeps market data;
+  `groups` gains nothing) · manual-order guards: **10,000 shares/order ✅ ·
+  ±20% collar vs book mid ✅** · $500k notional 🟡 · N35 ruled: **flag only,
+  no operator name** (reopens only on a compliance demand). Numbers filed in
+  [[market-maker/parameters]] §"Observability + manual orders". The spec
+  (`specs/2026-08-12-admin-trading-observability/spec.md`) is the build
+  contract; review-001 recorded 16 blocking findings, all resolved in the
+  same-day revision.
+
+## 2026-08-12 — ⭐ THE ENGINE LEARNS THE VENUE'S DAY (George: "not the stopgap — fix the actual error")
+
+- ✅ **George's ruling:** no kick-the-can restarts; fix the three root
+  causes of the 08-12 storm + hourly stalls properly, and record
+  everything in the vault. Built same day as **MM PR #24**; deployed
+  as `supervised17`/CFG-0016.
+- ✅ **Checkpoints write from a forked child** (Redis-BGSAVE pattern):
+  the hot loop never blocks. The synchronous 344 MB write froze the
+  loop ~22 s hourly and the dead-man swept the book each time.
+- ✂ **The 08-10c suppress-and-retry is SUPERSEDED for gone verdicts**:
+  UNKNOWN ORDER / ORDER DEAD / ORDER IS DEAD / NOT_CANCELABLE retire
+  the order at once ([gone-retire]). Transient verdicts stay with the
+  backoff. The session roll proved the old design retries ~750
+  phantoms forever (~61k rejects/hour).
+- ✅ **The session clock**: tZERO's production day (George supplied the
+  spec text — acceptance 00:01–23:59 ET, Single Price Open 00:02 ET)
+  is now an engine fact. Close 23:59 ET expires all resting orders
+  locally + gates sends; open 00:02 ET re-stands the full universe.
+  A journalled SESSION_BOUNDARY event (ours, the eleventh type), once
+  per ET day per phase.
+- 📝 Open design question filed: should the MM quote INTO the 00:02
+  Single Price Open auction, or wait for continuous trading? →
+  Edwin/Rob round.
+
+## 2026-08-11d — ⭐ SHORTS UNBLOCKED AND THE TAKER'S HALF BUILT (George: "we just need to implement it")
+
+- ✅ **George's override of the 10-08 queue:** he asked Edwin directly
+  (10-08) — Edwin wants shorts; stop waiting on the E26/T16 round for
+  the MECHANIC. The mechanic is the platform's own: **flatten first,
+  then short** — sell the longs to zero before any side-5, and both
+  bots get it. E26/T16 still owe the NUMBERS (depth, cover, borrow
+  backing) and compliance still gates production — unchanged.
+- ✅ **The taker's half is BUILT (MM PR #15)**, T-O10 verbatim: side 2
+  while long with every order stopping exactly at flat; side 5 only
+  from flat-or-short, never resting beside a side-2 (or vice versa),
+  within `max_short_shares` (default **1,000** — QA's per-security
+  borrow reserve, T-M06, 🟡 OURS; Edwin's depth ruling rides E26);
+  buys while short stop exactly at flat. **Off by default**
+  (`SNT_SHORTS`) — enabling is a deploy decision. 682 tests.
+- 📝 **Dormant by construction under the standard float:** with 5,000
+  shares and the 1,500 drift cap the holding wanders 3,500–6,500 and
+  never nears zero, so side 5 cannot fire. The QA shorts test needs a
+  genuinely zero-float book — **JETS is the natural candidate** once
+  Rob resets its band (the account holds zero JETS).
+- ✅ **Ownership split (George):** this session owns the TAKER stream;
+  the maker's half (N34 — the ask ladder's side-2→5 flip at flat) goes
+  to the MM session. Design note passed over: a resting order cannot
+  CHANGE side on cancel/replace, so the flip must happen at order
+  MINTING — side chosen by coverage (side-2 ask qty ≤ Pos) — not by
+  amending resting asks.
+- ✅ **Namespace ruling (George, same conversation):** the taker stays
+  on the MM namespace — the separate account/user id already isolates
+  events and ids; the shared dead-man sweep fails SAFE for the taker
+  (cancels only). An own `snt` namespace stays a Hasan-backlog option.
+
+## 2026-08-11c — ⭐ THE INGESTION MOVE IS LIVE: the mm-publisher deployed (George: "just get it deployed")
+
+- ⭐ **`inplay-mm-publisher` runs in production** (Cloud Run worker
+  pool, manual 1 instance — the AlwaysOwns fence): SR probabilities →
+  `sr.probabilities.reading.{game}` on JetStream. The taker's AUTO
+  states now have a live source; the MM can switch to the bus at its
+  own go-live (unchanged — its in-engine poller still runs).
+- ✅ **The publisher OWNS the stream config.** Its idempotent
+  `add_stream` refused the hand-made morning stream ("different
+  configuration"); the empty stream was deleted and the publisher
+  recreated it. Never pre-create its stream by hand.
+- ✅ **The pool's real env, now in tfvars:** `PROBABILITIES_API_KEY`
+  (the probability endpoints never read the SR key) and `REDIS_URL`
+  (production_mode's fail-fast demands non-loopback; the worker never
+  touches Redis). Found by two boot failures, fixed live.
+- ✅ **Cross-session coordination worked, with one lesson each way:**
+  a sibling session had prepared the deploy (PR #8/#10, terraform,
+  the secret); this session took ownership by message and finished
+  (PR #10 merged, pool bootstrapped by gcloud — the CI step is
+  image-only and cannot CREATE a pool). The sibling caught this
+  session's broken regex-merge of the terraform (PR #12 repaired dev).
+  Deployed reality was never affected.
+- 📝 Zero readings on 11-08 = no universe games today; the first live
+  proof of publisher → taker is Thursday's dry-run game.
+
+## 2026-08-11b — ⭐ THE TAKER IS DEPLOYED — and we run the NATS grants OURSELVES (George)
+
+- ✅ **George's ruling: do the "Hasan asks" ourselves** — "if we haven't
+  got the access, we need to request the access." We had the access
+  (IAP SSH to `inplay-nats`). Hasan checked not-mid-work first (Slack;
+  his last box change was 10-08 15:57). All changes follow the box's
+  own convention: dated `.bak` before edit, `nats-server -t` validate,
+  SIGHUP hot reload (5 connections before and after — nobody dropped).
+- ✅ **A dedicated `snt-taker` NATS user exists** (the 10-08 wish
+  granted): publish `gateway.orders.mm.>` + `snt.control.>` + scoped
+  JS API (STREAM.NAMES · SR_PROBABILITIES INFO/CONSUMER CREATE/INFO/
+  DELETE); subscribe `order.>`, `position.>`, `market.>`,
+  `snt.control.>`, `_INBOX.>`. ⚠ Lesson: modern servers publish
+  consumer creates as `$JS.API.CONSUMER.CREATE.<stream>.<name>.<filter>`
+  — the grant needs the `.>` form, verified by a live violation first.
+- ✅ **The `SR_PROBABILITIES` stream EXISTS on production NATS now**
+  (it did not — the bus feed was never live): subjects
+  `sr.probabilities.>`, limits retention, 7-day age — the publisher's
+  exact contract, so its idempotent `add_stream` will no-op. The
+  `sportradar` user gained publish on `sr.probabilities.>` +
+  STREAM CREATE/INFO for the day the mm-publisher worker deploys.
+  **Grants verified end to end:** sportradar published a test reading,
+  snt-taker's JetStream consumer received it, the stream was purged.
+- ✅ **Credentials in Secret Manager** (`inplay-497712`):
+  `snt-taker-nats-password` (rotated once — the first value printed in
+  a CLI error and was burned on the spot) and `snt-taker-venue-login`
+  (the +MT login Hasan sent by DM). Values live nowhere else but the
+  boxes' root-only files.
+- ⭐ **DEPLOYED: `snt-1.service` runs unattended on the MM VM** —
+  `main@5681767` via `~/kit/snt3.bundle` → `~/snt-checkout`, env
+  `/etc/snt-1/env` (+ root-only `env.secret` for the NATS URL),
+  **SNT_CONFIG_VERSION=SNT-CFG-0003**, journal `/var/lib/mm/snt3`,
+  `SNT_STATE=AUTO`, EAGL float pinned 4,988. Boot log clean: AUTO
+  (derived), 5 books, JetStream subscribe succeeded. **The kill switch
+  drilled live** (halt → 0 cancels → resume, journaled) — T-R01's
+  grant hole is closed; the unit adapts the repo template (user
+  georgewestbrook, the main checkout's 3.12 venv, PYTHONPATH).
+- 📝 Books stay quiet until the MM engine runs (empty books → no
+  orders) and states stay OVERNIGHT until the mm-publisher worker
+  deploys (the stream is empty — deploying that worker is the
+  ingestion go-live step, a separate decision).
+- 📝 Owed: tell Hasan what changed on his box (drafted, George sends).
+
+## 2026-08-11 — T-F07: the taker's activity state derives from the BUS (George's source ruling)
+
+- ✅ **The schedule source is the bus — option A** (George, after the
+  four-option review). The taker consumes the sportradar service's
+  `sr.probabilities.reading.>` JetStream feed; every payload already
+  carries `kickoff_time`, `status`, scores and both competitor ids, and
+  a quiet overnight game still re-publishes every ~30 min (the re-offer
+  rule). No new service work; the same feed the MM trades on. Rejected:
+  a service-published state subject (one consumer = option A with extra
+  steps; the IPO-window rule is taker policy and does not belong in the
+  feed service) and direct SR polling (the 05-08c ingestion ruling —
+  only the service calls SR). A file source survives BEHIND the same
+  store (`SNT_SCHEDULE_FILE`) as the test fixture / pre-grant fallback.
+- ✅ **The state is per BOOK** (recommended, accepted): a game's two
+  teams go PRE_KICKOFF → LIVE → POST while the rest stay OVERNIGHT.
+  Book-visible → Edwin confirms the shape in his round (filed on E41).
+- ✅ **Precedence (ours, recorded):** `SNT_STATE=AUTO` derives; a named
+  state PINS every book; `{"cmd":"state","value":"AUTO"}` un-pins.
+  Pin/AUTO marks journal and outrank env (the 09-08c rule extended).
+  Derived transitions journal AUDIT-ONLY and are never replayed — boot
+  re-derives from the live bus; books sit OVERNIGHT until it does
+  (yesterday's LIVE must not pin today's quiet book).
+- ✅ **Err-quiet, the taker's inversion of the service's err-busy:** an
+  unknown kickoff, a silent feed, or a missing grant derives OVERNIGHT
+  (×1), never LIVE (×75). The service wastes a fetch; the taker would
+  spray 75× noise — opposite costs, opposite defaults.
+- ✅ **IPO windows are config** (`SNT_IPO_WINDOWS` — InPlay calendar
+  facts, not SR facts): every book floors at PRE_KICKOFF inside one.
+- 📝 Four numbers OURS, 🟡 in parameters: pre-kickoff 1 h · POST 1 h ·
+  LIVE staleness 10 min · file-game length 4 h. Built as **MM PR #14**,
+  stacked on #12 (655 tests, ruff + mypy-strict green). ⛔ New grant
+  owed by Hasan: JetStream consume on `sr.probabilities.>` for the
+  taker's NATS user — bundle with the owed `snt.control` grant.
+
+## 2026-08-10c — the operational rulings from the forensics day
+
+- ✅ **"We never ever ever want to show mock data"** (George) — the app
+  renders venue data or an honest empty state, never a generated
+  ladder. Built and OTA'd to prerelease the same day (`inplay-app`
+  `4da4e0d`); policy comments guard both former fallback sites.
+- ✅ **Gateway restarts follow the ordered sequence:** poker/taker down
+  → engine down → gateway → engine → poker. Both failure modes of
+  violating it happened live 10-08 (the engine crash; the MD
+  empty-book break).
+- ✂ **The JETS "stale 18.65 ask" correction:** it was never a resting
+  order — 18.65 is JETS's LAST-TRADE price, held as a fossil quote
+  (fixed in the gateway) and as the venue band's anchor (Rob resets).
+- ✅ **The taker rides `gateway.orders.mm.*` with the `MMSN` prefix**
+  (the namespace enforces MM ids) and **never publishes MM
+  heartbeats** — the dead-man latch is global and a second beater
+  would mask the engine's death.
+
+## 2026-08-11e — ⭐ THE DEPLOY DAY'S VENUE FACTS + THE FIRST JOINT RUN (gospel + measured)
+
+Full narrative: [[market-maker/sessions/2026-08-11-cadence-deploys-joint-run]].
+The facts that outlive the day:
+
+- ⭐ **VENUE FACT — the stale test quotes are a RESEEDER.** 49 levels
+  across the six books re-posted 2026-08-11 10:16Z, originator tag
+  275=`STX` — the same price zones eaten on 08-07e. Eaten again in
+  full (every order filled at its own price, zero rejects). They WILL
+  return until tZERO disables the seeder → Rob ask (with: what is STX,
+  and its schedule).
+- ⭐ **VENUE FACT — the per-account position feed is LIVE**: during the
+  T-S05 reconcile chase the venue's number moved by exactly each fill,
+  fill after fill. Behavioural evidence against T15's "is 9383 live"
+  doubt (T15 stays open for Rob's formal answer).
+- ⭐ **MEASURED — house↔house prints EXECUTE across the two house
+  accounts** (MM 1797733477 ↔ taker 4963224393): an entire day of
+  MM↔SNT-1 trading, journals mirroring share-for-share on all ten
+  (book, side) totals, 100% of taker flow met the maker. T13's
+  cross-account half now has QA evidence; E33's optics have numbers.
+- ✅ **T-S05 PROVEN LIVE on its first day** — it halted all five books
+  on real venue-vs-journal gaps (caused by one plain-kill stop) and
+  the recovery lever worked: `SNT_FLOAT_OVERRIDES` per book = venue −
+  journalled drift. The taker's floats are now venue-verified: COWB
+  4959 · STEE 5256 · EAGL 5132 · GIAN 4737 · PATR 4836.
+- ✅ **C4's live half PASSED** (see [[market-maker/test-plan]]) and the
+  **taker's live stats match Edwin's design**: 198/198 fills, 49.5%
+  buys, clip mean 48 (his ~44), crossing cost ≤4¢ — data for the E41
+  tuning conversation.
+- 📝 Operating rules from the incident chain live in the MM repo's
+  CLAUDE.md (PR #20) — halt-before-stop, config-version bump per
+  restart, boots-halted/resume, `SNT_MINUTES`, kill-pattern + cwd
+  footguns.
+
+## 2026-08-11d — ⭐ the freeze OVERRIDE + everything DEPLOYED (George)
+
+- ⭐ **George overrode the 08-10 Hasan freeze** for the publisher
+  deploy: "treat Hasan as not doing anything — incorporate any changes
+  he's made into the deploy." Executed: service dev→main carried his
+  six fixes; his pre-provisioning (firewall rule 2024, the
+  `sportradar` + `snt-taker` NATS users) made the path short.
+- ✅ **The MM probability publisher is IN PRODUCTION** (+ a testing
+  pool): Cloud Run worker pools, terraform-managed, production
+  probabilities access (⚠ the code default still said the half-burned
+  trial tier — `PROBABILITIES_ACCESS_LEVEL=production` env), poll
+  `MMPUB_POLL_LIVE_S=0.5`, ONE instance per pool until the C15 lease
+  replaces `AlwaysOwns`.
+- ✅ **The ingestion switch is ON** (MM PR #17, `MM_READINGS=bus`) and
+  the pipe is proven: a captured reading published on the production
+  JetStream reached the running engine and journalled. The `market-maker`
+  NATS user carries the SR_PROBABILITIES consumer grants (nats.conf
+  backed up on the VM before the edit).
+- 📝 **The engine deploys by git BUNDLE over IAP scp** — the VM repo
+  has no GitHub remote. supervised10 → 11 → 12 through the day; the
+  per-deploy CFG bump + fresh journal rule held.
+
+## 2026-08-11c — ✅ Edwin's ladder size profile STANDS: fattest at the touch (George, after challenge)
+
+George read the live books' touch-heavy sizing as inverted from what he
+expected ("you want the most orders at the best price... this seemed
+atypical") and asked whether it was Edwin's design or an error. Review:
+it is **Edwin's ASMM-1 design, implemented faithfully** (base 10,000 ×
+0.72^level), and it is coherent for THIS MM's mandate — a liquidity-first,
+non-profit-seeking maker whose flow is deliberately uninformed (retail +
+SNT-1): size at the touch fills users near mid and earns the spread.
+The inverted tree (thin at the touch, growing with depth) is the
+risk-managing posture and matches empirical book shapes — a different
+strategy, not a correction. **George: "let's stick with Edwin's design —
+the key thing for him is two-sided liquidity, not profit-seeking."**
+
+- ⚠ Process note, honest: the inversion was built AND merged (MM PR #19)
+  on George's first message before his question landed; reverted the
+  same hour (`b86ca83`), never deployed. The branch remains as a ready
+  implementation if the ruling ever flips.
+- 📝 Residual for the E31 round: does fattest-at-the-touch hold in LIVE,
+  where a fat touch is pickoff-exposed between 500 ms updates?
+
+---
+
+## 2026-08-11b — ⭐ THE DWELL TABLE IS THE REPUBLISH CLOCK, every mode (George)
+
+✅ Prompted by the cadence doc-sweep's finding: Edwin's 23-07 "non-live
+re-quote every 30–60 s" was never superseded and never implemented —
+non-live books only republished on a material change. George's ruling:
+**every mode republishes a re-rolled book when its drawn dwell expires,
+changed or not; materiality only publishes sooner.** His ranges:
+**pre-game 5–20 s · post-game 5–20 s · overnight 20–40 s** (LIVE stays
+0–0 on the 500 ms floor). ✂ Supersedes Edwin's ASMM-1 rows
+(8–30/10–40/20–90) while implementing his 23-07 intent. Built + merged
+(MM PR #18, 687 tests) and **deployed supervised11/CFG-0010**;
+verified live: ~one re-roll per book per 20–30 s across the six books.
+
+- ⭐ **C4's live half PASSED as a side effect:** JETS's LmtPerc rejects
+  (the stale-18.65-ask blocker) retried 3–4× in 80 s — the backoff
+  schedule, not sweep cadence. The other five books: zero rejects.
+- 📝 Also proven this deploy: the pkill self-match footgun (a remote
+  `pkill -f mm.runtime` kills its own SSH shell — bracket the pattern).
+
+---
+
+## 2026-08-11 — ⭐ THE LIVE CADENCE RULED: poll at 500 ms, NEW ORDERS every 500 ms, changed or not (George)
+
+Two rulings in one conversation, closing our half of **E18**:
+
+- ✅ **The in-game SR poll is 500 ms** (matching Edwin's 03-08 number).
+  George: an unchanged successful fetch "is not no-data — it is
+  confirmation" (the E38 principle, already built); the cadence buys
+  reaction latency to the changes that DO happen. ✂ Supersedes the 2 s
+  evidenced interim (SR's 4 s median gap). **Deployed** on both
+  publisher pools (`MMPUB_POLL_LIVE_S=0.5`, service PR #15 — ⚠ service
+  PR #14 was a mislabelled fmt-only merge, noted in #15).
+- ✅ **In-game, the book publishes NEW ORDERS every 500 ms, changed or
+  not** — chosen explicitly over the reaction-bound reading when both
+  were put to him. Built as MM PR #16 (`feat/live-timer-quoting`,
+  672 tests): tick 1.0 → 0.5 s · ✂ sweep 2.0 → 0.5 s (supersedes
+  §3.1.4 — the sweep is the LIVE quote pulse) · ✂ the dwell table's
+  LIVE row 3–12 s → **0–0** (Edwin's ASMM-1 row collapsed; every LIVE
+  publish re-rolls the shape) · a LIVE cycle with an immaterial
+  candidate still publishes once 500 ms have passed since the last
+  publish. **LIVE only** — non-live states keep the §5.8 material +
+  dwell gate, proven by test at the same offset.
+- ✂ **R-Q03 ("the shape redraws never on the timer alone") is
+  superseded for LIVE** — requirements addendum entry same day.
+  **Rest-until-gone (R-L01) is deliberately untouched**: the 500 ms
+  churn comes from re-rolled offsets MOVING rung prices, so orders
+  genuinely cancel-replace; a same-price rung still rests.
+- ⚠ **Flags carried:** the dwell collapse is book-visible → Edwin sees
+  it in the E31/E17 round · at NCAA-Saturday scale (~60–80 live books)
+  the ack volume makes **N31 group commit REQUIRED** · the IN-ENGINE
+  poller still carries 2 s — it retires at the ingestion switch; do the
+  switch (or bump it) before any live game.
+- 📝 **E18 narrows to nothing on our side**: poll rate ruled, quote
+  cadence ruled; what goes to Edwin is confirmation of the collapsed
+  dwell and the visible-churn posture, not a question.
+
+---
+
+## 2026-08-10b — ⭐ THE TAKER'S ACCOUNT EXISTS (George)
+
+✅ SNT-1 has its own account: **AccID `4963224393`**, login
+`hasan.ahmed+MT@novosapien.ai` (created by Hasan; the credential is
+held off-vault — never commit it). **T-I01 moves ⛔ → 🟡.**
+
+**What it unblocks:** the shared-account hole closes — a deploy on this
+account has its own `position.{userId}` stream and real per-account
+sell-check semantics, so a QA run tests inventory behaviour, not just
+wiring. **T-S05** (reconcile vs venue) becomes meaningful to build.
+
+**➕ Same day, the user id RESOLVED (Zitadel lookup):** the taker's
+platform user id is **`385656921832584863`**
+(`hasan.ahmed+mt@novosapien.ai`, active). Cross-validated: the same
+query returns `hasan.ahmed+mm@…` → `384925384799470102`, the MM's
+known user id. The taker's full identity:
+`SNT_USER_ID=385656921832584863` · `SNT_VENUE_ACCOUNT=4963224393` ·
+position subject `position.385656921832584863`.
+
+**Still owed before a deploy:**
+- **Is this the IPLP (BD-prop) slot or a retail-class account?**
+  Decides T-I02 (MPID on the tape) and the E33/T13 compliance posture.
+- The credential belongs in Secret Manager at deploy time, not in env
+  files in git.
+
+---
+
+## 2026-08-10 — ⭐ Edwin wants the taker to SHORT (George, relaying Edwin)
+
+✅ **The requirement:** SNT-1 must be able to go short — long-only by
+construction is not the end state. Recorded as intent; nothing is built
+or changed yet.
+
+✂ **Correction to the first filing of this entry (same day):** shorts
+are NOT venue-gated — **the platform already shorts, live, via FIX
+side 5.** Verified in code: the app maps side 5 (`venueOrders.ts`), the
+gateway's NewOrderSingle sends it (`oe_adapter.go`, `SideSellShort=5`),
+and the trading service charges full-notional collateral with a borrow
+reserve of **1,000 shares/security on QA** (T-M06's "short reserve";
+production capacity 5M/5M). The 08-09 sell rule (`sellable = Pos −
+livS`, whole-order reject) governs **ordinary side-2 sells only** —
+side 5 is a separate path with its own rules. The platform's model:
+**flatten first, then short** — a mixed order is refused
+(`SHORT_WHILE_LONG`), so long and short are exclusive states.
+
+**What remains open before the taker shorts:**
+
+- **T16 (Rob, narrowed)** — side-5 rules for the HOUSE/taker account:
+  who backs the borrow reserve and its size per book; is
+  short-while-long a VENUE reject or only a service-side check (SNT-1
+  bypasses the trading service, so only venue-side checks bind it);
+  margin on QA vs production.
+- **E26 (Edwin, extended)** — the taker-side rules: when may it short,
+  how deep (v2's float-wide short cap vs a per-bot cap), how it covers,
+  and how the float/drift design (T-O08) reads once drift may go
+  negative. The disclosure question (E33/T13) grows a leg: a HOUSE bot
+  short against retail longs.
+
+⚠ **Standing requirements affected, NOT yet changed:** T-O06 (side 2
+only) and T-O08 (never goes short) stay as built until E26/T16 answer.
+The build shape when they do: the sell gate extends — sell the long
+via side 2 up to `Pos − livS`, then side 5 within the borrow cap. The
+SNT runtime today maps only buy=1/sell=2.
+
+✅ **The MM's own shorts (George, same conversation, settled after two
+turns):** the market maker **CAN short, as a last-resort backstop** —
+"usually never gonna happen but we're probably gonna need it." The
+inventory floor (E27's opening position) makes flat rare; if it
+happens, the ask ladder flips side 2 → side 5 at flat so the book
+never goes one-sided. The flatten-first rule binds POSITION, not
+resting orders (N34 option a + c). Edwin confirms in the E26 round.
+
+✅ **The mechanism ruling (George, same day): never straddle zero.**
+The taker clears its longs before it may short, and clears its shorts
+before it may go long — no single order crosses zero, and side-5
+orders never rest alongside a long or a live side-2 sell. Filed as
+**T-O10** in the taker requirements. "Probably the maker as well"
+(George) — but for the MM this is non-trivial: a two-sided quoter that
+is FLAT must rest bids and asks at once, and a flat book's asks would
+be side-5 shorts resting beside side-1 bids — strict order-level
+exclusivity would forbid a flat MM from quoting asks at all. Filed as
+**N34** (ours to design, with Edwin's E26 round).
+
+---
+
 ## 2026-08-09c — the taker's hardening round: notional cap · kill switch · state lever · deploy artifacts
 
 George: *"most of this looks like standard work… just get on with it"* —

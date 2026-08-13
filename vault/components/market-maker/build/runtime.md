@@ -149,9 +149,112 @@ The entrypoint: fail-fast NATS connect, the boot order above, one log
 line per tick (`polled/accepted/dup/drained/readings/swept/cycles` +
 loud REJECTED/CONFLICT/MISSED counts), SIGINT/SIGTERM → clean shutdown.
 
+## ⭐ The state publisher (`runtime/state_publisher.py`, built 12-08b)
+
+The runtime edge's one observability job (spec R1). The loop supplies a
+pulse; the publisher owns the cadence and the projection. Two optional
+hooks on `Runtime`, both no-ops when the composition passes nothing:
+
+- **`publish_state`** — called ONCE PER TICK from `run()`, after the
+  tick's work and the checkpoint, before the operator's log line. In
+  `run()` rather than `tick()` deliberately: `tick()` is the §2.4
+  pipeline and nothing observational belongs inside it. Staging after
+  the tick means the frame always describes a settled state.
+  ⚠ It **STAGES only** — see the split below.
+- **`publish_task`** — the publisher's own task, started and cancelled by
+  `run()` exactly as the beat's is. It encodes and publishes staged
+  frames, off the tick.
+- **`on_positions`** — every `PositionRecord` the machine produces, from
+  the tick AND from `boot()`'s replay, because the edge accumulates the
+  realized-P&L total the position engine deliberately refuses to keep
+  (§4.2's no-running-total rule stands; the derived state lives outside
+  the engine).
+
+**Two clocks in one.** A SLOT — every 2nd tick, ~1 s at TICK_S 0.5 — and
+a FLUSH: this tick, whatever the slot says, on a global kill switch
+(either direction), a new quarantine, or a new suspension. Detected by
+DIFFING successive reads at the edge, never by a callback out of the
+engines — an engine that notified an observer would be an engine with a
+side effect. The every-tick diff is deliberately cheap
+(`Orchestrator.suspended_books`); the full projection runs only on a
+publishing tick.
+
+**Failure is never fatal.** Every fault in the publisher is caught,
+counted and logged loudly; none stops the loop. Same reasoning as the
+[quarantine] boundary one layer out — a screen must never be able to cost
+the book. What this cannot swallow is a dead NATS writer: the heartbeat
+rides the same transport at 4× the rate and `run()` turns a dead beat
+task into a loud stop, so the wire's death is caught 250 ms later by
+design.
+
+**The orchestrator gained read-only accessors only** — `universe`,
+`global_kill_switch`, `missed_sweeps`, `suspended_books`, `observe()`.
+`observe()` uses `.get()` where the cycle path uses `.setdefault()`,
+because a screen looking at a book must not be the thing that gives that
+book a market-state tracker.
+
+**⭐ The tick STAGES; a separate task ENCODES and PUBLISHES.** The tick
+keeps only what genuinely needs tick consistency — the transition diff
+and the projection, which read engine state that moves between ticks.
+Building the payload dict, measuring it against the budget and
+`json.dumps` are pure functions of an immutable frame (`_Frame`: ints,
+strings, Decimals and frozen `VenueOrder`s), so they have no business
+holding up the §2.4 pipeline.
+
+⚠ **The caveat that will be misread:** this reduces TICK latency, not
+event-loop blocking. asyncio does not preempt, so the encode still blocks
+the single loop for the same time — just at a different moment — and the
+beat task is starved either way (`[beat-task]` says exactly this about
+synchronous work). What the split genuinely buys beyond the number: the
+loop's own cadence accounting stops absorbing encode time, and an
+unpublished frame can be **superseded** by a newer one. A state snapshot
+is worth nothing late; the inline version had no such option. The
+`superseded` counter records it.
+
+**Measured (12-08b, 170 books quoting two-sided ladders):** tick ~4.5 ms
+→ ~4.9 ms with the publisher on — **+0.32 to +0.46 ms, +7% to +10%**,
+which is ~0.98% of the 500 ms tick interval. With the encode inline it
+was +1.98 ms (+43.7%). ✂ The spec's original "within 10%" AC was re-cut
+to **≤ 10 ms/tick AND ≤ 5% of the tick interval**: a ratio against a
+4.5 ms base could not survive one 208 KB `json.dumps`.
+
+**`MM_STATE_PUBLISH=on|off`**, restart-applied, ships ON. The publisher's
+tunable numbers — cadence, payload budget, hard ceiling, terminal
+retention, the shipped default — live in the **Configuration Dictionary**
+(`[ops-publisher]`), per §1.6-5. The taker's `SNTConfig` reads the same
+rows rather than restating them, so the two processes cannot drift.
+
 ## What changes here next
 
 [[market-maker/build/next|Next]]: the go-live switch (this page's live
 mode) · the boot-reconcile healer · N31 group commit (the journal's
 fsync ceiling) · N15's window retune after the VM jitter measurement.
 ~~§10.3 checkpoints~~ built 06-08d, equality-proven.
+
+## The session clock and the detached checkpoint (08-12)
+
+Two runtime facts born from the 08-12 incidents (session note:
+[[market-maker/sessions/2026-08-12-session-roll-storm]]):
+
+- **The engine knows tZERO's day.** `SessionClock` (a producer beside
+  the SweepScheduler) mints one `SESSION_BOUNDARY` event per ET day per
+  phase: **close at 23:59:00 ET** — the venue silently expires every
+  resting order then, so the engine mirrors it (`expire_all()`: every
+  non-terminal venue order → DONE_FOR_DAY, backoff reset) and shuts the
+  send gate (`orchestrator.session_open`; the runtime AND the poller
+  sync only while it is open); **open at 00:02:00 ET** — the gate lifts
+  and the full universe cycles, so the reconciler re-stands every book
+  into the venue's Single Price Open. Journalled, idempotent
+  (phase + et_date), replay-identical. Boot anchors to now — no
+  retroactive boundaries; a boot inside the 3-minute closed window
+  posts into rejects until the open (accepted).
+- **Checkpoints never block the loop.** `write_checkpoint_detached`
+  forks; the child captures (sequence, state) from the frozen
+  copy-on-write image and writes at leisure (double-fork, no zombies;
+  flock, one writer). The synchronous form remains for fork-less
+  platforms and tests. Cause: the hourly write reached 344 MB ≈ 22 s
+  and the dead-man swept the book at :01 past every hour. ⚠ State
+  growth itself (~70–90 MB/h at the 500 ms/180-book cadence) is a
+  standing follow-up: terminal-record pruning.
+
+Checkpoint schema is **5** (state carries `session_open`).

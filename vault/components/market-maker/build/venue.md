@@ -118,6 +118,36 @@ superseded 07-08h):
   measured live across the six QA books. The field rides the
   checkpoint (schema 3).
 - §5.9 replenishment is deliberately unbuilt — it IS the E17 conflict.
+- **Gone-retire (08-12, MM PR #24):** a cancel-reject whose verdict
+  names a DEAD order — `UNKNOWN ORDER`, `ORDER DEAD[DMA]`,
+  `ORDER IS DEAD`, `NOT_CANCELABLE` — RETIRES the order (CANCELLED,
+  leaves 0) instead of restoring-and-suppressing; the next diff reposts
+  the level. ✂ Supersedes the backoff's suppress-and-retry for those
+  verdicts (the 08-12 session-roll storm: ~750 phantoms at the 60 s cap
+  = ~61k rejects/hour for 8 h). Transient verdicts (REQUEST_IN_FLIGHT,
+  SESSION_DOWN, "Too late to cancel") stay with the backoff. Counter:
+  `gone_retires`. Also new: `expire_all()` — the session clock's close
+  (see [[market-maker/build/runtime|Runtime]]) expires every
+  non-terminal order to DONE_FOR_DAY and resets the backoff.
+- **The reject backoff (R-R03/C4, built 08-10c — MM PR #13,
+  `venue/backoff.py`):** the venue's NOs feed two event-sourced tables
+  while acks apply — submit rejects key on (security, side, price);
+  cancel/replace rejects key on the resting order's id (the gateway's
+  CANCEL_REJECTED names `origClOrdId`). The diff then simply does not
+  ask again inside the schedule: a suppressed price leaves `wanted`
+  (no submit, no replace INTO it), a suppressed cancel target leaves
+  `movable` (no replace, no cancel; `cancel_everything` skips it too).
+  Schedule min(2 s × 2^(n-1), 60 s), values 🟡 in
+  [[market-maker/parameters]]; **success is the only reset** (an accept
+  or confirmed replace at the price clears it; a terminal order drops
+  its cancel entry), so a level that keeps rejecting escalates toward
+  the cap instead of oscillating. Expiry is priced with the triggering
+  event's own time, threaded runtime → sync → diff — no clock, so
+  replay reproduces identical suppressions. The tables ride the venue
+  engine's checkpoint (**schema 3 → 4**). ⚠ The gateway's 2× duplicate
+  delivery of cancel-rejects double-bumps a count — one extra rung,
+  deterministic, accepted. ⚠ Live half of C4 (recreate a rejecting
+  book, measure the rate) still owed.
 
 ## Sync (`venue/sync.py`)
 
@@ -162,6 +192,49 @@ superseded 07-08h):
   see [[market-maker/build/runtime|Runtime]]; N15's window stays 4 s
   until the VM jitter measurement.
 
+## ⭐ The state snapshot — `mm.state` (`venue/state.py`, built 12-08b)
+
+The engine's observability output (spec R1 of the 12-08 admin trading
+observability spec). One COMPLETE projection of the engine's state,
+published about once a second, so a panel that joins mid-session — or
+reconnects after a dropped socket — renders correctly from ONE message.
+Never deltas: there is no history to replay and no sequence to reconcile.
+
+- **`mm.state` is OURS, not the gateway's.** The gateway owns
+  `gateway.orders.mm.*` and publishes `order.{userId}.{clOrdId}`; nothing
+  is added to that namespace. In particular this is NOT the heartbeat
+  subject — the dead-man is one global latch and a second beater would
+  mask the engine's death (decisions 10-08c). It shares the heartbeat's
+  TRANSPORT (one connection, one writer queue) and never its subject.
+- **Fields:** `v · ts_ms · config_version · boot_ts_ms · journal_dir ·
+  global_kill_switch · quarantined[] · missed_sweeps · tick{…} ·
+  universe{total,active} · shed[] · securities{SYM}`. Per book:
+  `net · avg_cost · realized_pnl_total · market_state · freshness ·
+  resting_orders[]`.
+- **Active books only:** non-zero net OR resting orders OR market state ≠
+  Stable. ⚠ Straight after boot EVERY book reads active — a
+  MarketStateTracker starts Suspended until its first cycle — which is
+  correct and is also the payload's worst case.
+- **The projection is not `Orchestrator.state()`.** That is the §10.3
+  checkpoint's complete deterministic memory, an order of magnitude
+  larger and shaped for `restore()`.
+- **Money crosses as a JSON number, quantized to 6 dp first** (the same
+  reasoning as `[price-wire]`: the consumer is a browser). Average cost
+  is a division and routinely recurring, so an unquantized Decimal would
+  print 28 digits of precision the number does not have.
+- **The budget has a DEFINED shed, announced in the payload.** Over
+  256 KB (🟡): stage one drops the per-book `resting_orders[]` arrays and
+  keeps `resting_order_count`; stage two empties `securities`. `shed[]`
+  names what went — without it an empty array would read as "no orders
+  resting". Stage two exists only so NATS's 1 MB `max_payload` can never
+  be hit, because a publish above it is REFUSED and the feed would stop
+  silently. **Measured: 208,250 bytes at 170 books** — no shed on today's
+  universe.
+- ⛔ **Deploy gate: the `market-maker` NATS user needs publish on
+  `mm.state`.** Its grants were written for `gateway.orders.mm.>` alone,
+  and a missing grant is SILENT — the publish returns normally and the
+  server drops the message.
+
 ## Venue risk facts learned LIVE (07-08 — the first real-venue day)
 
 - **LmtPerc, decoded from reject texts:** an AGGRESSIVE order (one that
@@ -183,10 +256,10 @@ superseded 07-08h):
   Tag 1) — our account 1797733477 → **IPLM**; retail → IPLY; a future
   BD-prop account → IPLP. We never send an MPID. The MM's prints are
   attributable on the tape.
-- **The reject-backoff gap (build item, top priority):** the
-  reconciler re-wants and re-submits a persistently-rejected level at
-  cycle cadence — ~16 msg/s of churn observed. Three reject shapes
-  seen live: LmtPerc, duplicate-id, no-reference.
+- ✅ **The reject-backoff gap — CLOSED 08-10c** (was: re-submits at
+  cycle cadence, ~16 msg/s; shapes seen live: LmtPerc, duplicate-id,
+  no-reference, UNKNOWN ORDER cancel-loops). Built as the reconciler's
+  suppression input — see "The reject backoff" above. Live C4 run owed.
 
 ## Gateway facts (gospel under the 22-07 filter)
 
