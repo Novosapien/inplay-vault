@@ -69,19 +69,28 @@ order is fixed and the order matters:
 ## The journal
 
 `events/journal.py`. Append-only JSONL; each line is
-`{"kind": accepted|duplicate|conflict|rejected, "record": …}`. Flush +
-fsync on every accepted event — that is what makes an event durable
-BEFORE anything reacts to it (§7.4).
+`{"kind": accepted|duplicate|conflict|rejected, "record": …}`. Every
+line is flushed at once; durability comes per append in the default
+mode, or per TICK under group commit (below).
 
 - **One writer, by design.** `[second-writer]` is a stop condition. This
   single fact shapes the infrastructure: the engine is one VM process
   (never Cloud Run, never a hot standby — two processes are two writers).
-- ⚠ **N31 — the fsync is the throughput ceiling.** A single writer tops
-  out near 1,000–3,000 events/s on a real disk; the 200 ms capability
-  ceiling sits on that line. **Group commit is designed, not built**:
-  batch same-moment events into ONE fsync, nothing accepted until its
-  batch is on disk. Measure the real fsync on the VM first (the Mac
-  number is invalid — macOS `fsync` does not flush the drive cache).
+- ⭐ **N31 group commit — BUILT 08-13 (MM PR #26).** The measured VM disk
+  does ~579 fsyncs/s (p50 1.70 ms) against the ~2,520 events/s an NCAA
+  Saturday arrives at, so per-event fsync was the machine's binding
+  ceiling. `Journal(path, group_commit=True)` defers each append's
+  fsync; `commit()` makes the whole batch durable in ONE. The runtime
+  commits once per tick, before ANY await — asyncio cannot preempt, so
+  nothing a tick produced (acks, venue instructions) leaves the process
+  before its batch is on disk. ✂ Supersedes §7.4's "before business
+  processing" with "before anything leaves the process" (decisions
+  08-13). Crash honesty: a process crash loses nothing (flush hands
+  lines to the OS); HOST death can lose ≤1 tick of complete,
+  never-externalized lines — the same bound the taker's journal states
+  (N38). Journal bytes are identical in both modes (test-pinned), so
+  replay equality cannot notice. The batch size rides the log line
+  (`committed=n`).
 
 ## Determinism and replay (§1.6-4, §10.3)
 
@@ -135,5 +144,7 @@ season and every deploy is a restart.
 
 ## What changes here next
 
-[[market-maker/build/next|Next]]: N31 group commit (the fsync ceiling).
+[[market-maker/build/next|Next]]: ~~N31 group commit~~ built 08-13
+(MM PR #26) — next here: the game-day `committed=` observation and the
+drain-cap re-size once engine time is the binding constraint.
 ~~§10.3 checkpoints~~ built 06-08d, equality-proven.

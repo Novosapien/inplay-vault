@@ -51,11 +51,16 @@ In order, every second:
 
 The beat is deliberately NOT in this list any more — the poller lost it
 (and its transport) to the beat task above. After the tick, `run()`
-**flushes the readings' batched acks** — pop → journal → ack, the
-crash-safety order — and writes a **§10.3 checkpoint when due** (hourly,
-at the tick boundary — the state is quiescent because the tick is
+runs **the N31 group commit** (⭐ 08-13, MM PR #26) — ONE fsync makes
+the whole tick's journal lines durable, before any await, so nothing
+the tick produced can leave the process first — then **flushes the
+readings' batched acks** — pop → commit → ack, the crash-safety
+order — and writes a **§10.3 checkpoint when due** (hourly, at the
+tick boundary — the state is quiescent because the tick is
 synchronous). One tick never overlaps the next; a slow tick shortens
-the following wait instead of drifting.
+the following wait instead of drifting. The fsync ceiling this removes
+and the crash analysis live on
+[[market-maker/build/event-core|Event core]].
 
 ## Markets are independently failable (06-08d)
 

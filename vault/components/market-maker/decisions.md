@@ -37,6 +37,23 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 - ⚠ The cap bounds the DRAINS only — a sweep's own publish burst is
   step 2/4's territory (the fsync ceiling is the sweep's, not the
   drain's).
+- ✅ **Step 2 BUILT the same day (MM PR #26, stacked on #25) — N31
+  group commit.** The journal defers per-append fsyncs; the runtime
+  commits the whole tick in ONE fsync, before any await — so acks and
+  venue instructions can never precede their events' durability. The
+  ~579 events/s fsync ceiling stops binding (NCAA Saturday needs
+  ~2,520/s).
+- ✂ **§7.4's letter superseded:** "durably persisted before business
+  processing begins" becomes **"durably persisted before anything
+  leaves the process."** A process crash still loses nothing; host
+  death can lose ≤1 tick (~500 ms) of complete lines that never acked
+  and never reached the venue — the same durability bound the taker's
+  journal already states (N38), now shared deliberately. Journal bytes
+  are identical in both modes, so replay equality cannot notice.
+- ⚠ **Follow-up owed:** re-size the step-1 drain caps once group
+  commit is deployed — the binding constraint becomes engine time and
+  the venue cap must RISE for Saturday ack volume (~1,050/tick).
+  Measure, then move the dictionary rows.
 
 ## 2026-08-12b — the engine half BUILT: both publishers + the taker's manual orders
 
