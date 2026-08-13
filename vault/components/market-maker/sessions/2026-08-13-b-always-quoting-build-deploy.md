@@ -201,3 +201,28 @@ width; the engine derives everything else. A false alarm on "the maker
 stopped quoting" was checked to the metal: engine sweeping, 3,230 open
 orders, MD cache fresh to the second, taker filling — all healthy at
 12:43Z.
+
+---
+
+## Addendum 4 (13:xxZ) — ⭐ the panel's ACTIVE/DEFENSIVE flapping IS the missed-sweep bug (George's catch)
+
+George asked whether the missed sweeps explain the market state showing
+ACTIVE or DEFENSIVE. Confirmed in code, end to end:
+
+1. `SweepScheduler` stamps `missed_intervals` on a late sweep; the
+   orchestrator stores it **portfolio-wide** — one late sweep marks all
+   180 books (`[one-counter]`, orchestration/engine.py:811).
+2. `condition_status` (valuation/freshness.py:144–146): missed **1** →
+   RP status WARNING · missed **≥2** → **DEGRADED**.
+3. market_state/engine.py: WARNING → capped at **ACTIVE** (STABLE
+   unreachable) · DEGRADED → **DEFENSIVE**.
+4. Promotion needs the clean condition to hold for a DWELL — misses
+   arrive every 2–7 ticks, so the climb keeps resetting.
+
+With 11.5% of ticks late (1,335 at ≥2), the panel's flapping is the
+ack-burst problem wearing its user-visible face. The machine is honest
+— "my prices may be stale" — but the staleness is self-inflicted, so
+today DEFENSIVE is noise, and on a game day it would mask a real
+degradation. **George's ruling: fix this and redeploy** — the step-4
+converger design (drafts/always-quoting-step4-design.md) + the
+live-books-first priority George added in review.
