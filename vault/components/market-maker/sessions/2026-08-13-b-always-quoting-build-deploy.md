@@ -96,3 +96,46 @@ build/event-core).
 2. **23:00Z today** — CIN–DET, PIT–GB, NE–IND: the first real live
    games, now with `committed=` visibility on the game-day load.
 3. Step 4's design pass when the watches are quiet.
+
+---
+
+## Addendum 1 (11:3xZ) — the boundary VERDICT: PASS, and one finding
+
+**The session clock's first live firing worked.** Read retroactively at
+11:32Z (below on why):
+
+- `SESSION close — 2026-08-12 ET` fired on schedule; **1,590 resting
+  orders expired locally**; the closed window ran sweeps with
+  `cycles=0` (the gate held). `SESSION open — 2026-08-13 ET` fired
+  ~3 min later; the full universe cycled and the re-stand's acks
+  drained over the following ticks in bounded batches.
+- **Zero REJECTED, zero CONFLICT in the whole 71k-tick log. The 08-12
+  phantom-cancel storm did not recur.** The journal carries exactly
+  two SESSION_BOUNDARY events (idempotent, one per phase). No dead-man
+  fires; the engine never stopped; the taker traded through the
+  morning (fills across books, `.TEST` twins included).
+- B1's overturn and T14's answer stand confirmed by a LIVE firing.
+
+**The observation outage (a lesson, not an incident):** local gcloud
+credentials expired at 03:54Z — five minutes before the close — and
+every monitor poll through the window failed. The engine was
+unaffected; the log held the verdict for the morning. ⚠ Rule for game
+day: **refresh gcloud auth BEFORE an observation window, or arm the
+watch on the VM itself** — a local watcher dies with local auth.
+
+**The finding — `MISSED_SWEEPS` is back, and it names the next
+bottleneck.** 8,197 of ~71k ticks (11.5%) missed a sweep slot: mostly
+`=1`, but 1,335 ticks logged `≥2` — each a transient §3.5 confidence
+deduction. The correlation is clean: missed ticks drain **p50 99 /
+p90 178 acks** vs 24/88 overall (first miss: tick 317, `drained=180`).
+With the fsync cost gone (`committed=181` in ONE fsync on that very
+tick), the slip is **engine time on ack bursts** — ~0.5–1 ms per
+drained event, exactly the post-group-commit constraint the build
+predicted. The overnight dwell republishes books in synchronized
+waves, so the acks arrive in ~100–200-event clumps. Feeds directly
+into: the drain-cap re-size measurement · step 4 (decoupled quote
+publication) · possibly de-phasing the dwell waves. Filed, not fixed —
+quotes never stopped and no cap was hit.
+
+**Health at 11:32Z:** tick 71,108 · RSS 190 MB (pruning holding) ·
+journal 2.67 GB ≈ 72 events/s, the supervised17 rate.
