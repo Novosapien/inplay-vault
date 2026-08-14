@@ -89,15 +89,73 @@ speed. So a 2,400 s arm sits with a deep resting book far longer than a
 
 ### 🔴 The profile fails R1's own sanity check, and that is recorded, not hidden
 
-R1 says a profile wildly off the 13/14-08 evidence (~0.5–1 ms/event,
-~35% late ticks under three live games) is itself suspect. Measured:
-**9.893 ms/ack (10–20× the evidence) and 63.1% late ticks (1.8×).**
+R1 says a profile wildly off the 13/14-08 evidence is itself suspect.
 
-The reconciliation is the curve above — the evidence base was **three**
-games, this is **six** with a much deeper book, and at shallow depth the
-same code on the same machine measures **1.455 ms/ack, inside the
-evidence range.** So the engine has not changed character; it is being
-measured further up a curve the live evidence never sampled.
+⚠ **Correcting how that bar gets quoted, because it changes the
+verdict.** R1 and the CB1 brief both render the evidence as "~0.5–1
+ms/event, **~35% late ticks**". **The vault never says late ticks.**
+Every primary source says **missed sweeps on ~35% of ticks** under three
+live games — `decisions.md` twice (the post-window-fix residual, and
+phase B's honest scope), `market-maker.md`'s standing faults, and the
+08-14 dead-man session note. The ~35% is a **MISS RATIO**. Compared
+correctly:
+
+| | 13/14-08 evidence (3 games) | 6 games 1× | **3 games 1× (validation)** |
+|---|---|---|---|
+| per-event cost | 0.5–1 ms *(never measured)* | 9.893 ms/ack | **8.502 ms/ack** |
+| missed sweeps | **~35% of ticks** | 50.1% of all ticks | **22.1% of all ticks** (23.5% of due-sweep) ✅ |
+| late ticks | *no live counterpart* | 63.1% | 51.0% |
+
+**At production's own game count the miss ratio brackets the live
+evidence from the right side** — 23.5% against ~35%, same books, same
+games. The rig is slightly *less* stressed than production, which is
+what §3 predicts (no wire, no fills, fewer readings). The sanity check
+passes on every term that was ever measured.
+
+**And CB1 confirms the vault's own diagnosis rather than upsetting it.**
+`decisions.md` already names the cause of the 35% missed sweeps as
+**per-event engine cost**, and sets the fix chain as "phase B → *the
+per-event cost measurement* → optimization". **CB1 is that
+measurement**, and it says the per-event cost is the venue ack drain at
+98.1% of the tick. The two agree on mechanism.
+
+### ✅ The validation arm RESOLVED the per-ack gap — by refuting my first answer
+
+The lead authorized a `--games 3 --speed 1` arm (2,100 s, 20:53→21:28Z)
+to settle it. It did, and **my reconciliation was wrong.**
+
+I predicted three games would be a shallower book and per-ack cost would
+fall toward the 0.5–1 ms bar. **It did not** — 9.893 → **8.502 ms/ack**,
+a 14% drop for half the games. ⭐ **Because the ack stream is not driven
+by games.** Only 12 of 170 books carry one; the other 158 are swept and
+converged regardless. Total acks fell just 12% (225,596 → 197,730).
+**Book count drives the ack volume, not game count** — the more useful
+fact, and the one CB4 should carry.
+
+**The real resolution: the two numbers never measured the same thing,
+and only one of them was ever measured at all.**
+
+| Source | Figure | What it actually is |
+|---|---|---|
+| `decisions.md` 04-08 | **0.17 ms/event** | Measured — but its own caveat says it *"excludes the sync driver's diff, payload serialisation, the NATS publish, **inbound ack processing**, and the sweep over all 170 — it is the engine core only"* |
+| `drafts/always-quoting-step4-design.md` §4 | **~0.5–1 ms/ack** | An **ESTIMATE** in a throughput argument. Never measured. |
+| **CB1** | **8.5–9.9 ms/ack** | Measured, **including everything the 0.17 figure excluded** — and inbound ack processing above all |
+
+**So CB1 contradicts no measurement — it contradicts an unmeasured
+estimate, which is exactly what R1 sent it to test.** The one real prior
+measurement carved out the ack path; the ack path is where the tick
+goes. The two results are consistent.
+
+The step4 design asked for precisely this run — *"the already owed
+measurement … tells us whether engine-cost optimization is the real
+Saturday gap"*. **It is, and worse than it feared:** its own arithmetic
+said ~2,100 instructions/s would cost "~1–2 s of every second on acks";
+at the measured rate that is **~17.9 s of compute per second.** The
+conclusion was right and understated by ~an order of magnitude.
+
+🔴 **Carry forward:** the ~0.5–1 ms/ack estimate still sits in the step4
+design and anything built on it. **Those projections are optimistic by
+10–18× and need re-deriving from this profile.**
 
 That is an explanation, not a proof. The cheap test that settles it is a
 `--games 3 --speed 1` arm (~35 min; staggers 240/480/1500 s need ~2,100
@@ -164,6 +222,48 @@ drained, which is R1's own "a Mac profile lies" failure in a different
 costume. The clone matches the real spec; the deviation is recorded in
 the profile doc and flagged to the lead.
 
+### ⭐ AC2's baseline was confounded and had to be re-cut (review HIGH)
+
+The #33 review caught that CB1's first AC2 baseline — p90 acks-per-TICK
+— **cannot gate CB2**:
+
+> acks per tick = ack arrival rate × **pass duration**
+
+Both arms reproduce the identity exactly (93.9/s × 1.375 s = 129;
+77.9 × 0.626 = 48.8). So the metric **rises when the loop gets slower**,
+the opposite of what the gate should reward, and a within-pulse offset
+cannot shift a per-pass count when a 1× pass spans 2.75 pulses. R2/AC2
+are amended to **p90 of acks ARRIVING per fixed 500 ms wall-clock
+window**; `scripts/ac2_ack_windows.py` computes it.
+
+**No re-run was needed** — the journals already carry each ack's arrival
+at microsecond precision in `receive_time` (the venue's own enqueue
+stamp). Not `accepted_time`, which is when the drain reached it and
+would re-import the same confound.
+
+**New baseline: p90 = 214** per 500 ms window at 1× six games (gate
+≤ 107); 144 at three games; 88 at 10×.
+
+The arrival shape is the finding underneath it: **the median 500 ms
+window is EMPTY and 66% of windows contain no acks at all.** These are
+not clumps but spikes — p90 holds near 220 from a 500 ms bucket down to
+a 20 ms one, inter-arrival gaps inside a burst run **0.018 ms** at p50,
+and there are **1,641 gaps > 100 ms against 1,747 passes**. One burst
+per pass, near enough exactly.
+
+📝 **What that means for CB2, and it changes how to judge it:**
+de-phasing will **not spread a burst** — the loop publishes once per
+pass whatever the offsets are. What it changes is **how many books are
+in each burst**: with 8 buckets a 1× pass crosses ~2.75 of them, so ~34%
+of books. 🟡 Projected p90 ≈ 73 against the ≤ 107 gate, so AC2 looks
+reachable — **judge burst SIZE, not burst spacing.**
+
+⚠ And the caveat that must travel with the number: the synthetic venue
+answers *inside* the publish call with no wire, so this is the tightest
+the spike can physically be. Production's gateway smears it. The
+baseline is sound as a **relative** gate on the same rig; the
+66%-empty figure is **not** a fact about the live system.
+
 ### Instrumentation overhead is 4.24 µs/tick — AC1 passed
 
 Measured directly on the clone (100,000 iterations of a full tick's
@@ -223,6 +323,19 @@ clock at all. The two modes differ only in whether `perf_counter` runs.
   timer"*) paying off in the same day it was written. **Runbook rule:
   any measurement run longer than a few minutes goes under `nohup` with
   a completion sentinel, never on a live SSH stream.**
+- **Both completion watchers on the validation arm failed silently, and
+  the lead had to chase the result.** The arm finished cleanly at
+  21:28:48Z (rc=0); I did not report until the lead asked at ~22:00Z.
+  One watcher was a backgrounded poll loop — killed at its 10-minute
+  tool timeout, ~25 minutes before the run ended. The second was a
+  persistent monitor armed precisely because I distrusted the first, and
+  it never fired either. 📝 **The lesson is not "arm two watchers" — I
+  did, and got nothing. It is that a watcher's own liveness must be
+  checked on a schedule the work owns.** The run itself was never at
+  risk: `nohup` plus the `validation.done` sentinel meant the result sat
+  safely on disk the whole time. **The sentinel is what worked twice
+  today; the notification path is what failed twice.** Poll the
+  sentinel on a cadence rather than trusting an event.
 - **A doc written before its last run arm lands is a trap.** The
   placeholders were caught, but the *prose* around them had already been
   written off the 10× numbers and read as finished — 94% not 98%, 6.31
