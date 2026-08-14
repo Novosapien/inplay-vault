@@ -79,6 +79,35 @@ Trading must be fast. The target is 3 clicks or fewer from any page to a submitt
 > _Sources: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]],
 > [[03-08-2026-touchdown]]._
 
+> ### ⚠ Update (14-08): written feedback from a real trading test run
+>
+> Fourteen items, recorded in full at [[trading-test-run-feedback-aug-2026]].
+> Three of them are the same underlying problem and it is the serious one.
+>
+> **The displayed price is not the transactable price.** The price at the top of
+> the team page contradicts the order book, so profit and loss is permanently
+> wrong, the chart moves independently of the book, and the price offered when a
+> user tries to buy is not the price they can transact at. On a product whose
+> premise is that a price is the thing you own, a price the user cannot trust is
+> a defect in the proposition rather than in a screen.
+>
+> **It makes the market order more necessary, not less.** The reporter's own
+> conclusion: with a mismatched price, limit orders will frequently fail to fill
+> and a retail user will not diagnose why. This is the strongest argument yet
+> for the synthetic market order landing before real users arrive, see
+> [[market-maker/systems/synthetic-market-order]].
+>
+> **Max buy is rejected when buying power is sufficient**, and still fails
+> around $1,000 below the limit. Edwin asked for a max-quantity control on
+> 27 July; this is that behaviour failing before the control exists.
+>
+> Also raised: open orders are hard to find, there is no default order size, an
+> open order can only be cancelled rather than modified, positions are hard to
+> locate, and bid and ask sometimes render blank. One crash: rotating to
+> landscape and back left the tab bar unresponsive, with videos promised.
+>
+> _Source: [[trading-test-run-feedback-aug-2026]]._
+
 > ### Update (27-07): team naming and tickers
 >
 > Team companies cannot carry the real franchise name. Edwin does not want

@@ -133,6 +133,53 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### ⚠ Update (12-08-2026): the sign-up wall is now the headline commercial risk
+>
+> Edwin, having done demos and watched real people try to join: **he expects to
+> lose half or more of downloads at the wall**, whichever wall it is. _"Whether
+> it's an email, whether it's KYC, whatever. If that's the first thing you see,
+> people are telling me they're not doing it."_ He named two family members who
+> refused outright after previous identity theft, and described his own failed
+> attempt to sign up with a second email, twenty minutes of a government ID not
+> being accepted before he gave up.
+>
+> **Part of the fear is a version confusion, and that matters.** Troy tested the
+> **App Store build** the night before and registered his son with **an email
+> address and nothing else**, landing straight in the app, with KYC offered
+> afterwards as the route to cash prizes. That is exactly the intended shape.
+> Edwin had been testing the **TestFlight build**, which behaves differently.
+> Troy's summary: _"we're between two worlds right now"_, and moving between
+> them requires deleting one build before installing the other. Worth being
+> precise about which build any feedback refers to from here on.
+>
+> **The walkthrough is named as the key blocker**, by Jared and George
+> independently. Jared: a user downloads, is asked to create an account before
+> anything, and has no idea what they are creating it for. He asked directly
+> whether the explainer can come **before** account creation rather than after.
+>
+> **Edwin's four questions**, which he wants answered on first open, and which
+> are the clearest statement yet of what the tour has to do:
+>
+> 1. What did I just download?
+> 2. How does it work?
+> 3. What is different about this from everything else?
+> 4. What is in it for me?
+>
+> His framing of why it matters: a referral has to be _"download this app, it's
+> awesome"_ and nothing more, because nobody is going to give a referred user
+> half an hour of explanation. The app itself has to carry that job. And with
+> real marketing money about to go in, the cost of failing is concrete: _"let's
+> say we put up 500k over the next two weeks and that gets us 50,000 people who
+> go to download. What are we going to lose because they don't know?"_
+>
+> **tZERO have moved on the 18+ requirement** (George, 12-08, after speaking to
+> them the previous day): _"they said it shouldn't be an issue removing the over
+> 18 thing."_ The check is only needed for users receiving payouts. The KYC flow
+> now branches on US tax residency, and asks over-18s whether they want to
+> participate in the challenge.
+>
+> _Source: [[12-08-2026-touchdown]]._
+
 > ### Update (07-08-2026): first-open tour + the fork screen
 >
 > Edwin built a UI prototype over ~30 hours and ~80 iterations, and named one

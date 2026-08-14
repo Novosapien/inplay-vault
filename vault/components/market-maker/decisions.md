@@ -299,6 +299,57 @@ and deployed (engine `dfa87f9`, CFG-0004, journal `supervised5`).
   (dead-man sweeps while the engine is down never journal — an old
   journal replays phantom ACTIVE orders).
 
+## 2026-08-12 — The maker and taker run live across every book — [[12-08-2026-touchdown]]
+
+> First report of continuous operation against real books. George demonstrated
+> the ops panel on the call.
+
+- ✅ **Running 24 hours across all 180 books** (170 team companies plus the 10
+  test tickers), showing **two-sided quotes on every one**. Roughly **1.2
+  million orders** placed in a day between the maker and the taker. Business as
+  usual cadence is slower than in-game by design.
+- ✅ **Cadence for the live-game test is 500ms**, tightening toward **200ms as
+  launch approaches**. George: "initially for the test we were aiming for 500
+  milliseconds and then as time gets closer to launching get it down from 500 to
+  200."
+- ✅ **Taker cadence per market is roughly every 20 seconds.** It takes
+  continuously across all markets, but any single book sees it far less often.
+- ✅ **The price band rejects work as designed.** tZERO auto-rejects anything
+  30% out either way, and every rejection is tracked in the journal.
+- ⚠ **tZERO seeds stale resting orders at start of day.** After clearing the
+  books they place resting orders at old prices. The workaround in use is to
+  **walk the price up with a series of orders** (the Jets took about nine, from
+  ~18 to ~40) and then let the maker churn through it. **tZERO can turn this
+  off**, which is the cleaner fix and is now an ask.
+- ✅ **Per-book quarantine confirmed in live operation.** A journal divergence
+  on one book cancels that book's orders only; it does not stop the rest. The
+  journal is the central source of truth, and divergence means halt and
+  investigate.
+- ✅ **Vocabulary fixed by Edwin, worth keeping consistent:** an **order** rests
+  on the book; an **execution** or **trade** is when they cross. The 1.2 million
+  figure is orders, not trades.
+
+### The ops panel, and what Edwin asked for
+
+- ✅ **Edwin gets a login to the admin panel.** Some sections are irrelevant to
+  him (referral simulation, load testing); the maker, taker and market-data
+  views are the point.
+- ✅ **Requested additions for the taker view** (Edwin, agreed by George): not
+  just its orders but its **positions**, whether it is long or short, the
+  **average price** it is long or short from, and **realised and unrealised
+  P&L**.
+- ✅ **Manual orders for the taker** were semi-functional on the call and due
+  to be finished the same day.
+
+### An IPO requirement that is not the app's
+
+- ⚠ **Edwin needs a desktop execution interface for the offering.** He has to
+  place orders across 170 team companies, and doing that through the phone app
+  means logging in and out repeatedly. He wants something he can click many
+  times with a mouse. **Needed before the offering opens, with a couple of test
+  orders put through first.** George: same infrastructure as the app, so the
+  work is configuration rather than a new build.
+
 ## 2026-07-27 → 2026-08-07 — Touchdown block (Edwin + Troy + George) — [[27-07-2026-touchdown]] · [[31-07-2026-touchdown]] · [[03-08-2026-touchdown]] · [[07-08-2026-touchdown]]
 
 > Four touchdowns that between them settle the **IPO market structure** the MM

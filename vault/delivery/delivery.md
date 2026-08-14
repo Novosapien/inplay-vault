@@ -120,6 +120,27 @@ work of assembling the plan**. Keep out of it:
 State the current position plainly and move on. Where something changed, change
 it silently in the artefact and record the reasoning here in the vault instead.
 
+## Two corrections from the 12-08 touchdown
+
+**The commercial date is 9 September, not 29 August.** College football starts
+on the 29th, but Cody's point settles it: _"no media outlet covers college
+football. So us getting any sort of coverage or big blowout news, it's never
+going to happen for a college football trading simulation. It will happen
+NFL."_ Edwin agreed, adding that even betting behaviour does not reach full
+swing until after the first NFL weekend. The NCAA opening still has to work,
+and real users still trade it, but **the date that matters for coverage,
+marketing spend and first impressions is the NFL opener**. Plan the polish
+against it rather than against the 29th.
+
+**Twice-weekly requirement sessions proposed (Brett).** Feedback is arriving
+faster as more people use the app and will accelerate further. The proposal is
+to use the two days without a standup for a requirements session: collect the
+new asks, run them through the spec process, and come back with either an
+over-the-air push or a store-push date and a backlog position. The framing
+matters as much as the mechanism: half of running product development is
+changing things, nobody gets it right first time, and the volume of change is a
+sign of engagement rather than failure.
+
 ## How the plan is structured (stable conventions)
 
 - **Home:** two-month flight-plan diagram + quarterly release plan + people.
