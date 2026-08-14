@@ -10,7 +10,7 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 Digested the [[12-08-2026-touchdown]], filed the [[11-08-2026-icp-offer-workshop]]
 as the source record for the advertising pack, and captured written
-[[trading-test-run-feedback-aug-2026|feedback from a real trading test run]].
+[[jared-trading-feedback-aug-2026|Jared's feedback from a real trading test run]].
 
 **The market maker and taker are running continuously.** Twenty-four hours
 across all 180 books, two-sided quotes on every one, roughly 1.2 million orders

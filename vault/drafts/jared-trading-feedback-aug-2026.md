@@ -1,13 +1,22 @@
 ---
-description: "Written defect and UX feedback from a real trading test run, August 2026: fourteen items, several of them launch-critical, with the price-versus-order-book mismatch the most serious."
+description: "Jared Sapirman's written defect and UX feedback from a real trading test run, August 2026: fourteen items, several launch-critical, with the price-versus-order-book mismatch the most serious."
 ---
 
-# Trading Test Run, written feedback
+# Jared's trading test-run feedback, August 2026
 
+> **From:** Jared Sapirman (InPlay)
 > **Received:** 14 August 2026, via the shared meeting-notes folder
 > **Type:** written feedback from a hands-on trading session, not a meeting
 > **Routed to:** [[trading/trading]] · [[information-layer/sub-components/team-page/team-page]] · [[information-layer/sub-components/leaderboard/leaderboard]] · [[market-maker/market-maker]]
-> **Related:** [[jared-app-feedback-jul-2026]], the same shape of artefact from July
+> **Previous round:** [[jared-app-feedback-jul-2026]], six items, July 2026
+
+> **Worth knowing who this is from.** Jared has now produced the two most useful
+> defect lists the project has had, and in between he caught the inverted buy
+> and sell arrows on the open-order screen (29 July) and spotted that the "key
+> players" shown on the Patriots page were not key players (7 August). He is the
+> one person consistently using the app the way a real trader would rather than
+> demonstrating it. Feedback from him should be read as a leading indicator of
+> what launch users will hit, not as one person's opinion.
 
 Fourteen items from someone trading the app properly rather than clicking
 through it. Recorded in full because several are launch-critical and the list

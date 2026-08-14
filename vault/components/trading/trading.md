@@ -79,9 +79,12 @@ Trading must be fast. The target is 3 clicks or fewer from any page to a submitt
 > _Sources: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]],
 > [[03-08-2026-touchdown]]._
 
-> ### ⚠ Update (14-08): written feedback from a real trading test run
+> ### ⚠ Update (14-08): Jared's trading test-run feedback
 >
-> Fourteen items, recorded in full at [[trading-test-run-feedback-aug-2026]].
+> Fourteen items from Jared Sapirman, recorded in full at
+> [[jared-trading-feedback-aug-2026]]. His second written round after
+> [[jared-app-feedback-jul-2026]] in July, and he is the one person testing the
+> app the way a trader would rather than demonstrating it.
 > Three of them are the same underlying problem and it is the serious one.
 >
 > **The displayed price is not the transactable price.** The price at the top of
@@ -106,7 +109,7 @@ Trading must be fast. The target is 3 clicks or fewer from any page to a submitt
 > locate, and bid and ask sometimes render blank. One crash: rotating to
 > landscape and back left the tab bar unresponsive, with videos promised.
 >
-> _Source: [[trading-test-run-feedback-aug-2026]]._
+> _Source: [[jared-trading-feedback-aug-2026]]._
 
 > ### Update (27-07): team naming and tickers
 >
