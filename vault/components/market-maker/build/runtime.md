@@ -1,5 +1,5 @@
 ---
-description: "The as-built runtime page — the tick and its bounded drains, the beat task, the sweep scheduler, the session clock, checkpoints, boot and composition"
+description: "The as-built runtime page — the tick, bounded drains, the beat, the sweep, the converger, the single-engine lock, the session clock, checkpoints and boot"
 ---
 
 # Build — Runtime
@@ -19,8 +19,13 @@ would go silent past the dead-man window and cost the whole book. A
 dead beat task stops the run LOUDLY (a bot that cannot beat is already
 swept). ⚠ The honest limit, recorded in `[beat-task]`: asyncio does not
 preempt, so a synchronously blocking tick still starves the beat — that
-is exactly what the VM jitter measurement watches before the window
-tightens to ~1–1.5 s (the beat and the window move together).
+is exactly what fired ~130 times on the 08-13 live slate (beat silence
+4.0–4.7 s against the then-4 s window; the dead-man fire loop,
+decisions 2026-08-14). ✂ **The window is 10 s since 00:19Z 08-14**
+(`MM_DEADMAN_TIMEOUT_MS=10000`, env on the gateway VM; gateway PR #4
+bumps the binary default) — every observed starvation gap fits under
+6 s. N15's retune after the jitter measurement stands; the beat and
+the window move together.
 
 ⭐ **Progress-aware since 08-13 (always-quoting step 3, MM PR #27):**
 the beat certifies "ticks are completing", never "the event loop is
@@ -28,13 +33,15 @@ idle". `run()` stamps a progress anchor when a tick completes and its
 batch commits; the beat task WITHHOLDS the heartbeat once the anchor
 ages past `heartbeat_stall_threshold_s` (5 s, the dictionary). A loop
 that is alive but not advancing — a hung ack flush, a stuck await —
-goes silent, and the dead-man pulls the book ~threshold + 4 s after
-the wedge instead of never. Withhold/resume transitions log loudly
-(`HEARTBEAT WITHHELD` / `RESUMED`) — `[progress-beat]`.
+goes silent, and the dead-man pulls the book ~threshold + window
+(now 5 + 10 s) after the wedge instead of never. Withhold/resume
+transitions log loudly (`HEARTBEAT WITHHELD` / `RESUMED`) —
+`[progress-beat]`.
 
-## The tick (1 s, `loop.py`)
+## The tick (0.5 s since 08-11, `loop.py`)
 
-In order, every second:
+`tick_interval_s` is 0.5 s (✂ George 08-11, MM PR #16 — was 1 s
+hardcoded), paired with the 500 ms LIVE cadence. In order, every tick:
 
 1. **Due polls** (the pull path; empty in live-after-switch).
 2. **Drain bus readings** — each through the full pipeline (accept →
@@ -54,6 +61,22 @@ In order, every second:
    `DRAIN_CAPPED` in the log line; unacked readings past the cap follow
    the `[ack-flush]` rules (deferred, never lost). Reasoning:
    `[drain-cap]` in `loop.py`.
+   ⭐⭐ **MEASURED 14-08 (CB1, MM PR #33) — this drain IS the tick.** On
+   the six-game workload at 1×, the venue drain is **98.1% of all tick
+   time** (p50 1,162 ms of a 1,187 ms tick) at **9.893 ms per ack**,
+   while the sweep at step 5 is **1.8%**. See
+   `specs/2026-08-14-mm-python-fix-set/profile-cb1.md`.
+   🛑 **The standing "the venue cap must RISE toward ~1,050 acks/tick
+   since group commit" note is SUPERSEDED — do not raise it.** The
+   premise holds (commit is 2.4 ms, so engine time is now the binding
+   constraint) and that is precisely why the cap must not move: at
+   9.893 ms/ack a 1,050 cap authorises a **10.4 s** drain, 2× past the
+   5 s beat-stall threshold — the heartbeat would be withheld and the
+   dead-man would sweep the book, which is the failure the cap exists to
+   prevent. The cap fires on only **4 of 1,747 ticks (0.23%)**; it is
+   not the lever, the per-ack cost is. Hold the dictionary to
+   `venue cap ≤ drain budget ÷ ms-per-ack` — a 1,050 cap needs
+   **≤ 0.286 ms/ack, a 35× improvement**. Re-derive after CB4.
 4. **Daily discovery** if due (first tick runs it immediately; the
    composition owns the wall-clock→monotonic conversion at the edge;
    `ensure_game` is idempotent and re-stamps moved kickoffs).
@@ -94,8 +117,14 @@ shouts `QUARANTINED=n`.
 method call would have no legal `at` and would diverge on replay. Replay
 consumes the emitted sweeps and never re-runs the scheduler.
 
-- **Portfolio-wide**: ONE event per 2.0 s slot covers all 170 (§3.1.4 +
-  §2.5 — 0.5 events/s, not 85).
+- **Portfolio-wide**: ONE event per slot covers all 170 (§3.1.4 +
+  §2.5). ✂ The slot is **0.5 s since 08-11** (was 2.0 s — the sweep is
+  the LIVE quote pulse, MM PR #16); a sweep counts as MISSED past
+  `sweep_max_interval_s` = **1.0 s** (✂ George 08-13 evening — the
+  absolute half-second slack restored; the 08-11 ratio had silently
+  tightened it to 125 ms). The missed counter is portfolio-wide — see
+  [[market-maker/build/market-state|Market state]] for what a miss does
+  to every book.
 - **Fixed slots**: a late tick catches up to the wall clock rather than
   drifting; a late sweep keeps its slot's identity (the key is the
   scheduled instant alone).
@@ -110,6 +139,44 @@ consumes the emitted sweeps and never re-runs the scheduler.
 - The sweep is what §3.1.4's thresholds reach §3.4 status and §3.5
   confidence through — and it lets quiet books climb the promotion
   ratchet without waiting for a reading.
+
+## ⭐ The converger (always-quoting step 4, built 08-13/14)
+
+The tick no longer sends venue instructions directly: the cycle STAGES
+each book's target (the latest consistent Target Order Book), and the
+converger sends a BOUNDED batch toward the venue — suspends first, then
+LIVE books, then round-robin across the rest, and a book's instruction
+set is ATOMIC (splitting one book across passes re-mints positional
+ClOrdIDs and collides on a re-diff — caught by test, `[atomic-book]`).
+`converge_max_instructions_per_tick` bounds the batch — **128 is the
+dictionary default on the production lineage** (baked in from
+`g2-throttle`'s mid-game live-load lever, 00:05Z 08-14; the first
+deploy ran 256). Quotes go stale-bounded, never absent — the outbound
+twin of the drain caps.
+`[converge]` in `mm/venue/sync.py`, MM PR #30.
+
+**Phase B — the converger on its OWN task (built 08-14; DEPLOYED
+11:51Z 14-08 in the bundled deploy, supervised28/CFG-0026 @
+`feat/always-quoting-step4b` `db45300`):** the task converges at
+`converge_interval_s` (0.25 s, under the 0.5 s LIVE floor) while the
+tick only stages. Durability is preserved for free (no yield between
+stage and commit); a dead converger task stops the run loudly, like the
+beat; `CONVERGE_STALE` (2 s) is the outbound `DRAIN_CAPPED` — an
+alarm, not a mode. Constructor default 0 keeps the phase-A in-tick
+shape (the rollback lever and the direct-drive test shape); the
+composition opts production in. ⚠ Honest scope: phase B does NOT fix
+the ~35% missed sweeps under live load — that is per-event engine
+cost, queued behind the measurement
+([[market-maker/build-deploy-log]]).
+
+## ⭐ The single-engine lock (`runtime/lock.py`, built + deployed 08-13)
+
+An exclusive `flock` on `/var/lib/mm/engine.lock`: a second engine
+REFUSES to start, loudly; the kernel drops the lock on any manner of
+death, so no stale-lock cleanup exists to get wrong. Born from the
+dual-engine incident (two makers ran side by side 17:53–20:27Z 08-13 —
+same account, same bot id, and NOTHING refused; decisions 08-13
+evening). Proven live: a deliberate second start printed the refusal.
 
 ## Boot (`[boot]`)
 
@@ -254,12 +321,17 @@ rows rather than restating them, so the two processes cannot drift.
 
 ## What changes here next
 
-[[market-maker/build/next|Next]]: the always-quoting build order
-(George 08-13 — ~~1. bounded drain~~ built 08-13 · 2. N31 group commit ·
-3. progress-aware heartbeat · 4. decoupled quote publication · 5. the
-dead-man breaker) · the go-live switch (this page's live mode) · the
-boot-reconcile healer · N15's window retune after the VM jitter
-measurement. ~~§10.3 checkpoints~~ built 06-08d, equality-proven.
+[[market-maker/build/next|Next]]: the always-quoting order is nearly
+done (George 08-13 — ~~1. bounded drain~~ · ~~2. N31 group commit~~ ·
+~~3. progress-aware heartbeat~~ all built + deployed 08-13 ·
+~~4. the converger~~ phase A deployed 08-13, phase B deployed 11:51Z
+14-08 · 5. the dead-man breaker remains) · the missed-sweeps
+fix chain (measure per-event cost → design fixes → speed work) · the
+go-live switch (this page's live mode) · the boot-reconcile healer ·
+the p_ref carry-across-cutovers ruling
+([[market-maker/build/valuation|Valuation]]) · N15's window retune
+after the VM jitter measurement. ~~§10.3 checkpoints~~ built 06-08d,
+equality-proven.
 
 ## The session clock and the detached checkpoint (08-12)
 
