@@ -6,6 +6,48 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-14: The engine runs, and the front door is the problem
+
+Digested the [[12-08-2026-touchdown]], filed the [[11-08-2026-icp-offer-workshop]]
+as the source record for the advertising pack, and captured written
+[[jared-trading-feedback-aug-2026|Jared's feedback from a real trading test run]].
+
+**The market maker and taker are running continuously.** Twenty-four hours
+across all 180 books, two-sided quotes on every one, roughly 1.2 million orders
+in a day. The guard rails are working in live conditions: the venue's price band
+rejects anything 30% out, and a journal divergence on one book quarantines that
+book alone. One irritation to fix at source, the venue seeds stale resting
+orders each morning and we currently walk the price up to clear them.
+
+**The front door is now the risk, not the engine.** Edwin expects to lose half
+or more of downloads at the sign-up wall and has watched family members refuse
+outright. Part of that fear turned out to be a version confusion, since the
+store build already starts with an email address and gates verification to cash
+prizes, but the underlying point stands and was backed independently by Jared:
+people download the app and do not know what they have downloaded. Edwin's four
+questions for the first screen are recorded in
+[[customer-onboarding/customer-onboarding]]. tZERO have also said the 18-plus
+requirement can come off.
+
+**Advertising works and Edwin does not like it.** The units serve in the store
+build and are deliberately off in TestFlight so nobody clicks one by accident.
+His reaction to the creative was that it would turn him off the app, so the
+direction moves to a top or bottom video unit rather than in-content banners. A
+former FIFA commercial lawyer is being engaged for direct brand deals, and
+Edwin would rather run no advertising than fight ugly programmatic inventory.
+The volatility-moment unit is now settled as direct-buy only, because a custom
+unit of that shape cannot be filled programmatically.
+
+**A date correction that changes the plan.** College football starts on 29
+August, but no media outlet covers college football. The date that matters for
+coverage and first impressions is **9 September**, the NFL opener.
+
+**And one defect worth the attention.** A real trading session produced fourteen
+items, three of which are the same problem: the price shown is not the price you
+can transact at. P&L is permanently wrong, the chart drifts from the book, and
+limit orders will fail in ways a retail user cannot diagnose. It is the
+strongest argument yet for the market order landing before real users arrive.
+
 ## 2026-08-10: Five touchdowns digested, and a new Compliance section
 
 Processed the 27 July → 7 August touchdown block ([[27-07-2026-touchdown]],

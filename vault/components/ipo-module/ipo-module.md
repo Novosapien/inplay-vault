@@ -143,6 +143,24 @@ IPO Module ("Trading Challenge Draft")
 >
 > _Source: [[31-07-2026-touchdown]]._
 
+> ### Update (12-08): Edwin needs a desktop execution interface for the offering
+>
+> A requirement that had not surfaced before, and it is dated. Edwin has to
+> place orders across **170 team companies** during the offering, and the only
+> route today is the phone app: _"logging in and out of 170 teams on the phone
+> is going to be cumbersome."_ He wants **something he can click many times with
+> a mouse**.
+>
+> George's read is that this is configuration rather than a new build, because
+> it runs on exactly the same infrastructure as the app, with the likely
+> wrinkles being journal-related. It attaches to the market-maker admin panel
+> that Edwin is already getting a login to.
+>
+> **Needed before the offering opens on 22 August, with a couple of test orders
+> put through first** so it is not being used for the first time on the day.
+>
+> _Source: [[12-08-2026-touchdown]]._
+
 > ### ⚠ Update (07-08): mandatory language change
 >
 > Legal has ruled on how the offering may be described. **Always "simulated

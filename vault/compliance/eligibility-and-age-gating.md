@@ -39,9 +39,9 @@ KYC for cash → (eventually) a real brokerage account.
 
 Troy's framing of the same three tiers, by legal purpose (07-08):
 
-1. **Entertainment purposes only** — Trader Light
-2. **Educational purposes** — Trader Medium
-3. **Skill-based trading competition** — Trader Full
+1. **Entertainment purposes only**: Trader Light
+2. **Educational purposes**: Trader Medium
+3. **Skill-based trading competition**: Trader Full
 
 That framing is deliberate: "skill-based competition" is the category InPlay
 wants the cash-prize tier to sit in, and it ties back to the
@@ -83,7 +83,7 @@ Tracked as an open tZERO item; raised in the InPlay/Novo Slack channel.
 
 | # | Question | Owner | Status |
 |---|----------|-------|--------|
-| G1 | Will tZERO relax the **18+ date-of-birth validation** on the onboarding API for the no-payout tiers? | tZERO | 🔴 Open — blocks Trader Light entirely |
+| G1 | Will tZERO relax the **18+ date-of-birth validation** on the onboarding API for the no-payout tiers? | tZERO | 🔴 Open, blocks Trader Light entirely |
 | G2 | Do **Trader Medium** and **Trader Light** appear on the main leaderboard, or only on micro-challenge leaderboards? | Edwin / Troy | 🔴 Open |
 | G3 | What exactly does the 13+ attestation look like, and is a bare checkbox sufficient in every state? | Edwin / legal | 🔴 Open |
 | G4 | How is the under-18-safe ad inventory actually enforced at the SSP level, per network? | Novosapien, Brett | 🔴 Open |

@@ -176,6 +176,9 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 
 | Parameter | Meaning | Value | Status | Source |
 |---|---|---|---|---|
+| `live test cadence` | Quote cadence for the pre-launch live-game runs | **500ms**, tightening toward **200ms** as launch approaches. Confirmed running across all 180 books | ✅ 12-08 | George, 12-08 |
+| `taker cadence per market` | How often the taker touches any single book | roughly every **20 seconds** (it takes continuously across all markets) | ✅ 12-08 | George, 12-08 |
+| `observed order volume` | Orders placed in a day by maker and taker together | ~**1.2 million** across 180 books, business-as-usual cadence | ✅ 12-08 | George, 12-08 |
 | `probability poll interval` | How often the poller calls SR per live game | **~2 s** — matches the measured median update gap | 🟡 evidence-backed, E18 open | 24-07 measurement |
 | `SR update cadence (observed)` | How often SR's probability actually changes in a live game | median **4 s** · mean 11.5 s · p90 28 s · 64 % ≤5 s · 1,089 updates/game | ✅ measured | Chiefs–Ravens capture 24-07 |
 | `SR acquisition lag` | SR's own delay before publishing | ~5–15 s (media tier) **or** fast (betting tier) — **contradictory sources** | 🔴 S9 — measure in August | SR service research vs Cody |

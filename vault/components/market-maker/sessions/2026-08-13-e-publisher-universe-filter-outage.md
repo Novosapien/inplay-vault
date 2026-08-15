@@ -109,3 +109,40 @@ description: "The publisher never adopted a game: the universe filter compared s
    `~/gameday13.log`, taker books flip LIVE, maker prices the games.
 2. Merge PR #37 (main), then the follow-on N39.
 3. The build-deploy-log rows this session added.
+
+---
+
+## Addendum (23:0x–23:2xZ) — the flip PROVEN live, and the "not running" scare was the panel
+
+- **The chain worked at kickoff:** seq 2,907 → 4,380+ with a 358/min
+  burst at 23:10Z as SR posted its first probabilities. The books
+  skipped PRE_KICKOFF and went straight to LIVE — as predicted (SR had
+  no pregame probabilities; err-quiet held until the first reading).
+- **George's mid-game "the maker is not running": FALSE, proven three
+  ways** — engine ticking (13,386+), 180/180 books cycling with ~13–14
+  resting orders each (`resting_order_count`, all `defensive` from the
+  known missed-sweep demotion), `mm.state` publishing every ~1 s
+  (subscribed with the admin NATS user, frame fresh, CFG-0023), the
+  proxy pump POSTing frames into Centrifugo the same second.
+- **The two real, panel-side causes:** (1) the snapshot was in SHED
+  mode — `shed=["resting_orders"]`, game-load frames outgrew the
+  256 KB budget, so ladders arrive as counts; any view keyed on
+  ladders shows empty books. The engine's shed frame is
+  contract-correct (field omitted, count present). (2) the proxy's
+  `/market/quotes` drew 10 s upstream timeouts → 502 at 23:02/23:11/
+  23:12 — an empty venue-book view on each failure.
+- **Panel changes specced for the panel owner** (not built): a maker
+  liveness banner (frame age + tick age) on every trading page; a
+  shed headline summing `resting_order_count` — a row must never read
+  "not quoting" while a count exists; keep-last-good + a lagging badge
+  on `/market/quotes` failures.
+- **Engine follow-up filed by observation:** the 256 KB snapshot
+  budget binds under game load (shed is the steady state during
+  games) — re-size or trim rides the existing always-quoting/step-4
+  workstream, post-freeze.
+- **15-08 verification:** the fix survived the 14-08 redeploys — the
+  testing pool's running commit `d492dcb` descends from the
+  cherry-pick. PR #37 remains OPEN and main (at `f8c8aef`) does NOT
+  carry the fix: the next main → production publisher deploy regresses
+  it until #37 (or its re-apply) merges. Flagged in the
+  build-deploy-log Landed row.

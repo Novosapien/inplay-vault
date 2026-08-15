@@ -71,6 +71,51 @@ volume.
 AdMob reads it as fraud, and the account gets banned. Standing instruction
 while test units are live.
 
+## Update (12-08): serving in the store build, and Edwin does not like what he sees
+
+**Where the units are.** The AdMob units are **live in the App Store build**,
+curated, with age verification applied. They are **deliberately switched off in
+TestFlight** so nobody on the team can click one by accident. Brett's reason is
+worth repeating because the risk is existential rather than theoretical: every
+SSP platform warns that a click-through rate above their threshold means an
+instant ban, and it has taken months to get these networks to acknowledge,
+verify and onboard. Further Google-ecosystem verifications arrived and are due
+by September.
+
+**The tuning trade-off, discovered by doing it.** Tightening the constraints on
+what may serve drops the fill rate sharply and the platform warns you as it
+happens. The decision taken was to **run relatively open for now and gather
+data**, then tighten once there is evidence about what is actually coming
+through.
+
+**Edwin's reaction to the creative was blunt.** _"That ad looks horrible."_ He
+found the in-content placement distracting enough that it would put him off the
+app: _"in the belly of the context, it's very distracting and it would piss me
+off. It would actually turn me off."_ Agreed direction: move to a **top or
+bottom unit**, video only, rather than in-content banners. Brett: cheap to
+change.
+
+**A direct-sales route is opening.** A **former FIFA commercial lawyer**, just
+finished representing FIFA on commercial deals, has approached Edwin and wants
+to represent InPlay for brand deals. He is coming in inexpensively and named
+contacts. Contract under review with counsel. Edwin's position, stated plainly:
+_"I'd almost rather have no ad and wait for direct sales than fight those
+programmatic banners."_
+
+**The agreed compromise:** float programmatic in enough volume to test, measure
+and check quality, then decide whether to increase it or pull it back. It is a
+dial, not a switch, and the data has to come first. Note the tension with
+[[sub-components/programmatic-media-playbook/programmatic-media-playbook]],
+which assumes programmatic carries the always-on inventory: if direct sales
+succeed, that model needs revisiting rather than quietly persisting.
+
+⚠ **The volatility-moment unit cannot be programmatic.** Brett: a custom unit of
+that shape is too difficult to slot into a programmatic auction, so it will have
+to be a **direct buy**. That has been an open assumption in the packaging model
+and is now settled.
+
+_Source: [[12-08-2026-touchdown]]._
+
 ## Update (07-08): rewarded video for InPlay dollars
 
 Edwin's UI prototype includes a **rewarded ad unit**: watch 30 seconds, earn

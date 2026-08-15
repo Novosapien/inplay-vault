@@ -2,7 +2,7 @@
 description: "Session note: digesting the 27-07 to 07-08 touchdown block into the market-maker docs. IPO market structure settled, valuation inputs confirmed, E11/E12 still unasked."
 ---
 
-# 2026-08-10 — Touchdown block 27-07 → 07-08 digested
+# 2026-08-10, Touchdown block 27-07 → 07-08 digested
 
 > **Type:** digest session (no build work)
 > **Sources:** [[27-07-2026-touchdown]] · [[29-07-2026-touchdown]] ·
@@ -28,10 +28,10 @@ dates added).
 The 15-07 model had the MM warehousing unsold float in ~50k clips. That is gone.
 There are two MPIDs:
 
-- **InPlay Markets, the broker dealer** — client-facing, holds the entire
+- **InPlay Markets, the broker dealer**: client-facing, holds the entire
   1,000,000-share-per-team issuance, posts it for sale, unlimited buying power,
   preloaded by tZERO. This is the seller. The MM never sells the primary.
-- **InPlay Markets, the principal trading arm** — non-client-facing, runs the
+- **InPlay Markets, the principal trading arm**: non-client-facing, runs the
   maker algo and the taker algo off **one wallet, one MPID, one inventory**.
 
 The taker is the primary's biggest buyer, ≥600k of the 1M per team, with
@@ -50,7 +50,7 @@ Edwin: describe the observed behaviour, let him tell you whether it is a bug.
 **The valuation input chain is confirmed end to end.** The Sport Radar
 probabilities contract amendment is signed at no extra cost and live in the
 production account. Probability never rides in the play-by-play payload, so we
-poll — 500ms in-game to start. Next-game probabilities post ~15 minutes after
+poll, 500ms in-game to start. Next-game probabilities post ~15 minutes after
 the previous game ends, because they are an extrapolation of the odds line.
 
 **The RP formula now has its missing term.** `RP = ((P(win now) − P(win at
@@ -105,13 +105,13 @@ volatility half-life · E22 taker share range and time blocks · E23 post-primar
 market operations · S6 key-player definition · T12 the two MPIDs · T13 tickers ·
 T14 IPO price lock vs simulated trading.
 
-**Re-scoped:** S4 — the betting feed was ruled out for this run, so no faster
+**Re-scoped:** S4, the betting feed was ruled out for this run, so no faster
 path has been bought and probability lag is now purely SR's odds-ingestion
 speed.
 
 ## Next
 
-Chase **T13 (tickers)** — it blocks the 13 Aug dry run and everything behind it.
+Chase **T13 (tickers)**: it blocks the 13 Aug dry run and everything behind it.
 Then **T12 (the two MPIDs)** with Troy, and put **E19/E20/E22** to Edwin in
 writing, since he acknowledged owing them on 07-08 ("I actually owe you
 deliverables"). Ask **E11 and E12** at the same time; they have now survived
