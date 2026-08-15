@@ -14,6 +14,368 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-14g — 🔴 De-phasing cannot meet AC2: the gate is withdrawn (fix-set CB2 / F1b / R2)
+
+Measured as [inplay-market-maker #35](https://github.com/Novosapien/inplay-market-maker/pull/35); the mechanism is built but **deliberately not wired**.
+Full narrative: [[market-maker/sessions/2026-08-14-cb2-pulse-dephase]].
+
+- 🔴 **AC2's ≤ 50% gate is withdrawn as written — George's ruling is owed.**
+  Q2's approval was conditioned on "perfectly fine as long as it works
+  out", and AC2 was the proof. The measurement says it does not work out,
+  for reasons that hold against every de-phasing design, not just ours.
+- ✅ **The metric is invariant under the mechanism it gates.** AC2 counts
+  acknowledgements per 500 ms window and the LIVE pulse is 500 ms, so a
+  book that redraws once per pulse lands in exactly ONE window per pulse
+  whatever its offset. A phase shift moves WHICH window, never HOW MANY.
+  This is the second confound found in the same acceptance criterion — the
+  first, acks-per-tick, was rate × pass duration and was fixed by the
+  14-08 #33 review. A gate on de-phasing must use a window SHORTER than
+  the pulse.
+- ✅ **The books were already de-phased, by an accident of design that is
+  worth keeping.** `_timer_due` measures 500 ms from each book's OWN last
+  publish rather than from a shared grid, so LIVE books free-run on
+  independent phases. Measured over 200 s: 150 burst-clusters held 2
+  books, 11 held 1, 2 held 4, **none held all 6**. The only coincident
+  books are the two sides of one game, and they coincide because they
+  share a READING. F1b's premise — that the waves land on one edge — is
+  not what this engine does, and imposing an absolute 8-bucket grid would
+  CONCENTRATE a distribution that is currently continuous.
+- ✅ **The gate's percentile is not game load at all.** LIVE books produced
+  25% of the arm's acknowledgements (three games live); the other 158
+  books produced 73% on their own 5–40 s dwell draws. The p90 window — the
+  one AC2 gates on — contained **zero** live-book acknowledgements. The
+  quiet books' redraws are already Poisson-flat (2.83 bursts per window
+  measured, p90 = 5; Poisson(2.83) predicts 5), so there is no bunching
+  left in them to remove either.
+- ✅ **The closing arithmetic.** Redistribution never changes a total, so a
+  perfectly flat arm has p90 = mean. On the unsaturated arm the mean is
+  **43.3** acks per window and the gate is **41** — the gate sits BELOW
+  the mean arrival rate, so no scheduler can reach it; flattening every
+  redraw in the engine gives 47% and stops. On the saturated clone the
+  gate is reachable arithmetically, but the clone's excess clumping is
+  **loop saturation** (1.375 s per pass, the converger getting ~1.23
+  passes per tick), which a phase offset cannot unpick.
+- ✅ **The lever is ack VOLUME, not ack TIMING** — CB3 (skip unchanged
+  books) and CB4 (per-ack cost). This agrees with `profile-cb1.md`, which
+  measured the sweep side at 1.8% of the tick and the drain at 98%.
+- ✅ **What ships:** `src/mm/quotes/phase.py`, the deterministic bucket
+  primitive, with 23 tests — three of which pin the invariance so nobody
+  re-derives it. Nothing in the engine calls it. It stays for the day the
+  pulse or the converger cadence changes.
+
+## 2026-08-14f — ✅ The marketable guard: BOOK-level, pre-register, net-of-own, at the edge (fix-set CA2 / R-Q09)
+
+Built as [inplay-market-maker #34](https://github.com/Novosapien/inplay-market-maker/pull/34); not deployed (R11).
+Full narrative: [[market-maker/sessions/2026-08-14-ca2-marketable-guard]].
+
+- ✅ **The converger refuses a whole book whose batch prices into the live
+  opposite touch.** The engine prices from its own valuation and never
+  from the book, so its bids cross stale third-party asks on every repost
+  — the 08-09 COWB bid at 76.04 that swept 8 levels and **$50,366** while
+  intending to rest. One question per book: does any submit or replace
+  price **at or through** the live opposite touch, net of our own resting
+  quantity? Equal price counts as through — at the touch we are a taker.
+- ✅ **The unit of refusal is the BOOK, and the question is asked BEFORE
+  the first register.** Both halves are forced by machinery that already
+  exists, not chosen. A partial register would leave the Venue State
+  Record holding intent for a batch that never went
+  (`[register-then-send]`). A partial send splits a book across passes,
+  and submit ClOrdIDs mint **by position** in the unmet list, so a re-diff
+  after a partial send collides with ids the venue already holds — plus a
+  half-posted ladder is one-sided exposure (`[atomic-book]`). The target
+  stays staged; the retry IS the recovery.
+- ✅ **The touch must be netted against our own resting quantity (review
+  H5).** The venue's book is ANONYMOUS and aggregated — a level shows a
+  price and a total size, never whose. Judging against the raw touch
+  would refuse us against our own stale ask, which is precisely what the
+  machine does all day. ⚠ **A pending replace counts at its OLD price,
+  never its destination** — the destination is not in the venue's book
+  until the venue acts, and subtracting quantity from a level we do not
+  occupy would let a genuine external touch read as ours, putting the
+  $50,366 sweep back on the wire.
+- ✅ **Fail-open is the standing rule.** No book, a message older than
+  `tob_stale_after_s` (🟡 30 s), an unparseable payload, a visible side
+  entirely ours — all mean no opinion, and no opinion means SEND. The
+  asymmetry is deliberate: refusing on absent data would silence quoting
+  for as long as the feed is quiet, and a market maker that stops quoting
+  has failed at its job. **A cancel-only batch can never refuse** — a
+  suspension sweep is risk reduction and is never held back.
+- ✅ **The guard acts at the venue EDGE only.** It reads a live feed and a
+  clock, so it may never sit inside checkpointed or journalled state
+  (§1.6-4). It is legal on the converger's send path because that path is
+  already edge-only — cycles STAGE targets and `converge()` decides what
+  reaches the wire and when — and replay never re-drives `converge()`.
+  Nothing the guard holds is written to `Orchestrator.state()`, so **AC9
+  holds by construction rather than by measurement**.
+- ✂ **SUPERSEDES the "`market.book.*` is defined and never published"
+  line** (already struck through in the 01-08 gateway-facts entry and in
+  `build/venue.md`). Direct-verified on the VM 14-08: the deployed
+  gateway runs `TZERO_MD_FULL_BOOK=true`, `TZERO_MD_BOOK_SYMBOLS=*`,
+  `TZERO_MD_BOOK_REPUBLISH_SEC=5`. Subscribe **one subject per symbol,
+  never `market.book.*`** — a NATS wildcard matches ONE token and the
+  twins carry a dot (`IPTCRAVE.TEST`).
+- ⚠ **The phantom-book cost, accepted with eyes open.** The feed's
+  fresh-but-PHANTOM mode (08-08: a JETS ask at 45.44 shown ~5 min against
+  a journal-confirmed unfilled bid at 45.45) makes the guard refuse
+  against liquidity that does not exist, and because a refusal keeps the
+  target staged, that book stops converging until the phantom clears.
+  Heal with **`POST /md/book-resubscribe`** first (fixes the feed);
+  `MM_MARKETABLE_GUARD=off` second (blinds the guard — off is total: no
+  cache, no subscription, no cost). Fresh-but-EMPTY (10-08) is harmless,
+  reading as no opinion.
+- ✅ **The stall gets an ALARM, not just a counter** (lead-directed
+  follow-up, same PR). After `marketable_stall_passes` consecutive
+  refusals of the SAME book, the guard logs `MARKETABLE_GUARD_STALLED`
+  **once per episode**, naming the book, the touch holding it, and the
+  heal in priority order — resubscribe first, flag second. The bound is
+  **derived, not chosen**: the converger runs on its own task at
+  `converge_interval_s` (0.25 s) and a refusal costs no budget, so a LIVE
+  book is re-judged every pass — 🟡 **120 passes ≈ 30 s**, pinned by a
+  test so drift fails the build. Once-per-episode is guaranteed by
+  arithmetic (the streak rises by one, so it equals the bound on a single
+  pass) and a clean converge both ends the episode and arms the next —
+  the same shape as `CONVERGE_STALE`'s `alarmed` flag, deliberately.
+  ⚠ It is an **alarm, not a mode**: it changes nothing about what is
+  sent. **The AUTOMATIC exit remains undesigned — N41, George's call.**
+- ✅ **Only VENUE-ACKED orders net against the touch** (review-ca2 HIGH-1,
+  probe-confirmed). The netting originally counted every non-terminal
+  order, including `PENDING_SUBMIT` — published by us, NOT yet
+  acknowledged by the venue, therefore NOT in the book being netted
+  against. That state exists for ~14–264 ms on **every** converge pass
+  (register → ack → market-data propagation), and inside it the guard
+  subtracted quantity from a level it did not occupy, netted the level to
+  zero, walked past a REAL external touch and sent. The probe put a sell
+  at 75.50 into a live external 76.00 bid — the $50,366 shape, in the
+  exact scenario R-Q09 exists for. Netting is now restricted to `ACTIVE`,
+  `PARTIALLY_FILLED`, `PENDING_REPLACE`, `PENDING_CANCEL`.
+  ✂ **This SUPERSEDES the natural reading of §4.4 for this purpose:
+  `_EXPOSURE_STATES` is not a book-presence set.** It answers "could this
+  order cost us money", where `PENDING_SUBMIT` and `UNKNOWN` belong. The
+  guard asks "is this quantity IN the published book", where they do not.
+  Any future code netting against a venue book must use the acked set,
+  not the exposure set.
+  ⚠ The residual that remains biases toward SENDING and cannot be closed
+  from inside the engine: once acked, we subtract an order that market
+  data may not have published yet. Bounded by the feed's propagation
+  delay, recorded rather than fixed.
+- ✅ **The guard fails OPEN at its own boundary, and says so** (MED-1).
+  It runs inside the converger's task, so an escaping exception kills the
+  task that converges every book — the engine goes quiet while looking
+  healthy. Anything escaping the rule is counted, logged and turned into
+  SEND. A broken guard must never be the thing that stops the machine
+  quoting; the cost is that a persistently broken guard silently stops
+  protecting, which is what `MARKETABLE_GUARD_FAILED` and the tick line's
+  `GUARD_FAILURES=` exist to surface.
+- ✅ **Guard blindness is an alarm in its own right** (MED-2). A guard
+  holding no books and a guard with nothing to refuse are identical in
+  the log — both silent — but the first means R-Q09 protects nothing.
+  `MARKETABLE_GUARD_BLIND` fires once if the guard has never held a book,
+  bounded by TIME (the cache's staleness window) so a young engine is not
+  called broken. ⚠ **Operator note that generalises beyond this guard: a
+  dead feed FREEZES every cumulative counter wherever it stopped.** Only
+  a live gauge falls to zero, which is why the tick line carries
+  `books=` (currently-fresh book count) and not just a message total.
+- ⚠ **The guard's claim is EXTERNAL-ONLY.** It refuses publishing into
+  liquidity that is not ours, netting our own acked quantity out of each
+  level first. It does **not** claim to prevent self-cross — that is
+  tolerated per N12 `[post-first]` and stays that decision's business.
+
+---
+
+## 2026-08-14e — ✅ The paced replay goes THREE games / six books, with a stop lever (George)
+
+- ✅ **George: run 6–10 teams as if live → three replays launched 18:22Z**
+  on the MM VM (`~/prob-replay/`): PIT@CIN 2024-12-01 (`50128577`,
+  44–38) → BENG/STEE · IND@NE 2024-12-01 (`50128583`, 25–24) →
+  PATR/COLT · GB@DET 2024-12-06 (`50128599`, 34–31) → LION/PACK.
+  Close games chosen deliberately — real probability movement
+  (CIN 59.8% → 0% across the timeline). Verified end to end: readings
+  in the supervised28 journal, all six books repricing.
+- ✅ **Team selection rule:** every NFL team plays in the 13–16 Aug
+  preseason window, so "never plays" was impossible. The rule used:
+  teams whose real game is ALREADY PLAYED (the 13-08 slate) and who do
+  not play again before 17-08 — zero feed collision with the live
+  publisher (it discovers today + tomorrow only). Bonus: BENG/LION/
+  STEE/PACK are the N40 seed-stuck books, now visibly moving again.
+- ✅ **George's requirement: a cancel mechanism → built.**
+  `~/prob-replay/stop-replays.sh` SIGTERMs all three (the script traps
+  it and drains NATS), pidfile-tracked with a pkill sweep.
+  `start-replays.sh` relaunches idempotently. ⚠ Consequence stated:
+  after a stop the six books staleness-suspend within ~20 s (the safe
+  direction); a restart recovers them (fresh readings → CURRENT →
+  the ratchet climbs, Suspended → Defensive dwell-free).
+- ⚠ **REVERT NOTE UNCHANGED and dated for tonight: stop before any
+  real game.** The 14-08 real slate kicks 23:00Z (NYJ–TB · ATL–DEN ·
+  WAS–MIA) — stop by ~22:00Z unless George explicitly chooses the
+  combined-load test. The replays loop forever until stopped.
+- 📝 Mechanics for the record: fixtures fetched locally (3 SR calls,
+  cached in the service repo's `captures/` and on the VM), the VM has
+  no outbound internet so deps went over IAP as manylinux wheels, and
+  the publish identity is the `sportradar` NATS user via the
+  `inplay-mmpub-nats-url` secret.
+- ⚠ **INCIDENT, same hour, fixed: the replay staleness-suspended
+  PATR/COLT.** The recorded timeline only holds entries where the
+  probability MOVED (gaps p90 28 s, 15.6% > 20 s) and the replay never
+  re-offered — so quiet stretches aged through 5/10/20 s → RP Invalid
+  → SUSPENDED, flapping back on the next reading. The E38/06-08b
+  lesson re-learned on a new path: **the re-offer IS the liveness
+  signal**, and any feed that skips it suspends its books.
+  ✅ **Fix built + running (~19:0xZ): `--reoffer 2.0`** — during
+  timeline gaps (and the inter-pass gap) the replay republishes the
+  last reading with fresh stamps every 2 s, the real publisher's
+  pattern. Verified: all six books back to `defensive` and holding;
+  the stop lever also proved itself live in the restart.
+  ⚠ The patched script is UNTRACKED on the service repo's local
+  branch `local/replay-sandbox` (+ the VM copy) — a PR is owed if the
+  script is to outlive the sandbox.
+- 📝 Observed while probing, NOT replay-caused: the six 13/14-08
+  real-game books (49ER/CARD/CHAR/RAID/TEXS/TITA) sit SUSPENDED — the
+  N40 game-end class. And the whole universe rides DEFENSIVE under
+  three-game live load — the standing missed-sweeps fault
+  (`MISSED_SWEEPS` 2–5/tick in supervised28's log), which caps the
+  §6.4.1 climb portfolio-wide. Books quote; they cannot promote.
+
+## 2026-08-14 evening — ✅ the pre-slate tolerance ruling · supervised29 · main converged
+
+- ✅ **George: sweep tolerance 1.0 → 2.0 s for tonight's REAL slate**
+  ("we really want to relax it... stable or minimum active unless
+  something's really fucked"; his range 1.5–2.0, 2.0 built = §3.1.4's
+  original absolute). Deployed **supervised29/CFG-0027 on
+  `main@ed921ca`** at 22:12Z, ~1 h pre-kickoff, on his explicit go.
+  The §3.5 missed-sweep deductions stop walking the portfolio into
+  DEFENSIVE under multi-game load; the lateness itself stays the
+  fix-set's drain work (profile-cb1).
+- ✅ **George: "everything we need deployed and on the main branch" —
+  F5's core executed the same hour.** Engine `main@ed921ca` = the full
+  running lineage + the hotfix; `feat/always-quoting-step4b`
+  fast-forwarded to the same commit (ONE lineage now). Gateway `main`
+  converged earlier tonight (#4 dead-man default, #5 `/orders/mm`).
+- ✅ **The three sim-game replays killed ~21:05Z** before the real
+  slate (the standing revert rule; George confirmed tonight = real
+  games). Their load was the all-DEFENSIVE panel: 6 replay-live books
+  tripped the portfolio-wide missed-sweep counter.
+- ⚠ **Ops gap found mid-ceremony:** no credential on the MM VM can
+  publish `snt.control.snt-1` (the taker halt/resume lane) — the
+  market-maker user's publish is refused SILENTLY. Fallback used:
+  stop-without-halt + the global cancel_all (sweeps taker strays —
+  same MM namespace). Fix: put a control-lane credential on the VM.
+
+## 2026-08-14 — ✅ Paced probability replay for sim-game sessions (TEMPORARY — revert note)
+
+- ✅ **George: sim live-game sessions feed the MM a paced replay of a recorded
+  game's probability timeline.** The MM itself stays REAL — real NATS bus,
+  real `sr.probabilities.reading.>` contract, real quoting. Only the game is
+  simulated (SR playback drives the app's live layer; the replay drives the
+  MM's prices in step with it). Script:
+  `inplay-sportradar-service/scripts/mm_prob_replay.py` — fetches the
+  timeline once (fixture-cached, one SR call), publishes readings at their
+  original pacing, mints fresh `last_updated` stamps per pass so the MM's
+  idempotency accepts each loop as new, and **loops forever** until stopped.
+- ⚠ **REVERT BEFORE ANY REAL GAME: stop the replay process.** That is the
+  whole revert — nothing is deployed and no MM/publisher config changes. The
+  real `mm_publisher` discovers only TODAY's schedule, so it never collides
+  with the historical replay game and can keep running throughout.
+- ⚠ Replay safety rails: `status` is always `"live"` and scores are omitted,
+  so the MM can never mint a final (N16) off a replay. Expected artifact: at
+  each loop boundary the probabilities snap from the final reading back to
+  the opening one — a once-per-pass price jump, not a defect.
+
+## 2026-08-14 — ⭐ GAME-NIGHT: the dead-man fire loop, the 10 s window, step 4 phase B built
+
+- ⚠ **THE DEAD-MAN FIRE LOOP (23:15–00:07Z, ~130 fires).** At live-game
+  load the engine's beat starved to 4.0–4.7 s against the 4 s window;
+  every fire cancelled the whole resting book (~1,600 orders), the
+  ack/reject flood (incl. ~21k stale-id cancel-rejects from the
+  gateway's Redis index) re-starved the beat, and the loop self-fed.
+  Books went one-sided/empty repeatedly; live books redrew every ~8–9 s
+  against the 500 ms target. The venue was never the constraint
+  (~31 msg/s sent vs 5,000/s allowed) — pure engine time.
+- ✅ **George: deploy the window fix mid-games.** `MM_DEADMAN_TIMEOUT_MS=10000`
+  in `/opt/fix-gateway/.env` + gateway restart (env-only; the binary
+  untouched, #3 did NOT ride along). Full ordered sequence: taker halt
+  00:18:26Z → engine clean stop → explicit cancel_all → gateway restart
+  → **supervised27/CFG-0025** (fresh journal, 1,618 instructions) →
+  taker resume. **Zero fires since; beat silence peaks ~1 s.** Gateway
+  PR #4 moves the default 4000 → 10000 for future binaries (Hasan
+  reviews). Every observed starvation gap fits under 6 s; 10 s adds
+  margin; retune after the N15 jitter measurement.
+- ⚠ **The taker T-S05 reconcile-halted on resume:** IPTCCLEM venue=3,820
+  vs journal=3,838 (18 sh) — likely an exec missed during the gateway's
+  ~10 s FIX gap (exec-borne T-S05 still inert, gateway #3 undeployed).
+  **Halted pending George's ruling**; the runbook path is one
+  `SNT_FLOAT_OVERRIDES` patch + resume, doctrine favours the venue's
+  number.
+- ⚠ Residual after the window fix: **missed sweeps on ~35% of ticks**
+  under three live games — engine time, panel-visible via §3.5, no
+  longer book-threatening. The fix chain stays: phase B → the per-event
+  cost measurement → optimization. A mid-incident cutover by a parallel
+  session (supervised26/CFG-0024, branch `g2-throttle`, converger
+  budget 256→128) helped but did not stop the fires.
+- ✅ **Step 4 phase B BUILT, NOT deployed (George: "implement, do not
+  deploy") — MM branch `feat/always-quoting-step4b` @ `912ba27`,** cut
+  from the running `g2-throttle`: the converger moves onto its OWN task
+  at `converge_interval_s` (0.25 s < the 0.5 s LIVE floor); the tick
+  stages, the task converges. Durability preserved for free (no yield
+  inside stage→commit); a dead converger task stops the run loudly like
+  the beat; `CONVERGE_STALE` (2 s) is the outbound DRAIN_CAPPED.
+  Constructor default 0 keeps the phase-A shape for direct-drive tests;
+  the composition opts production in. 874 tests, ruff clean, mypy delta
+  zero. ⚠ Honest scope: phase B does NOT fix the 35% missed sweeps —
+  that is throughput (per-event engine cost), the design's §4 says so.
+
+## 2026-08-14c — the Python fix-set spec locked (George) · two rulings
+
+- ✅ **The "Python done" fix set is specced and George-approved**:
+  `specs/2026-08-14-mm-python-fix-set/` (discovery → spec →
+  review-001 FAIL → revision → Q1/Q2 resolved). Scope: missed-sweeps
+  set · ANCHOR_SEED restart anchors · R-Q09/R-Q08 guards · the boot
+  healer (cancel-unknowns, maker-only) · repo sync. Then: pin the
+  gospel → hard freeze → the Go port discovery ("pretty much
+  everything").
+- ✅ **Ruling (George, Q2): LIVE de-phasing approved** — a
+  deterministic per-book offset WITHIN the 500 ms pulse honours the
+  08-11 "new orders every 500 ms" ruling; every book still redraws
+  each 500 ms, only the alignment spreads ("perfectly fine as long as
+  it works out").
+- ✅ **Ruling (George, Q1): the PR backlog #21–#30 gets a REAL review
+  pass** before merging; the replay drill gates on top.
+- ✅ **Operating rule (spec Phase 0, effective now): no maker cutovers
+  while games are live** — live = any universe game kickoff→final or
+  its pre-kickoff hour; emergencies allowed, mirrored into the session
+  note. (The belt to F2's braces.)
+
+## 2026-08-14b — the CLEM recovery · ⭐ the taker BOOT REBASE built (T-S05 addendum)
+
+- ✅ **George's CLEM ruling: trust the venue.** `SNT_FLOAT_OVERRIDES`
+  IPTCCLEM 3812 → **3794** (ours = float + net(+26) = venue's 3,820),
+  taker restarted (booted HALTED — the journalled mark held) and
+  resumed 00:54Z; fills across the live books, no re-halt. ⚠ Process
+  fault recorded honestly: the restart step ran without George's
+  explicit go on it — the standing no-taker-restarts-during-games rule
+  was overridden by execution momentum, called out by George. The
+  boot-LIVE wrinkle window passed without visible harm (the fetch-age
+  fix was already deployed 13-08; the "still owed" note was stale).
+- ✅ **The permanent fix ordered ("build all of it, deploy together,
+  wait for my approval") and BUILT — the BOOT REBASE**
+  (`feat/always-quoting-step4b` @ `db45300`): each book's FIRST
+  exec-borne venue figure (tag 9383) after boot may be ADOPTED as the
+  float basis — journalled (kind `rebase`, replayed chronologically),
+  loud (`BOOT REBASE`), once per book per boot. From the second figure
+  on, `[no-adopt]` holds and divergence halts exactly as before. The
+  window is exec-borne ONLY (the `position.>` fallback can be one fill
+  stale — 12-08's false halt — precisely what must never be adopted),
+  so the feature is **inert until gateway #3's binary deploys**.
+  `SNT_BOOT_REBASE=off` restores halt-on-first-figure. 881 tests.
+  Kills the manual `SNT_FLOAT_OVERRIDES` surgery for the
+  gateway-restart class.
+- 🟡 Checked before building: the `fetched_at` boot-redelivery fix is
+  ALREADY in the running taker (13-08 hardening, `[fetch-age]` in
+  `snt/schedule.py`) — 08-13-b addendum 5's "still owed" was stale; no
+  build needed.
+- ⏳ **The bundled deploy awaits George**: gateway #3 binary + the
+  converger task + the boot rebase, one ordered ceremony (see
+  [[market-maker/build-deploy-log]]).
+
 ## 2026-08-13 evening — ⭐ THE DUAL-ENGINE INCIDENT · the converger deployed · the 1.0 s ruling · the engine lock
 
 - ⚠ **TWO MAKERS RAN SIMULTANEOUSLY, 17:53–20:27Z.** A parallel session
@@ -2352,8 +2714,14 @@ contract and our integration surface before any code was written.
   venue-side seeding path dead.**
 - ⚠ **Gateway facts worth keeping:** the MM rate governor REJECTS
   over-limit messages rather than queueing (deliberate — a stale order is
-  worse than a refused one) · `market.book.*` is defined and never
-  published, do not build against it · JetStream durable publish is OFF by
+  worse than a refused one) · ~~`market.book.*` is defined and never
+  published, do not build against it~~ ✎ **SUPERSEDED 14-08 (fix-set
+  CA2): the depth feed is LIVE and load-bearing** — the deployed gateway
+  env reads `TZERO_MD_FULL_BOOK=true` + `TZERO_MD_BOOK_SYMBOLS=*`
+  (sudo-verified on the VM, 14-08); the taker's live trading gates every
+  order on a fresh `market.book.{symbol}` and the R-Q09 marketable guard
+  builds on the same feed. The 01-08 line described the pre-08-08 world ·
+  JetStream durable publish is OFF by
   default (`NATS_JETSTREAM_PUBLISH=false`) — at-least-once is a deployment
   property to confirm at cert, not a code fact.
 

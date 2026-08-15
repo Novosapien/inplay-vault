@@ -1,3 +1,7 @@
+---
+description: "The as-built venue page — the order record, the reconciler, backoff, sync, the NATS transport, the mm.state snapshot and live-verified gateway facts"
+---
+
 # Build — Venue
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/venue/` ·
@@ -230,10 +234,12 @@ Never deltas: there is no history to replay and no sequence to reconcile.
   be hit, because a publish above it is REFUSED and the feed would stop
   silently. **Measured: 208,250 bytes at 170 books** — no shed on today's
   universe.
-- ⛔ **Deploy gate: the `market-maker` NATS user needs publish on
-  `mm.state`.** Its grants were written for `gateway.orders.mm.>` alone,
-  and a missing grant is SILENT — the publish returns normally and the
-  server drops the message.
+- ✅ **Deployed since the 08-13 evening union build** (supervised24/25
+  carried the state publishers; the panel renders `/mm` from it). The
+  standing warning survives the deploy: a missing NATS grant is
+  SILENT — the publish returns normally and the server drops the
+  message — so "panel dark + publisher log says ON" means check the
+  grant, not the code.
 
 ## Venue risk facts learned LIVE (07-08 — the first real-venue day)
 
@@ -263,9 +269,22 @@ Never deltas: there is no history to replay and no sequence to reconcile.
 
 ## Gateway facts (gospel under the 22-07 filter)
 
-- **The dead-man:** the gateway sweeps our resting book after **4 s** of
-  heartbeat silence (N15 — the window is ours to tune); the **30 s boot
-  grace** covers synchronous journal replay at boot.
+- **The dead-man:** the gateway sweeps our resting book after
+  heartbeat silence — ✂ **10 s since 00:19Z 08-14**
+  (`MM_DEADMAN_TIMEOUT_MS=10000`, env; was 4 s, which fired ~130 times
+  on the 08-13 live slate when live-load ticks starved the beat
+  4.0–4.7 s — the dead-man fire loop, decisions 2026-08-14). Gateway
+  **PR #4** moves the binary default 4000 → 10000 (⚠ `settings.go`
+  only — a SECOND hardcoded 4 s fallback survives at
+  `oe_adapter.go:139`, reachable only if the env value is ever ≤ 0).
+  N15 — the window is ours to tune, retune after the jitter
+  measurement. The **30 s boot grace** covers synchronous journal
+  replay at boot.
+  ⚠ Gateway-side item for Hasan, proven in the fire loop: a dead-man
+  sweep (and `cancel_all`) re-cancels the gateway's FULL lifetime
+  tracked set, so every fire draws a reject storm for long-dead ids
+  (~21k stale-id cancel-rejects from the Redis index on 08-13 night) —
+  the flood then re-starves the beat and the loop self-feeds.
 - **The MM governor: 5,000 msg/s, burst 2,000** (Hasan's guide 05-08 —
   ✂ supersedes the 50 msg/s placeholder recorded earlier; local rig
   containers may still run old configs). Over-limit messages are
@@ -276,6 +295,15 @@ Never deltas: there is no history to replay and no sequence to reconcile.
   `account` = FIX Tag 1). ⚠ Wash-trade blocking is ON and rejects
   self-crosses — in open conflict with N12's post-first design (see
   decisions 06-08c; the reconciler has a change coming either way).
+  ➕ 13-08 ruling (taker side, informative here): the venue flag STAYS
+  ON — a self-print is manufactured volume and the reject is correct;
+  the taker kills the collision bot-side instead (the wash guard, MM
+  PR #29). House-vs-house prints across the two accounts still
+  execute; only same-account self-crosses reject. ➕ 14-08: a
+  regression alarm here was FALSE — the CFG-0018 taker imported
+  `main@772e79c` via `snt-checkout`'s PYTHONPATH, guard present.
+  Since CFG-0019 (12:10Z) the taker runs `step4b-wash` @ `5b10d68`:
+  the guard and the boot rebase together.
 - **tZERO recycles ExecIDs** — proven by incident: a real fill was
   silently dropped because its ExecID had been seen the previous day on
   another symbol. Our EXECUTION key uses the client order id (see
@@ -286,14 +314,39 @@ Never deltas: there is no history to replay and no sequence to reconcile.
 - The gateway's eight publisher workers do not preserve timestamp order
   across subjects — the orchestrator floors each security's cycle clock
   at its high-water mark (deterministic on replay, absorbs µs jitter).
-- No cancel-on-disconnect at the venue (probe-verified); `market.book.*`
-  is defined but never published — do not build against it.
+- No cancel-on-disconnect at the venue (probe-verified).
+- ~~`market.book.*` is defined but never published — do not build against
+  it.~~ ✎ **SUPERSEDED 14-08 (fix-set CA2).** The depth feed is LIVE and
+  load-bearing. The deployed gateway runs `TZERO_MD_FULL_BOOK=true`,
+  `TZERO_MD_BOOK_SYMBOLS=*` and `TZERO_MD_BOOK_REPUBLISH_SEC=5`, so every
+  symbol publishes on change plus a 5 s republish of each non-empty book.
+  The taker gates every order on a fresh `market.book.{symbol}`, and
+  R-Q09's marketable guard reads the same feed. Subscribe one subject per
+  symbol, never `market.book.*` — a NATS wildcard matches ONE token and
+  the twins carry a dot (`IPTCRAVE.TEST`).
+- The depth feed has two proven failure modes and anything reading it
+  inherits both: **fresh-but-empty** (10-08 — empty books served while the
+  venue held full ladders) and **fresh-but-phantom** (08-08 — a JETS ask
+  at 45.44 shown for ~5 min against a journal-confirmed bid at 45.45 that
+  rested unfilled). `POST /md/book-resubscribe` on the gateway is the
+  feed's own heal for both.
 
 ## What changes here next
 
-[[market-maker/build/next|Next]]: the wash-trade-vs-N12 decision (the
-reconciler has a change coming either way — decide with Hasan before
-any venue drill) · the boot-reconcile healer (dead-man-swept levels
-surviving a replayed record — parked with eyes open) · E36 (DAY vs
-GTC, Edwin) · the §5.5 participant book feed. ~~T1/T2~~ answered
-05-08; the wire-contract alignment they triggered landed 06-08d.
+[[market-maker/build/next|Next]]: ~~the stale-book crossing guard
+(R-Q09 — the engine takes $50k sweeps while intending to rest)~~ BUILT
+14-08 on `fix-set/ca2-marketable-guard`, not deployed (R11) — the
+converger refuses a whole book pre-register when any submit or replace
+prices at or through the live opposite touch, net of our own resting
+quantity; `MM_MARKETABLE_GUARD` retires it · the
+sell gate (R-Q08 — nothing subtracts live resting sells before an ask
+ladder) · maker shorts (N34 — the ask ladder's side-2→5 flip at
+MINTING, since a resting order cannot change side on replace) ·
+keep-one-alive under the reject backoff (never suppress the best
+remaining postable level per side) · the wash-trade-vs-N12 decision
+(the reconciler has a change coming either way — decide with Hasan
+before any venue drill) · the boot-reconcile healer (dead-man-swept
+levels surviving a replayed record — parked with eyes open) · E36
+(DAY vs GTC, Edwin) · the §5.5 participant book feed. ~~T1/T2~~
+answered 05-08; the wire-contract alignment they triggered landed
+06-08d.

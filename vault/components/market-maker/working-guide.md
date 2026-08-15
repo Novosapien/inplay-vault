@@ -85,6 +85,10 @@ END     1. write a session note in sessions/ (format below)
            · machine changed?         → build/ (the as-built pages —
                                         update the page you changed;
                                         keep them TRUE)
+           · built/merged/deployed?   → build-deploy-log.md (the
+                                        cross-session pipeline state —
+                                        update the row IN the session,
+                                        and CHECK it before deploying)
         3. leave a clear "next" line — the next session starts there
 ```
 
@@ -120,6 +124,7 @@ honest and fast — 10 minutes max:
 | **What MUST be true to go live — the MM** | [[market-maker/requirements]] |
 | **What MUST be true to go live — the taker** | [[market-maker/market-taker-requirements]] |
 | Live test cases + statuses | [[market-maker/test-plan]] |
+| **In-flight changes: built / merged / deployed / verified** | [[market-maker/build-deploy-log]] |
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
 | Session-by-session narrative | `sessions/` |

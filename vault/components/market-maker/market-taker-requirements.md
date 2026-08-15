@@ -32,6 +32,23 @@ legal/compliance read, not an engineering call.
 
 ## Addendum — changes to these requirements
 
+### 2026-08-13 — the 12-08 build items BUILT (MM PR #28 + gateway PR #3)
+
+- **T-F07's staleness clock now prices the reading's `fetched_at`**
+  (the Fetched-At header — the publisher's fetch instant), never the
+  delivery time: skew-clamped, never regressing, no header = no
+  freshness, and a redelivered final no longer reopens POST. The
+  restart-re-derives-LIVE class is closed.
+- **T-S05's comparison source corrected as the 12-08 entry asked:**
+  gateway PR #3 forwards the exec report's own tag 9383 as `posSize`;
+  the reconciler prefers it (same message as the fill — cannot race,
+  cannot half-arrive) and demotes `position.>` to a fallback for books
+  that never saw an exec-borne figure. Never fails quiet against an
+  old gateway. Awaits: George merges #28, Hasan reviews #3; both ride
+  the next deploys. The +31 VATH float patch stays with the operating
+  session's next cutover. Session:
+  [[market-maker/sessions/2026-08-13-taker-hardening]].
+
 ### 2026-08-12 — ⭐ T-S05's first production-class catch (a lost exec report), and the night's hardening
 
 - ⭐ **T-S05 caught a real MESSAGE loss — ✂ corrected 08-12 afternoon:

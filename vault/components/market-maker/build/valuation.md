@@ -1,3 +1,7 @@
+---
+description: "The as-built valuation page — RP, Edwin's on-field leg, the F2 anchor seed that carries kickoff freezes across a fresh journal, and freshness/status/confidence"
+---
+
 # Build — Valuation
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/valuation/` ·
@@ -30,6 +34,22 @@ off-field` (§11.3), so RP is a live estimate of that number.
   kickoff** (the closing pregame number — George's interim ruling, N22).
   Known consequence: pregame news between 06:00 and kickoff stays inside
   T until the next file (~13¢ on a plausible NFL example).
+  ⚠ **The mid-game rebase edge (found live 14-08, the BENG/LION
+  triage) — ✅ FIXED by the ANCHOR_SEED, MM PR #32, not yet deployed.**
+  On a FRESH-JOURNAL boot while a game is already in play, the engine
+  has no kickoff anchor, so `[late-arrival]`
+  (`mm/valuation/engine.py`) freezes `p_ref` at the CURRENT
+  probability. Every fresh-journal cutover during a live game therefore
+  ERASED the accumulated in-game move and snapped the book back toward
+  seed — supervised27 froze BENG at 0.866 instead of the 23:03Z
+  kickoff anchor 0.711 (live adjustment −$0.09 instead of +$0.69,
+  $0.685 a share; up to $5 in the regular season). On a decided game
+  (probability saturated) the book then looked frozen.
+  George ruled BOTH halves: the operating rule (R11 — no maker
+  cutovers while games are live, landed 14-08) and the carry fix. The
+  carry fix is the **anchor seed** below. `[late-arrival]` is
+  unchanged and is now the deliberate fallback, for the two cases the
+  seed cannot cover — see **The anchor seed** below.
 - **x_g** — the game's current probability (live), or its realized value
   once final (win 1 · tie 0.5 · loss 0).
 
@@ -46,6 +66,64 @@ game; the addition puts back what the game is actually doing.
 - The pair invariant: one reading prices BOTH teams, and the two on-field
   adjustments cancel — the pair's game values always sum to the game's
   full $5.00.
+
+## The anchor seed (F2 — `mm/events/anchor_seed.py`)
+
+⭐ **BUILT 14-08 (MM PR #32), not yet deployed.** How a kickoff freeze
+crosses a fresh journal. A freeze is DERIVED state — it exists only
+because the engine watched the game cross its kickoff — so a journal that
+watched nothing can never re-derive it. The fix carries it as a FACT.
+
+- **One journalled event.** At boot the composition reads the PRIOR run's
+  directory once (`MM_PRIOR_RUN_DIR` → the `prior_run_dir` dictionary
+  slot) and journals ONE `ANCHOR_SEED` FIRST. Everything after that is
+  ordinary: replay reads the anchors out of the journal, and no boot ever
+  reads the prior run twice. `ANCHOR_SEED` is the twelfth event type,
+  ours — flagged for the N23/N28 blessing round with the sweep and the
+  session boundary.
+- **Two sources, deliberately** — the newest prior checkpoint, THEN the
+  prior journal's tail folded on top. Checkpoints are hourly, so the
+  kickoff itself routinely lands in the tail; a checkpoint-only seed
+  would miss exactly the games that matter. The tail is folded through a
+  throwaway `ValuationEngine` rather than a second copy of the freeze
+  rules — one place for them, and the §2.5 universe filter comes free.
+- ⚠ **NOT `load_latest`.** The strict checkpoint loader rejects on
+  config_version AND schema_version, and R-D06 bumps the config version
+  on every deploy — so a seed built on it would have returned empty every
+  time, silently, for ever (review H1). The lenient reader verifies the
+  integrity hash ONLY, extracts what parses, and names every degradation
+  for the operator's log.
+- ⚠ **Hash-valid is not trusted** (review-f2, 14-08). The integrity hash
+  proves the bytes are what was written; it says nothing about whether
+  the VALUES parse under this build. So every candidate game is proved by
+  constructing the real `GameBelief` (`belief_from_anchor` — the one gate
+  the reader and the apply path share) before it can enter the payload. A
+  game that fails is noted and skipped; the rest of the checkpoint still
+  seeds. Without that, `status: "in_play"` or `x: "not-a-number"` in a
+  hash-valid prior run stopped the engine BOOTING — the opposite of what
+  the anchors are for. The rule is read-side ONLY: a journalled seed is
+  replayed at every future boot, so one that raises on apply would kill
+  that journal permanently. On any unexpected fault the composition mints
+  NOTHING and stays re-mintable.
+- **A missing prior directory is an alarm, not a skip.** A seed can be
+  minted once per journal (minting is what makes the journal non-empty),
+  so a typo'd `MM_PRIOR_RUN_DIR` used to mint an empty seed and burn that
+  one chance for ever. It now journals nothing, logs `FAILED`, and the
+  corrected setting still seeds on the next boot. A directory that exists
+  and holds no games still mints an honest empty seed.
+- **The seed is the weakest fact in the machine.** It applies per game
+  only where no belief exists, so anything the journal already knows
+  outranks it — which is why a fresher reading's kickoff_time beats the
+  seed's through the ordinary path, keeping the frozen `p_ref`. A game
+  that FINISHED during the outage seeds its result, and `[settled]` then
+  keeps it closed against a late reading.
+- **It publishes no price.** Found the hard way while building: a
+  publishing seed made the quote engine record a ladder that replay
+  discarded, so the venue got an EMPTY book until a dwell expired. §3.1.5
+  publishes on real change and at boot there is nothing to change from —
+  the composition stands the book immediately afterwards.
+- Three gates, each printing its reason: no prior directory · this
+  journal is not empty · the prior directory IS this run's.
 
 ## Per-game expected value and settlement (§3.1.2, §3.1.3)
 
@@ -100,4 +178,6 @@ trust, and how loudly should we distrust it?
 ## What changes here next
 
 [[market-maker/build/next|Next]]: off-field §3.6 (Edwin) · N22's ruling
-on p_ref (one line to change) · N23's event type for T · E38's blessing.
+on p_ref (one line to change) · N23's event type for T · E38's blessing ·
+the anchor seed's deploy (`MM_PRIOR_RUN_DIR` is owed to
+`runtime/__main__.py`'s env table and the redeploy runbook first).

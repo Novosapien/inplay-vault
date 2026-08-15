@@ -169,6 +169,44 @@ the ~35% missed sweeps under live load — that is per-event engine
 cost, queued behind the measurement
 ([[market-maker/build-deploy-log]]).
 
+## The republish phase, and what the ack stream is made of (measured 08-14, CB2)
+
+CB2 set out to de-phase the LIVE republish wave and measured the premise
+first. The premise does not hold, and the measurements below are the
+as-built truth about how this machine republishes. Six-game workload,
+1×, 170 books, 904 s, 78,352 acknowledgements.
+
+- **The pulse is already self-de-phasing.** `_timer_due`
+  (`quotes/engine.py:161`) measures 500 ms from each book's OWN last
+  publish, not from a shared grid, so LIVE books free-run on independent
+  phases. Over the arm's last 200 s: 150 burst-clusters held 2 books, 11
+  held 1, 2 held 4, **none held all 6**. The only books that coincide are
+  the two sides of ONE game — they share a reading, not a pulse edge.
+- **A LIVE book's redraw costs ~11.5 acknowledgements** and repeats every
+  ~502 ms, in runs of consecutive pulses broken by quiet stretches (a
+  re-rolled ladder whose diff comes out empty sends nothing).
+- **The ack stream is mostly NOT game load.** LIVE books produced **25%**
+  of all acknowledgements (three games live); the other 158 books
+  produced **73%** on their own 5–40 s dwell draws. A mean 500 ms window
+  holds 49.8 acks across only **4.2 distinct books** — a handful of
+  books, never a portfolio-wide wave.
+- **The quiet books' redraws are Poisson.** 2.83 bursts per 500 ms window
+  measured, p90 = 5, and Poisson(2.83) predicts p90 = 5 exactly.
+  Independent arrivals are as flat as a jittered schedule gets, so there
+  is no bunching left in them to remove.
+
+⚠ **Consequence for anything that gates on "acks per 500 ms window":** the
+window and the pulse are the same length, so a book that redraws once per
+pulse lands in exactly one window per pulse **whatever its phase is**. A
+within-pulse offset moves WHICH window, never HOW MANY. Any future gate on
+de-phasing must measure on a window SHORTER than the pulse. This is what
+withdrew the fix-set's AC2 — see
+[[market-maker/sessions/2026-08-14-cb2-pulse-dephase]].
+
+`src/mm/quotes/phase.py` holds the deterministic bucket primitive (hash of
+the security id → one of `live_phase_offset_buckets`), built and tested but
+**deliberately not wired** to the sweep or the converger.
+
 ## ⭐ The single-engine lock (`runtime/lock.py`, built + deployed 08-13)
 
 An exclusive `flock` on `/var/lib/mm/engine.lock`: a second engine
