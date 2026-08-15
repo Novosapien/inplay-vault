@@ -30,7 +30,9 @@ description: "The cross-session working log: every in-flight change, where it is
 
 ## In flight
 
-> ⛔ **DEPLOY FREEZE — George, 14-08 ~22:30Z: "don't deploy anything after
+| ⭐ **THE FIX-SET CUTOVER — DEPLOYED 15-08 19:55–20:00Z** (`main@0b9f601`; George's explicit go, **R11 EMERGENCY OVERRIDE — three games were live**, accepted knowingly because IPTCPANT had been wedged/dead ~50 min with no operator lever). Engine **supervised33/CFG-0028**, taker **SNT-CFG-0024 / journal snt21** (env backup `.bak-cfg0023`). ⭐ **ANCHOR_SEED WORKED ON ITS FIRST LIVE CUTOVER: 6 anchors carried** (checkpoint seq 1,292,029 + 549 tail events) — the live games' kickoff probabilities survived the restart instead of being erased, the defect this fix set exists for. ⭐ **PANT UN-WEDGED: 59 fills in the first 2 min** (dead since 19:10Z). First 300 ticks: **0 MISSED_SWEEPS, 0 DRAIN_CAPPED**, 1,602 instructions standing / 180 books, `refused=71` (R-Q09 guard live and refusing), 359 taker fills, zero halts, one engine (lock held). ⚠ Boot healer INERT — `MM_GATEWAY_OPS_URL` unset, failed open loudly as designed; the fresh-journal ceremony is still owed until it is configured. ⚠ Ask cap DARK (`ASK_CAP_UNBOUNDED`, E27/N43). Rollback: `7ca9d76` + fresh journal | `inplay-market-maker` `main@0b9f601` | ✅ merged, 1,236 tests | ✅ **LIVE** | — |
+
+> ⛔ ~~**DEPLOY FREEZE — George, 14-08 ~22:30Z: "don't deploy anything after
 > now."** Nothing deploys to ANY component (engine, taker, gateway,
 > publisher pools) until he lifts it.
 > ✎ **15-08 02:47Z: George's explicit in-session go superseded the freeze
