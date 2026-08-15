@@ -32,25 +32,31 @@ no dots (see [[market-maker/parameters]], `ClOrdID scheme`).
 
 ## 2 · The ten symbols
 
-Requested from Rob on 2026-08-08. Awaiting provisioning.
+Requested from Rob on 2026-08-08. ✎ **Provisioned — corrected 2026-08-11:**
+the ten live in the gateway's 180-symbol config
+(`inplay-fix-gateway-go` `internal/config/symbols.go`), and all ten
+accepted a 100,000-share position transfer with a venue `UPTa`
+(see [[market-maker/reference/position-transfer-ledger]] 2026-08-11) —
+the OMS knows every one. ⚠ The Texans code is **`TEXS`**, matching the
+production ticker `IPTCTEXS` — the `TEXA` guess below was wrong.
+✎ **Quoting is LIVE (08-11 night):** MM PR #22 lets the engine mint a
+`.TEST` twin of any known ticker; `supervised14` quotes all ten
+two-sided and the taker trades them (first print `IPTCPACK.TEST`
+6@71.66). A twin is addressable by the derived provider id
+`<base sr id>.test` — the synthetic-game-day hook.
 
 | Ticker | Team | Test symbol | Code status |
 |---|---|---|---|
 | BAL | Baltimore Ravens | `IPTCRAVE.TEST` | ✅ Rob's own example |
 | BUF | Buffalo Bills | `IPTCBILL.TEST` | ✅ live production symbol |
 | DAL | Dallas Cowboys | `IPTCCOWB.TEST` | ✅ live production symbol |
-| DET | Detroit Lions | `IPTCLION.TEST` | 🔴 **code unconfirmed** |
+| DET | Detroit Lions | `IPTCLION.TEST` | ✅ gateway config + UPTa 08-11 |
 | GB | Green Bay Packers | `IPTCPACK.TEST` | ✅ used in `MM_SECURITIES` drills |
-| HOU | Houston Texans | `IPTCTEXA.TEST` | 🔴 **code unconfirmed** |
-| JAX | Jacksonville Jaguars | `IPTCJAGU.TEST` | 🔴 **code unconfirmed** |
+| HOU | Houston Texans | `IPTCTEXS.TEST` | ✅ gateway config + UPTa 08-11 (✎ was `TEXA`, wrong) |
+| JAX | Jacksonville Jaguars | `IPTCJAGU.TEST` | ✅ gateway config + UPTa 08-11 |
 | KC | Kansas City Chiefs | `IPTCCHIE.TEST` | ✅ used in `MM_SECURITIES` drills |
 | PHI | Philadelphia Eagles | `IPTCEAGL.TEST` | ✅ live production symbol |
-| WAS | Washington Commanders | `IPTCCOMM.TEST` | 🔴 **code unconfirmed** |
-
-⚠ **Four four-letter codes are ours, not tZERO's.** `LION`, `TEXA`,
-`JAGU` and `COMM` follow the observed `IPTC` + four-letter pattern, but no
-source confirms them. The other six appear in the venue or in the vault.
-Get all ten back from Rob in writing before any code hardcodes them.
+| WAS | Washington Commanders | `IPTCCOMM.TEST` | ✅ gateway config + UPTa 08-11 |
 
 ## 3 · Why these ten teams
 
@@ -143,8 +149,8 @@ length.
 
 | # | Item | Owner |
 |---|---|---|
-| 1 | Confirm the four unconfirmed codes: `LION`, `TEXA`, `JAGU`, `COMM` | T0 (Rob) |
-| 2 | Provision the ten `.TEST` symbols | T0 (Rob) |
+| 1 | ~~Confirm the four unconfirmed codes~~ ✅ resolved 08-11: `LION`, `TEXS` (not `TEXA`), `JAGU`, `COMM` — the gateway's deployed config + a venue `UPTa` on each | — |
+| 2 | ~~Provision the ten `.TEST` symbols~~ ✅ done by 08-11 (gateway config; all ten accepted transfers) | — |
 | 3 | Create the `.TEST`-only account, and confirm whether the MM account 1797733477 can hold both `.TEST` and production books, or needs a second account | T0 (Rob) |
 | 4 | Confirm a `.TEST` symbol is exempt from the app's user-facing universe — the T10 caveat, now a venue-side entitlement rather than an app filter | T0 + us |
 | 5 | Do the `.TEST` books get an `UEPR` reference price, or do they open empty? An empty book rejects every order ("No price available", the `IPTCBILL` state) — this gates whether the ten books can be quoted at all | T0 (Rob) + the Hasan `LmtPerc` ask |

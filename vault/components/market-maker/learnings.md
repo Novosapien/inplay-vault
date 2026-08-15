@@ -13,7 +13,32 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
-## 2026-08-06b — the watermark that was secretly a liveness filter
+## 2026-08-14 — the build-state sync: where "as built" actually lives
+
+- **The VM outruns the vault by hours, reliably.** The deploy-log row
+  read "waiting on George's go" while the ceremony was executing. A
+  doc that records DEPLOY STATE is stale the moment an operating
+  session moves; the durable fix is pointers, not copies — the build
+  pages now say "read the log + the VM", and running coordinates live
+  in ONE place ([[market-maker/build-deploy-log]]).
+- **A process's code root is what it IMPORTS, not where its
+  interpreter lives.** The taker's ExecStart names
+  `~/inplay-market-maker/.venv/bin/python`, but PYTHONPATH points at
+  `~/snt-checkout/src` — an ancestry check against the venv-side repo
+  produced a confident, wrong regression alarm. Verify with
+  `/proc/PID/environ`; the unit file is a decoy.
+- **"Open PR" does not mean "not deployed", and "merged" does not mean
+  "running".** Production runs a deploy lineage whose PRs (#24–#27,
+  #30) are still under review, while merged work (#29) reaches the
+  taker by a different checkout. The only reliable questions are
+  ancestry questions against the RUNNING tree.
+- **A PR's title is not its diff.** "PR #37: universe-filter fix" is
+  actually the entire testing branch (65 commits) promoted to main —
+  merge decisions need the diff stat, not the label.
+- **Explorer claims are hypotheses until re-verified at the target.**
+  The subagents' "no branch carries both features" was TRUE of the
+  repo and still produced a false operational conclusion, because the
+  deployment indirection (snt-checkout) was invisible from the repo.
 
 - **Dedup on the publish side strips the liveness signal.** The
   publisher's "send only new readings" watermark looked like a polite

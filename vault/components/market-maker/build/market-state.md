@@ -1,3 +1,7 @@
+---
+description: "The as-built market-state page — the four-state permission ladder, the promotion ratchet, the kill switch and the portfolio-wide missed-sweep coupling"
+---
+
 # Build — Market State
 
 > Part of [[market-maker/build/index|As Built]] · Code:
@@ -52,6 +56,38 @@ before kickoff, 1 h after the final) are interims under **N4**.
 - Promotions advance only on triggers; with the §3.1.4 sweep now built,
   quiet books climb on the sweep's cadence rather than waiting for a
   reading.
+- **A missed sweep slot demotes ALL books at once.** The
+  `missed_sweeps` counter is portfolio-wide (`_note_sweep`): one missed
+  interval → status Warning → Active; two → Degraded → Defensive, for
+  every security on the same sweep. This is what made the panel flap
+  ACTIVE/DEFENSIVE all day 08-13 (George's catch; forensics: session
+  2026-08-13-d). Two changes since:
+  - ✂ **`sweep_max_interval_s` 0.625 → 1.0 s** (George, 08-13 evening
+    — restores §3.1.4's ABSOLUTE half-second slack; the 08-11 cadence
+    ruling had kept the 1.25 RATIO and silently tightened the tolerance
+    to 125 ms, so ordinary ack churn tripped it on ~7% of ticks).
+    Overnight running now shows zero misses (supervised25's first 435
+    ticks). Honest note: this relabels sub-second lateness as
+    acceptable.
+  - ⚠ **Under live-game load the misses return** (~35% of ticks with
+    three live games, 08-14) — engine time per event, panel-visible via
+    §3.5, no longer book-threatening since the dead-man window moved to
+    10 s. The fix chain is queued in [[market-maker/build-deploy-log]]:
+    measure per-event cost → design fixes (de-phase dwell waves,
+    incremental sweep) → Python speed work.
+- **A suspension from feed silence has NO re-open path (N40).** When
+  the publisher retires an ended game its confirmations stop; a book
+  still in the live-freshness regime suspends at +20 s and stays
+  suspended — ten books went dark this way overnight 13/14-08, and
+  inside the old 600 s correction watch every finished book flapped
+  suspend/cancel/re-stand once per poll (journal-verified). The
+  service half is built and on the TESTING pool (PR #38; prod
+  pending); the engine-side post-final hand-off is still open — and
+  yesterday-dated finished games stay feedless regardless (discovery
+  re-adopts today's games only), so their books ride seed until it
+  lands. See
+  [[market-maker/build/ingestion|Ingestion]] and
+  sessions/2026-08-14-gateway-watch-and-game-end-forensics.
 
 ## What changes here next
 

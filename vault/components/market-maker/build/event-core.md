@@ -1,3 +1,7 @@
+---
+description: "The as-built event-core page — the envelope, the acceptor, idempotency keys, the journal with group commit, replay, checkpoints and the F2 anchor reader"
+---
+
 # Build — The Event Core
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/events/` ·
@@ -64,24 +68,34 @@ order is fixed and the order matters:
 | `OFFICIAL_RESULT` | source · game · result version | Always version `1`; a §3.1.3 correction is version 2 — a genuinely new fact, not an overwrite |
 | `EXECUTION` | venue · **client order id** · exec id | ✂ Supersedes the spec's key. tZERO RECYCLES ExecIDs — proven by incident (a real fill silently dropped because its ExecID was seen the previous day on another symbol) |
 | `VALUATION_SWEEP` | the scheduled instant alone | A late sweep is still the sweep due then; redeliveries dedup |
+| `ANCHOR_SEED` | prior run dir · this run dir | ⭐ 14-08, ours (F2). The CROSSING is the fact — exactly one per new journal. Deliberately NOT keyed on time: a second seed would re-apply stale anchors over a journal that has since learned better |
 | `MANUAL_CONTROL` | Control Action ID | The kill switch and per-security suspension |
 
 ## The journal
 
 `events/journal.py`. Append-only JSONL; each line is
-`{"kind": accepted|duplicate|conflict|rejected, "record": …}`. Flush +
-fsync on every accepted event — that is what makes an event durable
-BEFORE anything reacts to it (§7.4).
+`{"kind": accepted|duplicate|conflict|rejected, "record": …}`. Every
+line is flushed at once; durability comes per append in the default
+mode, or per TICK under group commit (below).
 
 - **One writer, by design.** `[second-writer]` is a stop condition. This
   single fact shapes the infrastructure: the engine is one VM process
   (never Cloud Run, never a hot standby — two processes are two writers).
-- ⚠ **N31 — the fsync is the throughput ceiling.** A single writer tops
-  out near 1,000–3,000 events/s on a real disk; the 200 ms capability
-  ceiling sits on that line. **Group commit is designed, not built**:
-  batch same-moment events into ONE fsync, nothing accepted until its
-  batch is on disk. Measure the real fsync on the VM first (the Mac
-  number is invalid — macOS `fsync` does not flush the drive cache).
+- ⭐ **N31 group commit — BUILT 08-13 (MM PR #26).** The measured VM disk
+  does ~579 fsyncs/s (p50 1.70 ms) against the ~2,520 events/s an NCAA
+  Saturday arrives at, so per-event fsync was the machine's binding
+  ceiling. `Journal(path, group_commit=True)` defers each append's
+  fsync; `commit()` makes the whole batch durable in ONE. The runtime
+  commits once per tick, before ANY await — asyncio cannot preempt, so
+  nothing a tick produced (acks, venue instructions) leaves the process
+  before its batch is on disk. ✂ Supersedes §7.4's "before business
+  processing" with "before anything leaves the process" (decisions
+  08-13). Crash honesty: a process crash loses nothing (flush hands
+  lines to the OS); HOST death can lose ≤1 tick of complete,
+  never-externalized lines — the same bound the taker's journal states
+  (N38). Journal bytes are identical in both modes (test-pinned), so
+  replay equality cannot notice. The batch size rides the log line
+  (`committed=n`).
 
 ## Determinism and replay (§1.6-4, §10.3)
 
@@ -133,7 +147,40 @@ season and every deploy is a restart.
   the external copy). The write is synchronous — one of the stalls the
   N15 beat-jitter measurement watches.
 
+## The anchor seed's second reader (F2 — BUILT 14-08, MM PR #32)
+
+⚠ **`load_latest` is the WRONG loader for a PRIOR run**, and a fix built
+on it would have failed silently for ever. It rejects on config_version
+AND schema_version — deliberately, for its own job ("state produced under
+other numbers must not seed a machine running these") — and R-D06 bumps
+the config version on every deploy. Pointed at the previous run, it
+therefore returns empty EVERY time, with no error anywhere (review H1).
+
+So F2 has its own reader, `events/anchor_seed.py`, and the split is the
+point: `load_latest` decides whether THIS run's own memory may be
+restored wholesale, and is right to be strict; the anchor reader lifts
+five fields per game out of ANOTHER run's memory, and is right to be
+lenient. It verifies the integrity hash only, extracts field by field,
+tolerates an unknown or older shape, reads the prior journal read-only
+(never through `Journal`, which opens for append and would repair another
+run's torn tail), and names every degradation for the operator. Nothing
+in it raises — the fallback is a wrong-but-survivable price, and a crash
+at boot is not. Full mechanism on
+[[market-maker/build/valuation|Valuation]].
+
+⚠ **"Nothing in it raises" took a second pass to be true** (review-f2,
+14-08). The first build checked that a checkpoint field was PRESENT, not
+that it PARSED, so a hash-valid prior run carrying `status: "in_play"` or
+`x: "not-a-number"` stopped the engine BOOTING. Two lessons the next
+lenient reader should inherit: validate by CONSTRUCTING the real typed
+value (one gate, no second copy of the rules to drift), and remember that
+`decimal.InvalidOperation` inherits from **`ArithmeticError`, not
+`ValueError`** — an except tuple without it skips an out-of-range
+probability while a malformed one kills the process.
+
 ## What changes here next
 
-[[market-maker/build/next|Next]]: N31 group commit (the fsync ceiling).
+[[market-maker/build/next|Next]]: ~~N31 group commit~~ built 08-13
+(MM PR #26) — next here: the game-day `committed=` observation and the
+drain-cap re-size once engine time is the binding constraint.
 ~~§10.3 checkpoints~~ built 06-08d, equality-proven.

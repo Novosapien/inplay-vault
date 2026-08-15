@@ -1,3 +1,7 @@
+---
+description: "The as-built ingestion page — the bus path (publisher + consumer), file replay, Edwin's file, venue events, finals, discovery and poll tiers"
+---
+
 # Build — Ingestion
 
 > Part of [[market-maker/build/index|As Built]] · Code:
@@ -22,6 +26,28 @@ itself. Built on both sides and drilled end to end 06-08b.
   exact text) → publish. Discovery daily from the Sport Schedule (one
   call, both leagues, games touching the 170 only; `replaced_by` fixtures
   skipped; home/away read from SR's qualifier field, never list order).
+  ⚠ **The universe filter never matched until 13-08** (found 40 min
+  before the first live games): the filter tested `sr:competitor:` ids
+  against GUID-keyed `TEAM_SYMBOLS`, so every discovered game was
+  silently dropped — the publisher had never fed the bus a real game.
+  Hotfixed on both pools (`sr:competitor:` ids now pass; the MM's own
+  bindings decide what it prices). ⚠ Merge-path caveat (verified
+  14-08): service **PR #37** carries the fix but its head IS the full
+  `testing` tip — **65 commits, +7544/−371** — so merging it promotes
+  ALL of testing to main, not one hunk; the true one-hunk fix
+  (`hotfix/mm-publisher-universe-filter` @ `d877b26`, cut from main
+  HEAD) has NO PR of its own. Until one of them merges, a main deploy
+  regresses the filter. The proper fix — the GUID ↔ sr-native mappings
+  bridge in discovery, plus a loud `adopted=0` alarm on a game-day
+  schedule — is **N39**. Session: 2026-08-13-e.
+- **Two publishers feed one bus since 13-08** (production + testing
+  pools share the NATS secret). Deliberate redundancy: readings are
+  idempotent and re-offers are liveness confirmations, so duplicates
+  are harmless by design.
+  ⚠ Cloud Run operational fact: a pool update that omits
+  `--instances=1` loses the manual instance count and the worker dies
+  with "user disabled instance" — carry BOTH the instance count and the
+  env change in one update (08-13-b addendum 6).
 - **Delivery is JetStream** (validated on the production server): stream
   `SR_PROBABILITIES`, subjects `sr.probabilities.>`, one-week age
   retention. The publisher **refuses to boot without JetStream** —
@@ -121,7 +147,10 @@ daily, published even when unchanged: `expected_remaining_wins` (**T**),
 violation at once (all-at-once rejection, so Edwin fixes the file in one
 pass). Open: the transport (N19 — upload page decided; who does 06:00
 until it exists) and the §7.3 event type for T (N23 — a replay-equality
-question, not a filing question).
+question, not a filing question). **➕ 13-08: the full pipeline design is
+filed — [[market-maker/systems/daily-reference-feed]]** (bus delivery on
+the path-1 shape, the proposed `REFERENCE_NUMBERS` event, the monotonic
+apply guard, the stale-T ladder). Design only; nothing here changed.
 
 ## Path 4 — Venue events
 
@@ -144,7 +173,7 @@ version, never an automatic overwrite.
 
 | Tier | When | Cadence |
 |---|---|---|
-| LIVE | kickoff passed, no final | **~2 s** (SR's measured median update gap is 4 s) |
+| LIVE | kickoff passed, no final | **500 ms** — ✂ George 08-11 (was ~2 s, the median-gap evidence); the deployed PUBLISHER runs 500 ms; ⚠ the in-engine poller still carries 2 s until it retires |
 | PRE_KICKOFF | within 1 h of kickoff | **15 s** (interim — George's 10–30 range) |
 | OVERNIGHT | kickoff > 1 h away | **30 min** (doubles as the N24 pregame-movement watch) |
 | POST_GAME | final seen, ≤ 1 h | **10 min** (the correction watch), then never |
@@ -153,6 +182,28 @@ A game with no kickoff errs busy at the live rate; a moved kickoff
 re-stamps and reschedules at once. Kickoffs are converted to the
 scheduler's monotonic clock ONCE, at the composition edge — a wall-clock
 jump can never mis-tier a game mid-run.
+
+⚠ **The game-end lifecycle hole (N40, forensics 14-08):** the publisher
+retires a game ~1 h after SR flips it ended/closed, so its liveness
+confirmations STOP; an engine book still in the live-freshness regime
+then goes RP Invalid at +20 s and §6.3 SUSPENDS it — permanently, with
+no re-open path. Ten books went dark this way overnight 13/14-08; two
+(PATR/COLT) escaped the suspension by minutes and kept quoting
+PRE-FINAL prices — live exposure. Worse, journal-verified: within the
+old 600 s correction watch, every finished book FLAPPED
+suspend → cancel → re-stand once per poll (each re-offer briefly
+confirms, the book re-stands, then ages back to Invalid before the
+next poll). A duplicate game id also polls at the live tier forever
+because its status never flips. ➕ **The service-side fix is BUILT and on the TESTING pool** since
+~12:55Z 14-08: PR #38 (`fix/mm-publisher-post-game-keep-polling`
+@`751efb6`, cherry-picked to `testing@d492dcb`) — settle watch at the
+live rate, post-game window 2 h, then OVERNIGHT cadence forever
+instead of retirement; the PRODUCTION pool still runs the old code
+(row in [[market-maker/build-deploy-log]]). ⚠ Scope caveat: discovery
+only re-adopts TODAY's-dated games, so yesterday-dated finished games
+stay feedless — their books ride seed until the engine-side hand-off
+(a post-final freshness regime) lands, which is still open. Full forensics:
+sessions/2026-08-14-gateway-watch-and-game-end-forensics.
 
 ## What changes here next
 

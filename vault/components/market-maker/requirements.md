@@ -26,6 +26,16 @@ decision, recorded · `SPEC` = the v1.3 build spec.
 
 ## Addendum — changes to these requirements
 
+### 2026-08-11 — the live cadence ruling (George)
+
+- **CHANGED R-Q03**: "the shape redraws only on a §5.8-material change
+  with an expired dwell — never on the timer alone" now holds for
+  **non-live states only**. In LIVE, the book publishes a re-rolled
+  ladder every 500 ms, changed or not (George's explicit choice between
+  the two readings of his "200/500 ms"; MM PR #16). R-L01
+  (rest-until-gone) unchanged — churn comes from re-rolled offsets
+  moving rung prices.
+
 ### 2026-08-09 — the sell rule (first entry, from the live probe)
 
 - **ADDED R-V07** (sellable = Pos − livS). Discovered by live probe;
@@ -78,7 +88,7 @@ these are gospel under the 22-07 filter and are not ours to change.
 |---|---|---|---|---|
 | R-Q01 | A book is never left without a resting side | GEORGE | ✅ | live 07-08 |
 | R-Q02 | Spreads follow the state tiers (Stable/Active/Defensive) | SPEC §5.2 | 🟡 | values are Edwin's, E31 |
-| R-Q03 | The shape redraws only on a §5.8-material change with an expired dwell — never on the timer alone | OURS (N26) | ✅ | test |
+| R-Q03 | **Non-live:** the shape redraws only on a §5.8-material change with an expired dwell. **LIVE:** the book publishes a re-rolled ladder every 500 ms, changed or not | OURS (N26) · GEORGE 08-11 | ✅ ✎ | test (both halves) — MM PR #16 |
 | R-Q04 | Prices are capped at min(MEV, venue cap $127.50) | VENUE | ✅ | built 06-08d |
 | R-Q05 | The ladder is non-increasing from the inside outward | GEORGE | 🟡 | 70% live; gap is E17 |
 | R-Q06 | Quantities are drawn per rank, seeded and reproducible | OURS | ✅ | test |
@@ -103,7 +113,7 @@ these are gospel under the 22-07 filter and are not ours to change.
 |---|---|---|---|---|
 | R-R01 | One security's fault suspends only that book | GEORGE | ✅ | built 06-08d |
 | R-R02 | Untranslatable inbound is poison — counted and skipped; deliberate halts stay fatal | OURS | ✅ | PR #6, live |
-| R-R03 | A persistently rejected level backs off deterministically | OURS | 🔴 | **not built** — C4, top of next |
+| R-R03 | A persistently rejected level backs off deterministically | OURS | 🟡 | **built 08-10c** (MM PR #13, `mm/venue/backoff.py`, 618 tests) — C4's live run owed |
 | R-R04 | Exposure counts pending states (PBE/PSE) including Partially Filled | SPEC §4.4 | ✅ | test |
 | R-R05 | A kill switch takes the whole machine down on demand | OURS | 🟡 | dead-man exists; operator surface is N29 |
 | R-R06 | Stale inputs suspend the affected book | SPEC §6.4 | 🟡 | built; C3 unverified live |

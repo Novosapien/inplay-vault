@@ -1,3 +1,7 @@
+---
+description: "The as-built quoting page — σ², width, the ladder, quantities and variation, and the publish-or-hold gate with the LIVE 500 ms carve-out"
+---
+
 # Build — Quoting
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/quotes/` ·
@@ -71,6 +75,14 @@ cycle handles).
 
 - The geometric ×0.72 decay is Edwin's (adopted); the 10,000 base is
   ours (his 250 was 40× too small for the mandate's inventory).
+  ✅ **The touch-heavy profile STANDS** (George, 08-11c, after his own
+  challenge from the live books): fattest-at-the-touch is Edwin's
+  deliberate design for a liquidity-first, non-profit-seeking maker.
+  The inverted tree (thin at the touch) was built, merged and REVERTED
+  the same hour (MM PR #19, revert `b86ca83`, never deployed); the
+  branch remains ready if the ruling ever flips. Residual for E31:
+  does fattest-at-the-touch hold in LIVE, where a fat touch is
+  pickoff-exposed between 500 ms updates?
 - **VF is §5.7.3's seeded variation** — SHA-256 over named context,
   byte-exact against the spec's golden fixture, keyed on the Quote
   Version so replay reproduces every draw.
@@ -79,15 +91,24 @@ cycle handles).
 
 ## 5 · Publish or hold (`quotes/engine.py`, §5.8 · §5.10 · §7.5)
 
-- **Material change is the only publish trigger** (§5.8): IA moved
+- **Material change is the publish trigger** (§5.8): IA moved
   ≥ $0.005, or a quantity basis moved ≥ 500 shares. **Materiality is
   judged on the PRE-variation shape** — final sizes are freshly drawn
-  each version, so comparing them would republish every cycle; "a
-  different possible random quantity is never a reason to publish" holds
-  by construction.
+  each version, so comparing them would republish every cycle.
+  ✂ **LIVE carve-out (George 08-11, `[live-timer]`, MM PR #16): in-game
+  an immaterial cycle still publishes once 500 ms have passed since the
+  last publish** — "new orders every 500 ms, changed or not". The sweep
+  runs at the same 0.5 s (✂ §3.1.4's 2.0 s) and is the quote pulse;
+  the tick is 0.5 s. Non-live states keep the pure §5.8 gate, proven by
+  test at the same offset.
 - **The ASMM-1 dwell only PERMITS a reshape** (N26): an expired dwell
   changes nothing by itself — the new shape rides the next
-  §5.8-justified publish, at zero extra venue messages.
+  justified publish, at zero extra venue messages. ✂ **The LIVE dwell
+  row is 0–0 (George 08-11, was Edwin's 3–12 s)**: every LIVE publish
+  re-rolls the shape, so re-rolled offsets move rung prices and the
+  reconciler genuinely replaces orders — rest-until-gone survives for
+  the rare same-price rung. Book-visible: Edwin sees the collapse in
+  the E31/E17 round.
 - **The Quote Version increments only on publish**; a held cycle
   consumes nothing (every seeded draw hangs off the version — this is
   what makes replay exact).

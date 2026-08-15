@@ -1,3 +1,7 @@
+---
+description: "The as-built position page — net position, position ratio, pending exposure, the inventory skew and the reservation midpoint, plus the two external holes"
+---
+
 # Build — Position
 
 > Part of [[market-maker/build/index|As Built]] · Code: `mm/position/` ·
