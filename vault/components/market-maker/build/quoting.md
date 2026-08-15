@@ -70,8 +70,8 @@ cycle handles).
     base_i = 10,000 × 0.72^i              i = 0 at the inside
     buy    = base × (1 − EPR)             long → show less buying
     sell   = base × (1 + EPR)             long → show more selling
-    pre    = round500( base × modifier )  halfway rounds DOWN
-    final  = clamp( round500( pre × VF ), 1,000, 15,000 )
+    pre    = round( base × modifier )     to the nearest share
+    final  = clamp( round( pre × VF ), 1,000, 15,000 )
 
 - The geometric ×0.72 decay is Edwin's (adopted); the 10,000 base is
   ours (his 250 was 40× too small for the mandate's inventory).
@@ -86,8 +86,97 @@ cycle handles).
 - **VF is §5.7.3's seeded variation** — SHA-256 over named context,
   byte-exact against the spec's golden fixture, keyed on the Quote
   Version so replay reproduces every draw.
+- ✂ **The quantity grid is DROPPED since 15-08 (`qty_increment` 1, was
+  §5.7.3's 500)** — MM #36, decisions 2026-08-15, not merged/deployed
+  under the freeze. On the 500 grid every size ended in 000 or 500 and
+  the book read as machine blocks; George's ruling: ANY visible grid
+  reads as an inactive book, so sizes are raw integers (12,433 ·
+  8,617 · …), like a book carrying partial-fill remainders. The
+  rounding step survives in code — one row restores any grid. The §5.8
+  materiality threshold stays 500 sh, so the finer basis can only
+  publish LESS often. Book-visible → Edwin round.
 - ⚠ The 15,000 ceiling binds exactly where distribution needs room
   (N20's other face).
+
+### 4b · The ask cap — what we may legally sell (R-Q08 / R-V07)
+
+    capacity = holding − livS
+    holding  = opening position + net position (§4.1)
+    livS     = committed sell quantity the next pass cannot reclaim
+
+The ask ladder is **RESIZED** into that bound, never rejected — tZERO
+refuses a sell over `Pos − livS` as a WHOLE order, so an unbounded ladder
+loses the entire ask side of a book rather than one rung. Levels are paid
+inside-out (the touch keeps its shares); each capped quantity is FLOORED
+to the 500 increment; a level that cannot reach the 1,000 minimum is
+DROPPED, because §5.10 rejects a sub-minimum level and a failed check
+blocks the whole book.
+
+- **livS EXCLUDES `ACTIVE` and `PARTIALLY_FILLED`.** Those are the
+  reconciler's `_ACTIONABLE` set — the ladder REPLACES them
+  (rest-until-gone keeps a still-wanted rung, a moved price replaces it),
+  so counting them would double-count the ask side against itself and
+  make a fully-offered book empty and re-offer on alternate passes. It
+  counts `PENDING_SUBMIT` / `PENDING_REPLACE` / `PENDING_CANCEL` /
+  `UNKNOWN`, a replace at **max(old remaining, new remaining)**. ⚠
+  Deliberately NOT §4.4's `_EXPOSURE_STATES` — a different question,
+  pinned apart by test.
+  - ⚠ **Both operands must be REMAINING shares** (review MED-1, 08-15).
+    `pending_quantity` is a FIX TOTAL — "CumQty + the rank's draw",
+    because the gateway requires a replace quantity above CumQty — while
+    `leaves_qty` is what remains. Comparing the two directly counts the
+    filled shares twice: once in livS, once through the journalled net
+    position those same fills already reduced. A 10,000-share sell with
+    6,000 filled, being repriced, contributed 10,000 to livS instead of
+    4,000 and cost the book 6,000 shares of capacity. It bit hardest on
+    the books that are actually trading. The destination is now counted
+    at `pending_quantity − cum_qty`.
+- **A capacity ≤ 0 empties the ask side; the bids are untouched.** ✂ A
+  documented one-sided state: R-Q01 yields to R-V07, because no ask we
+  could post would survive the venue. Announced once per episode
+  (`ASK_CAP_NEGATIVE`), never per cycle.
+  - 📟 **Operator: `ASK_CAP_NEGATIVE` re-fires once per affected book after
+    a restart, and that is deliberate.** The edge flag `_cap_alarmed` is
+    in-memory and is deliberately NOT checkpointed — keeping it out of
+    engine state is part of what makes the cap replay-identical (AC9). So
+    a restart with the bound still negative re-announces every affected
+    book once. A burst of `ASK_CAP_NEGATIVE` lines straight after a boot
+    is the expected shape, not a new incident. Read it as a census of the
+    books that are still short, and escalate only if the same book keeps
+    re-firing WITHOUT a restart, which would mean the bound is flapping.
+- 🔴 **Inert today.** `opening_position_shares` is 0 (🟡/E27) and 0 means
+  UNKNOWN, not "we hold nothing", so the bound **fails open** and says so
+  at boot (`ASK_CAP_UNBOUNDED`). Enforcing it at the stub would take every
+  book bid-only — R-V07's `Pos` is the VENUE's position and our journal
+  starts at 0 (the 14-08 IPTCJETS −197 case). One real number turns it on.
+  George's call — N42.
+- The bound lands AFTER §5.8's decision and every §5.7.3 draw, on the
+  final quantities only, so it changes no price, no version and no
+  checkpointed field — AC9 by construction, exactly like R-Q09's guard.
+- ⚠ Sizing is only half of R-V07. The venue applies the rule per order at
+  SUBMIT time, so the converger must also never land new sells on top of
+  old ones it is about to cancel. Not built — `venue/sync.py`.
+- ✅ **The bound now survives the reconciler** (review-002 HIGH, 08-15).
+  A mint-time cap governs an INTENTION; R-V07 measures what SETTLES.
+  Rest-until-gone keeps a standing rung at its OWN size and a pass-2
+  replace adopts the new rank's size, so the settled ask side reached
+  **27,000 sh against an 18,000 sh holding**. The cap now RESERVES the
+  rungs the reconciler will keep — at `max(resting, target)`, from
+  `resting_ask_quantities` over the `_ACTIONABLE` states — before it
+  sizes the levels that will actually be sent. A grid test asserts
+  settled commitment ≤ capacity across five prices and five bounds.
+  - ⚠ **Residual, open:** if the KEPT rungs alone exceed the bound, no
+    target fixes it — only a cancel does, and cancelling a still-wanted
+    rung is N10's to revisit. Cannot bite while the cap is dark; must
+    close before N43 activation.
+- ⚠ **The bound binds the TARGET, not the standing book.** Rest-until-gone
+  (N10) keeps a resting order at a still-wanted price at its OWN quantity
+  — never topped up, never trimmed — so a book legally offered at a larger
+  holding can sit ABOVE a bound that has since tightened; the cap declines
+  to add to it but will not bring it down. No venue rule is broken (R-V07
+  applies per order at submit, and that order was accepted when sent).
+  Trimming would mean cancelling a still-wanted rung — Edwin's ruling,
+  not the cap's call. Pinned by test so it stays visible.
 
 ## 5 · Publish or hold (`quotes/engine.py`, §5.8 · §5.10 · §7.5)
 

@@ -304,3 +304,25 @@ fix); the gateway's cancel_all re-cancelling its full lifetime tracker
 set turns every fire into a reject storm (a gateway-side item for
 Hasan); and the throttle lever works as designed — stale-bounded, never
 absent, live books first.
+
+---
+
+## SESSION CLOSED (08-15)
+
+George ended the watch after the live slate; the session closes with
+the machine running WITHOUT it: **supervised26 / CFG-0024** (throttled
+converger build), taker active, the engine lock held — nothing on the
+VM depends on this session. The 08-14 follow-ups this session queued
+(the per-ack cost measurement, the dead-man window retune) were picked
+up by parallel sessions — see the build pages (CB1: 9.893 ms/ack; the
+window is 10 s since 00:19Z 08-14) and the 08-14 decisions.
+
+**Open at close, owned elsewhere:** George's review/merge of MM PRs
+#25/#26/#27/#30 (the VM runs ahead of the merges) · the publisher
+post-mortem (silent 00:00→22:26Z) · the per-ack engine-cost work (the
+Saturday gap) · the daily-reference-feed analysis (its own session,
+brief in drafts/) · the Go-port question (language table given to
+George 08-13; measurement-gated). The reference-price validator
+(180/180 to the cent, addendum above) is ~50 lines against
+`/quotes` + the inputs file — recreate from the description if wanted
+in `scripts/`.

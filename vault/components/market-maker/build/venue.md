@@ -21,6 +21,111 @@ and every resting DAY order expires there as a distinct terminal state
 feeds §4.4's pending exposure (PBE/PSE), Partially Filled remainders
 included.
 
+⚠ **Pending Submit is NOT included, against §4.4's literal list** — N45,
+ruled 15-08, built as PR #41. We register that intent ourselves at
+converge time and never journal it, and replay never re-drives
+`converge()`, so counting it made a live engine and its replay reach
+different quote quantities. The sums count only what a journalled venue
+event put there. The record still HOLDS the pending submit: the
+reconciler's occupancy diff, the marketable guard and `sync_state` all
+still see it. See `[replay-exposure]` in `venue/engine.py`.
+
+### ⭐ Terminal retention, and the scan that cost us the tick (CB4, 15-08)
+
+A terminal order is kept in working memory for
+`venue_terminal_retention_s` (**300 s**, the dictionary) and then
+dropped. The window exists so a straggler ack resolves against the real
+order instead of re-admitting an `UNKNOWN`: the replace pair's second
+leg lands <50 ms later, and a gateway restart re-publishes within
+seconds. The journal keeps every order for ever regardless — this is
+hygiene, not truth.
+
+**How it used to work, and why it was expensive.** On EVERY venue event
+the engine walked every order in every book, parsing each terminal
+order's timestamp to test it against the cutoff.
+
+**What the working memory actually holds**, reconstructed from the
+six-game arms' own journals: at 1× the engine creates ~121,000 order
+records in 2,400 s, **98.7% of them reach a terminal state** (a replace
+retires the original), and the dictionary settles at **~15,700 records
+held, ~13,000 of them dead and waiting out the retention window**. It
+plateaus — retention works — but the old scan re-parsed all ~13,000 dead
+records on every single venue event.
+
+Timed on its own at that shape (`scripts/cb4_scan_cost.py`, one Mac):
+**1.68 ms per call before the fix, 0.0003 ms after** — linear in records
+held against flat. The terminal fraction is what makes it bite: the same
+1,500 records cost 2.4× more at the rig's 83%-dead shape than when they
+are all resting.
+
+⚠ **An earlier version of this page said the scan was "94.3% of the
+entire ack path" at 18,552 orders held. That figure is withdrawn** — it
+is not reproducible from any committed harness, and the bench it was
+attributed to holds only resting orders, so it never executes the parse
+at all. The mechanism was right; that percentage was not evidence.
+
+### ⭐⭐ MEASURED ON THE RIG (15-08): the scan was 98.4% of the per-ack cost
+
+A `perf_counter` around the function itself, inside the real drain, on
+adjacent pre/post arms of the six-game workload (n2-standard-2, 1×):
+
+| | mean per call | share of that arm's ms/ack |
+|---|---|---|
+| **pre-fix** | **7,225.8 µs** | **98.4%** |
+| **post-fix** | **6.72 µs** | 2.3% |
+
+**1,075×.** What that bought on the whole loop, same pair:
+
+| | pre-fix | post-fix |
+|---|---|---|
+| ms/ack p50 | 7.346 | **0.298** (24.6×) |
+| missed-sweep ratio | 28.755% | **0.000%** |
+| late ticks | 43.43% | **0.00%** |
+| tick p50 | 411.85 ms | **32.31 ms** |
+| **this drain's share of the tick** | **97.7%** | **47.5%** |
+
+⭐ **The venue drain is no longer the tick.** It was 96–98% of tick time on
+every arm ever run against this engine; it is now under half, and the ack
+path spends its budget on the quote cycle — the work an ack is supposed to
+cause. Replay equality holds byte-for-byte over the measured run's own
+226 MB journal. Detail: `specs/2026-08-14-mm-python-fix-set/profile-cb4.md`
+§3.
+
+⚠ These figures are one machine-day and only comparable because the arms
+ran **adjacent**; this rig drifts ~1.7× day to day (profile-cb4 §6.2).
+
+⚠ **This is the mechanism behind [[market-maker/build/runtime|runtime]]'s
+9.893 ms/ack, and it corrects how CB1 read its own curve.** The cost is
+NOT superlinear in the resting book — it is **linear in the total number
+of orders held**, and that total climbs for the first 300 s of any run
+until the retention window saturates. Same code, same machine: CB1's
+60 s shakedown measured 1.455 ms/ack and its 2,400 s arm measured
+9.893, because the second had a full retention backlog and the first did
+not. Any figure quoted from a short run understates the real cost.
+
+**How it works now.** Two derived indexes replace the scan —
+`[prune-index]` in `venue/engine.py`:
+
+- **`_unstamped`** — terminal orders with no stamp yet, maintained by
+  `_put`, so the stamping pass touches exactly the orders that just
+  became terminal instead of searching for them.
+- **`_expiry_queue`** — a heap of terminal orders ordered by parsed
+  stamp, soonest first, so the prune pops only what has actually expired
+  and each stamp is parsed **once**, when it is enqueued.
+
+Behaviour is unchanged by construction: the same orders are stamped and
+deleted at the same events. Ordering by PARSED time (never arrival) is
+what makes the out-of-order venue stamps of `[monotonic-at]` behave
+identically to the old per-order test. Both indexes are **derived** —
+absent from `state()`, rebuilt by `restore()` — so no checkpoint byte
+moves and replay equality holds without needing a test to catch it.
+
+⭐ **The sibling had already learned this lesson.** The acceptor's
+seen-key pruner (`[seen-retention]`, `events/acceptor.py`) has used
+arrival-ordered deques with a head prune since the 08-12 incident where
+venue keys were 99.9% of a million-key set. The Venue State Record never
+got the same treatment, and carried a full scan until CB4.
+
 ## ⭐ Why the visible book scrambles (traced 07-08, simulation on the real code)
 
 George watched the live QA books and saw no size profile. The trace
@@ -152,6 +257,60 @@ superseded 07-08h):
   delivery of cancel-rejects double-bumps a count — one extra rung,
   deterministic, accepted. ⚠ Live half of C4 (recreate a rejecting
   book, measure the rate) still owed.
+
+## ⭐ The boot healer (`venue/reconciler.py` + `adapters/gateway_ops.py`, built 15-08)
+
+R-D05, and the end of the fresh-journal-per-deploy ceremony for the
+maker. At boot — after the journal replay, before the book stands — the
+engine asks the gateway what it is ACTUALLY holding
+(`GET /orders/mm`, its PR #5, live in `main@a41e540` since 15-08) and
+diffs that against the Venue State Record.
+
+**The ownership boundary is the ClOrdID scheme alone.** Both agents ride
+the gateway's MM namespace and both mint 18-character ids beginning
+`MM`, so the boundary looks thin until it is written down: ours is `MM` +
+16 **lowercase hex** (a SHA-256 tail), the taker's is `MMSN` + 14 hex,
+and `S` is not a hex digit. A test feeds the taker's own `mint_id` to the
+classifier rather than a copy of the scheme.
+
+| At the venue | In the record | What happens |
+|---|---|---|
+| ours | known | left alone — the reconciler's business |
+| ours | unknown | **CANCEL**, one loud line naming it |
+| `MMSN…` | — | never touched |
+| `MM`-prefixed, not our scheme | — | **LEFT resting + ALARM** |
+| any other id | — | never touched |
+| an unreadable entry | — | skipped + ALARM |
+| absent | held, non-terminal | **CANCEL** — proved dead, not assumed |
+
+**"Known" is the NON-TERMINAL set** (`open_orders`), chosen explicitly —
+not §4.4's `_EXPOSURE_STATES` (a money question), not `_ACTIONABLE`
+(which would re-cancel orders already leaving), and not every id the
+record holds (a terminal-in-record order the venue still shows OPEN
+would rest for ever, since the reconciler only ever sees `open_orders`).
+
+**It writes NO engine state.** Every consequence arrives later as an
+ordinary journalled venue event — an `ORDER_CANCELLED` ack, or a
+cancel-reject whose verdict retires the order through `[gone-retire]`.
+That is what keeps replay equality true, and a test pins it: the
+canonical orchestrator state and the journal's length are unchanged
+across a heal that cancels in both directions. It is also why
+known-but-absent is a CANCEL rather than the spec's "retire locally" —
+the index is a snapshot whose own route says the caller owns staleness,
+so retiring on it would forget a real resting order and repost the level
+(the doubled-levels defect above).
+
+**It fails open at every step** — flag off · URL unset · route absent
+(a gateway rolled back past PR #5 answers 404) · 401 · 503 · refused ·
+timeout · unreadable body — each with its own reason on one line, and
+the engine boots exactly as it boots today.
+
+⚠ **Operational corollary: the journal and the config version now move
+TOGETHER.** Keep the journal, keep the version (a bump rejects every
+checkpoint and replays an unbounded journal); take a fresh journal, bump
+the version (a fresh journal re-mints ClOrdIDs the venue remembers).
+Both shapes are in the engine repo's `deploy/OBSERVABILITY-REDEPLOY.md`
+§2.2. Decisions 2026-08-15f.
 
 ## Sync (`venue/sync.py`)
 
@@ -345,8 +504,9 @@ MINTING, since a resting order cannot change side on replace) ·
 keep-one-alive under the reject backoff (never suppress the best
 remaining postable level per side) · the wash-trade-vs-N12 decision
 (the reconciler has a change coming either way — decide with Hasan
-before any venue drill) · the boot-reconcile healer (dead-man-swept
-levels surviving a replayed record — parked with eyes open) · E36
+before any venue drill) · ~~the boot-reconcile healer (dead-man-swept
+levels surviving a replayed record — parked with eyes open)~~ BUILT
+15-08 (CA4, MM #42), not deployed — see "The boot healer" above · E36
 (DAY vs GTC, Edwin) · the §5.5 participant book feed. ~~T1/T2~~
 answered 05-08; the wire-contract alignment they triggered landed
 06-08d.

@@ -48,6 +48,28 @@ recorded).
   secondary opens. This is the ENTIRE day-one book — up to 85 M shares
   (~$4.26 bn) depending on E24's round-count answer. Until then the
   opening position is a construction argument.
+  ⭐ **E27 now gates a BUILT mechanism too (14-08, CA3).** R-Q08's ask cap
+  is sized from `holding = opening position + net position`, and
+  `opening_position_shares` is 🟡 0. R-V07's `Pos` is the VENUE's
+  position while our journal starts at 0 on every fresh journal — the
+  14-08 IPTCJETS run sold to net −197 because the ACCOUNT held seeded
+  inventory the journal never saw. So 0 there reads as UNKNOWN, the bound
+  **fails open**, and E27's value is now a deploy input rather than only a
+  day-one blocker. See [[market-maker/build/quoting|Quoting]] §4b.
+
+## The sellable read seam (`position/sellable.py`)
+
+R-Q08's bound is assembled here because it needs two records the quoting
+engine does not hold: §4.1's Net Position and the Venue State Record's
+open orders. It returns `holding`, `livS` and `capacity = holding − livS`,
+and it is pure — no clock, no transport, no state.
+
+⚠ **The opening position joins the arithmetic HERE, never through
+`PositionEngine(opening_positions=...)`.** The position engine's net
+drives the Position Ratio, the Inventory Adjustment and therefore every
+RM and every price; the ask cap resizes QUANTITIES and must never move a
+price. `runtime/compose.py` builds `PositionEngine(floats)` with no
+opening positions, so there is nothing to double-count.
 - **N20 — the skew saturates before we start.** IA stops responding at
   25 % of float (PR × $1.00 clamped at $0.25); post-offering we hold
   50–100 %. Holding the whole float reads identically to holding a

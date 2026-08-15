@@ -32,6 +32,66 @@ legal/compliance read, not an engineering call.
 
 ## Addendum — changes to these requirements
 
+### 2026-08-15b — the ruled rates DEPLOYED and VERIFIED LIVE (SNT-CFG-0023)
+
+- **T-F04 ✎ — the rates are now observed, not just built.** #40
+  deployed 17:03:53Z; the first 76 min on six LIVE books measured:
+  **send gap 1.13–1.16 s** per book against the 1 s ruling (~11% of
+  arrivals skipped by the wash guard), **OVERNIGHT 394 s vs 400 s**,
+  portfolio 5.70 sends/s. T-F07's derivation put exactly the six game
+  books at LIVE and left 174 at OVERNIGHT.
+- **T-F01 re-proven at the new rate.** LIVE fill-gap **p90 = mean ×
+  ln 10** (2.6–2.8 s against a 1.16–1.25 s mean) — the gaps are still
+  exponential, so the arrivals are still Poisson and the faster rate
+  has not made them schedulable.
+- **T-F02 holds:** buy fraction **49.6%** portfolio, 48.4–51.5% per
+  LIVE book. The pre-deploy review's HIGH-2 (the wash guard removes
+  exactly the reversing side, so P(same side) → 0.75–0.80 and runs to
+  25–35) measures **0.542 with runs of 14–18** — real, small, and not
+  a shape Edwin would read off the tape. Still belongs in the E41
+  round.
+- **T-O03 observed:** zero genuinely resting orders at sample (316
+  filled + 13 cancelled, all inside the 60 s screen linger). The IOC
+  substitute terminates near-instantly against a deep maker book —
+  which is also why HIGH-1's predicted skip band (33–39%, gap
+  1.51–1.63 s) did not materialise (~11%, 1.13–1.16 s).
+- **T-R02:** **zero rejects on 25,983 sends.** **T-S05 quiet** — no
+  divergence at the higher fill rate; 179 books boot-rebased at 17:03
+  (fresh journal against stale env floats, up to ±1,984 sh).
+- ⚠ **T-M05 / T-O08 — a gap the rate exposed rather than caused.** The
+  soft cap (1,500) measures DRIFT from the float; the sell gate
+  measures the HOLDING. Where the venue-true float is under 1,500 the
+  holding reaches zero first and **the cap never engages** — IPTCBEAR
+  (float 1,056 after its boot rebase) sat at holding **293 sh**, a few
+  clips from sell-blocked and buy-only. One book of 180 today; 11 are
+  under 2,500. Rides **E39** (float size, now with venue-true numbers)
+  and E26/T16 (shorts, off). Session:
+  [[market-maker/sessions/2026-08-15-taker-rate-verification]].
+
+### 2026-08-15 — the LIVE rate RULED (George): one print a second · the arrival clock fixed · a portfolio cap, OFF (MM PR #40)
+
+- **T-F04 ✎ — the intensity numbers change.** Edwin's feedback: the taker
+  is not quick enough during live games (one cross per book every ~5.3 s,
+  which was his own 9/h × ×75). George's ruling: one print per book every
+  **20 s PRE_KICKOFF · 1 s LIVE · 20 s POST**, OVERNIGHT untouched —
+  multipliers 20/400/20 (were 6/75/4). Book-visible; 🟡 GEORGE, Edwin
+  confirms (E41). The rates are env-tunable as intervals from this PR
+  (`SNT_INTERVAL_{STATE}_S`); before, a retune was a code deploy.
+- **T-F01 hardened.** The arrival clock rescheduled from the TICK's time,
+  so every gap carried ~half a tick and the shape drifted toward "one
+  every tick" as the rate rose — measured +27% long at a 1 s target on a
+  0.5 s tick. Fixed (`schedule_after_arrival`: from the arrival's own
+  instant, one tick of backlog at most — no catch-up bursts); realised
+  1.012 s at the new 0.25 s tick (`SNT_TICK_S`).
+- **T-O02 kept on purpose:** still one arrival per book per tick, so two
+  half-caps can never take one displayed level together.
+- **New lever, OFF:** `SNT_MAX_ORDERS_PER_S`, a portfolio-wide arrival cap
+  (drop-and-reschedule = Poisson thinning, T-F01 holds). Each taker fill
+  is a maker exec ack; a Sunday slate at 1 s is ~20 fills/s. George's
+  call — **N44**. Session:
+  [[market-maker/sessions/2026-08-15-taker-live-rate]]. Not deployed
+  (the 14-08 freeze).
+
 ### 2026-08-13 — the 12-08 build items BUILT (MM PR #28 + gateway PR #3)
 
 - **T-F07's staleness clock now prices the reading's `fetched_at`**
@@ -355,7 +415,7 @@ Every requirement here protects that property.
 | T-F01 | Arrivals are Poisson — no schedule a participant can learn or front-run | EDWIN | ✅ | seeded, tested |
 | T-F02 | Direction is 50/50 at its core | EDWIN | ✅ | tested |
 | T-F03 | Sizes are log-normal, clipped 5–400 shares | EDWIN | ✅ | tested |
-| T-F04 | Intensity scales by activity state and per-team weight | EDWIN | 🟡 ✎ | state DERIVED per book since 11-08 (T-F07); weights still stub at 1.0 (E41 feed) |
+| T-F04 | Intensity scales by activity state and per-team weight | EDWIN · GEORGE (rates, 15-08) | 🟡 ✎ | state DERIVED per book since 11-08 (T-F07); **rates ruled 15-08: 20 s / 1 s / 20 s PRE/LIVE/POST, OVERNIGHT 6.7 min** (MM PR #40, not deployed; Edwin confirms, E41); weights still stub at 1.0 (E41 feed) |
 | T-F05 | It NEVER conditions on book state, other participants, or any external signal | EDWIN | ✅ | reads only its own basis |
 | T-F06 | The disposition (profit) tilt is the ONLY departure from pure noise, and it conditions solely on own cost basis | EDWIN | ✅ ⚠ | **flagged to compliance** — it makes flow weakly correlated with price |
 | T-F07 | Activity state maps correctly — off-season/overnight → OVERNIGHT, IPO windows → PRE_KICKOFF at minimum | EDWIN | 🟡 ✎ | **built 11-08** (PR #14): derived PER BOOK from the sportradar bus (`sr.probabilities.reading.>` — kickoff/status/teams in every payload); IPO windows via `SNT_IPO_WINDOWS` floor books at PRE_KICKOFF; operator pin + AUTO un-pin, journaled. Err-quiet: any gap derives OVERNIGHT. Grant LIVE 11-08b (snt-taker user, verified end to end); real derivation waits on the mm-publisher worker deploy — the stream is empty until then |

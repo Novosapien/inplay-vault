@@ -99,24 +99,74 @@ not sending them at different times.** That is CB3 (skip unchanged books) and
 CB4 (per-ack cost) — which is also what `profile-cb1.md` concluded when it
 measured the sweep side at 1.8% of the tick and the drain at 98%.
 
-**6 · The 73% finding — the biggest ack-volume lever is not an engineering
-chunk.** Nearly three quarters of every acknowledgement the engine handles
-comes from the **158 quiet books** redrawing on their own 5–20 / 5–20 /
-20–40 s dwell draws. There are 158 of them against at most 12 live ones, so
-the non-live republish cadence — one dictionary row — is the largest volume
-lever in the machine. It is **book-visible**, so it is Edwin's remit under
-the 22-07 line (George's 08-11b numbers, riding the E31/E17 flag round), not
-ours to move. Quantified as reporting only in
-`scripts/cb2_dwell_lever.py` and §7 below.
+**6 · THE A/B — the mechanism works and the gate cannot see it.** Two
+2,400 s arms, same seed, same workload, one binary. The ON arm releases each
+LIVE book at its own phase slot from a converger running at one bucket width
+(62.5 ms) — the strongest de-phasing this machine can express.
 
-**7 · AC4's miss ratio is a MACHINE-SPEED result, not an engine result.**
+*The mechanism engaged, and it is measurable:*
+
+| Release clusters (LIVE books) | OFF | ON | change |
+|---|---|---|---|
+| clusters | 2,768 | 3,516 | **+27%** more, smaller releases |
+| acks per cluster | 26.9 | 20.8 | **−23%** |
+| books per cluster | 2.36 | 1.84 | **−22%** |
+| single-book clusters | 385 | **1,648** | **4.3×** |
+| 4-book clusters | 542 | 353 | −35% |
+
+It did exactly what it was designed to do: split the coincident same-game
+pairs, so a release is now usually one book instead of two.
+
+*The AC2 gate metric did not move at all:*
+
+| | OFF | ON |
+|---|---|---|
+| acks | 224,034 | 223,620 |
+| mean / window | 46.39 | 46.30 |
+| p50 | 44 | 44 |
+| **p90 (the gate)** | **90** | **90** |
+| p99 | 144 | 142 |
+
+**p90 90 → 90. Zero.** Burst size fell 23% and the gate registered nothing,
+because the window and the pulse are the same length. That is the invariance
+argument confirmed by measurement rather than by reasoning, with a positive
+control proving the code ran.
+
+**7 · The 73% finding — the biggest ack-volume lever is not an engineering
+chunk.** Two thirds of every acknowledgement the engine handles comes from
+the **158 quiet books** redrawing on their own 5–20 / 5–20 / 20–40 s dwell
+draws (measured on the full arm: 149,598 of 224,034 acks = **66.8%**, in
+12,820 redraws of mean 11.7 acks, 2.65 per window). There are 158 of them
+against at most 12 live ones, so the non-live republish cadence — one
+dictionary row — is the largest volume lever in the machine. It is
+**book-visible**, so it is Edwin's remit under the 22-07 line (George's
+08-11b numbers, riding the E31/E17 flag round), not ours to move.
+
+**The lever board, all measured on the same arm** (`scripts/cb2_dwell_lever.py`):
+
+| Lever | mean arrival | p90 | AC2 needs −50% p90 |
+|---|---|---|---|
+| **de-phasing (CB2, measured A/B)** | −0.2% | **0%** (90 → 90) | ✗ |
+| non-live dwell ×2 | −33.3% | −26.7% (90 → 66) | ✗ |
+| non-live dwell ×4 | −50.0% | −40.0% (90 → 54) | ✗ |
+| quiet books alone (LIVE silenced entirely) | — | 64 | the floor |
+
+⚠✎ **15-08: these are `six-game-v1` numbers and the SHARE inverts on v2.** The feeder skew (review-002 HIGH) suppressed ~45% of the ack load, and it suppressed the GAME books' pulse redraws specifically — the quiet books never had game readings, so none of their volume was missing. Restoring it lands entirely on the live side: projected v2 is ~63% LIVE / ~37% quiet, against v1's measured 33/67. The quiet books' ABSOLUTE volume (149,598) is unchanged and the dwell row is still a real lever, but it is no longer the biggest one, and the dwell ×2/×4 p90 projections were derived on v1's distribution and need re-deriving. Arithmetic from the review's ~45%, not a measurement — the GATE's v2 arm settles it.
+
+⚠ The dwell rows are an **upper bound on the saving**: a book that waits
+twice as long has let its price move further, so its real reconciler diff
+would be larger than the burst measured here. Even so, quadrupling the quiet
+dwell — a large book-visible change — reaches only 40% off p90.
+
+**8 · AC4's miss ratio is a MACHINE-SPEED result, not an engine result.**
 Same code, same six-game workload, same 1× arm, no wire and no fills on
 either side:
 
 | Machine | miss ratio (AC4) | DRAIN_CAPPED | pass duration |
 |---|---|---|---|
 | clone, n2-standard-2 (production's shape) | **52.3%** | 4 | 1.375 s |
-| this Mac (M-series) | **0.12%** — 5 of 4,333 due-sweep ticks | 7 | 0.50 s |
+| this Mac (M-series), OFF arm | **0.12%** — 5 of 4,333 due-sweep ticks | 7 | 0.50 s |
+| this Mac (M-series), ON arm | **0.11%** — 5 of 4,441 | 7 | 0.50 s |
 
 AC4's target is < 0.5%, and the engine **already meets it** on hardware fast
 enough — by a factor of four, at double production's game count. The 52.3% is
@@ -136,10 +186,26 @@ the Go argument generally.
   re-quoting only 34% of books per pass. That model divided a 2.75-**pulse**
   pass by 8 **buckets** — different units. The doc flagged it 🟡 and said to
   re-derive if CB2's design differed. Re-derived here; it does not hold.
-- A worktree sharing the main checkout's `.venv` imports `mm` from the MAIN
-  source tree, so tests silently exercise the wrong code. Every command in
-  this session ran with `PYTHONPATH=src`. This is the same trap the 14-08
-  taker lesson records for the VM.
+- A worktree sharing the main checkout's `.venv` imports `mm` from ANOTHER
+  source tree, so tests and measurement arms silently exercise the wrong
+  code. Every command in this session ran with `PYTHONPATH=src`. This is the
+  same trap the 14-08 taker lesson records for the VM, and CB4's rig was hit
+  by it for real (its arms imported `~/mm/src` whatever tree they launched
+  from, because a copied venv's `.pth` beat a `sys.path.insert` of the repo
+  ROOT — which does not resolve in a `src/` layout at all).
+- **Both CB2 arms were checked against that failure rather than assumed
+  clean** (lead-directed). `mm`, `mm.venue.sync` and `mm.quotes.phase` all
+  resolve into the measurement worktree under the arms' own invocation. The
+  negative control proves `PYTHONPATH=src` was load-bearing: without it,
+  `mm` resolves to a DIFFERENT worktree that carries `phase.py` but not the
+  patched `sync.py`, so the ON arm would silently have run without
+  de-phasing. Independent proof from the recorded artefacts: the ON arm's
+  `MM_CB2_CONVERGE_S=0.0625` override exists only in the measurement tree's
+  `compose.py`, and `profile.json` shows **24,144 converger passes against
+  the OFF arm's 7,642** (3.16×, mean 1.027 → 0.336 ms per pass) — so that
+  arm provably ran the measurement code. Instructions sent were **136,872
+  vs 136,935, 0.05% apart**: both arms did the same work and only the
+  schedule differed, which is the ideal control for this experiment.
 
 ## Decisions made *(mirror into [[market-maker/decisions]])*
 
