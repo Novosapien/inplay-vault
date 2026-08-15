@@ -99,6 +99,37 @@ side 2 and side 5 never rest together; the venue's short reserve
 (1,000 QA) never rejects inside our cap; T-S05 reconciles a NEGATIVE
 venue position. Off by default everywhere else.
 
+### TT9 — The LIVE rate at one print a second — ✅ PASSED LIVE 15-08 (the cap arm still unrun)
+
+George's 15-08 ruling (20 s / 1 s / 20 s PRE/LIVE/POST). Before the
+cutover, a rig run against the maker with two books pinned LIVE for
+≥ 30 min. Pass: realised gap per book 1.0 s ± 5% (journal send stamps);
+wash-guard skips ≤ ~15% of arrivals and no `Wash trades` rejects;
+T-S05 silent (floats hold under the higher fill rate); the maker's
+tick line shows no new `MISSED_SWEEPS`/`DRAIN_CAPPED` growth from the
+extra acks; loss meter ≈ $5k/h/book at the QA spread; drift stays
+inside the 1,500 cap most of the run (the cap WILL bind more often —
+record how often, for the E41 round). Then a second run with
+`SNT_MAX_ORDERS_PER_S=4` on five LIVE books: total sends ≈ 4/s, every
+book still prints, `RATE CAP` lines on the log, no burst after a
+30 s halt/resume. Statuses land in the requirements addendum.
+
+✅ **The rig run was overtaken by production** — George deployed #40 at
+17:00–17:04Z 15-08 and the first 76 min (SNT-CFG-0023/snt20, six books
+LIVE on three preseason games) served as the verification, read-only:
+**send gap 1.13–1.16 s** per LIVE book (target 1.0 s; ~11% of arrivals
+skipped by the wash guard) · fill-gap p90 = mean × ln 10, so the gaps
+stay **exponential — T-F01 intact** · **OVERNIGHT 394 s vs 400 s** ·
+**zero rejects on 25,983 sends**, zero halts, zero reconcile alarms,
+**zero resting orders (T-O03)** · buy fraction **49.6%**, clip **44 sh**
+· **P(same side) 0.542** (the review's HIGH-2 band was 0.75–0.80) ·
+cost **$2,507–2,601/hr per LIVE book** · **maker: zero `MISSED_SWEEPS`
+in 9,505 ticks**. Full numbers in the build-deploy-log row and
+[[market-maker/sessions/2026-08-15-taker-rate-verification]].
+⚠ **Still owed:** the `SNT_MAX_ORDERS_PER_S` arm (never exercised —
+the cap ships OFF, N44), and the inventory-headroom watch the run
+opened (IPTCBEAR, float 1,056 vs the 1,500 cap — see the deploy log).
+
 ## Phase 2 · Maker ISOLATED — its own protocol
 
 Lives in [[market-maker/test-plan]] (A/B/C cases + the 10-08c testing

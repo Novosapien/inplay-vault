@@ -77,6 +77,26 @@ hardcoded), paired with the 500 ms LIVE cadence. In order, every tick:
    not the lever, the per-ack cost is. Hold the dictionary to
    `venue cap ≤ drain budget ÷ ms-per-ack` — a 1,050 cap needs
    **≤ 0.286 ms/ack, a 35× improvement**. Re-derive after CB4.
+   ⭐⭐ **RE-DERIVED 15-08 (CB4, MM #39) — the danger is gone and the NCAA
+   figure is nearly in reach.** CB4 cut ms/ack from **7.346 → 0.298 p50**
+   (0.586 p90) on adjacent six-game 1× arms. Against CB1's own 300 ms
+   drain budget the rule now gives **cap ≤ 1,006 at p50, ≤ 512 at p90**.
+   Two consequences. (1) **The standing 512 cap is no longer dangerous**:
+   worst case at the cap falls from **3.76 s** — two-thirds of the way to
+   the 5 s beat-stall threshold — to **153 ms** (p50) / 300 ms (p90), so it
+   fits inside the 500 ms tick for the first time. (2) The **1,050** NCAA
+   figure needed ≤ 0.286 ms/ack, "a 35× improvement, a Go question not a
+   Python one"; we measure **0.298 at p50 — 4% short**, though still ~2×
+   short at p90. 🟡 **CB4 proposes NO dictionary row**: a cap must survive
+   p90 and p90 does not clear it. But the premise has changed materially
+   and the ruling is George's to re-take against these numbers, not
+   CB1's. See `profile-cb4.md` §3.4.
+   ⚠ **DRAIN_CAPPED fires 5–7 times per run on EVERY arm ever measured**,
+   pre- and post-fix, at both speeds — it is the boot re-stand (1,598
+   standing instructions against a 512 cap needs ≥4 ticks), not game load.
+   `acks_per_tick` max is 512 while p99 is 130. AC4's "zero DRAIN_CAPPED"
+   clause therefore fails on a boot transient the cap exists to handle;
+   profile-cb4 §3.3 puts that to George as a spec question.
 4. **Daily discovery** if due (first tick runs it immediately; the
    composition owns the wall-clock→monotonic conversion at the edge;
    `ensure_game` is idempotent and re-stamps moved kickoffs).
@@ -365,8 +385,9 @@ done (George 08-13 — ~~1. bounded drain~~ · ~~2. N31 group commit~~ ·
 ~~4. the converger~~ phase A deployed 08-13, phase B deployed 11:51Z
 14-08 · 5. the dead-man breaker remains) · the missed-sweeps
 fix chain (measure per-event cost → design fixes → speed work) · the
-go-live switch (this page's live mode) · the boot-reconcile healer ·
-the p_ref carry-across-cutovers ruling
+go-live switch (this page's live mode) · ~~the boot-reconcile healer~~
+BUILT 15-08 (CA4, MM #42, [[market-maker/build/venue|Venue]]), not
+deployed · the p_ref carry-across-cutovers ruling
 ([[market-maker/build/valuation|Valuation]]) · N15's window retune
 after the VM jitter measurement. ~~§10.3 checkpoints~~ built 06-08d,
 equality-proven.

@@ -17,13 +17,13 @@ description: "Build state at a glance — what is real, mocked or gated, and the
 | Event core, journal, replay equality on a real game · §10.3 checkpoints equality-proven · **N31 group commit** (one fsync/tick, 08-13) | Off-field RAV/EAV (§3.6) — static inputs | Live mode (T1 · N19 · the go-live switch; S1 landed) |
 | Valuation with Edwin's on-field leg · E38 observation-age freshness | `p_tie = 0` (S6 interim) | §5.5 public-book checks · §5.9 replenishment (E17) |
 | Position/skew (Ch 4) · quoting chain (Ch 5) · market state (Ch 6) | Pre-kickoff tier 15 s (George's 10–30 range) | Ch 9 IPO · Ch 11 settlement · §10 recovery |
-| Venue sync + reconciler + reject backoff + gone-retire, live-proven | E31 width values (mechanisms built, numbers Edwin's) | Opening-position publisher (E27) · the boot-reconcile healer (parked) |
+| Venue sync + reconciler + reject backoff + gone-retire, live-proven | E31 width values (mechanisms built, numbers Edwin's) | Opening-position publisher (E27) · ~~the boot-reconcile healer (parked)~~ BUILT 15-08 (CA4, MM #42), not deployed |
 | **The full bus path IN PRODUCTION** — publisher pools → JetStream → engine (`MM_READINGS=bus` since 08-11); universe filter fixed 13-08 | The always-quoting numbers — drain caps 256/512, converger 256→128 / 0.25 s, stall 5 s — 🟡 OURS, re-size after the measurement | **Always-quoting step 5** — the dead-man breaker |
 | **Always-quoting steps 1–4 DEPLOYED** (bounded drains · group commit · progress-aware beat · converger phases A+B, 08-13/14) | Dead-man window 10 s — env row; the binary default rides gateway PR #4 (N15 retune stands) | Maker shorts (N34) · taker shorts ON (E26 depth rules · T16 · the JETS zero-float test) |
 | The session clock (close 23:59 / open 00:02 ET), live-fired 08-13 | | The MM panel kill-switch surface (N29; access control first) |
 | Per-security quarantine · **the single-engine lock**, proven live | | The daily reference feed pipeline (designed 13-08 — George's approval + the N23 blessing) |
 | State publishers (`mm.state`/`snt.state`) + the taker's manual order ticket (four review rounds, 12-08) | | |
-| **SNT-1 deployed and running** — AUTO states (T-F07 fetch-aged), wash guard, exec-borne T-S05 + boot rebase, floats venue-true | | |
+| **SNT-1 deployed and running** — AUTO states (T-F07 fetch-aged), wash guard, exec-borne T-S05 + boot rebase, floats venue-true | The taker's LIVE rate — George's 15-08 ruling (one print a second; 20 s PRE/POST) is BUILT (MM #40: env intervals, the arrival-clock fix, tick 0.25 s, portfolio cap OFF) but the running taker still fires every 5.3 s until the cutover | The portfolio cap's value (N44) · Edwin's confirmation of the four intervals (E41) |
 | **The first live games ran the full chain 13-08** (SR → publisher → bus → engine → venue → taker fills) | | |
 
 ## What we build next
@@ -100,8 +100,8 @@ states live in [[market-maker/build-deploy-log]].
     [[market-maker/build/ingestion|Ingestion]].
 12. Housekeeping owed: a systemd unit for the supervised engine
     (doubles as the N15 beat-jitter recorder) · the CI/CD audit
-    (George, 06-08) · the boot-reconcile healer (parked with eyes
-    open).
+    (George, 06-08). ~~The boot-reconcile healer (parked with eyes
+    open)~~ — BUILT 15-08 (CA4, MM #42), not deployed.
 
 **Gated on others:**
 

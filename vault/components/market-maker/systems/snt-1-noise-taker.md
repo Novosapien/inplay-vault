@@ -30,8 +30,13 @@ the off-field volume split.
 ## The design, distilled from the reference
 
 - **Arrivals:** Poisson per team-book. Base 9 orders/hour, scaled by
-  activity state (OVERNIGHT ×1 · PRE_KICKOFF ×6 · LIVE ×75 · POST ×4)
-  and a per-team popularity weight (0.25–4.0). Nothing schedulable.
+  activity state and a per-team popularity weight (0.25–4.0). Nothing
+  schedulable. ✂ **The state multipliers are George's since 15-08**
+  (after Edwin's "not quick enough during live games"): OVERNIGHT ×1 ·
+  PRE_KICKOFF ×20 · **LIVE ×400** · POST ×20 = one print per book every
+  6.7 min · 20 s · **1 s** · 20 s (Edwin's v1.0: ×1/×6/×75/×4 = 6.7 min /
+  67 s / 5.3 s / 100 s). Env-tunable as intervals (`SNT_INTERVAL_{STATE}_S`);
+  MM PR #40, not yet deployed; Edwin confirms in the E41 round.
 - **Sizes:** log-normal, 5–400 shares, median ~30 (~44 average).
 - **Order style:** 90% at-touch marketable IOC, capped at half the
   displayed touch quantity; 10% "sweeps" capped at 3 ticks through the

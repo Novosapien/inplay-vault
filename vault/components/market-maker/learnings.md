@@ -13,6 +13,159 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-08-15d — the measurement is an artefact too, and it can lie quietly
+
+- **⭐ Assert on the FINGERPRINT, not on the timings.** CB4 spent a night
+  on rig arms that all loaded the same unfixed engine. Every arm
+  completed, printed a summary, and produced numbers of a believable
+  magnitude — for a tree nobody was testing. The tell would have been
+  free: the change under test should leave a visible artefact, so assert
+  on THAT. CB2 could prove its own A/B was real because its ON arm made
+  24,144 converger passes against 7,642 — a number the OFF build cannot
+  produce. CB4 had no such control, which is exactly why the wrong result
+  looked normal for hours. **Where a change should leave a fingerprint,
+  check the fingerprint; timings alone cannot tell you what ran.**
+- **The failure mode to fear is not the crash, it is the plausible
+  number.** A measurement that errors costs minutes. A measurement that
+  silently measures the wrong thing costs a night, and it also spends
+  your credibility, because you report it before you doubt it. Ask of any
+  gating number: *what would I see if this were measuring the wrong
+  thing?* If the answer is "the same thing", the instrument is not
+  finished.
+- **The mechanism:** `import x` under a `src/` layout does not resolve
+  from the repo root, so it falls through to whatever the venv installed.
+  A venv copied between trees (`cp -a`) brings its editable-install
+  `.pth` with it, still pointing at the ORIGINAL tree. Replacing the
+  copy's source then changes the files on disk and changes nothing about
+  what runs. N trees, one engine, N sets of credible numbers.
+- **A run's provenance belongs in the run's own output.** Not in the
+  operator's memory of which directory they were in, and not in the
+  transcript of the session that launched it — both die with the worker.
+  The profile now records which package it loaded and prints it beside
+  the numbers it produced, so the pair cannot be separated later.
+- **⭐ The machine is a variable, and on the rig it is a bigger one than
+  most changes.** The same code measured 9.893 ms/ack one day and 6.149
+  the next; adjacent runs agree to ~4%. So a "40% improvement" against a
+  figure recorded yesterday is indistinguishable from the box having a
+  better afternoon. **Pair the arms adjacently or do not claim.** This
+  retroactively softens every cross-day comparison, not just the one that
+  found it.
+- **A saturating metric moves in cliffs.** The missed-sweep ratio reports
+  whether the loop held cadence, so it sits at 0% until the loop cannot
+  cope and then climbs fast — a 1.7× cost change took one arm from 8.97%
+  to 0.00%. It is the right thing to GATE on and the wrong thing to SIZE
+  with. Quote it beside a continuous measure.
+- **An estimate built from counting operations can be an order of
+  magnitude out.** A follow-up was sized at "~15% of the ack path" by
+  counting wasted iterations; measured, it is **under 0.5%** (4.2 µs and
+  2.1 µs per call). The session's headline lesson in miniature — and the
+  reason it was killed rather than scheduled.
+- **Where retained state costs per-event work, cost scales with the
+  SQUARE of the rate.** The venue holds dead orders for
+  `venue_terminal_retention_s`, so records held ≈ instruction rate ×
+  retention window. When a per-event scan walks that set, twice the
+  instruction rate means twice the records AND twice the cost per event.
+  That compounding is why a busy slate hurts more than a linear
+  projection says, and why the lever is the retained SET, not the scan.
+
+## 2026-08-15c — a rate is only as true as the clock that serves it
+
+- **"Every 5.3 seconds" was the design, not a defect.** Edwin's feedback
+  that the taker was too slow in live games matched his own reference
+  numbers to the decimal (9/h × 75 = 5.33 s). Before treating a
+  complaint as a bug, check whether the observed value IS the configured
+  value — here the fix was a ruling, not a repair.
+- **A served-at-tick loop biases every rate long, and the bias grows with
+  the rate.** The taker's arrival rescheduled from the tick that served
+  it, not from the arrival's own instant, so every gap carried ~half a
+  tick. Invisible at 5.3 s (+4.5%), a quarter of the target at 1 s
+  (+27%), and the shape drifts toward "one every tick" as λ·Δt → 1 —
+  which would have quietly broken the "no learnable schedule" property
+  the taker exists for. Whenever a rate is realised by a polling loop,
+  measure the realised rate against the target before trusting the
+  parameter; the loop's grain is part of the number.
+- **Cap by thinning, not by queueing.** A rate cap that DEFERS arrivals
+  turns a Poisson stream into a metronome at the cap; a cap that DROPS
+  and reschedules leaves it Poisson. Same ceiling, opposite signature.
+- **A per-book knob is a portfolio load.** Ruling "one print a second
+  per book" is really "N prints a second", N = books live at once — six
+  on a Thursday, twenty on a Sunday, sixty on an NCAA Saturday — and each
+  print is an ack the maker must drain. State the portfolio number next
+  to every per-book ruling.
+
+## 2026-08-15b — two lessons from the converger, both about transfer
+
+Full inventory: `specs/2026-08-14-mm-python-fix-set/scan-sweep.md` — every
+per-event whole-collection scan in `src/mm` and `src/snt`, with growth
+drivers and dispositions. Both lessons below came out of building it and
+out of the CA2 chunk that prompted it.
+
+### The pruner template, and the two shapes it does NOT fix
+
+- **Scan-everything-to-find-the-expiring-few is the recurring defect.**
+  `VenueEngine._stamp_and_prune` walked every order on every venue event
+  to expire a handful. The acceptor's seen-key pruner had already learned
+  this on 08-12 and fixed it — in a sibling module that never got told.
+  The same shape then turned up four more times in the taker.
+- **The fix template is head-prune an arrival-ordered structure:** append
+  in arrival order, then `while queue and queue[0] < cutoff: popleft()`.
+  Cost becomes proportional to what actually expires. It applies wherever
+  the retention key is monotonic with insertion order — which is true of
+  every expiry case in either engine.
+- ⚠ **But two other shapes look identical and need different fixes.** A
+  *filter-a-global-table-by-key* scan (`backoff.py`'s `suppression()`,
+  walking the whole portfolio's reject table to answer about one
+  security) is not a pruning problem at all — it needs an INDEX, and a
+  deque does nothing for it. And a *whole-set rebuild* on a tick path is
+  often fine by design and should just be recorded. Reaching for the
+  queue everywhere would fix one of three.
+- **A cap upstream does not bound any of them.** CA2b's examined-books
+  cap bounds how many books a converge pass diffs and does nothing about
+  the per-call cost of what each diff then calls. **Bounding the number
+  of calls is not the same as bounding the call.**
+
+### Writing a lesson down does not make it transfer
+
+- The converger's round-robin advanced only on SERVED books. That was
+  harmless for years because a served book leaves the dirty set, so the
+  list drained itself and fairness was free.
+- Adding the examined-books cap broke that, and the starvation appeared
+  in **three classes in one chunk**: `rest` had a rotation, `live` had
+  none (found while testing), and `suspends` cannot have one at all
+  (found by the Phase-3 review, after it shipped).
+- The general rule, worth keeping: **a work list that drains itself needs
+  no fairness mechanism; the moment an item can stay on the list without
+  being completed, it does.** A suspend re-stages every cycle, so it
+  *behaves* like it stays even though each target is deleted.
+- ⚠ **The uncomfortable part: that rule was already written in
+  [[market-maker/decisions]] when the third instance was introduced, by
+  the same hand, and it still did not get applied.** A written lesson is
+  not a check. What would have caught it is enumerating the classes the
+  change touches and asking the question of each one — the rule tells you
+  what to ask, not where to ask it.
+
+---
+
+## 2026-08-15 — a coarse grid eats the randomization it carries
+
+- **§5.7.3's variation and its increment fight each other.** The ±25%
+  seeded variation at a 10,000-share touch spans ±2,500 shares — but a
+  500-share grid quantizes that span to 11 landing spots, every one
+  ending in 000 or 500. The book read as machine blocks not because the
+  variation was too narrow but because the GRID swallowed it.
+- **The tell is roundness, not just granularity.** The first fix
+  (grid 100) made sizes finer but still round — and George rejected it:
+  a book whose every size is a round lot reads as UNTOUCHED, i.e.
+  inactive. Odd integers (12,433 · 8,617) read as partial fills having
+  happened — an active book. So the grid went to 1, not to a smaller
+  grid. "Make it look randomized" meant "make it look traded".
+- **Grid and materiality are different rows that happen to share a
+  number.** `qty_increment` (display granularity) and
+  `material_qty_change` (publish trigger, §5.8) were both 500, which
+  hid a coupling: on a 500 grid every basis move is automatically
+  material. Dropping the grid decoupled them — and the only cadence
+  effect is DOWNWARD (sub-500 drifts stop force-publishing).
+
 ## 2026-08-14 — the build-state sync: where "as built" actually lives
 
 - **The VM outruns the vault by hours, reliably.** The deploy-log row

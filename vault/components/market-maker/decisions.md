@@ -14,6 +14,431 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-15f — ✅ The boot healer: prove it dead, never assume it · the journal and the config version move together (fix-set CA4 / F4 / R-D05)
+
+Session: [[market-maker/sessions/2026-08-15-ca4-boot-healer]] · MM
+[#42](https://github.com/Novosapien/inplay-market-maker/pull/42)
+(`fix-set/ca4-boot-healer`, base `fix-set/ca3-ask-cap`) · built, NOT
+merged, NOT deployed (the 14-08 freeze stands).
+
+**The healer, in one line:** at boot the engine diffs the venue's ACTUAL
+resting MM book (the gateway's `GET /orders/mm`) against its journalled
+record, and cancels only what is ours by ClOrdID and unmanaged. Four
+decisions came out of building it.
+
+**1. ✅ Ownership is the ClOrdID scheme, and nothing else.** `MM` + 16
+lowercase hex is a SHA-256 tail nobody else can mint; the taker's `MMSN`
++ 14 hex fails the hex test on its second character. Ours + unknown →
+cancel. `MMSN…` → never touched. `MM`-prefixed but not our scheme → LEFT
+resting + alarm (on doubt, never touch a resting order). Anything else →
+never touched. An unreadable entry → skipped + alarm. Deliberately NOT
+gated on the entry's `user_id`/`bot_id`: the id is already the strongest
+proof, while an index that stopped populating `user_id` would silently
+heal nothing — that gate could only add a failure mode. Also: **the
+universe does not narrow ownership.** An own-scheme order on a book this
+run does not quote is still ours and still unmanaged, so it comes down,
+with its symbol named — which is exactly what the old ceremony's global
+`cancel_all` did to it.
+
+**2. ✅ "Known to the record" = the NON-TERMINAL set (`open_orders`),
+chosen explicitly.** The exposure-set lesson (2026-08-14f) for the third
+time in one build. Not §4.4's `_EXPOSURE_STATES` — that answers "could
+this cost us money". Not the reconciler's `_ACTIONABLE` pair — that
+would draw a second cancel for an order already leaving. Not "any id the
+record holds" — a TERMINAL-in-record order that the venue still shows
+OPEN would then rest for ever, because the reconciler only ever sees
+`open_orders` and the record drops the row at the 300 s retention
+window.
+
+**3. ✅ The healer writes NO engine state; known-but-absent is PROVED
+dead, not assumed dead.** ⚠ This deviates from the spec's wording
+("retire locally") and the deviation is the decision — **flagged before
+building and APPROVED by the lead 15-08 as the design** ("strictly
+better… journalled, replay-identical, and safe against a stale index
+racing a real order"); the lead carries the ✎ into `spec.md`. A local retire
+writes boot-time state out of an HTTP snapshot, and replay has neither
+the gateway nor the snapshot — the same journal would rebuild a
+different venue book and AC9 breaks on the next drill. Instead the
+healer SENDS a cancel and the venue's own answer (`ORDER DEAD` /
+`UNKNOWN ORDER`) retires the order through the existing journalled
+`[gone-retire]` path. It is also strictly safer: the index is a SNAPSHOT
+whose route documents that the caller owns staleness, so an order
+submitted microseconds before the call can be missing from it —
+retiring on that evidence would forget a REAL resting order and repost
+the level (the 07-08 doubled-levels defect). A cancel gets the truth
+back either way. Every consequence of a heal therefore enters through a
+journalled venue event.
+
+**4. ✅ The journal and the config version MOVE TOGETHER** — the
+corollary of retiring R-D06's fresh-journal rule, and the one that will
+bite an operator who half-applies it. **Keep the journal → keep the
+version:** `load_latest` only accepts a checkpoint written under the
+RUNNING config version, so a bump rejects every checkpoint and the boot
+replays a journal that now grows across deploys. **Take a fresh journal
+→ bump the version:** a fresh journal restarts each book's quote-version
+counter at 1, so the reconciler re-mints ClOrdIDs the venue already
+remembers and every order duplicate-rejects (07-08). Both shapes are
+written out as a table in the engine repo's
+`deploy/OBSERVABILITY-REDEPLOY.md` §2.2, and the fresh-journal shape
+stays documented as the healer's rollback (`MM_BOOT_HEAL=off`).
+
+✎ **AMENDED 15-08 by review-ca4 (2 HIGH, 3 MED, 2 LOW, all
+probe-verified, all fixed in the same PR).** The design above survived —
+what did not was the CLIENT. (1) **Absent is not null:** a 200 with no
+`orders` key read as "the venue is empty", the one input that turns the
+healer into a whole-book cancel; a sentinel now separates a missing key
+(shape error, no heal) from an explicit null (Go's nil slice, genuinely
+empty), and the route's own `count` is cross-checked. **The lesson
+generalises beyond this client: where the destructive reading and the
+"no data" reading are the same value, they must be separated at the
+parse.** (2) **A socket timeout is not a budget:** urllib's `timeout=`
+is per recv, so a trickling server ran 19.09 s at `timeout=0.5` — the
+read is now bounded by a wall deadline between chunks AND runs off the
+event loop under `wait_for`. (3) Redirects refused (a 302 had walked the
+ops key to another path), a part-heal now reports PARTIAL rather than
+"today's behaviour", NaN timeouts refused, duplicate index rows
+cancelled once. ⭐ And one the tests found rather than the review:
+`build_opener()`'s default `ProxyHandler` calls `getproxies()`, which on
+macOS leaves the process fork-hostile — and this engine forks for every
+checkpoint — so the opener now carries an EMPTY ProxyHandler, which also
+stops an `http_proxy` routing an ops-key'd request through a third party.
+
+⚠ **For the GATE, not a decision:** the heal's RETURN traffic is one
+venue event per cancel, and a boot after a dead-man sweep can cancel the
+whole record (~1,660 orders today). Those answers land against the
+runtime's 512-per-tick drain cap; at CB1's pre-CB4 9.893 ms/ack that is
+~5 s in one tick, which is the beat-stall threshold. Read the heal's own
+numbers off the boot log during the drill and confirm the beat holds.
+
+---
+
+## 2026-08-15e — ✅ The taker's LIVE rate: one print a second (George) · the arrival clock was biased · a portfolio cap, OFF
+
+Session: [[market-maker/sessions/2026-08-15-taker-live-rate]] · MM PR #40
+(`feat/snt-live-rate`, off `main@2c74886`) · built, NOT merged, NOT
+deployed (the 14-08 freeze).
+
+- ✅ **The observation is the design number, not a fault.** Edwin's
+  feedback (via George): the taker "does not seem to be running quick
+  enough during live games" — one cross per book every ~5.3 s. That is
+  exactly `base_orders_per_hour` 9 × LIVE ×75 = 675/h = 5.33 s, Edwin's
+  own v1.0 values (his 30-07 smoke test: "~1 order every 5 seconds per
+  book"). E41 already names `base_orders_per_hour` as the lever he
+  expected to tune on real books.
+- ✅ **GEORGE'S RULING (15-08): one print per book every 20 s in
+  PRE_KICKOFF · 1 s in LIVE · 20 s in POST. OVERNIGHT untouched** (9/h,
+  one every 6.7 min). In Edwin's vocabulary the multipliers become
+  **20 / 400 / 20** (were 6 / 75 / 4). ✂ Supersedes the v1.0 reference
+  values, which stood as 🟡 since 30-07. **Book-visible → filed 🟡 GEORGE
+  in [[market-maker/parameters]]; Edwin confirms in the E41 round.**
+  George read the assessment before ruling: at 1 s the loss budget
+  never binds (~$17k/game/book vs $100k, spread paid mostly to the
+  maker), the wash-guard skip band is ~10%, and the maker's LIVE 500 ms
+  re-roll stays ahead of the taker (no L1 erosion — the 30-07b concern
+  holds only for the dwell states, which stay slow).
+- ✅ **The rates are env-tunable as INTERVALS from now on** —
+  `SNT_INTERVAL_{OVERNIGHT,PRE_KICKOFF,LIVE,POST}_S`, seconds between
+  prints on one weight-1.0 book, converted once at boot to the
+  multiplier. Before this a retune was a code deploy. Every change is a
+  CFG bump (the RNG is salted by config version).
+- ⭐ **THE ARRIVAL CLOCK WAS BIASED LONG — found and fixed while
+  building.** The loop serves one arrival per book per tick and the
+  served arrival rescheduled from the TICK's time, so every gap carried
+  the tick's residual (mean +Δt/2). Measured on the agent (200,000 s,
+  seeded, 0.5 s tick): 5.575 s realised for Edwin's 5.333 s (+4.5% —
+  invisible at his rate) and **1.268 s for a 1 s target (+27%)**, and
+  the shape drifts toward "one every tick" as λ·Δt → 1 (T-F01, no
+  learnable schedule). Fix: `schedule_after_arrival` measures from the
+  arrival's own instant, clamped to one tick of backlog — a stall (halt,
+  slow loop) never becomes a catch-up burst; swallowed arrivals are gone,
+  not queued. After, same seed: 1.057 s at a 0.5 s tick, **1.012 s at
+  0.25 s**. One arrival per book per tick stands deliberately: two
+  half-caps into the same displayed touch would take the whole level
+  (T-O02).
+- ✅ **The taker's tick is 0.25 s** (was a 0.5 s literal in the loop),
+  `SNT_TICK_S`, 🟡 OURS: the pass costs 0.039 ms at 180 books, so four
+  passes a second are free even on the VM the maker saturates; it halves
+  the arrival-clock quantisation. The IOC cancel window is now checked
+  at 0.25 s grain (cancels land 1.5–1.75 s after send, was 1.5–2.0 s).
+- ✅ **A portfolio-wide arrival cap exists and ships OFF** —
+  `SNT_MAX_ORDERS_PER_S` (0 = uncapped), 🟡 OURS. Why: every taker fill
+  is one exec ack the maker drains at ~10 ms under live load (CB1), and
+  the per-book LIVE rate multiplies by however many books are live at
+  once — six on a Thursday night (~+5% of the maker's tick), ~20 on a
+  Sunday 1 pm slate (~+20%), ~60 on an NCAA Saturday (more than half).
+  Mechanism: token bucket refilled by elapsed time (clamped to two ticks
+  — a stall banks no burst); over the cap an arrival is DROPPED and
+  rescheduled from now (thinning keeps Poisson — T-F01), never deferred;
+  the scan start rotates one book per tick. ⚠ **OFF because George
+  ruled the per-book rate; capping it is his call, made with these
+  numbers — the question is filed as N44.** Until CB4 cuts the per-ack
+  cost, a full Sunday slate at 1 s is a real load on the maker.
+- 📝 Determinism: replay reproduces fills, not draws; the cap and the
+  tick live at the runtime edge and change only which draws become
+  sends. The agent stays pure. 896 tests (885 + 11), ruff + mypy-strict.
+- ⏳ Deploy = the standard taker cutover (halt → stop → CFG bump → floats
+  from the RUNNING env + journal drift → start), on the freeze lift and
+  George's explicit go. Rig run at the LIVE rate first (wash-guard skip
+  fraction, T-S05 quiet) — TT-class, [[market-maker/market-taker-test-plan]].
+
+## 2026-08-15d — ✅ The ask cap: resize not reject, livS excludes the resting states, and 0 sh means UNKNOWN (fix-set CA3 / R-Q08)
+
+Built as [inplay-market-maker #38](https://github.com/Novosapien/inplay-market-maker/pull/38) (base `fix-set/ca2-marketable-guard`); not
+deployed (R11 + the 14-08 freeze).
+Full narrative: [[market-maker/sessions/2026-08-14-ca3-ask-cap]].
+
+- ✅ **The ask ladder is RESIZED into what we may legally sell, never
+  rejected.** R-V07 (live probe 08-09) refuses a sell over `Pos − livS` as
+  a **WHOLE order** — never a part-fill, never a short — so an unbounded
+  ladder does not lose one rung when it breaches, it loses the entire ask
+  side of that book. Levels are paid inside-out (the touch keeps its
+  shares, per Edwin's touch-heavy profile); each capped quantity is
+  FLOORED to the grid, never rounded.
+- ✅ **A capped level below `min_quantity` is DROPPED, not shrunk to the
+  increment.** §5.10's `quantities_within_bounds` rejects a sub-minimum
+  level and a failed check raises, blocking the WHOLE book — a reject,
+  the one outcome R-Q08 exists to prevent. ✎ Corrects the chunk brief,
+  which said to drop below the 500 increment: 500 is the granularity, not
+  the floor. (And the grid is now a parameter, so the cap follows the
+  15-08 `qty_increment` 500 → 1 ruling instead of pinning a grid.)
+- ✅ **livS EXCLUDES `ACTIVE` and `PARTIALLY_FILLED`, and the derivation
+  is the reconciler's own reach.** The question is "can the next pass
+  reclaim this quantity?", and `reconciler._ACTIONABLE` answers it: those
+  two states are exactly what the diff may cancel or replace, so the
+  target ladder ALREADY accounts for them — a still-wanted price keeps its
+  order (rest-until-gone, N10), a moved price replaces it. ⚠ **Counting
+  them as well double-counts the ask side against itself**, and the
+  failure is concrete: a fully-offered book computes a bound of zero,
+  empties its ask side, watches the cancels drop livS to zero, re-offers
+  the full ladder, and oscillates at the 500 ms LIVE pulse across every
+  book. So livS counts `PENDING_SUBMIT` / `PENDING_REPLACE` /
+  `PENDING_CANCEL` / `UNKNOWN` — everything the pass cannot touch — with a
+  replace at **max(old, new)**, because the venue may be on either side of
+  the transition when our next sell lands. `pending_quantity` was added to
+  the Venue State Record for that; only the registration knows the new.
+- ✂ **NOT §4.4's `_EXPOSURE_STATES`** — the review-ca2 lesson in a second
+  place. §4.4 asks "could this cost us money"; livS asks "what has the
+  venue committed that this pass cannot take back". Different questions,
+  different membership, and a test now pins the two sets apart so an edit
+  to §4.4 cannot silently drag livS along with it.
+- ✅ **An `opening_position_shares` of 0 means UNKNOWN, not "we hold
+  nothing", so the bound FAILS OPEN and announces itself once at boot.**
+  R-V07's `Pos` is the VENUE's position while our journal starts at 0 on
+  every fresh journal, and the two are known to differ — the 14-08
+  IPTCJETS run sold to net −197 from a zero journal position because the
+  ACCOUNT held seeded inventory. Enforced at the stub, the bound is
+  `0 − livS`, never positive, and **every book goes bid-only on the first
+  tick after a cutover**; wiring it unconditionally turned three existing
+  tests red on a missing ask side, which is how this was found rather than
+  argued. Fail-open is the direction 14-08f already chose for R-Q09 —
+  "refusing on absent data would silence quoting, and a market maker that
+  stops quoting has failed at its job" — and an unpublished IPO allocation
+  is absent data of exactly that kind. 🔴 **George's to overturn — N42.**
+- ✅ **The opening position joins the arithmetic AT THE CAP, never through
+  `PositionEngine`.** The position engine's net drives the Position Ratio,
+  the Inventory Adjustment and therefore every RM and every price; the ask
+  cap resizes QUANTITIES and must never move a price.
+- ✅ **A capacity ≤ 0 empties the ask side; the BIDS are untouched.** ✂ A
+  documented one-sided state: **R-Q01 (never without a resting side)
+  yields to R-V07 here**, because no ask we could post would survive the
+  venue. `ASK_CAP_NEGATIVE` fires once per episode, `ASK_CAP_RECOVERED` on
+  the way out — edge-triggered, because 180 books on a 500 ms pulse cannot
+  afford a per-cycle line (the 08-13 fire loop).
+- ✅ **AC9 holds by construction.** The bound is built partly from venue
+  INTENT — registrations held in memory before the venue acks — and replay
+  never re-drives `converge()`, so a replayed run computes a DIFFERENT
+  bound. It cannot matter: the cap lands after §5.8's decision, after
+  every §5.7.3 draw and after the reshape, on the final quantities only,
+  and `_BookRecord` stores prices, PRE-variation quantities and the IA. No
+  capped size, no version and no alarm flag reaches `state()`. ⚠ **The
+  standing constraint: if Target Order Book QUANTITIES ever enter
+  checkpointed state, this argument dies** and the cap must move to the
+  edge.
+- ⚠ **Sizing is only half of R-V07.** The venue applies the rule per order
+  at SUBMIT time, so the complete defence also needs the converger to
+  order its instructions such that a batch never lands new sells on top of
+  old ones it is about to cancel. Not built — `venue/sync.py`, frozen for
+  this chunk.
+
+## 2026-08-15c — ✅ The gateway TTL deploy (freeze superseded for the gateway only) · reason 0 is never proof of a fill
+
+- ✅ **George: merge gateway #6 and deploy the gateway binary tonight**
+  (explicit in-session go, 15-08 ~02:45Z) — supersedes his 14-08 ~22:30Z
+  deploy freeze **for the GATEWAY only**. Executed 02:47–02:51Z in the
+  post-slate window (R11 honoured; all three 14-08 games final).
+  Engine/taker restarted on UNCHANGED code as part of the ordered
+  ceremony (supervised30/CFG-0028 · SNT-CFG-0020/snt17). The freeze
+  STANDS for everything else until George lifts it.
+- ✅ **Operating fact, both sides of the wire: tZERO's CxlRejReason=0 is
+  a catch-all, never proof of a fill.** One 6-hour window showed it
+  wrapping "ORDER IS DEAD", "Illegal Replace Qty[DMA]", a DTBP breach
+  and a SHORTLIST borrow failure — the cause lives only in Tag 58. The
+  app now treats it so (inplay-app `d0e3940`); the gateway's tracker
+  retirement owes the same treatment (build-deploy-log In-flight row).
+- ⚠ Shorts alone re-run the venue borrow check on cancel/replace — a
+  resize of a short that already consumes the borrow pool can NEVER
+  succeed and must be surfaced as such, not retried.
+
+Source: sessions/2026-08-15-gateway-ttl-deploy.
+
+## 2026-08-15c — ✂ A REMOVAL REQUEST NEVER NETS, and three claims corrected (review-002)
+
+Built on #34/#37; not deployed (R11 + the 14-08 freeze).
+
+- ✂ **SUPERSEDES the 14-08f netting rule.** That entry restricted netting
+  to "venue-ACKED" states and listed four. Two of them —
+  `PENDING_REPLACE` and `PENDING_CANCEL` — are orders **we have asked the
+  venue to remove**, and the venue answers on its own schedule. The
+  instant it actions the removal and market data republishes the level as
+  entirely external, our record still says pending, because OUR ack is
+  still in the drain — which CB1 measured at **98% of tick time**. So the
+  exposure was never HIGH-1's 14–264 ms; it was **the whole ack backlog**,
+  and inside it a sell at 75.50 went out through a real 400 @ 76.00 bid.
+  Probe-confirmed through the real `VenueEngine`.
+  **The rule, now paid for twice: net only what the venue has confirmed
+  is there AND we have not asked it to remove.** The set is `ACTIVE` +
+  `PARTIALLY_FILLED` — exactly the reconciler's `_ACTIONABLE`, the same
+  question answered the same way in the one other module that asks it.
+  A pending replace now nets at **neither** price: not the destination
+  (not there yet), not the old one (on its way out).
+- ✅ **The opening ladder is NOT judged, and should not be.** `boot()` and
+  `stand_the_book()` are synchronous, so no book callback runs and the
+  cache is empty when ~170 opening instructions go out — a code comment
+  claimed otherwise and was wrong. Kept deliberately: a guard that can
+  refuse at boot can leave the venue with **no book at all** and nothing
+  to fall back on ([seed-silent]); R11 confines boots to quiet markets;
+  and waiting for the 5 s republish puts a floor under every boot,
+  including emergency ones. ⚠ **Revisit the day R11 is relaxed.**
+- ✅ **`MARKETABLE_GUARD_STALLED` must not assert a phantom it cannot
+  know about.** A legitimately crossing, freshly-publishing book produces
+  the identical streak. The line now names both causes, sends the
+  operator to check the innocent one FIRST against the venue, and marks
+  the kill switch as portfolio-wide.
+- ✅ **`CONVERGE_STALE` no longer latches off for the session.** It reset
+  only on `backlog == 0`, and R-Q09 can hold one book dirty for ever. The
+  alarm claims "the budget is not clearing the backlog", so the episode
+  now ends when the backlog **shrinks**.
+- ✂ **The "≈30 s" stall bound is withdrawn.** The bound is in PASSES, and
+  once a class holds more than `converge_max_books_examined_per_pass`
+  dirty books each is re-judged only every ceil(N/cap) passes:
+  `passes × ceil(N/cap) × converge_interval_s` — ~30 s at ≤64 dirty,
+  **~90 s at 180**. The test that "derived" it multiplied two constants.
+- ✂ **AC9's wording is corrected.** "Nothing the guard produces reaches
+  `Orchestrator.state()`" became false when refusals started sending
+  cancels: `register_cancel` writes `PENDING_CANCEL` into the checkpointed
+  venue member. **The REPLAY argument is the one that holds** — replay is
+  driven by the journal, the venue's own answers, and never re-runs
+  `converge()`. The guard journals nothing.
+- ⚠ **A second R-Q01 yield, recorded:** a refused book sends its cancels
+  but not its submits, so it can be **one-sided for the whole episode**,
+  not the single pass it was before. Belongs with N41's automatic exit.
+- ✅ **The fairness trap a FOURTH time — between classes.** One `examined`
+  counter shared by LIVE and REST, LIVE walked first: enough refusing LIVE
+  books starved ALL of REST, for ever (probe: REST 0/5 over 400 passes).
+  Each class now has its own budget. Worst case is 2× the cap in diffs per
+  pass, accepted — still far below a full-universe rediff, and it gives
+  each class an independent guarantee to match its own cursor.
+
+---
+
+## 2026-08-15b — ✅ The refusal path finished: cancels go through, diffs are capped (CA2 / MED-3 + MED-4)
+
+Built as [inplay-market-maker #37](https://github.com/Novosapien/inplay-market-maker/pull/37),
+stacked on #34; not deployed (R11).
+
+- ✅ **GEORGE'S RULING (MED-3): a refused book STILL SENDS ITS CANCELS.**
+  The refusal holds back the submits and the replaces — the instructions
+  that would put price into a book just judged marketable — and the
+  cancels go. **The case that forced it is a FALLING market:** our
+  resting bid is stale and due for cancel while its replacement prices
+  through the live ask, so holding the whole batch left the stale bid
+  resting — *the order most likely to be hit* — because the guard
+  disliked its replacement. **Risk reduction must never wait on risk
+  addition.**
+  The subset is safe on three properties that already existed: exposure
+  only ever SHRINKS during a refusal (so the half-posted-ladder half of
+  `[atomic-book]` is unreachable — that risk is about ADDING one side);
+  no submit ids are minted (so the ClOrdID-collision half is unreachable
+  — and a cancel's id mints from the ORIGINAL order's id,
+  `CXL-{client_order_id}`, never by position, so it is stable across
+  re-diffs); and `register_cancel` moves the order to `PENDING_CANCEL`
+  while `_ACTIONABLE` is `{ACTIVE, PARTIALLY_FILLED}`, so the re-diff
+  ignores an order already leaving and the cancels go **exactly once**.
+  ✎ **AMENDS the 14-08f line "a refusal costs no budget"** — a refusal
+  that carries cancels now spends budget for them. They are real
+  messages.
+- ✅ **A converger pass is now bounded TWICE — by instructions SENT and
+  by books EXAMINED** (MED-4). The instruction budget cannot bound a
+  refused book: the guard answers AFTER the diff and the book then sends
+  nothing, so it costs a whole `reconcile_book` and spends no budget, and
+  a phantom touch holding many books re-diffs all of them every pass for
+  ever. 🟡 `converge_max_books_examined_per_pass` = **64**, derived (a
+  pass can only SERVE ~10 books at 128 instructions, so 64 is >6× the
+  productive work and cannot bite on healthy traffic). **Budgeted passes
+  only** — the unbudgeted `[compat]` flush still converges everything.
+- ⚠ **The cap CREATES a starvation bug without the fairness fix, so both
+  landed together.** The rotation advanced only on SERVED books, so a
+  wall of persistent refusers would be re-examined every pass, hit the
+  cap, and break — and the books behind them would never be reached at
+  all. **Being refused now counts as progress through the rotation.**
+- ⚠ **A gap the review did not name, found while testing: the LIVE class
+  had NO rotation at all.** It never needed one — a served book leaves
+  the dirty set, so a static alphabetical order drained itself — but a
+  REFUSED book stays, so live books had exactly the same starvation
+  exposure. LIVE now rotates on its own cursor. **The general lesson: a
+  work list that drains itself needs no fairness mechanism; the moment an
+  item can stay on the list without being completed, it does.**
+- ✅ **A SUSPEND TARGET IS NEVER CHARGED against the examined cap**
+  (Phase-3 review HIGH-1, reproduced). The same shape a THIRD time, in
+  the one class that has no cursor: suspends run first, re-stage on every
+  `BookSuspended` cycle, and a suspend with nothing left to cancel yields
+  zero instructions — so ~100 suspended books spent the whole cap at the
+  same alphabetical break point every pass and **no live book ever
+  converged**. A cursor cannot fix this class (rotating risk reduction
+  spreads the delay rather than removing it), and charging only
+  instruction-YIELDING targets was rejected because the cost being bounded
+  is the DIFF, already paid before the yield is known — a book matching
+  the venue diffs in full and yields nothing, so output-charging
+  under-bounds the very work the cap exists for. Exemption is right on its
+  own terms: **risk reduction is never rationed here** (the guard already
+  refuses to hold back a cancels-only batch) and a suspend is
+  **self-draining**, converging and deleting unconditionally, so it can
+  never acquire the stay-dirty-without-progress shape the cap targets.
+  ⚠ **Process note worth keeping: the lesson above was already written in
+  this log when this bug was introduced, and it still was not applied to
+  the next class along.** Writing a lesson down does not make it get used;
+  the classes have to be enumerated.
+
+---
+
+## 2026-08-15 — ✂ The quantity grid is DROPPED: raw share counts, was §5.7.3's 500 (George)
+
+Built as [inplay-market-maker #36](https://github.com/Novosapien/inplay-market-maker/pull/36) — not merged, not deployed (the 14-08 freeze).
+Full narrative: [[market-maker/sessions/2026-08-15-qty-grid-100]].
+
+- ✅ **George's report:** the MM posts every order in blocks of 500 — the
+  book reads as machine-generated. Both rounding steps quantize on the
+  one `qty_increment` row (`pre = round(base × modifier)`,
+  `final = round(pre × VF)`), so the 500 grid left the touch 11 possible
+  displayed sizes, all ending in 000 or 500 — the ±25% variation §5.7.3
+  built to hide the machine was itself quantized back into blocks.
+- ✅ **George's ruling, same session: NO grid at all.** A first cut moved
+  the grid to 100; George rejected it — ANY visible grid (500s, 100s,
+  thousands, even tens) reads as an INACTIVE book. Raw integer sizes
+  (12,433 · 8,617 · …) read like a book carrying partial-fill
+  remainders — an active one.
+- ✂ **`qty_increment` 500 → 1, superseding §5.7.3's increment.** The
+  rounding step stays in code, configurable — any grid can be restored
+  with the one row. Mechanism untouched: same seeded SHA-256 VF (golden
+  fixture intact), same half-down rounding, same [1,000, 15,000] clamps.
+- ⚠ **Book-visible** — rides the Edwin round with the E31 batch.
+- ✅ **§5.8 materiality unchanged** (`material_qty_change` stays 500 sh).
+  The pre-variation basis now moves share by share, so a sub-500 basis
+  drift no longer force-publishes — publish cadence can only fall.
+- Determinism holds by construction: the seeded draw is upstream of the
+  rounding, so replay reproduces every size. Two share-count fixtures
+  moved (12,500 → 12,433); the VF golden fixture is byte-identical.
+
 ## 2026-08-14g — 🔴 De-phasing cannot meet AC2: the gate is withdrawn (fix-set CB2 / F1b / R2)
 
 Measured as [inplay-market-maker #35](https://github.com/Novosapien/inplay-market-maker/pull/35); the mechanism is built but **deliberately not wired**.
@@ -55,9 +480,39 @@ Full narrative: [[market-maker/sessions/2026-08-14-cb2-pulse-dephase]].
   gate is reachable arithmetically, but the clone's excess clumping is
   **loop saturation** (1.375 s per pass, the converger getting ~1.23
   passes per tick), which a phase offset cannot unpick.
+- ✅ **The A/B settles it by measurement, not argument.** Two 2,400 s arms,
+  same seed, one binary. The ON arm released each LIVE book at its own slot
+  from a converger at one bucket width. **The mechanism engaged** — release
+  clusters +27%, acks per release −23% (26.9 → 20.8), books per release
+  −22% (2.36 → 1.84), single-book releases 4.3× (385 → 1,648). **The gate
+  did not move: p90 90 → 90, p50 44 → 44, mean 46.39 → 46.30.** Burst size
+  fell by a quarter and the metric registered nothing.
 - ✅ **The lever is ack VOLUME, not ack TIMING** — CB3 (skip unchanged
   books) and CB4 (per-ack cost). This agrees with `profile-cb1.md`, which
   measured the sweep side at 1.8% of the tick and the drain at 98%.
+- 🔴 **The biggest volume lever is BOOK-VISIBLE and not ours.** The 158
+  quiet books produce **66.8%** of every acknowledgement (149,598 of
+  224,034) on their 5–20 / 5–20 / 20–40 s dwell draws. Doubling that dwell
+  models to −33.3% mean arrival and −26.7% p90; quadrupling it to −50.0%
+  and −40.0% — still short of AC2's 50%, and both are UPPER bounds (a book
+  that waits longer has moved further, so its real diff is larger).
+  Reporting only: the dwell rows are Edwin's remit under the 22-07 line
+  (George's 08-11b numbers, E31/E17 round).
+  ⚠✎ **15-08: v1 numbers; the SHARE inverts on v2.** The feeder skew
+  suppressed ~45% of ack load and it suppressed the GAME books'
+  redraws specifically, so restoring it lands on the live side:
+  projected v2 ≈ 63% LIVE / 37% quiet against v1's measured 33/67.
+  The quiet books' ABSOLUTE volume is unchanged and the dwell row is
+  still a real lever — it is just not the biggest one. The ×2/×4 p90
+  projections need re-deriving on v2.
+- 🔴 **AC4 is a MACHINE-SPEED result.** Same code, same workload, same 1×
+  arm: the n2-standard-2 clone misses **52.3%** of due-sweep ticks; this
+  Mac misses **0.12%** (OFF) and **0.11%** (ON) — four times INSIDE AC4's
+  < 0.5% target, at double production's game count. The 52.3% is per-ack
+  cost against two Cascade Lake vCPUs, not a defect in the sweep, the
+  converger or the pulse. ⚠ AC4's zero-DRAIN_CAPPED clause fails on both
+  arms (7 capped ticks here — the boot re-stand hitting the 512 cap, not
+  game load). This is the strongest datum for CB4-before-CB3 and for Go.
 - ✅ **What ships:** `src/mm/quotes/phase.py`, the deterministic bucket
   primitive, with 23 tests — three of which pin the invariance so nobody
   re-derives it. Nothing in the engine calls it. It stays for the day the
@@ -234,6 +689,37 @@ Full narrative: [[market-maker/sessions/2026-08-14-ca2-marketable-guard]].
   three-game live load — the standing missed-sweeps fault
   (`MISSED_SWEEPS` 2–5/tick in supervised28's log), which caps the
   §6.4.1 climb portfolio-wide. Books quote; they cannot promote.
+
+## 2026-08-15 — ✅ four fix-set rulings (George) — the profile re-shapes Phases 3/4
+
+- ✅ **CB4 moves ahead of CB3, timebox LIFTED**: drain-side per-ack cost
+  work runs sessions until the six-game rig meets AC4 (<0.5% miss, zero
+  DRAIN_CAPPED) or the evidence says Python physically cannot — that
+  answer feeds the Go decision either way. Basis: profile-cb1 — the
+  venue ack drain is 98% of tick time; the incremental sweep targets
+  1.8% (a perfect skip saves ~24 ms of a 1,187 ms tick).
+- ✂ **CB3 SHRINKS**: its replay-drill obligations + the fingerprint
+  module only if CB4's results still want the 1.8%.
+- ✂ **AC2/R2 WITHDRAWN**: CB2's measurement proved the de-phase premise
+  false as built (LIVE books already free-run — `_timer_due` counts
+  from each book's own last publish; no shared edge exists) and the
+  gate arithmetically unreachable by any scheduling (gate < mean
+  arrival rate on every segment — redistribution cannot change a
+  total). R2's intent folds into CB4 + AC4. CB2's deliverable is the
+  clean negative (MM PR #35: phase primitive + evidence). This closes
+  Q2's "works out" clause: it did not work out, and the proof is
+  measured, not argued.
+- ✅ **R-Q09 refusal semantics amended**: a refused book's batch still
+  sends its CANCELS (exposure only shrinks during a refusal; no submit
+  ids minted → no ClOrdID collision). Lands with the MED-4
+  examined-books cap in one sync.py pass.
+- ➕ For the E31/E17 round (CB2's measurement, reporting): the QUIET
+  books' dwell redraws are a REAL ack-volume lever — but ✎ 15-08b: the
+  "~73% / largest lever" framing was a v1-WORKLOAD ARTEFACT (the stamp
+  skew suppressed game-book redraws specifically; on the corrected v2
+  workload the projected split is ~63% LIVE / ~37% quiet). The dwell
+  row stays on the lever board at its true size; the GATE's v2 arm
+  measures it properly.
 
 ## 2026-08-14 evening — ✅ the pre-slate tolerance ruling · supervised29 · main converged
 
