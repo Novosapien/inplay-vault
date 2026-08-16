@@ -140,12 +140,44 @@ description: "N40's engine mechanism found: SR's post-final settled readings re-
   prices may have transiently moved its book (`refused=1327`, the
   marketable guard working). P&L glance owed, not an alarm.
 
+## Addendum 16-08 12:40Z — BOTH FIXES VERIFIED LIVE
+
+#46 merged (`main@d2b2fb5`) and deployed 15-08 23:37–23:39Z as
+**supervised35/CFG-0032** (fresh journal, ANCHOR_SEED 12 anchors,
+books=180). After 13 h / 93,000 ticks:
+
+- ⭐ **ZERO SUSPENSIONS.** All ten books of the five finished games were
+  still quoting at 12:38Z — 13 h after their games ended. On 15-08 the
+  equivalent books were dead 20 s after their feed quietened, until a
+  restart. `books=180` for every tick of the run.
+- ⭐ **POST_GAME PROVEN, not inferred.** Activity state is NOT journalled
+  (verified: zero occurrences), so it was replayed through the REAL
+  deployed functions — `_note_freshness` building the state from the
+  journal's accepted events, `_activity_for` reading it. **Seven games,
+  fourteen books, all `post_game` at +30 s / +30 min / +59 min and
+  `overnight` at +61 min.** Harness: `/tmp/replay_activity.py` on the VM.
+- ⭐ **#46 was load-bearing.** The receipt-vs-provider-stamp skews:
+  games 71548108/110/112 carried **209–213 min** (their POST_GAME window
+  would have expired hours BEFORE the engine learned the game was over —
+  George's "straight to overnight" report), 71548114/116 carried 33 and
+  20 min, and the two unassisted overnight games 17 and 19 min.
+- **The unassisted proof:** 71548118 (RAVE/EAGL, final 01:52:38Z) and
+  71548120 (SEHW/COWB, 03:00:26Z) finalled with no human intervention
+  and behaved identically to the deploy-re-minted five.
+
+⚠ **Residues (unchanged):** activity transitions are still not
+journalled — §6.4 journals market-state changes but not this, which is
+why a replay harness was needed at all; and a fresh-journal cutover
+still forgets `final_time` until a re-offer re-mints the final. Both
+belong to the auto-recovery design.
+
 ## Next
 
-1. **George's merge/deploy word on MM #46** (POST_GAME at the final's
-   receipt).
-2. **Verify the guard on the 16-08 slate** — after each final, confirm
-   the book stays up through the echoes and the feed retirement.
+1. ~~George's merge/deploy word on MM #46~~ ✅ merged + deployed
+   15-08 23:39Z; ~~verify on the next slate~~ ✅ **VERIFIED 16-08**
+   (addendum above).
+2. **Journal the activity transition** (small; makes this question a
+   grep instead of a 3.6 GB replay).
 2. **George's ask: design the auto-recovery mechanism** — a suspended
    book must find its own way back (the N40 "every suspension needs a
    defined exit" requirement; inputs: recovered feed, a settled
