@@ -20,7 +20,7 @@ one is measuring on the rig, one turned out to be half-done already.
 |---|---|
 | **W1** boot healer switched on | ⚠ config ALREADY LIVE (another session); classifier proven read-only; the drill's own question answered; the boot log is NOT durable |
 | **W2** ask cap reads the venue | ✅ built, PR #52 |
-| **W3** the second drain cost | 🔄 measuring — two 1,800 s arms on the rig |
+| **W3** the second drain cost | ✅ **ANSWERED — not a scan**, PR #56 |
 | **W4** the reject blind spot | ✅ built, PR #54 |
 
 ## What we learned
@@ -120,6 +120,36 @@ measured numbers:
 **CB4 is what makes the healer safe to switch on.** Before the prune fix it
 would have stalled the beat and armed the dead-man on its own boot.
 
+### W3 — the residual is WORK, not an algorithm
+
+Two adjacent rig arms, one variable (book count):
+
+| probe | 170 books | 85 books |
+|---|---|---|
+| acks | 65,792 | 55,268 |
+| **ms/ack** | **0.6980** | **0.8114** |
+| `1c_cycles` share | 58.3% | **58.5%** |
+| `2_stage` share | 0.2% | **0.2%** |
+
+⭐ **Halving the portfolio did not halve per-ack cost — it RAISED it**, and
+the composition did not move at all. An O(portfolio) scan inside the drain
+would have done the opposite on both counts. There is no scan to find.
+
+The brief's first question is settled: **`sync.stage` is 0.2% of the
+drain**. It is all `orchestrator.handle` — ~91% `_process_accepted`, of
+which ~58% is `_drive_cycles`, the quoting recomputation itself.
+
+⭐ **Why this is the answer the Go port needed.** An algorithmic scan would
+have been INHERITED by the port — same shape, faster language, same wall at
+NCAA scale. Work-bound cost converts directly into headroom instead. **The
+port is justified, measured.**
+
+⚠ Caveats that must travel with the numbers: the absolutes are NOT
+comparable to `gate-v2-results.md` (a 300 s arm at 10× has only ~90 s at
+full six-game load, because `PRE_ROLL_S` is 60 WALL seconds and the stagger
+runs to 1,500 recorded); and the 6.5× curve itself was NOT reproduced — it
+came from the v1→v2 workload step. Full record: `w3-drain-verdict.md`.
+
 ## What went wrong / got stuck
 
 - 🔴 **The engine's boot log is not durable, so W1 cannot be verified as
@@ -138,6 +168,14 @@ would have stalled the beat and armed the dead-man on its own boot.
   imports `mm` from `~/mm/src` — a different tree. The CB4 lesson is
   written down but the rig was never cleaned. This session built a fresh
   `~/w3` with its own venv and asserted provenance before measuring.
+- **The 85-book arm crashed instantly on an unrecognised `--books` flag** —
+  my probe never had one (it lives on `six_game_workload.py`). Worse, the
+  runner touched its done-marker anyway, so the background watcher reported
+  "both arms landed" when one had died in the same second it started. The
+  watcher now checks the LOG for a result, not just the marker. Second
+  instance in this session of a completion signal that was not one.
+- **I killed my own SSH session twice with `pkill -f`** — the pattern
+  matched the `--command` string carrying it. Use PIDs.
 - **`--speed` does not scale ack load.** Two local arms at 1× and 10× came
   out at 0.1169 and 0.1206 ms/ack — nearly identical. `--speed` scales the
   READING replay, and ack volume is driven by book count, not game count
