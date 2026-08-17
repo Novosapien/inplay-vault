@@ -91,8 +91,19 @@ scheduled, not casual. **Owed before the 29-08 slate.**
   That was **reverted** in the same session — the taker's credential is
   back to exactly what it was.
 - ✅ **George added as a notification channel.** Previously every policy
-  in the project emailed only Hasan. ⚠ **George must click the
-  verification email** or his half delivers nothing.
+  in the project emailed only Hasan.
+  ⚠ **Two errors here, both corrected the same day.** First, this session
+  claimed GCP would send a verification email that George had to click.
+  It does not: `:sendVerificationCode` 404s for email channels, which are
+  live the moment they are created. The claim was asserted without being
+  checked, and George went looking for an email that was never coming.
+  Second, the channel was created for `george.westbrook412@gmail.com` —
+  taken from the session's account metadata rather than asked for — while
+  George's working mailbox is `george.westbrook@novosapien.ai`. The first
+  drill's alert was delivered to a mailbox he does not read. Both
+  addresses are now attached, work mailbox for daytime triage and the
+  personal one as the out-of-hours backstop: the 50-hour halt began on a
+  Sunday morning.
 - ✅ **The ops agent installed on the market-maker VM.**
 
 ## 4 · What we learned
@@ -117,6 +128,18 @@ scheduled, not casual. **Owed before the 29-08 slate.**
   side-loading the `.deb` over `scp` rather than by opening egress —
   giving a trading VM general internet access is a security posture
   change, not an install step.
+- **⭐ "The alert fired" and "somebody was told" are two different
+  claims.** The first drill proved the policy: Cloud Logging carries
+  `ViolationOpenEventv1` at 12:40:55Z naming the policy and the threshold
+  crossing, and `ViolationAutoResolveEventv1` at 12:46:24Z. It proved
+  nothing about delivery — the notification went to an address George does
+  not read, and searching his mailbox for `alerting-noreply@google.com`
+  returned nothing at all. An alerting chain is only as good as its last
+  hop, and that hop is the one nobody tests.
+- **⚠ Project-wide, alerting has fired TWICE in 45 days** (Centrifugo
+  13-08, this drill 17-08), so the notification path for Hasan's address —
+  which every other policy in the project depends on — has never been
+  confirmed to deliver either.
 - **An untested alert is not an alert.** The halt policy was proven by
   injecting a synthetic `snt/halted=1` for 11 consecutive minutes against
   its 5-minute threshold, then letting it clear — without stopping the
@@ -143,7 +166,10 @@ Check it by hand:
 1. **Give the maker a systemd unit** (§2). Detector is in; the fix is
    not. Needs a scheduled cutover ceremony — journal, checkpoint,
    `ANCHOR_SEED`. Owed before 29-08.
-2. **George: verify the notification email** or his channel is inert.
+2. ~~George: verify the notification email~~ — **withdrawn, no such step
+   exists for email channels.** Superseded by: confirm the drill email
+   actually arrived at `george.westbrook@novosapien.ai` and at Hasan's
+   address. Until a human has seen one, delivery is unproven.
 3. The `CANCEL STUCK` flood fix (`==` → `>=` plus a latch).
 4. A `mm/quarantined_books` policy — the metric is live, but the
    threshold is a domain call (N40's "a suspended book must never be a
