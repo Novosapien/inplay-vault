@@ -145,7 +145,7 @@
   <h1>InPlay App Flight Plan</h1>
   <div class="stamp">
     Prepared by <span style="font-weight:700; letter-spacing:.14em; color:var(--foreground)">NOVOSAPIEN</span><br>
-    Generated 2026-08-17 16:30 BST &middot; evidence: the engineering work log for the week of 9 to 16 August covering nine services, the build repositories, the InPlay vault, and the App Store readiness review
+    Generated 2026-08-17 18:20 BST &middot; evidence: the engineering work log for the week of 9 to 16 August, the requirement change register, the meeting record through 17 August, and the build repositories
   </div>
 </header>
 
@@ -194,7 +194,21 @@
 
   <div class="flag" style="border-left-color:var(--destructive)"><strong>The note this report exists to make: most of the recent change has been requirement reversal, not requirement addition, and it is the largest single risk to the 22nd.</strong>
   <p style="margin:8px 0 0">The distinction matters more than it sounds. <strong>Adding scope costs the new work. Reversing a requirement costs the new work, plus the work already finished, plus the tests that proved the old behaviour was correct, plus the confidence in everything built on top of it.</strong> The second is several times the price of the first, and it does not show up as a missed feature. It shows up as a system nobody can fully vouch for.</p>
-  <p style="margin:8px 0 0">In the last three weeks the following were settled and then changed: the offering structure (rounds, then no rounds), the share counts, the treasury holdback (specified, then retired), the subscription payment route (outside provider, then native store billing), the account model (one path, then three tiers, then two), and the app's home, team and discover surfaces across three successive design sessions. Every one of those is defensible on its own and several genuinely improved the product. <strong>The problem is not the direction, it is the timing.</strong></p>
+  <p style="margin:8px 0 0"><strong>It is now counted rather than asserted.</strong> Every settled requirement that later changed has been traced to where it was decided and where it changed. Between 20 July and 17 August: <strong>eleven reversals</strong>, one of them a reversal back to a position abandoned five weeks earlier, one item descoped, four late parameter changes on a system already running, and four genuine additions. <strong>Twenty changes to settled requirements in four weeks, six of them in the last five days.</strong></p>
+  <table class="board" style="margin:10px 0 0">
+    <tr><th style="width:34%">Settled requirement</th><th style="width:33%">Became</th><th>Gap</th></tr>
+    <tr><td>The offering runs as timed rounds, 18 a day</td><td>No rounds. The window opens for a few days</td><td>InPlay's own requirements, reversed 12 Aug</td></tr>
+    <tr><td>5,000,000 share float per team</td><td>1,000,000, then 900,000 NFL and 1,000,000 NCAA</td><td>Changed twice in ten days</td></tr>
+    <tr><td>20% of float held back for shorting, then a treasury reserve</td><td>The holdback is retired. Treasury does not exist</td><td>The app had to remove a field it had built</td></tr>
+    <tr><td>Subscriptions billed in-app, accepting the store fee</td><td>An outside provider, then back to store billing</td><td>Reversed, then reversed back, five weeks apart</td></tr>
+    <tr><td>One onboarding path</td><td>Three account tiers, then two built</td><td>Changed twice in two weeks</td></tr>
+    <tr><td>A confirmation step as a fat-finger guard, praised on the call</td><td>Remove confirmations. One-click trading</td><td>Both positions Edwin's, sixteen days apart</td></tr>
+    <tr><td>Watch Mode is the differentiator and the premium surface</td><td>"Less important than you think"</td><td>Downgraded by its strongest advocate</td></tr>
+    <tr><td>Programmatic advertising is the always-on inventory</td><td>Prefer no advertising, wait for direct sales</td><td>The playbook's central assumption</td></tr>
+    <tr><td>Price moves on win probability alone, no own model needed</td><td>Probability plus score, with a per-point offset</td><td>Adds a new data dependency</td></tr>
+    <tr><td>A rich app with many surfaces, to carry ad inventory</td><td>Reduce the surfaces</td><td>The advertising revenue never arrived</td></tr>
+  </table>
+  <p style="margin:8px 0 0">Every one of those is defensible on its own and several genuinely improved the product. <strong>The problem is not the direction, it is the timing.</strong> The full register, with both citations on every row and the internal engineering corrections deliberately excluded, is held in the vault.</p>
   <p style="margin:8px 0 0">It has also landed in the worst possible week. The same two engineers who absorbed the redesigns were the ones taking the system through its first two live games and fixing what real football broke. That is why the band below reads "built and switched off": attention that would have gone into promoting finished work went into re-doing settled work instead.</p>
   <p style="margin:8px 0 0"><strong>What we are asking for, plainly:</strong> the build definition is frozen from today. Anything new, however small, goes to the list for after the offering, and we will bring it back with a date rather than lose it. If something genuinely cannot wait, it comes with a written statement of what it displaces and which risks it raises. Five days out, a change that looks small is not small: it is a change nobody has time to test.</p></div>
 
@@ -414,7 +428,7 @@
 
   <p class="small muted" style="margin-top:18px"><strong>Small print.</strong> Quarter frame is launch-anchored: Q1 starts 23 Aug 2026 (the day after the NCAA IPO opens) and quarters run three months each to 22 Aug 2027; the frame stays stable between reports. Sources, reconciled 10 Aug 2026: all 21 build repositories fetched from GitHub the same day (market maker, trading service, FIX gateway, app, admin panels, websites), the InPlay vault at commit <code>2a0b581</code> with five touchdowns digested through 7 Aug and a new Compliance section, and the partnership proposal. Logos: InPlay from the vault brand folder; Novosapien from the corporate brand set. This file lives in a dated folder and is updated in place during the day; a new dated folder opens on the next working session, so the folder series is the audit trail.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- =========================== COUNTDOWN BOARD =========================== -->
@@ -656,7 +670,7 @@
     <p class="muted">Red items are not late by our hand: each one is waiting on tZERO, AppLovin, Sportradar, counsel or an InPlay decision. They are listed with owners so the chase is visible rather than assumed.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ KEY RELEASES ============================ -->
@@ -722,7 +736,7 @@
     <p class="small muted">This is a living register, not a template: risks enter, move and retire as facts change, and it is re-scored at each weekly review. Ranked by likelihood times impact as of 17 August, five days out. <strong>Late requirement reversal enters at number one</strong>, because it sits upstream of several of the others. Three further risks are new, one is retired with its closing note, and the infrastructure entry has been withdrawn as it was never agreed work.</p>
     <table class="small">
       <tr><th></th><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Position and mitigation</th><th>Owner</th></tr>
-      <tr><td class="pos">1</td><td><strong>Late requirement reversal</strong></td><td><span class="chip risk">High</span></td><td><span class="chip risk">Critical</span></td><td><strong>Ranked first because it is upstream of most of the others.</strong> The recent pattern has been reversal rather than addition: the offering structure changed from rounds to no rounds, the share counts changed, the treasury holdback was specified and then retired, the subscription route moved from an outside provider to native store billing, the account model went from one path to three tiers to two, and the app's main surfaces were reworked across three successive design sessions. A reversal costs the new work, plus the finished work, plus the tests that proved the old behaviour, so it prices at several times a straight addition, and it surfaces as a system nobody can fully vouch for rather than as a missing feature. It compounds too: the same two engineers absorbing the redesigns were the ones taking the system through its first live games, which is a direct cause of finished work sitting unpromoted. Mitigation: build definition frozen from 17 Aug; every further ask carries a written displacement and risk statement; a standing requirements session takes new ideas from after the offering so nothing is lost and nothing lands untested. <strong>Holding this line is InPlay's call, not ours</strong></td><td>InPlay + Novosapien</td></tr>
+      <tr><td class="pos">1</td><td><strong>Late requirement reversal</strong></td><td><span class="chip risk">High</span></td><td><span class="chip risk">Critical</span></td><td><strong>Ranked first because it is upstream of most of the others.</strong> <strong>Now counted, not asserted: twenty changes to settled requirements between 20 July and 17 August, eleven of them reversals, six of them in the last five days.</strong> Each is traced to where it was decided and where it changed. The count deliberately excludes internal engineering corrections, of which the market-maker log alone holds sixty, because including those would make the figure meaningless. A reversal costs the new work, plus the finished work, plus the tests that proved the old behaviour, so it prices at several times a straight addition, and it surfaces as a system nobody can fully vouch for rather than as a missing feature. It compounds too: the same two engineers absorbing the redesigns were the ones taking the system through its first live games, which is a direct cause of finished work sitting unpromoted. Mitigation: build definition frozen from 17 Aug; every further ask carries a written displacement and risk statement; a standing requirements session takes new ideas from after the offering so nothing is lost and nothing lands untested. <strong>Holding this line is InPlay's call, not ours</strong></td><td>InPlay + Novosapien</td></tr>
       <tr><td class="pos">2</td><td><strong>Built but switched off</strong></td><td><span class="chip risk">High</span></td><td><span class="chip attempting">Medium</span></td><td>The most valuable work of the last week is finished and not reaching users: synthetic market orders, the app's no-invented-prices fixes, the data service's six publisher corrections, and the engine's own startup self-repair. Each is a setting or a promotion rather than a build. The risk is not that they are missing, it is that a plan reading "done" and a user experience reading "unchanged" are two different things five days from launch. Mitigation: all four dated to the 19th and verified on the 20 August live night before the offering opens</td><td>Novosapien</td></tr>
       <tr><td class="pos">3</td><td><strong>House engine and real users share one channel</strong></td><td><span class="chip attempting">Medium</span></td><td><span class="chip risk">High</span></td><td>Twice in one week the market maker flooded the channel it shares with retail users, and users saw their own order updates minutes late. Fixed for now, but the structure stands: a house engine and a paying customer compete for the same pipe, and at offering-day volumes the customer loses. Mitigation: fixed and to be re-verified under load on the 20th. Separating the channels is a post-launch architecture item, not a launch fix</td><td>Novosapien</td></tr>
       <tr><td class="pos">CLOSED</td><td><strong>Venue connection lost for 1h40m</strong></td><td><span class="chip delivered">Closed</span></td><td><span class="chip delivered">Cause fixed</span></td><td>Retained for one report, per this register's own rule. On 15 August a disk filled and both venue connections dropped, leaving the market maker with no venue for one hour forty. Closing note: logs archived, daily rotation installed, and the storage rules written down so the fault cannot recur unseen. Worth recording that it was the only unplanned outage in a week of very heavy change</td><td>Novosapien</td></tr>
@@ -761,7 +775,7 @@
 
   <div class="flag" style="border-left-color:var(--destructive)"><strong>The build definition is frozen from today, 17 August.</strong> Any new ask before the offering gets a written answer in one shape: its slot after launch, which is the default and the recommendation, or what it displaces from the must-land list plus which risks it raises and by how much. This applies to small asks as much as large ones, and small asks near a launch are where launches die, because a small change is still a change nobody has time to test. Agentic speed makes late change possible. It has never made it safe, and the last three weeks are the evidence.</div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================ NEXT 8 WEEKS ============================ -->
@@ -861,7 +875,7 @@
     <p class="small muted" style="margin-top:6px">Beyond November the plan runs at quarter level: see the Q2 to Q4 pages. As each key date passes, the weekly window rolls forward and the next four weeks gain this level of detail.</p>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q1 ================================ -->
@@ -916,7 +930,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q2 ================================ -->
@@ -971,7 +985,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q3 ================================ -->
@@ -1033,7 +1047,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ================================ Q4 ================================ -->
@@ -1085,7 +1099,7 @@
     </ul>
   </div>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== BACKLOG ============================== -->
@@ -1096,7 +1110,7 @@
   <div class="card" style="border-left:4px solid var(--primary)">
     <table class="small" style="margin:0">
       <tr>
-        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-17 16:30 BST</span></td>
+        <td style="border:0; width:33%"><strong>Backlog generated</strong><br><span class="muted">2026-08-17 18:20 BST</span></td>
         <td style="border:0; width:33%"><strong>Evidence base</strong><br><span class="muted">the build repositories, the InPlay vault, and the App Store readiness review</span></td>
         <td style="border:0"><strong>Next regeneration</strong><br><span class="muted">At the next weekly review, or on any accepted scope change</span></td>
       </tr>
@@ -1231,9 +1245,9 @@
 
   <div class="flag"><strong>The rule that keeps this list honest.</strong> Anything InPlay wants pulled into band 1 before 22 August displaces something already in it. The displacement is named, written into the next version of this page, and carries a risk statement. Nothing moves silently, in either direction, and an item leaving band 1 always lands somewhere visible rather than disappearing.</div>
 
-  <p class="small muted">Backlog generated 2026-08-17 16:30 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
+  <p class="small muted">Backlog generated 2026-08-17 18:20 BST. Sizes are the build, not the wait. Confidence tracks refinement, not scaffolding: standing a feature up is hours, making it dependable is where the estimate lives.</p>
 
-  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; backlog generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <!-- ============================== LEDGER ============================== -->
@@ -1269,7 +1283,7 @@
 
   <p class="small muted">Triangle notes: repos and vault agree throughout the pack; the one standing document conflict is E25/E24 inside InPlay's own Requirements v2 material, flagged on the Key Releases page as a decision, not a build item.</p>
 
-  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 16:30 BST &middot; prepared by Novosapien</footer>
+  <footer>InPlay App Flight Plan &middot; generated 2026-08-17 18:20 BST &middot; prepared by Novosapien</footer>
 </section>
 
 <script>

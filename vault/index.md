@@ -26,6 +26,7 @@ A simulated sports equity trading platform where users trade team stocks during 
 | [[todos]] | Open items and checklist | Rolling |
 | [[advertising/advertising\|Advertising]] | Outbound onboarding: the offer, the ICPs and the buyer personas the Cold Outreach Workforce grounds on | Collecting |
 | [[delivery/delivery\|Delivery flight plan]] | The Novosapien delivery flight plan -- launch build, quarterly slots, live risks | Living |
+| [[requirement-changes\|Requirement changes]] | Citable register of settled requirements later changed, with both citations | Living |
 
 ## Recent Activity
 
