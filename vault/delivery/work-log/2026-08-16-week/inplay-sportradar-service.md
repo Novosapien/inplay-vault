@@ -15,7 +15,7 @@ branches: { touched: 32, merged: 24, open: 5 }
 
 This service is the only part of InPlay that talks to Sportradar. This week it started
 to feed the market maker for real, and then survived the first live NFL preseason games
-on 13 and 15 August. Most of the week's work is correctness under live fire. Ten
+on 13, 14 and 15 August. Most of the week's work is correctness under live fire. Ten
 separate faults were found on real game nights. Each was fixed the same night or the
 next day. The service also learned to find live games by itself, instead of waiting for
 a person to type in a game id.
@@ -38,7 +38,7 @@ directory and `scripts/mm_prob_replay.py`. Uncommitted work is outside this log'
 
 **Where the work landed.** `origin/main` has not moved since 11 August. Its tip is
 `f8c8aef`. Everything after that date sits on `origin/dev` and `origin/testing`, which
-are both at `f822ced`. The 13 and 15 August game nights ran entirely in the testing
+are both at `f822ced`. The 13, 14 and 15 August game nights ran entirely in the testing
 environment, by George's decision (`3acf734`). So "merged" in the table below almost
 always means `origin/dev` and `origin/testing`, not production.
 
