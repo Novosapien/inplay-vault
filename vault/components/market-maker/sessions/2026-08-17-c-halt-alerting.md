@@ -146,6 +146,33 @@ scheduled, not casual. **Owed before the 29-08 slate.**
   real taker. Hasan was temporarily removed from the policy during the
   drill so he was not paged by a test.
 
+## 4b · Delivery PROVEN, and the real detection latency
+
+Second drill, with all three channels attached:
+
+| | |
+|---|---|
+| First aligned minute above threshold | 12:55:36Z |
+| `ViolationOpenEventv1` | **13:03:37Z** |
+| Email in George's inbox | **13:03:37Z** — same second, `INBOX`, not spam |
+
+Sender `alerting-noreply@google.com`, subject
+`[ALERT - No severity] snt/halted > 0 for 5 min (or no data) …`,
+delivered to **`george.westbrook@novosapien.ai`**. The chain is proven end
+to end: metric → policy → incident → email → inbox.
+
+**⚠ The real detection latency is ~8 minutes, not the 5 the policy says.**
+Measured twice: drill 1 took 8 min 22 s from first aligned violation to
+incident, drill 2 took 8 min 1 s. The 5-minute `duration` is only part of
+it — custom-metric ingestion and the evaluation cycle add roughly three
+and a half minutes on top. Do not tighten `duration` to chase this; a
+shorter window would fire on a single operator halt during a deploy
+ceremony. **Against a 50-hour outage, 8 minutes is the win.** Expect it,
+and do not treat a quiet 6 minutes after a halt as a broken alert.
+
+Delivery to the email itself is instant once the incident opens, so the
+whole latency is upstream of the notification.
+
 ## 5 · Runbook — the moving parts
 
 | Thing | Where |
