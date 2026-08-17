@@ -109,6 +109,64 @@ the taker starts from that seed and adopts the venue's current position.
 This session misread the count as evidence of widespread lost fills
 before testing it.
 
+## 2026-08-17 — ✅ The ask cap reads its position FROM THE VENUE (W2 / R-Q08 / AC7 / E27's maker half)
+
+Session: [[market-maker/sessions/2026-08-17-mm-pre-port-close]] · MM
+[#52](https://github.com/Novosapien/inplay-market-maker/pull/52) — built,
+NOT merged, NOT deployed.
+
+✅ **George's ruling: do not wait for Edwin's E27. Read it from the venue.**
+
+R-Q08's bound is `holding − livS`, and `holding` came from
+`opening_position_shares` + our journalled net. That stub is 0, 0 read as
+UNKNOWN, so the bound failed open on **every** book since it was built.
+
+**The venue has been publishing the number all along.** FIX tag **9383**
+rides every execution report and the gateway has forwarded it as `posSize`
+since 14-08 (its PR #3). Measured live before anything was built:
+
+- **212 of 212** maker execution reports carried it — 100%
+- **per SYMBOL**, across 140 securities, **59,277–106,225 shares**
+- **133 consecutive deltas matched our own fills EXACTLY**, zero mismatches
+- the maker's account (`1797733477`) is **not** the taker's (`4963224393`),
+  so nothing else moves the figure
+
+⭐ **The account holds ~100,000 shares a book while the stub said 0.** E27
+was never the blocker it looked like.
+
+✅ **The maker takes the LATEST exec-borne figure, not the FIRST** — a
+deliberate deviation from the taker's boot rebase. The taker adopts once
+and halts on later divergence because it defends its own authoritative
+tally; the ask cap keeps no tally, so the venue's most recent answer is
+strictly the best evidence for "how much may this ladder offer right now".
+Riding the EXECUTION envelope the journal already stores also makes replay
+reproduce the fold **by construction** — no new event type, and no "since
+boot" notion that a replay cannot see. Venue-**borne**, not venue-**live**:
+that is the N45 distinction, and it is why AC9 survives.
+
+✅ **`0` from the venue BINDS; `None` does not.** The stub's conflation of
+the two is the whole reason R-Q08 sat dark. A venue-reported zero is a fact
+— we hold nothing, so we may offer nothing.
+
+✅ **The fold is the FIFTH order/position state question** and gets its own
+module (`position/venue_holding.py`). It reads no order states at all.
+Reaching for a nearby set caused two HIGHs in the last build.
+
+✅ **`MM_ASK_CAP_VENUE=off`** restores the old behaviour — the cap is
+book-visible, so an operator needs one lever without a code change.
+
+⚠ **Deploy-safety, measured against the live book: activating it changes
+nothing today.** 0 of 119 books would empty their ask side; 0 of 119 would
+be resized. Tightest book 52.6% of holding, p50 25.9%. A rail that only
+engages when a book gets thin.
+
+⚠ **Known gap: our livS is OURS, the venue's is the ACCOUNT's.** A resting
+sell the record does not know about makes this bound generous. That is
+exactly what the F4 boot healer closes at boot — **the cap and the healer
+are load-bearing for each other and should stay switched on together.**
+
+🔴 Still gating activation: N43 rider 2, the `[post-first]` ordering.
+
 ---
 
 ## 2026-08-15f — ✅ The boot healer: prove it dead, never assume it · the journal and the config version move together (fix-set CA4 / F4 / R-D05)
