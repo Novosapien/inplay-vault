@@ -15,7 +15,7 @@ The flight plan is the delivery working agreement between Novosapien and InPlay:
 
 | Date | File | Headline state |
 |------|------|----------------|
-| 2026-08-17 | [flight-plans/2026-08-17-inplay-app-flight-plan.html](flight-plans/2026-08-17-inplay-app-flight-plan.html) | **Built from the week's engineering work log.** Two live NFL preseason nights ran on **13 and 15 Aug**, not the 13/20/27 sequence the plan carried, and running them two days apart is why the fixes could be trusted. The market maker took a **six-part numbered fix programme** (keeps opening price across restart, refuses to cross a live market, self-repairs orders at boot, ~28x faster venue processing); the data feed took six publisher corrections and learned to find live games itself; four permanent-wrong states removed at the venue layer; **both front ends stopped inventing data**, which is the root of Jared's price-versus-book complaint. **One outage:** a disk filled on 15 Aug and the venue connection was lost for 1h40m, cause closed. **New structural finding:** the market maker starved the retail order feed twice. **New risk band: built but switched off**, covering synthetic market orders, the app's week of fixes, the data service's corrections and the engine's boot self-repair. The **20 Aug** rehearsal is now the go or no-go point; **27 Aug** is a hard deadline, not a rehearsal |
+| 2026-08-17 | [flight-plans/2026-08-17-inplay-app-flight-plan.html](flight-plans/2026-08-17-inplay-app-flight-plan.html) | **Late requirement reversal enters the risk register at number one**, with a highlighted note on the Home page: the recent pattern has been reversal rather than addition, which costs the new work plus the finished work plus the tests that proved the old behaviour, and it landed in the same week the engines first met real games. Build definition frozen from 17 Aug. **Also built from the week's engineering work log.** Two live NFL preseason nights ran on **13 and 15 Aug**, not the 13/20/27 sequence the plan carried, and running them two days apart is why the fixes could be trusted. The market maker took a **six-part numbered fix programme** (keeps opening price across restart, refuses to cross a live market, self-repairs orders at boot, ~28x faster venue processing); the data feed took six publisher corrections and learned to find live games itself; four permanent-wrong states removed at the venue layer; **both front ends stopped inventing data**, which is the root of Jared's price-versus-book complaint. **One outage:** a disk filled on 15 Aug and the venue connection was lost for 1h40m, cause closed. **New structural finding:** the market maker starved the retail order feed twice. **New risk band: built but switched off**, covering synthetic market orders, the app's week of fixes, the data service's corrections and the engine's boot self-repair. The **20 Aug** rehearsal is now the go or no-go point; **27 Aug** is a hard deadline, not a rehearsal |
 | 2026-08-13 | [flight-plans/2026-08-13-inplay-app-flight-plan.html](flight-plans/2026-08-13-inplay-app-flight-plan.html) | **Version 1.1 submitted to Apple on 12 Aug, waiting for review**, with the privacy blockers cleared, the store listing and reviewer notes rewritten and the age rating updated. A matching 1.1 build went to TestFlight, so external testers need Beta App Review first. The release backlog that dominated the 12 Aug plan is promoted and gone. **IPO windows now fixed to the minute** (NCAA 22 Aug 1:00pm to 26 Aug 10:00pm ET, secondary 27 Aug 9:30am; NFL 5 to 6 Sep, secondary 7 Sep), which closes E25. **Treasury holdback retired.** Referral Bank top-up built and deployed. New risk: a spec recommends **subscriptions through native store billing**, reversing the outside-provider assumption, and raising the classification question of what a subscription may sell |
 | 2026-08-12 (pm) | [flight-plans/2026-08-12-inplay-app-flight-plan.html](flight-plans/2026-08-12-inplay-app-flight-plan.html) | **Full branch sweep across all 20 repositories, plus a new outbound-campaign band.** Headline: **276 finished commits sit off the main line**, 188 in the app alone, so the constraint is release, not build. Adds the **onboarding/KYC/referral service**, absent from every prior ledger. Corrects the tiers: **two are built** (US `trader`, international `trader-lite`), the email-only tier is **not**, and the tZERO date-of-birth blocker was solved by choosing a Persona template that captures DOB. New dated item: **split the payout leaderboard before 27 Aug**, since international users can now trade and therefore reach the cash board. 5x referral window ends **22 Aug**, not month end |
 | 2026-08-12 | [flight-plans/2026-08-12-inplay-app-flight-plan.html](flight-plans/2026-08-12-inplay-app-flight-plan.html) | **Correction pass after George's review.** tZERO tickers and the maker/taker wallets already existed (they were listed as the top blocker); share counts corrected to **900k NFL / 1M NCAA**; **NFL IPO has no rounds**; tax forms moved to 5 Sep; the 200ms figure restated as the market maker's quote rhythm (200 to 500ms in play), not trade speed; **seven infrastructure tasks removed** as they came from internal drafts rather than agreed work; NBA downgraded to P3; research promoted to P1; App Store submission added as blocked on three must-fix items per Hassan's 11 Aug readiness report; new table showing every InPlay ask and its slot |
@@ -106,6 +106,41 @@ than weeks after it opens. The exposure is that **mailbox warming cannot be
 compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
+
+## Requirement reversal: the position taken on 17-08-2026
+
+Recorded because it is a standing position, not a one-off observation.
+
+**The distinction that matters.** Adding scope costs the new work. **Reversing a
+settled requirement costs the new work, plus the work already finished, plus the
+tests that proved the old behaviour was correct, plus the confidence in
+everything built on top of it.** The second prices at several times the first,
+and it does not present as a missing feature. It presents as a system nobody can
+fully vouch for, which is far harder to see and far worse to launch on.
+
+**What was settled and then changed in the three weeks to 17 August:** the
+offering structure (rounds, then no rounds), the share counts, the treasury
+holdback (specified, then retired), the subscription payment route (outside
+provider, then native store billing), the account model (one path, then three
+tiers, then two), and the app's home, team and discover surfaces across three
+successive design sessions.
+
+**The fair version, and it is the more persuasive one.** Every change is
+defensible on its own and several genuinely improved the product. The direction
+has largely been right. **The timing is the problem**, and it compounded: the
+same two engineers absorbing the redesigns were the ones taking the system
+through its first two live games. That is a direct cause of finished work sitting
+unpromoted, which is the "built but switched off" band on the same report.
+
+**The position.** Build definition frozen from 17 August. Every further ask gets
+one of two answers: a slot after the offering, which is the default and the
+recommendation, or a written statement of what it displaces and which risks it
+raises. This applies to small asks as much as large ones, because five days out a
+small change is still a change nobody has time to test. A standing requirements
+session takes new ideas so nothing is lost.
+
+**Holding the line is InPlay's call, not ours.** We can price the change and name
+the consequence; we cannot decline the work.
 
 ## Tone rule: this document is client facing (Brett, 12-08-2026)
 
