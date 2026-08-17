@@ -1,5 +1,5 @@
 ---
-description: "Diagnostics for the taker's 33-hour silent halt: T-S05 fired correctly on a 28-share divergence, nothing alerted, and the bot-wide halt stopped 180 books — plus the self-healing design"
+description: "Diagnostics for the taker's 33-hour silent halt, carrying a 17-08 correction: the cause was a FIX session break and resend, not congestion from the rate change"
 ---
 
 # 2026-08-17 — the 33-hour silent halt: diagnostics and the self-heal design
@@ -9,6 +9,29 @@ description: "Diagnostics for the taker's 33-hour silent halt: T-S05 fired corre
 > **Refs:** T-S05 · [[market-maker/market-taker-requirements]] · MM PR #44 ·
 > decisions 2026-08-10b (T-S05 built) · 2026-08-14b (the boot rebase) ·
 > [[market-maker/sessions/2026-08-15-taker-rate-verification]]
+
+> ## ⛔ CORRECTION — 17-08, measured
+>
+> **§2.4 and §2.5 of this document are WRONG about the cause.** They
+> blame congestion from the 40 s overnight rate. A full pass over the
+> 4.6 GB FIX wire log (15-08 16:19 → 17-08 10:45, per minute) shows no
+> congestion at any point:
+>
+> - inbound lag averaged **0.02–0.04 s in every hour** at the 40 s rate;
+> - the busiest hour of the weekend ran **286 msg/s at 0.04 s mean lag**;
+> - the taker received **230,841 of 230,847 fills — 0.0026% loss**.
+>
+> The "17.3 s mean / 27.0 s max" in §2.4 is a **sampling artefact**: the
+> 18 samples were all taken inside 08:15:3x, a minute that carried **36
+> messages** because the FIX session was down. It measures the age of
+> messages flushed after an outage, not a standing lag.
+>
+> **What actually happened: the FIX session to tZERO broke at ~08:13 and
+> recovered at 08:17:16 with a `ResendRequest`.** The rate is cleared and
+> stays at 40 s (George, 17-08). Full evidence:
+> [[market-maker/sessions/2026-08-17-b-recovery-and-the-40s-verdict]].
+>
+> §1, §2.1–2.3 (the lost fill on the wire) and §6–§8 stand.
 
 ## 1 · What happened
 
@@ -85,43 +108,72 @@ unexpected-execType drop (registry-first resolution in
 Clear would orphan a legitimate out-of-order ack; needs venue-spec
 work)."* It has now cost a 33-hour outage.
 
-### 2.4 Why the precondition was met — the congestion made it certain
+### 2.4 ⛔ SUPERSEDED — why the precondition was met
 
-The IOC substitute cancels every order **1.5 s** after sending it. Under
-normal latency (~12 ms round trip) the ack and any fill arrive long
-before that cancel exists, so the registry is empty and the drop path is
-never reached.
+**The claim below is withdrawn. See the correction banner at the top.**
 
-**Measured at the incident: the gateway was running 17.3 s mean,
-27.0 s max behind the venue's own SendingTime on inbound messages.**
-(18 samples across 08:15:3x — the same 27 s visible in the table above:
-venue sent at 08:15:06.467, gateway processed at 08:15:33.)
+~~Measured at the incident: the gateway was running 17.3 s mean, 27.0 s
+max behind the venue. At that lag every IOC order has its cancel in
+flight when its fill is finally processed, so the drop path fires as a
+matter of course.~~
 
-At that lag **every** IOC order has its cancel in flight when its fill
-is finally processed — so the drop path fires as a matter of course, not
-as a rare race. Corroboration: **no `35=F` cancel was ever sent to the
-venue** for this order (only the three messages above exist on the
-wire), i.e. the taker's five cancels sat unresolved in the gateway's
-request registry — exactly the `pending != nil` state.
+**What is true instead.** The IOC substitute cancels every order **1.5 s**
+after sending it. Under normal latency (~12 ms round trip) the ack and
+any fill arrive long before that cancel exists, so the registry is empty
+and the drop path is never reached. That is the steady state, and the
+fill counts confirm it held all weekend: **6 lost fills in 230,847**.
+
+The precondition was met **once**, by a session break. Between 08:13 and
+08:16 the pipe was dead; our own outbound new orders fell from ~740/min
+to 2/min. When the link recovered at 08:17:16 the queued traffic flushed
+together, and orders whose 1.5 s cancel had long since been registered
+had their fills arrive in that flush. Four fills were lost in that hour.
+
+Corroboration that still stands: **no `35=F` cancel was ever sent to the
+venue** for this order (only the three messages above exist on the wire),
+i.e. the taker's cancels sat unresolved in the gateway's request
+registry — the `pending != nil` state.
+
+⚠ **Confidence limit on the discard path.** That the fill reached the
+gateway and never reached the taker is proven. That `oe_adapter.go:474`
+is the line that discarded it is the leading candidate, **not a proven
+finding** — the gateway's app log for 16-08 has aged out, and the dedup
+paths at `oe_adapter.go:497–517` (`CheckSeqNum` under a resend,
+`CheckContentKey` on a recycled ExecID) can also discard an execution
+report. A resend window is where those are most likely to misfire.
 
 ### 2.5 The causal chain, end to end
 
-1. **15-08 20:08 — `SNT_INTERVAL_OVERNIGHT_S` 400 s → 40 s** took the
-   170 quiet books from ~0.44 to ~4.35 orders/s: an order-of-magnitude
-   rise in gateway traffic. (Applied by this session at George's
-   "very low limitations" instruction.)
-2. The gateway falls **17–27 s behind** on inbound processing.
-3. Every 1.5 s IOC cancel is therefore in flight when its fill lands.
-4. `oe_adapter.go:474` **drops the fill**.
-5. The taker's tally silently loses shares → divergence.
-6. T-S05 halts, correctly.
-7. Nothing alerts → 33 hours dark.
+⛔ **The chain below is corrected. Steps 1–2 are withdrawn.** The rate
+change did not congest anything: the gateway carried it for 20 hours at
+0.02 s mean lag. The corrected chain:
 
-⚠ **Consequence not yet quantified: HOUC is only the FIRST book caught.**
-The halt is bot-wide and fired on the first divergence detected, so other
-books may carry unrecorded fills from the same window. Every book's float
-needs re-basing against the venue before resuming — which the boot rebase
-does automatically on a fresh journal.
+1. **~08:13 on 16-08 — the FIX session to tZERO breaks.** Cause unknown
+   and not recoverable: the gateway's app log for that window has aged
+   out, and the FIX event log retains only the tail of the resend burst.
+   Traffic collapses in BOTH directions — our own outbound orders fall
+   from ~740/min to 2/min, which is the tell that it is a session break
+   rather than load.
+2. **08:17:16 — quickfix recovers with a `ResendRequest`** (our messages
+   698142–698168). The queued traffic flushes together.
+3. Orders whose 1.5 s IOC cancel was registered long before are now
+   having their fills processed — the `pending != nil` state.
+4. The gateway **drops the fill** (path not proven — see §2.4).
+5. The taker's tally silently loses shares → divergence.
+6. T-S05 halts, correctly, at 08:17:13 — **three seconds before the
+   resend flushed**.
+7. Nothing alerts → 33 hours dark (50 by the time it was recovered).
+
+⚠ **How widespread was it? Now quantified: barely.** Six lost fills in
+230,847 across the whole run, four of them in the 08:00 hour. Re-basing
+every book on a fresh journal is still the right recovery — it costs
+nothing and removes the question — but the loss was not broad.
+
+⚠ **Do NOT read the boot rebase count as damage.** On a fresh journal
+every `BOOT REBASE` line prints `journal=` equal to that book's
+`SNT_FLOAT_OVERRIDES` value, which is the stale 15-08 seed. All 177
+lines matched the override exactly on 17-08. Large differences mean the
+book traded overnight, not that fills were lost.
 
 ⚠ Honest limit: the gateway's own `unexpected execType` warning for
 08-16 cannot be read back — its journal retention starts 08-17 07:34.

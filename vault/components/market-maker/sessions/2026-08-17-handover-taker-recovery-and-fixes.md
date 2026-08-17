@@ -11,20 +11,41 @@ description: "Handover for the taker's 33-hour halt: recovery ceremony, the gate
 > **State of the machine as of 07:50Z 17-08:** the taker is HALTED and has
 > been since 08:17Z 16-08. Nothing else is broken. Nothing is in flight.
 
+> ## ✅ DONE + ⛔ PARTLY CORRECTED — 17-08 11:0xZ
+>
+> - **§1 recovery: DONE.** Taker live on `SNT-CFG-0027`, journal
+>   `/var/lib/mm/snt24`, `OVERNIGHT=40`. (Recovered at 10:44Z on
+>   CFG-0026/snt23/120 s, then moved to 40 s once the measurement below
+>   cleared it.)
+> - **§4 is WRONG and withdrawn.** The 40 s rate did not congest the
+>   gateway. Measured over the full wire log: **0.02–0.04 s mean inbound
+>   lag in every hour**, 286 msg/s at 0.04 s in the busiest hour, and
+>   **6 lost fills in 230,847 (0.0026%)**. The cause was a FIX session
+>   break at ~08:13 recovered by a `ResendRequest` at 08:17:16.
+> - **§2 stands but is re-scoped** — a rare-event fix for session
+>   recovery, and the exact discard path is not proven.
+> - Evidence:
+>   [[market-maker/sessions/2026-08-17-b-recovery-and-the-40s-verdict]].
+
 ---
 
 ## 0 · The one-paragraph story
 
-The taker halted itself at 08:17:13Z on 16-08 on a 28-share divergence
-on IPTCHOUC (T-S05, correct behaviour) and then sat halted for 33+ hours
-because nothing alerts on a halt. **Root cause, proven from the FIX wire:
-the gateway DROPPED a real 28-share fill** — `oe_adapter.go:474` discards
-any execution report for an order that has a request in flight unless it
-is that request's exact ack, and under the congestion the taker's new
-rate caused (gateway 17–27 s behind the venue) the 1.5 s IOC cancel was
-in flight for effectively every fill. Chain: rate change → gateway lag →
-latent drop path fires routinely → lost fill → divergence → correct halt
-→ no alert → dark for a day and a half.
+⛔ **Corrected 17-08 — the version below blames the rate; the measurement
+does not.** The taker halted itself at 08:17:13Z on 16-08 on a 28-share
+divergence on IPTCHOUC (T-S05, correct behaviour, a TRUE positive) and
+then sat halted for 33+ hours because nothing alerts on a halt. The FIX
+session to tZERO broke at ~08:13 and recovered at 08:17:16 with a
+`ResendRequest`; in that flush the gateway discarded a real 28-share fill
+that had reached it. The halt fired three seconds before the resend
+completed. Chain: session break → resend flush → fill arrives under an
+in-flight cancel → gateway discards it → divergence → correct halt → no
+alert → dark for a day and a half.
+
+~~Root cause: under the congestion the taker's new rate caused (gateway
+17–27 s behind the venue) the 1.5 s IOC cancel was in flight for
+effectively every fill, so the drop path fired routinely.~~ **Withdrawn:
+no congestion exists in the record.**
 
 ---
 
@@ -181,12 +202,23 @@ Currently in `/etc/snt-1/env` (SNT-CFG-0025): `SNT_LOSS_BUDGET=0` ·
 `SNT_MAX_SPREAD_TICKS=40` · `SNT_INTERVAL_OVERNIGHT_S=40` ·
 `SNT_MAX_ORDERS_PER_S=0`. LIVE is one print/s (PR #40, George's ruling).
 
-**The 40 s overnight rate is what pushed the gateway 27 s behind.** It
-took the 170 quiet books from ~0.44 to ~4.35 orders/s. Recommend 120 s
-until §2 lands, then raise deliberately with the gateway lag measured
-(inbound lag = gateway log time − FIX tag 52 SendingTime; the diagnostics
-doc has the awk). George ruled the OVERNIGHT number is his — 120 is a
-proposal.
+⛔ ~~**The 40 s overnight rate is what pushed the gateway 27 s behind.**
+Recommend 120 s until §2 lands.~~ **WITHDRAWN, 17-08.** The rate is
+cleared and George ruled it stays at **40 s**. Measured over the full
+wire log, per minute: mean inbound lag 0.02–0.04 s in EVERY hour at
+40 s; 286 msg/s at 0.04 s mean in the busiest hour; 6 lost fills in
+230,847. The 27 s figure was sampled inside a minute carrying 36
+messages during a dead session — it is the age of a post-outage flush,
+not a lag level.
+
+The measurement method is worth keeping: inbound lag = gateway log time
+− FIX tag 52 SendingTime, bucketed **per minute alongside the message
+count**. Reading the lag without the denominator is what produced the
+wrong answer.
+
+**Live now:** `SNT-CFG-0027` · journal `/var/lib/mm/snt24` ·
+`SNT_LOSS_BUDGET=0` · `SNT_MAX_SPREAD_TICKS=40` ·
+`SNT_INTERVAL_OVERNIGHT_S=40` · `SNT_MAX_ORDERS_PER_S=0`.
 
 The Sunday-slate / NCAA-Saturday load questions (trading worker at
 min 2 / max 6, 1 vCPU; ~60 LIVE books ≈ 175 events/s ≈ 14 instances,

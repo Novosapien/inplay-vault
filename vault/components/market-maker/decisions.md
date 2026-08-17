@@ -14,6 +14,57 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-17 — ✅ The 40 s overnight rate is CLEARED · the 33-hour halt was a FIX session break, not congestion
+
+Session: [[market-maker/sessions/2026-08-17-b-recovery-and-the-40s-verdict]]
+· taker live on `SNT-CFG-0027` / journal `snt24`.
+
+**1. ✅ `SNT_INTERVAL_OVERNIGHT_S` stays 40 s** (George, on the
+measurement). He refused to accept 120 s as a guess and asked for the
+reason 40 s "did not work". It did work. A per-minute pass over the full
+4.6 GB FIX wire log (15-08 16:19 → 17-08 10:45) measures inbound lag
+(gateway log time − tag 52 `SendingTime`):
+
+- **0.02–0.04 s mean inbound lag in every hour** at the 40 s rate;
+- **286 msg/s at 0.04 s mean, 1.2 s max** in the busiest hour (Sunday
+  slate, 15-08 21:00) — the highest load of the weekend;
+- **230,841 of 230,847 taker fills received — 0.0026% loss**, and four
+  of the six losses fall inside one four-minute event.
+
+**2. ✂ The 17-08 root cause is superseded.** The diagnostics doc's
+"gateway 17–27 s behind because of the rate change" is a sampling
+artefact — 18 samples taken inside a minute that carried 36 messages
+because the FIX session was down. The real chain: the FIX session to
+tZERO broke at ~08:13 on 16-08, recovered at 08:17:16 with a
+`ResendRequest`, and fills flushing in that recovery were discarded by
+the gateway while their 1.5 s IOC cancels were registered. **The halt at
+08:17:13 was a TRUE positive** — the 28 HOUC shares were genuinely gone,
+and the halt fired three seconds before the resend completed.
+
+**3. ⚠ The gateway discard path is NOT proven.** That the fill reached
+the gateway and never reached the taker is proven on the wire. That
+`oe_adapter.go:474` is the line that discarded it is the leading
+candidate only: the gateway's app log for 16-08 aged out, and the dedup
+paths at `oe_adapter.go:497–517` can also discard an execution report —
+and a resend window is where they are most likely to misfire. **The Go
+work now leads with a counter on every discard path**, so the next
+incident is observed rather than reconstructed.
+
+**4. ✂ The "session-gap grace" proposal is dropped the same day it was
+raised.** The idea was to suppress reconcile halts while the FIX session
+is recovering. It does not apply: the fill was not late in transit, it
+was discarded, so no taker-side wait recovers it. Recorded because it
+was proposed to George before it was checked.
+
+**5. ⚠ The boot rebase count is not a damage figure.** All 177 `BOOT
+REBASE` lines on 17-08 printed `journal=` exactly equal to that book's
+`SNT_FLOAT_OVERRIDES` value — the stale 15-08 seed. On a fresh journal
+the taker starts from that seed and adopts the venue's current position.
+This session misread the count as evidence of widespread lost fills
+before testing it.
+
+---
+
 ## 2026-08-15f — ✅ The boot healer: prove it dead, never assume it · the journal and the config version move together (fix-set CA4 / F4 / R-D05)
 
 Session: [[market-maker/sessions/2026-08-15-ca4-boot-healer]] · MM

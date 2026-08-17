@@ -13,6 +13,46 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-08-17 — a rate is not a lag, and a latency needs its denominator
+
+- **⭐ A latency figure without its message count is not a measurement.**
+  The 33-hour halt was blamed on "the gateway running 17–27 s behind"
+  after the rate change. That number came from 18 samples inside
+  08:15:3x — a minute carrying **36 messages**, because the FIX session
+  was down. It measures the age of a post-outage flush. The same metric
+  in a normal 6,200-message minute reads **0.02 s**. Bucket lag and
+  volume together, per minute, or the number will describe an outage and
+  be read as a load level.
+- **⭐ "Traffic collapsed" and "traffic congested" look the same in a lag
+  chart and opposite in a rate chart.** The tell that 08:13 was a session
+  break rather than overload: **our own outbound orders fell from ~740 to
+  2 per minute**. Load does not stop us sending. Always check both
+  directions before blaming your own throughput.
+- **The cheapest possible check on a data-loss claim: count both sides.**
+  Taker fills logged per hour against fills on the FIX wire per hour —
+  two `awk` passes — settled a 33-hour argument at **230,841 of 230,847,
+  0.0026%**. It should have been the FIRST measurement taken, not the
+  last, because it bounds the whole problem before any theory is built.
+- **⚠ `BOOT REBASE` lines are not a damage count.** On a fresh journal
+  every one prints `journal=` equal to that book's `SNT_FLOAT_OVERRIDES`
+  seed, so a book that simply traded overnight produces a large,
+  alarming-looking difference. All 177 matched the override exactly on
+  17-08. This session read 162 of them as evidence of widespread lost
+  fills, said so, then had to withdraw it — the same class of error as
+  the diagnosis it was correcting.
+- **The venue's daily session roll (03:59–04:01Z) is graceful; an
+  unplanned break is not.** The roll cost zero fills on 16-08. The
+  unplanned break cost four and a 50-hour outage. The difference is the
+  `ResendRequest` flush, where fills arrive under cancels that were
+  registered minutes earlier.
+- **Retention decides whether the next incident is observed or
+  reconstructed.** The gateway's app log for 16-08 aged out of journald
+  before anyone read it, and the FIX event log kept only the tail of the
+  resend. Everything about the discard path is therefore inference. Fix
+  retention BEFORE the fix that needs it.
+
+---
+
 ## 2026-08-15d — the measurement is an artefact too, and it can lie quietly
 
 - **⭐ Assert on the FINGERPRINT, not on the timings.** CB4 spent a night
