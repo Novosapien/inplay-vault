@@ -244,7 +244,7 @@ successive design sessions.
 defensible on its own and several genuinely improved the product. The direction
 has largely been right. **The timing is the problem**, and it compounded: the
 same two engineers absorbing the redesigns were the ones taking the system
-through its first two live games. That is a direct cause of finished work sitting
+through its first three live games. That is a direct cause of finished work sitting
 unpromoted, which is the "built but switched off" band on the same report.
 
 **The position.** Build definition frozen from 17 August. Every further ask gets
