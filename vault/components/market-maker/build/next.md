@@ -126,12 +126,30 @@ states live in [[market-maker/build-deploy-log]].
 - **The Edwin round** — E29–E38, E47, N23/N28 blessings; several
   answers land directly in existing code slots.
 
-**Direction, parked:** the Go port — everything stays Python through
-season 1; differential replay (the same journal through both
-implementations, byte-compared) is the port's certification tool. The
-four port hazards are recorded in decisions 04-08; the 08-13 live
-nights reopened the question for NCAA scale, decision parked at
-season-2/NCAA.
+**Direction — ⭐ UNPARKED 18-08 (George):** the Go port covers the
+**maker AND the taker** (`src/mm` + `src/snt`) and starts **now**. The SR
+publisher stays Python; the Go FIX gateway is untouched. Differential
+replay (the same journal through both implementations, byte-compared) is
+the certification tool, and its harness plus corpus are already committed
+(`scripts/cb4_replay_check.py`, `scripts/a2-run/`). Python keeps moving
+until George's go-ahead; the port then targets **the commit he names**,
+never a moving tip. Discovery: `specs/2026-08-18-mm-go-port/`; the
+handover it reads from: `specs/2026-08-17-mm-pre-port-close/`
+(`GO-PORT-HANDOVER.md` · `w3-drain-verdict.md`).
+
+⭐ **W3 settled the justification:** the residual drain cost is **work,
+not an algorithm** — halving the portfolio RAISED per-ack cost
+(0.6980 → 0.8114) and left the composition flat (`_drive_cycles` 58.3% vs
+58.5%). A scan would have been inherited by the port; work converts into
+headroom. The gap: ~396 acks/s on one core (v2) against an NCAA
+Saturday's ~2,500/s.
+
+⚠ The 04-08 four hazards still stand, plus **five more** recorded in
+decisions 18-08: Decimal transcendentals on the hot path · Amdahl
+inverting CB4's "no Decimal problem" · the forked checkpoint writer
+having no Go equivalent · `select`'s random choice among ready cases ·
+`RFC3339Nano` trimming trailing zeros against a journal with deliberately
+mixed precision.
 
 **The landed history** (what shipped when, with coordinates) lives in
 [[market-maker/build-deploy-log]]'s Landed table and the dated entries
