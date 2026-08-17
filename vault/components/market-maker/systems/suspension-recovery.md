@@ -9,7 +9,8 @@ description: "Design for suspension recovery — what already re-opens a book au
 > after the settled-echo incident): *a suspended book must never be a
 > dead end.*
 > **Related:** [[market-maker/open-questions]] N40 (game-end lifecycle) ·
-> N29 (the panel's control surface) · E11 (settlement policy) ·
+> N29 (the panel's control surface) · N40's policy half (NOT E11 —
+> that resolved 24-07) ·
 > [[market-maker/build/market-state|Market state]] ·
 > [[market-maker/build/valuation|Valuation]]
 
@@ -131,10 +132,13 @@ money.
 
 ## 4 · What this does NOT decide
 
-- **E11 / N40's policy half** — what a finished book should
-  *deliberately* do (settlement pricing, freeze, reseed for the next
-  fixture) is Edwin's and George's. This design only stops the
-  ACCIDENTAL dead end.
+- **N40's policy half** — what a finished book should *deliberately* do
+  (settlement pricing, freeze, reseed for the next fixture) is Edwin's
+  and George's. This design only stops the ACCIDENTAL dead end.
+  ✎ **Not E11.** E11 was RESOLVED 24-07 (v1.3 §11.3: `FSV = realized
+  on-field + realized off-field`) and owes nothing. The N40 row's
+  standing "the E11 call" phrasing is stale and was repeated here
+  16-08; the open policy question is N40's own.
 - **Whether a dead-feed book should quote at all.** Gap 1 deliberately
   keeps it silent and shouts. If Edwin wants a widened-but-live posture
   instead (his 03-08 "widen rather than cancel" instinct), that is a
