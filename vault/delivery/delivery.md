@@ -107,6 +107,53 @@ compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
 
+## 17 August: the commercial position, stated soberly
+
+The tone recovered ("the weekend was better") and the economics got sharper. This
+is the clearest account of the business position anyone has given, and it belongs
+in the delivery record because it shapes what is worth building next.
+
+| | |
+|---|---|
+| **Signups** | **154.** Edwin compared it unfavourably with a simulation he ran himself two years ago that drew 600 on a $25,000 spend |
+| **Venue cost** | tZERO has moved from free to **$20,000/month minimum for the simulation** and **$150,000 for production**. The original structure gave them a share of advertising revenue, which no longer exists |
+| **Expected users** | **5,000 to 10,000 at best**, of whom perhaps a couple of hundred convert to production |
+| **Acquisition cost** | Around **$4,000 per customer** against a run cost of one to two million |
+| **This iteration** | _"just going to be a complete loss for me"_ |
+| **Production market making** | Without external market makers, **$25 to $30 million** of Edwin's own capital across ~14 teams. Outside his zone at present |
+
+**Two structural points that matter more than the numbers.**
+
+First, **more users currently makes the economics worse**: _"even if we had
+50,000 people, we have absolutely zero way to monetize them at the moment. So the
+more people that sign up is the more people I have to pay."_ That inverts the
+normal growth argument and it should change how we talk about acquisition until
+there is a monetisation path.
+
+Second, the **29th is the real bar, not the 22nd**. Edwin separated them cleanly:
+the offering is survivable, but _"we still need quite a bit of ground to cover
+before the 29th"_ when trading actually starts. Plan the polish against the 29th.
+
+**A process note to hold against the reversal position below.** Edwin asked
+directly: _"I don't want to go back and forth a ton. If I say I want it this way,
+just do it that way."_ That is reasonable and it is also the other half of the
+same coin. The answer is not to argue it: it is to make the decision cheap to
+record and expensive to reverse, which is what the frozen build definition and
+the written displacement statements are for.
+
+**Two commercial ideas raised, both worth keeping.** Approaching **prop trading
+firms** for around $5,000 each for recruitment access to university participants,
+framed as a goodwill gesture that also bolsters campus interest. And paying
+participants on individual days through the start and into September, which needs
+a structure before the offering.
+
+**One testing constraint discovered by accident.** The weekend fixtures were
+blowouts, so there was almost no price action and the trading experience could not
+really be exercised. Edwin: _"they were actually quite boring to trade. You either
+had the winner or you didn't."_ It is the argument for George's proposal to run
+continuous simulation games on the test tickers rather than waiting for real
+fixtures to cooperate.
+
 ## The 14 August debrief: the client questioned whether launch is achievable
 
 Recorded plainly because it is the most significant delivery event in the record

@@ -306,7 +306,12 @@ arrives with its chunk.
 | `buying power` | MM capital in tZERO | ~$100M–$100B ("never a limit") — set via `DTBPo` on account creation | ✅ decided, exact number 🟡 | 20-07 (Edwin/Troy) · OMS spec 22-07 |
 | `refresh rate` | Quoting cadence | **Bifurcated (supersedes flat 5–10×/sec):** live games ~200ms · non-live 30–60s · earnings burst ~5 min all symbols | ✅ 23-07 | MM call 23-07 |
 | `tick size` | Min price increment | **$0.01** | ✅ | Venue-verified 22-07 |
-| `base spread` | Default half-spread per side (per profile) | Tick × S multiplier | 🔴 base TBD | PTS-001 §6.6.1 |
+| `base spread` | Default half-spread per side (per profile) | **8 to 12 ticks** (Edwin, 17-08). Supersedes the TBD: the weekend book was "like cement", too tight to the win probability for anyone to trade around | ✅ 17-08 | Edwin, 17-08 |
+| `maker resting size` | Displayed size per level | **500 to 3,000**, down from ~10,000. The book was too thick to move | ✅ 17-08 | Edwin, 17-08 |
+| `taker size` | Size the taker crosses with | **up to 5,000**, and **allowed to cross multiple price levels** rather than one. Was randomising ~3 to 400, which is negligible against a 10,000 book | ✅ 17-08 | Edwin, 17-08 |
+| `target intra-game swing` | How far a share price should move within a game | roughly **$1.50 to $8**. The weekend produced only a couple of dollars. Arithmetic puts a win near $4.80; sentiment should swing wider than the maths | ✅ 17-08 | Edwin, 17-08 |
+| `score offset per point` | Dollar value applied per point of score change, as an interim reference price while the win probability is stale | 🔴 **Owed by Edwin**, being derived from NFLverse win probabilities back to 1999. Must remain a point-differential offset only, not a model of injuries or form | 🔴 TBD, this week | Edwin, 17-08 |
+| `interim price lifetime` | How long a score-derived price stands | Until the next live win probability arrives, which is then authoritative again. "We don't need to be accurate for more than 10 seconds" | ✅ 17-08 | Edwin, 17-08 |
 | `profile multipliers` | (S, D, Q, F, I) per pricing profile | table below | ✅ (doc defaults) | PTS-001 §6.6.1 |
 | `λ (inventory sensitivity)` | Feedback gain: skew = λ × inventory% | λ_base 🔴 × I multiplier ✅ | 🔴 base TBD | PTS-001 |
 | `ladder levels N` | Price levels per side | — | 🔴 TBD | E5 |

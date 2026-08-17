@@ -143,6 +143,29 @@ IPO Module ("Trading Challenge Draft")
 >
 > _Source: [[31-07-2026-touchdown]]._
 
+> ### Update (17-08): the offering page, deliberately thin
+>
+> Five days out, Edwin reduced the requirement to its simplest form: a page per
+> team showing **the shares available and a buy control, and nothing else.** His
+> words: _"the IPO has to just be an offer, where there's a million shares
+> available and that's it. It's just selling. Because you can't sell them, you
+> can only buy them."_
+>
+> **The sell control during the offering.** George offered two options, remove it
+> or show it locked with a popup explaining that selling begins when the secondary
+> market opens. Edwin chose the second, for a reason worth recording: _"I don't
+> want to get a bunch of calls. Out of this 150 people, a hundred are friends and
+> family. I'm going to be getting calls from Kevin's uncle saying I can't sell my
+> shares."_ Explaining a constraint in place is cheaper than fielding the
+> confusion it causes.
+>
+> **Edwin will manually buy the majority of each team's shares** at the offering,
+> with the secondary market opening the following weekend. That confirms the
+> desktop execution interface below is not a convenience: it is how the offering
+> gets absorbed at all.
+>
+> _Source: [[17-08-2026-touchdown]]._
+
 > ### Update (12-08): Edwin needs a desktop execution interface for the offering
 >
 > A requirement that had not surfaced before, and it is dated. Edwin has to

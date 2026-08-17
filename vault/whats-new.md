@@ -6,6 +6,53 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-17: The weekend was better, and the economics got sharper
+
+Digested [[17-08-2026-touchdown]], five days before the offering. Calmer than
+Friday and considerably more useful: Edwin spent most of it specifying fixes
+rather than questioning the enterprise.
+
+**He separated the two dates, and the second one is the real bar.** The offering
+on the 22nd is survivable. Trading starts on the **29th**, and _"we still need
+quite a bit of ground to cover before the 29th"_. Plan the polish against that.
+
+**The commercial position, stated soberly rather than angrily.** Signups at 154,
+fewer than a simulation he ran himself two years ago on a $25,000 spend. The venue
+has moved from free to $20,000 a month for the simulation and $150,000 for
+production, and the original deal gave them a share of advertising revenue that no
+longer exists. He expects 5,000 to 10,000 users at best, a couple of hundred of
+whom might convert, which puts acquisition near $4,000 a head. His conclusion:
+this iteration is a loss.
+
+**Two structural points worth more than the numbers.** More users currently makes
+the economics worse, not better, because there is no way to monetise them and
+every additional user is another person to pay out. And production needs
+committed external market makers, or it needs $25 to $30 million of Edwin's own
+capital across roughly fourteen teams, which he described as outside his zone.
+
+**The market-maker retune is the most specific direction he has ever given.** His
+diagnosis of the weekend was that the book was "like cement", too tight to the win
+probability for anyone to trade around. The prescription: widen the spread to
+eight to twelve ticks, cut the maker's resting size from around ten thousand to
+between five hundred and three thousand, and let the taker cross with up to five
+thousand through multiple price levels. The point is to knock out the touch so
+real users resting near the top of book actually get filled.
+
+**The subtlest request is the best one.** Sportradar's win probability lags the
+score by up to ten seconds after a touchdown, which is an exploitable asymmetry:
+users can see the score before the market does. His fix is to sample the score as
+well, apply a dollar value per point, and move the price immediately as a
+placeholder that lasts only until the next probability arrives. He is deriving the
+per-point values from data going back to 1999 and will supply them this week. It
+means the market maker now has to consume play-by-play, not just probabilities.
+
+**Three things before Saturday:** a three-way competition choice on first open, a
+deliberately thin buy-only offering page with the sell control locked and
+explained, and a surface reduction across the app. On that last one Edwin was fair
+about how the clutter arose: the app was built with many surfaces because the plan
+assumed advertising inventory needing places to live, and with no advertisers that
+rationale has gone.
+
 ## 2026-08-17: The night that nearly ended it, and the diagnosis that did not
 
 Digested [[14-08-2026-touchdown]], the morning after the first live game night

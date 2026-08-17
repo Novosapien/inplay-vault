@@ -1938,6 +1938,83 @@ and deployed (engine `dfa87f9`, CFG-0004, journal `supervised5`).
   (dead-man sweeps while the engine is down never journal — an old
   journal replays phantom ACTIVE orders).
 
+## 2026-08-17 — Edwin retunes the book, and adds score-based interim pricing — [[17-08-2026-touchdown]]
+
+> The most specific parameter direction Edwin has given. His diagnosis of the
+> weekend: the book was **"like cement"**, too tight to the win probability, with
+> no room for a two-way market. He compared it to trading the ten-year note,
+> where an edge is a miracle and you do not want it when you get one.
+
+### The retune
+
+- ✅ **Widen the spread to 8 to 12 ticks.** The book was too tight for anyone to
+  trade around.
+- ✅ **Shrink the maker's resting size to 500 to 3,000** per level, down from
+  around 10,000. The book is too thick.
+- ✅ **Increase the taker's size to up to 5,000, and let it cross multiple price
+  levels** rather than one, like a market order. Currently it randomises roughly
+  3 to 400, which Edwin considers negligible against a 10,000 book.
+- ✅ **The logic, in his words, and it is worth keeping:** _"reduce market maker,
+  increase taker, because otherwise the effect of the taker is very minimal. If
+  you buy 30 into an 11,000 lot it doesn't mean anything. But if you bought
+  11,000 into a 30 lot, the market's going to be crazy."_ The purpose is to
+  **knock out the touch** so real users resting at or near top of book actually
+  get filled.
+- ✅ **Target intra-game price movement: roughly $1.50 to $8 per share.** The
+  weekend produced only a couple of dollars of swing. On pure arithmetic a win
+  might be worth about $4.80, but he wants market sentiment to swing wider than
+  the maths so there is something to trade.
+- ✅ **Accuracy is explicitly subordinate to movement for this run.** Edwin:
+  _"movement's okay because this is a simulation. We want the prices to move.
+  That's all I care about."_ Relatively close is sufficient; dollar-for-dollar is
+  not required.
+
+### Score-based interim pricing (new)
+
+- ✅ **The problem.** Sportradar's win probability lags the score, because it has
+  to be computed. After a touchdown it can take around ten seconds. That is an
+  exploitable asymmetry: users see the score before the market does. Edwin:
+  _"stale data is a death knell. We can't have the market maker sit and wait
+  because everyone can buy on scores and then they'll have an unfair advantage."_
+- ✅ **The fix.** Sample **both** the probability and the score. The decision
+  becomes: probability unchanged and score unchanged, quote as now; probability
+  unchanged but score changed, **apply a per-point dollar offset immediately** and
+  move the reference price. It is a **placeholder that survives only until the
+  next live probability arrives**, at which point the probability is gospel again.
+- ✅ **Deliberately imprecise, and he likes the consequence.** _"We don't need to
+  be accurate for more than 10 seconds."_ A visible mispricing is itself a
+  trading event: _"the market mispriced this."_
+- ✅ **Edwin owes the numbers.** He is deriving per-point values from the NFLverse
+  dataset, which carries win probabilities back to 1999, and will supply them
+  this week. He was clear this must not become a model of injuries and form:
+  _"we don't have to do that. Not for this."_ A point-differential offset, and no
+  more.
+- ⚠ **Scope consequence for us: the market maker must now consume play-by-play
+  data**, specifically the quarter and the score, not just probabilities. It does
+  not affect the taker, which is random.
+- ⚠ **Post-game oscillation, raised by George and accepted as tolerable.** If
+  expected wins do not update promptly after a game, the price falls back toward
+  its pre-game level and oscillates when the new figure lands. Edwin walked
+  through the arithmetic: a team 80% to win carries 0.8 x $5 = $4 in its price, so
+  winning adds the remaining $1 and losing costs $4.80. Movement on the correction
+  is acceptable for this run.
+
+### Production, and a number that changes the conversation
+
+- ⚠ **Production needs committed external market makers, or Edwin's own capital.**
+  Without them he would make markets himself on roughly **14 teams**, at a capital
+  requirement he put at **$25 to $30 million**, which he described as outside his
+  zone at present. This is the first time the production market-making
+  requirement has been quantified, and it belongs in the commercial plan rather
+  than the build plan.
+
+### Testing
+
+- ✅ **Continuous simulation games on the test tickers**, in a surface only the
+  team can see, so live trading can be exercised at any time instead of waiting
+  for a real fixture (George). The weekend exposed why this matters: the games
+  were blowouts, so there was almost no price action to trade.
+
 ## 2026-08-14 — The venue is not the bottleneck — [[14-08-2026-touchdown]]
 
 > Recorded because it settles where the remaining work is, and it came from
