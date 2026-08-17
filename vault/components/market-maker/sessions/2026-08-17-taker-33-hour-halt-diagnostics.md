@@ -134,13 +134,38 @@ venue** for this order (only the three messages above exist on the wire),
 i.e. the taker's cancels sat unresolved in the gateway's request
 registry — the `pending != nil` state.
 
-⚠ **Confidence limit on the discard path.** That the fill reached the
-gateway and never reached the taker is proven. That `oe_adapter.go:474`
-is the line that discarded it is the leading candidate, **not a proven
-finding** — the gateway's app log for 16-08 has aged out, and the dedup
-paths at `oe_adapter.go:497–517` (`CheckSeqNum` under a resend,
-`CheckContentKey` on a recycled ExecID) can also discard an execution
-report. A resend window is where those are most likely to misfire.
+⛔ **`oe_adapter.go:474` is RULED OUT — it cannot have discarded this
+fill.** Established by reading the key, not by inference:
+
+- `handleExecutionReport` looks up `a.registry.GetByReq(clOrdID)`, and
+  `RequestRegistry.GetByReq` reads **only** `byReq[reqClOrdID]`
+  (`internal/state/request_registry.go`).
+- `ReqClOrdID` is the CANCEL's own id, set in `handleCancel` from the
+  request payload's `clOrdId`.
+- The taker mints a **fresh id per cancel** — `snt/runtime.py`
+  `cancel_payload`: `mint_id(self.identity.config_version,
+  f"C{self.cancel_seq}")`. It is never the order's id.
+- A fill carries tag 11 = the ORDER's id (wire-confirmed:
+  `11=MMSN2dec5d3406f347|41=MMSN2dec5d3406f347`).
+
+So `GetByReq` returns nil on a fill and the report falls through to the
+tracker. The branch only swallows a report when the incoming ClOrdID IS
+the pending request's id — which is the REPLACE case, not a cancel.
+`TestFillIsNotDiscardedWhileACancelIsPending`
+(`inplay-fix-gateway-go` PR #8) proves it against unchanged behaviour.
+
+**The queued Go fix would not have prevented this incident.** Remaining
+candidates: the tracker refusal path (`unknown order or invalid
+transition`) and the two dedup paths at `oe_adapter.go:497–517`. A
+resend window is exactly where the dedup paths get exercised. ⚠ Also
+consistent with the wire: **no `35=F` was ever sent for this order**, so
+`guardRequest` refused every cancel and no pending request was ever
+registered — which independently means the registry branch was never
+entered.
+
+**Instrument first, then fix the path that actually fires.**
+`inplay-fix-gateway-go` PR #8 adds a counter to all five paths and an
+ERROR on any discard carrying shares.
 
 ### 2.5 The causal chain, end to end
 

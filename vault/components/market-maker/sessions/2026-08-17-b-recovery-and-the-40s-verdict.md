@@ -111,13 +111,22 @@ does not support this.**
 the gateway and genuinely never reached the taker. That much is proven
 on the wire.
 
-**What is NOT proven:** that `oe_adapter.go:474` is the specific line
-that discarded it. The gateway's app log for 16-08 has aged out of
-journald, so the discard was reconstructed, not observed. The dedup
-paths at `oe_adapter.go:497–517` (`CheckSeqNum` on a resend,
-`CheckContentKey` on a recycled ExecID) can also discard an execution
-report, and a resend window is exactly where they are most likely to
-misfire. **:474 is the leading candidate, not a finding.**
+**What is DISPROVEN:** that `oe_adapter.go:474` discarded it. Checked by
+reading the key rather than inferring: `GetByReq` reads only
+`byReq[reqClOrdID]`; `ReqClOrdID` is the cancel's own id; the taker mints
+a fresh id per cancel (`snt/runtime.py::cancel_payload`,
+`mint_id(config_version, f"C{seq}")`). A fill carries the ORDER's id, so
+the lookup returns nil and the report falls through to the tracker. The
+branch fires only on a REPLACE, where the new order's id IS the request
+id. Independently corroborated by the wire: **no `35=F` was ever sent for
+this order**, so `guardRequest` refused every cancel and no pending
+request was ever registered.
+
+**The queued Go fix would not have prevented this incident.** Remaining
+candidates: the tracker refusal path (`unknown order or invalid
+transition`) and the two dedup paths at `oe_adapter.go:497–517` — and the
+incident window WAS a resend, which is where the dedup paths get
+exercised. This is why the observability work goes first.
 
 ## 4 · What went wrong / got stuck
 
@@ -156,13 +165,18 @@ misfire. **:474 is the leading candidate, not a finding.**
 1. **§3.1 alerting** — unchanged in priority and now the clear top item.
    A 4-minute glitch became 50 hours dark because nothing reads
    `snt.state.snt-1`.
-2. **Gateway observability before the gateway fix** — a counter and a
-   WARN on every path that discards an execution report (`:474` default
-   branch, both dedup paths), plus journald retention on
-   `inplay-fix-gateway` long enough to survive a weekend. Without these
-   the next incident is reconstructed again.
-3. **The `:474` fix** — still correct, but re-scoped: a rare-event fix
-   whose real exposure is session recovery, not steady-state load.
-   Hasan's review.
+2. **Gateway observability — BUILT, PR open.**
+   `inplay-fix-gateway-go` **PR #8** (`obs/exec-discard-counters`):
+   per-reason counters on all five discard paths, split into total and
+   `with_shares`; ERROR on any discard carrying shares; `lost_fills` on
+   `GET /health`; the previously silent bust path now warns. Six tests,
+   full suite green, no behaviour change. Also documents the bounded
+   journald retention the VM needs (`SystemMaxUse`/`SystemKeepFree`, so
+   it cannot repeat the 15-08 full-disk incident) — not installed,
+   Hasan's sizing call. **Awaiting Hasan's review.**
+3. ~~**The `:474` fix**~~ — **WITHDRAWN, see §3.** It targets a branch
+   that cannot fire for a taker cancel. Do not build it. The replacement
+   is: land PR #8, read `lost_fills` when it next moves, then fix the
+   path that actually fired.
 4. **§3.3 `CANCEL STUCK` flood** — unchanged (`==` should be `>=` plus a
    latch).

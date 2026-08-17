@@ -41,14 +41,20 @@ the gateway while their 1.5 s IOC cancels were registered. **The halt at
 08:17:13 was a TRUE positive** — the 28 HOUC shares were genuinely gone,
 and the halt fired three seconds before the resend completed.
 
-**3. ⚠ The gateway discard path is NOT proven.** That the fill reached
-the gateway and never reached the taker is proven on the wire. That
-`oe_adapter.go:474` is the line that discarded it is the leading
-candidate only: the gateway's app log for 16-08 aged out, and the dedup
-paths at `oe_adapter.go:497–517` can also discard an execution report —
-and a resend window is where they are most likely to misfire. **The Go
-work now leads with a counter on every discard path**, so the next
-incident is observed rather than reconstructed.
+**3. ⛔ `oe_adapter.go:474` is RULED OUT, and the queued Go fix is
+withdrawn.** That the fill reached the gateway and never reached the
+taker is proven on the wire. That `:474` discarded it is now disproven by
+reading the registry key: `GetByReq` reads only `byReq[reqClOrdID]`,
+`ReqClOrdID` is the cancel's own id, and the taker mints a fresh id per
+cancel (`snt/runtime.py::cancel_payload`). A fill carries the ORDER's id,
+so the lookup returns nil and the report falls through to the tracker.
+Independently corroborated: no `35=F` was ever sent for that order, so no
+pending request was ever registered. The branch only fires on a REPLACE,
+where the new order's id IS the request id. **The Go work now leads with
+a counter on every one of the five discard paths** (`inplay-fix-gateway-go`
+PR #8, observability only, no behaviour change) — the remaining
+candidates are the tracker refusal path and the two dedup paths, and a
+resend window is where the dedup paths get exercised.
 
 **4. ✂ The "session-gap grace" proposal is dropped the same day it was
 raised.** The idea was to suppress reconcile halts while the FIX session
