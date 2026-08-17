@@ -14,6 +14,46 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-17b — ✅ Halt alerting for BOTH bots · ⚠ the maker runs with no supervisor
+
+Session: [[market-maker/sessions/2026-08-17-c-halt-alerting]].
+
+**1. ✅ Both bots are monitored, not just the taker** (George: "I swear the
+maker and the taker are on the same VM"). They are. `snt-halt-check` runs
+every 60 s on the market-maker VM, reads `snt.state.snt-1` and `mm.state`,
+and writes five gauges to Cloud Monitoring. Three policies email George and
+Hasan. The two liveness policies treat MISSING DATA as firing, so silence
+pages — the failure being fixed here is silence, and a checker that fails
+quietly would rebuild the same trap.
+
+**2. ✅ A monitor gets its own read-only identity.** New NATS user
+`mm-monitor`, `publish: []`, `subscribe: ["mm.state", "snt.state.>"]`.
+An earlier attempt widened `snt-taker`'s own subscribe list and was
+REVERTED in the same session: a monitor should not hold a trading identity,
+and it must survive the taker's env being rewritten during a ceremony.
+
+**3. ⚠ THE MAKER HAS NO SUPERVISOR — the biggest operational risk found
+today.** `python -m mm.runtime` is a bare process with PPID 1, started by
+hand from a `screen` session and orphaned to init. No systemd unit, so no
+`Restart=`, no start on boot, no `systemctl status`. A crash or a VM reboot
+takes the market maker away and nothing brings it back. The taker has a
+unit; the maker never got one. The new alert DETECTS this within 5 minutes
+but cannot fix it. Giving it a unit means a restart, and the engine is
+event-sourced — the restart must carry journal, checkpoint and the
+`ANCHOR_SEED` chain or it erases live games' kickoff probabilities.
+**A scheduled cutover ceremony, owed before the 29-08 slate.**
+
+**4. ⚠ An alert policy's NAME is not coverage.** `VM root disk > 80% used
+(fix-gateway, market-maker, nats)` filters on `agent.googleapis.com/*`
+metrics, and the market-maker VM had no ops agent installed at all. It has
+claimed that VM since it was written and never watched it — including
+through the 15-08 full-disk incident that took both FIX sessions down. The
+agent is now installed (side-loaded `.deb`: the VM has no internet egress,
+and opening egress on a trading VM is a security decision, not an install
+step).
+
+---
+
 ## 2026-08-17 — ✅ The 40 s overnight rate is CLEARED · the 33-hour halt was a FIX session break, not congestion
 
 Session: [[market-maker/sessions/2026-08-17-b-recovery-and-the-40s-verdict]]

@@ -13,6 +13,47 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-08-17b — what is running, and what is watching it, are both things you must check rather than assume
+
+- **⭐ `systemctl list-units` is not an inventory of what is running.** The
+  maker engine was invisible to it all weekend because it is not a unit —
+  a bare `python -m mm.runtime`, PPID 1, orphaned from a `screen` login
+  session. This session told George "snt-1 is the only trading unit on the
+  VM" while judging whether a restart was safe. True as stated, wrong as
+  understood, and only caught because George said "I swear the maker and
+  the taker are on the same VM". Use `ps -eo pid,ppid,etime,cmd` before
+  believing any VM inventory, and treat "no unit" as a finding rather than
+  an absence.
+- **⭐ An alert policy named after a machine is not watching that machine.**
+  `VM root disk > 80% used (fix-gateway, market-maker, nats)` had claimed
+  the market-maker VM since it was written. It filters
+  `agent.googleapis.com/*`, that VM had no ops agent, and so it watched
+  nothing there — through the 15-08 incident where a full disk took down
+  both FIX sessions. **Verify the series exists, not that the policy
+  exists.** One `timeSeries` query per policy would have caught it.
+- **Make silence page.** The whole 50-hour outage was an absence: the
+  signal was published once a second and rendered in the panel, and
+  nothing turned it into a noise. Any checker built to fix that must
+  itself fire when IT goes quiet — `EVALUATION_MISSING_DATA_ACTIVE`, not
+  just a threshold — or it recreates the trap one level up.
+- **An untested alert is not an alert.** Prove it with a synthetic metric
+  value rather than by breaking the real thing: 11 minutes of injected
+  `halted=1` against a 5-minute threshold proved the policy without
+  stopping a trading bot. Drop the other humans off the policy first so a
+  drill does not page them.
+- **A monitor should not hold a trading identity.** The first cut reused
+  the taker's own NATS credential and its env files. That couples the
+  monitor to the thing it monitors — the taker's env is rewritten during
+  every recovery ceremony — and hands read-write trading rights to a
+  process that only needs to read two subjects.
+- **Private Google Access is not internet access.** The MM VM reaches
+  `*.googleapis.com` (so writing metrics works) but has no external IP and
+  is in none of the three Cloud NATs, so `dl.google.com` simply hangs for
+  300 s. Side-load the `.deb` over `scp`; do not "fix" it by giving a
+  trading VM general egress.
+
+---
+
 ## 2026-08-17 — a rate is not a lag, and a latency needs its denominator
 
 - **⭐ A latency figure without its message count is not a measurement.**
