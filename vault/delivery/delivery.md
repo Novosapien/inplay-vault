@@ -107,6 +107,63 @@ compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
 
+## The 14 August debrief: the client questioned whether launch is achievable
+
+Recorded plainly because it is the most significant delivery event in the record
+and it is not resolved.
+
+**What Edwin said.** The morning after the first live game night he opened with
+_"unquestionably the worst trading experience I've ever had in my life"_ and
+_"a failure pretty much at every touch point"_. He is due to commit **$800,000
+to $1,000,000 to marketing** and stated he cannot do that against what he saw.
+He put his own position at **$6.6 million invested**, summarised it as _"we don't
+have any users, we don't have any advertisers, we don't have technology that's
+comparable... I've got an idea and that's about it"_, and said he believes it is
+_"impossible to be ready by football season"_. He was explicit that this is not
+quitting, and equally explicit that he has to decide what more he funds.
+
+**What was agreed.** Brett's counter was that this was the **first full
+end-to-end test ever attempted**, three months from a standing start, with the
+market maker and taker added as an unplanned three-week workstream, and that the
+call was being made too early. The agreement: **two more live runs before any
+decision**. Edwin accepted the runs. The funding decision is **deferred, not
+resolved**, and it should be treated as live at every weekly review until he
+closes it.
+
+**Why the diagnosis matters more than the reaction.** Troy located the fault away
+from the back end and had tZERO's numbers to support it: 3 million orders, 1
+millisecond average latency, no engine degradation. His conclusion was that the
+harder part already works and what remains is interface and data ingestion.
+George's version, that the work sits on the tip of the iceberg rather than
+beneath it, is what turned the conversation from an existential question into a
+defined workload. **Hold on to that framing.** A crisis of confidence and a
+front-end backlog are very different things to manage, and this is the second.
+
+**Three process changes agreed on the call.**
+
+1. **No pushing fixes mid-game, by default.** Hot fixes during the run caused
+   freezes and left testers on different versions. Where a push is genuinely
+   needed, it is announced in Slack, and the tester reloads and confirms the
+   change is present before continuing. George negotiated this middle path rather
+   than a blanket freeze, because a hard freeze turns three nights of iteration
+   into one.
+2. **Granular feedback, not impressions.** _"The app is slow"_ is not actionable.
+   The agreed shape is: when I click this button, this happens, it showed pending
+   for three seconds. Screenshots and screen recordings. Cody committed to
+   recording his screen during runs, and Jared's written reports are the model.
+3. **They are runs, not dry runs.** George's correction on the call. Every
+   remaining night before the offering is a real rehearsal with real
+   consequences.
+
+**One thing to watch.** Edwin stated that on trading judgement he and Cody are
+the only two opinions that count, and that the money comes from the roughly 30%
+who trade actively rather than the weekly visitor. He is very likely right about
+the revenue. George's counter is the product question: if active traders are 20
+to 30% at the start, something has to carry the other 70% from arrival to
+competence, and a toggle serves the expert immediately while doing nothing for
+the newcomer. Both are true of different users. See
+[[one-click-trading-requirements-aug-2026]].
+
 ## Requirement reversal: the position taken on 17-08-2026
 
 Recorded because it is a standing position, not a one-off observation.

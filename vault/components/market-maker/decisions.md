@@ -1938,6 +1938,31 @@ and deployed (engine `dfa87f9`, CFG-0004, journal `supervised5`).
   (dead-man sweeps while the engine is down never journal — an old
   journal replays phantom ACTIVE orders).
 
+## 2026-08-14 — The venue is not the bottleneck — [[14-08-2026-touchdown]]
+
+> Recorded because it settles where the remaining work is, and it came from
+> tZERO's own instrumentation rather than ours.
+
+- ✅ **The venue side operated cleanly through the first live night.** tZERO
+  confirmed **3 million orders sent** with an **average latency of 1
+  millisecond** and **no degradation of the matching engine** under that load.
+  Troy: _"everything on their end operated that should have with no issue."_
+- ✅ **Consequence, and it is the useful one:** the poor trading experience on 13
+  August was not a venue, throughput or market-maker-capacity problem. Troy
+  placed the remaining work on **the interface and the data ingestion**, and
+  named the back end as _"in my opinion the harder part"_ that is already
+  working.
+- ⚠ **One market-maker item did surface as a tuning question:** spread width.
+  George noted that adjusting it is not a live fix, because it costs roughly ten
+  minutes of downtime to change during a game, so it trades against UX testing
+  time on the same night. Sequence the two deliberately rather than discovering
+  the conflict again.
+- ✅ **The synthetic market order is confirmed as unavoidable, not optional.**
+  Troy, closing the question for good: tZERO does not support market orders,
+  equity markets do not support market orders, they exist on the broker side.
+  Anything the user experiences as "market" has to be constructed by us. See
+  [[market-maker/systems/synthetic-market-order]].
+
 ## 2026-08-12 — The maker and taker run live across every book — [[12-08-2026-touchdown]]
 
 > First report of continuous operation against real books. George demonstrated
