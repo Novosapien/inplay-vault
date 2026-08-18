@@ -14,6 +14,65 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-18 — ✅ The Go venue record is built, and a map's iteration order was hiding in it
+
+Session: [[market-maker/sessions/2026-08-18-go-port-venue-record]] ·
+repo **`Novosapien/inplay-market-maker-go`** PR #7 ·
+`specs/2026-08-18-mm-go-port/`
+
+The Venue State Record is ported and the `venue` subtree of the canonical state
+is **byte-identical to Python's on both reference corpora** — 8,090 orders over
+170 books, and 2,931 over two. Phase 1's gate, the Go↔Python differential fuzz,
+is built: **four seeds × 800 steps**, `canonical(state())` compared at every
+step, six planted defects all caught.
+
+- ✅ ⭐ **The venue record's checkpoint snapshot is a PLAIN DEEP COPY, not the
+  chunked structure A2 chose for the acceptor.** Measured against the 500 ms
+  tick budget: **83.7 ms** at 750,000 orders held (2,500 acks/s × the 300 s
+  retention window) where the acceptor's 380 MB tree took **792 ms**. The
+  difference is structural — a venue order is an immutable value struct, so a
+  copy allocates nothing per order.
+  ⚠ **The same measurement bars `state()` from the tick: 516 ms, over the whole
+  budget by itself.** The tick hands over the raw record; the writer renders it.
+  ⚠ The cost is linear in `instruction rate × venue_terminal_retention_s` and
+  reaches the budget at ~4.5M orders held, ~6× the NCAA target. **That retention
+  window is the one dial that can move this decision.**
+- ⚠ ⭐ **`Suppression`'s price set dedupes by NUMERIC VALUE, and the backoff's
+  table keys on the STRING.** `Decimal("77.4")` and `Decimal("77.40")` are two
+  rows of the table and one member of the set. Which spelling survives is
+  decided by the table's ITERATION ORDER — deterministic in Python because
+  CPython dicts iterate in insertion order, and non-deterministic in a Go map.
+  Both spellings are reachable on the real machine: a registered price is
+  quantised to two places, an **admitted** order's price is whatever the gateway
+  sent, and the six-game corpus carries `"price": "77.4"`. The Go table now
+  keeps insertion order; a restore re-inserts in the checkpoint's sorted key
+  order, which is what `json.loads` gives Python. **This is a fact about the
+  Python machine that [[market-maker/build/venue]] did not record.**
+- ⚠ **The two committed corpora drive almost none of the venue record** —
+  **0** `EXECUTION` events in either, 0 `ORDER_REJECTED`, 0
+  `ORDER_DONE_FOR_DAY`, and **0 terminal prunes**, because both runs are shorter
+  than the 300 s retention window. `pending_submit` / `pending_replace` /
+  `pending_cancel` are unreachable by **any** fold, whatever the corpus: converge
+  is edge-only and the registration is never journalled (N45 again). The Go
+  harness now PRINTS what a run did not drive, so a byte-identical subtree can
+  never read as coverage it did not have.
+- ⚠ **A random fuzz is not automatically a covering fuzz.** With the
+  string-keyed price set planted as a defect, **4 seeds × 800 random steps
+  missed it every time**; the case needs two orders on one security and side
+  with numerically equal, differently spelled prices, both rejected, both still
+  suppressed at one read. It is now a scripted probe every 61 steps. Invariant 6,
+  paid for rather than quoted.
+- ⚠ **Python's `datetime.fromisoformat` truncates to microseconds; Go's
+  RFC3339Nano does not.** Latent today — the runtime mints 3 decimal places and
+  the gateway 6 — and the Go parse truncates to match anyway.
+- ⚠ **The venue engine's four counters (`terminal_prunes`, `gone_retires`,
+  `unknown_cancel_rejects`, `unknown_terminal_acks`) are NOT in `state()`, so a
+  checkpoint restore resets them.** Correct in both languages — they are
+  diagnostics, not state — but an operator reading them after a restore is
+  reading a partial count.
+
+---
+
 ## 2026-08-18 — ✅ Go port Phase 0 is built, and three things measurement overturned
 
 Session: [[market-maker/sessions/2026-08-18-go-port-phase-0]] ·
