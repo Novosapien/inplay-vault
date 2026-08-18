@@ -39,16 +39,17 @@ changed.
 
 | Class | Count |
 |-------|------:|
-| Reversal | **10** |
+| Reversal | **13** |
 | Re-reversal | **1** |
 | Descope | **1** |
 | Late parameter change | **4** |
-| Late scope addition | **4** |
-| **Total recorded changes to settled requirements** | **20** |
+| Late scope addition | **8** |
+| **Total recorded changes to settled requirements** | **27** |
 
-All twenty fall inside roughly **four weeks**, between 20 July and 17 August, and
-the last five days of that window carry six of them. For context, the offering
-opens on 22 August and trading starts on 29 August.
+All twenty-seven fall inside roughly **four weeks**, between 20 July and 18
+August. The last six days carry **thirteen** of them, including seven that
+arrived on 18 August, the day after the build definition was frozen. For
+context, the offering opens on 22 August and trading starts on 29 August.
 
 ---
 
@@ -71,7 +72,11 @@ opens on 22 August and trading starts on 29 August.
 | R13 | **A rich app with many surfaces**, built that way deliberately to carry advertising inventory. Edwin confirmed the reasoning on the call | [[advertising/advertising]], the app as built | **Reduce the surfaces.** Money first, live games, news behind an icon, question whether discover needs to exist | [[17-08-2026-touchdown]] | Edwin was fair about the cause: the rationale was advertising revenue that never arrived |
 | R14 | **The testing-the-waters disclosure on most surfaces**, as Edwin's own prototype had it | Edwin's prototype, the 07-08 disclaimer work | **An info button plus the competition-selection screen.** Not every surface | [[17-08-2026-touchdown]], recorded in [[compliance/regulatory-positioning]] | The lightest of the reversals, and it improves the product |
 
-Rows R1 to R14 contain **11 distinct reversals** of settled requirements, one of
+| R15 | **The home ticker carries prices and their change**, argued for by Edwin on 12 August as the thing that creates the excitement on the home screen | [[12-08-2026-touchdown]] | **IPO prices only, no net change** | [[change-requests-2026-08-18]] #5 | Six days later |
+| R16 | **Full order-book depth on the team page**, built once the gateway began publishing the whole book | Gateway order-book publishing, delivered before 10-08 | **Top of book only**, expandable on demand | [[change-requests-2026-08-18]] #17 | The depth work is finished and tested. It is now hidden rather than removed |
+| R17 | **Limit is the default order type**, with the synthetic market order built behind a flag that ships off | [[trading/sub-components/order-entry/order-entry]]; synthetic market order merged 15-08 | **Market becomes the default** | [[change-requests-2026-08-18]] #20 | Turns an unverified default on for every user four days before the offering |
+
+Rows R1 to R17 contain **14 distinct reversals** of settled requirements, one of
 which (R6) is a re-reversal, plus two rows (R3 and R8) that are second changes to
 requirements already changed once.
 
@@ -107,6 +112,10 @@ grievances.
 | A2 | **The full one-click trading model**: persistent controls on every page, one-click flatten, order types, hover confirmation | [[14-08-2026-touchdown]], [[one-click-trading-requirements-aug-2026]] | Overlaps R9, which is the reversal half of the same change |
 | A3 | **Split the payout leaderboard** so international users do not appear on a cash-prize board they cannot win | Consequence of the 11-08 tier work | **The only hard dated deadline in the engineering record: 27 August** |
 | A4 | **Pre-offering indication of interest**, queued orders against a shares-remaining bar | [[31-07-2026-touchdown]] | Scoping owed, never started |
+| A5 | **Flatten all**: one control that exits every open position across every team | [[change-requests-2026-08-18]] #21 | Per-team flatten was already in the 14-08 model. Flatten all is a multi-symbol liquidation path with its own partial-fill and reject behaviour. The largest item on the 18-08 list |
+| A6 | **Move money into the trading reserve at any time while flat** | [[change-requests-2026-08-18]] #22 | Needs the flat test, the accounting entry and a mid-game rule. Shares the reserve with the 100 IPD advertising reward |
+| A7 | **Trade-target selection from the Live Games surface** sets what the persistent buy and sell controls trade | [[change-requests-2026-08-18]] #19 | The target half of the one-click model, unresolved in A2 |
+| A8 | **Every NCAAFB season game populated** in the Markets games tab | [[change-requests-2026-08-18]] #24 | Data is available. Staying correct across season types is the part that failed twice in live running |
 
 ---
 
@@ -138,3 +147,15 @@ Add a row when a settled requirement changes, with both citations, at the point
 it is agreed rather than later. If a change cannot be classified against the table
 above, that is usually a sign the original requirement was never actually settled,
 which is a different and cheaper problem worth knowing about.
+
+## The 18 August list
+
+Twenty-two change requests arrived on 18 August, the day after the freeze and
+four days before the offering. They are held in full, classified, in
+[[change-requests-2026-08-18]]. Only the seven that change a settled requirement
+are counted in this register: R15, R16, R17 and A5 to A8. The other fifteen are
+layout, naming, copy or a defect, and carry no settled requirement behind them.
+
+Two items on that list, #13 and #14, are recorded there rather than here because
+they are not InPlay's to change: they ask for the venue's share-locate rule to
+be removed, which needs a ruling from tZERO rather than a ticket.
