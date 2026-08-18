@@ -18,7 +18,7 @@ one is measuring on the rig, one turned out to be half-done already.
 
 | Item | State |
 |---|---|
-| **W1** boot healer switched on | ⚠ config ALREADY LIVE (another session); classifier proven read-only; the drill's own question answered; the boot log is NOT durable |
+| **W1** boot healer switched on | ✅ **LIVE AND VERIFIED** — by a parallel session's run, not mine; my read-only classifier dry-run predicted it correctly |
 | **W2** ask cap reads the venue | ✅ built, PR #52 |
 | **W3** the second drain cost | ✅ **ANSWERED — not a scan**, PR #56 |
 | **W4** the reject blind spot | ✅ built, PR #54 |
@@ -84,7 +84,40 @@ rejected every order at ~500 per book — the old shape spent **11.63%** of
 every converge interval on this scan at precisely the moment the venue was
 in trouble.
 
-### W1 — the healer is configured, and the ownership boundary holds on real ids
+### W1 — ✎ CORRECTED 18-08: the blocker was a FIREWALL, and the healer is VERIFIED
+
+⚠ **My reading of W1 was incomplete, and a parallel session found the real
+story** (vault `main@70089fc`, MM #30). Every recent note — mine included —
+recorded "boot healer INERT, `MM_GATEWAY_OPS_URL` unset" and read it as a
+config task nobody had done. **It was not.** Setting the variable alone
+would not have worked: `inplay-fw-policy` is a NETWORK firewall policy,
+evaluated *before* VPC rules, ending in default-deny **both directions**. A
+VPC rule cannot fix that — one was tried and had zero effect. The fix was an
+SA-targeted egress (2087) paired with an ingress (2088).
+
+That also explains why my own curl succeeded: I tested **after** their fix
+had landed, so I measured an already-open path and credited the env var.
+
+⭐ **AC8's live half is therefore MET — and their first run corroborates my
+dry-run almost exactly.** Their boot line:
+
+```
+boot heal: DONE — 1646 MM orders at the venue, cancelled 1645 unknown,
+kept 0 known, left 1 taker + 0 foreign, ALARMED 0 ambiguous
+```
+
+against my read-only prediction of **1,587 cancels, 1 taker untouched, 0
+ambiguous**. Same shape; the numbers drifted with time. **1,645 orphaned
+orders** were resting at the venue that our side did not know about — the
+accumulated population from every restart before the healer existed,
+including four that bled ~57 fills that afternoon. And "left 1 taker" is the
+`MM`/`MMSN` ownership rule behaving exactly as designed, in production.
+
+✎ **So the "boot log went to a dead socket" finding below stands for the
+21:28Z boot I examined, but NOT as a claim that AC8 is unverifiable** — the
+healer's own line was captured on the run that mattered.
+
+### W1 — the classifier, proven read-only against the live index
 
 `MM_GATEWAY_OPS_URL` and `MM_GATEWAY_OPS_KEY` were **already set on the
 running engine** by the parallel session. Verified independently from the
