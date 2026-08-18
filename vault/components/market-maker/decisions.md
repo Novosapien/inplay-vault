@@ -193,6 +193,61 @@ rule — isolation is per capability, not per calendar — makes a Go taker a
 new capability. TT1–TT9 and TJ1–TJ4 run again.
 
 ---
+## 2026-08-18 — ✅ The gospel commit is `fd193a4` · journal size is a pre-flight gate · the order book's asymmetry is by design
+
+Session: [[market-maker/sessions/2026-08-18-the-cutover-and-the-vm-hang]].
+
+✅ **`MM-PYTHON-FIX-SET-COMPLETE` emitted. The gospel commit is
+`fd193a4`**, tagged `mm-python-fix-set-complete` and pushed. That tag is
+the reference commit the Go port certifies against. Deployed the same day:
+engine `supervised41` / CFG-0038, maker and taker both live on it.
+
+✅ **JOURNAL SIZE IS A PRE-FLIGHT GATE ON EVERY CUTOVER.** Learned the
+expensive way: keeping a **3.5 GB** journal on the cutover drove RSS to
+3.9 GB on a 2-vCPU / 8 GB box, starved systemd itself, and required an
+instance reset. The boot healer retires the fresh-journal *ceremony*, so
+keeping a journal is **safe** — it says nothing about whether replaying it
+**fits**. Check size against the box before choosing keep-vs-fresh.
+⭐ And the cost of a fresh journal is now near zero: `ANCHOR_SEED` carried
+14 kickoff anchors forward regardless, so keeping the journal bought
+*nothing*. The bar for keeping one should be high.
+
+⭐ **No exposure during the incident** — the dead-man swept the book from
+1,588 orders to 10 the instant the old engine stopped. The failure mode
+was "not quoting", never "quoting wrongly".
+
+✅ **The order book's asymmetry is BY DESIGN, not a defect.**
+`min_levels=3, max_levels=6`, drawn per side per book — so a book showing
+6 bid levels and 3 ask levels is in spec. Empty or thin books are CHURN:
+the taker takes ~3.4 levels/s portfolio-wide against a 500 ms maker pulse,
+so any snapshot catches half-rebuilt ladders (IPTCBENG went 0 bids → 2
+bids in 45 s while being watched).
+
+⚠ **But the steady state is a permanently half-empty book**, because the
+taker consumes faster than the maker rebuilds. That is a RATE mismatch,
+not a defect in either component. The lever is `SNT_INTERVAL_LIVE_S` and
+it is a deploy decision. 🔴 Open.
+
+✅ **W2's ask cap is CLEARED as a cause of one-sided books.** Measured
+live: venue positions are 96,679–104,320 shares on every book, and
+`IPTCBEAR` — which showed no asks — holds **103,595**. Zero books under
+1,000 shares; every `ASK_CAP_*` alarm zero. The cap is not binding
+anywhere. 🔴 Eight persistently one-sided books remain UNEXPLAINED.
+
+⚠ **A torn final journal line permanently bricks the taker.** One
+incomplete write (of 587,722 lines) crash-looped it for ~2.7 h until the
+file was hand-repaired. A torn tail is the normal consequence of any hard
+kill, so the replay must tolerate and truncate a torn FINAL line while
+still raising on mid-file corruption. **The Go port inherits the same
+replay design.**
+
+⚠ **The launch mechanism changed and the docs were stale:** the engine is
+`mm-1.service` with `/etc/mm-1/env`, not a bare `setsid nohup`. Its boot
+log is `journalctl -u mm-1`. The taker is `snt-1.service`, and its NATS
+variable is `SNT_NATS_URL`, not `NATS_URL`.
+
+---
+
 ## 2026-08-17 — ✅ The ask cap reads its position FROM THE VENUE (W2 / R-Q08 / AC7 / E27's maker half)
 
 Session: [[market-maker/sessions/2026-08-17-mm-pre-port-close]] · MM
