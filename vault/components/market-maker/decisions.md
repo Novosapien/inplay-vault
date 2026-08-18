@@ -14,6 +14,65 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-18 — ✅ Go port Phase 0 is built, and three things measurement overturned
+
+Session: [[market-maker/sessions/2026-08-18-go-port-phase-0]] ·
+repo **`Novosapien/inplay-market-maker-go`** PRs #1–#6 ·
+`specs/2026-08-18-mm-go-port/`
+
+The event core is built and **byte-identical to Python on both reference
+corpora** — 22,471 journal lines re-emitted byte-identically, 22,471 payload
+hashes matched, the acceptor's fold identical on both, and a
+checkpoint-resume reaching the same bytes as the never-stopped fold.
+
+- ✂ ⭐ **`cockroachdb/apd`'s `Ln` and `Exp` are NOT correctly rounded, and
+  the spike's "221/221 numeric parity, including every transcendental" is
+  withdrawn as a SAMPLING ARTEFACT.** It rested on one `ln` vector and 28
+  `exp` vectors. A 100,000-draw sweep of each function's real engine domain
+  gives **`ln` 1.480%** and **`exp` 0.056%** last-digit disagreement with
+  libmpdec. Fixed with guard digits and a boundary escalation;
+  200,000/200,000 now match. **apd is the right library only BEHIND
+  `internal/decimal`'s wrapper — never raw.**
+  ⚠ The guard costs ~15% on `exp`, so **R13's decay-cache economics need
+  re-deriving on Go's own numbers**. The cache is more load-bearing than
+  modelled, not less.
+- ✂ ⭐ **`scripts/a2-run/state-replay.json` (1,903,026 B) is RETIRED as a
+  certification target.** It was committed at `29ae86d` on 11-08;
+  `terminal_at`, `pending_quantity` and `settled_game_id` (schema 7) all
+  landed after it, and the quoting engine moved. Folding the same journal at
+  the pin correctly yields **2,091,275 B**. ⚠ **`state-live.json` is NOT
+  retired** — R2b's three byte-legs (`acceptor`, `valuation`, `position`)
+  still hold at the pin, verified.
+- ✅ ⭐ **A2 is decided by measurement: a DEEP COPY of the state is also too
+  slow.** At 380 MB, on-tick costs against the 500 ms budget are: deep copy
+  **792 ms**, canonical encode 1,964 ms, chunked snapshot **1.6 µs**. So
+  there is no "copy on the tick, serialise later" option, and **every
+  engine's checkpointed state in Phases 1–3 must be either small enough to
+  deep-copy well inside the budget or hold an O(1) snapshot**. Written up in
+  the Go repo's `docs/checkpoint-design.md`.
+  ⚠ The constraint that runs the other way still stands: **no TOB quantity
+  may enter checkpointed state** (invariant 3b).
+- ✅ **The Phase-0 gate is split into 0-a and 0-b.** It required byte-identity
+  on the FULL canonical state, which has eighteen subtrees, while Phase 0
+  builds ONE. 0-a is every subtree the phase owns — **it holds**. 0-b is the
+  full state at the end of **Phase 3**, the first boundary where it can be
+  evaluated at all. **Nothing is relaxed: the tolerance list is still empty.**
+- ✅ **Repo: `Novosapien/inplay-market-maker-go`, private, module path
+  `github.com/Novosapien/inplay-market-maker-go`.** ⚠ The gateway's
+  `github.com/InPlaySports/…` module path points at an organisation that
+  returns 404 — it never resolved, so it was not copied.
+- ⚠ **`inplay-fix-contracts` stays deferred** (spec Q4). The structs are
+  vendored by hand, exactly as Python does today; the drift risk is recorded,
+  not closed.
+- 🔴 **OPEN, needs George: AC2 requires a rig session.** The 548.5 MB /
+  551,939-event GATE corpus is a rig artefact, in neither repo, and one
+  session drives the VM. The harness half is proved locally — a synthesised,
+  structurally-real 544.4 MB journal folds in **4.25 s**, 239 MB heap, **0.6%
+  of wall clock in GC**, so the "tune `GOGC`" worry is answered. Only the
+  corpus is missing.
+
+---
+
 ## 2026-08-18 — ✅ The Go port is UNPARKED: maker + taker, starting now
 
 Session: [[market-maker/sessions/2026-08-18-go-port-discovery]] ·
