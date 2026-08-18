@@ -14,6 +14,48 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-18 — ✅ Go port Phase 1 complete, and Python's stop() hangs for ever after a dead writer
+
+Session: [[market-maker/sessions/2026-08-18-go-port-phase-1]] ·
+Go repo PRs #10, #11
+
+The venue leg is ported: the record, the reconciler, the boot healer and the
+transport. The phase gate holds — 4 seeds, 304–312 order lifecycles and 445–469
+events per seed, `canonical(state())` compared at EVERY step, **25 planted
+defects all caught**.
+
+- ⚠⚠ 🔴 **A LIVE PYTHON DEFECT: `NATSGatewayTransport.stop()` HANGS FOR EVER
+  after the writer task dies.** `flush()` is `asyncio.Queue.join()`, which waits
+  for one `task_done()` per item; when the writer dies mid-queue the remaining
+  items never get one. **Confirmed by running it against the pinned
+  interpreter**, not reasoned about. A torn-down connection mid-publish is
+  exactly when this happens, and it is exactly when shutdown matters. The Go
+  port returns the writer's death reason with the unsent count instead — a
+  deliberate, recorded divergence, because a hang is strictly worse than an
+  error and nothing about it is observable in canonical state.
+- ⚠⚠ ⭐ **THE WIRE'S JSON IS NOT THE JOURNAL'S JSON.** `json.dumps` defaults to
+  `ensure_ascii=TRUE` on the gateway payloads, and the canonical encoder that
+  writes the journal uses `ensure_ascii=FALSE`. One library, two call sites, two
+  spellings. ⚠ The venue account, bot id and user id all reach the wire from the
+  ENVIRONMENT, so a non-ASCII value is a deployment away — and it would be
+  spelled differently in a payload log than in a journal line.
+- ⭐ **Three byte-level wire divergences between Python and Go, all of which
+  BEHAVE IDENTICALLY at the gateway** — an integral price (`100.0` against
+  `100`), key order (insertion against sorted), and the escaping above. Caught
+  only because the fuzz compares BYTES; no functional test could see them.
+- ⚠ **The phase gate did not meet its own written floor and nobody had
+  re-checked it.** The spec asks ≥400 events per seed; the fuzz was driving
+  ~328, because only ~41% of steps are events. ⭐ **Every floor in a gate is now
+  an ASSERTION in the generator.** A floor written into a spec and never turned
+  into a check is not a floor.
+- ⚠ **Six times in this phase the random fuzz could not reach a defect this
+  vault already records** — including the 08-08 in-flight-replace destination
+  that put 19 doubled levels across the six QA books live. Each was found by
+  planting the defect and watching the fuzz pass. The defect list is the
+  coverage checklist.
+
+---
+
 ## 2026-08-18 — ⚠ A random fuzz missed four known defects, including the one that doubled 19 live levels
 
 Session: [[market-maker/sessions/2026-08-18-go-port-reconciler]] ·
