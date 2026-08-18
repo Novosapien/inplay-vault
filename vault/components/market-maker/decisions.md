@@ -14,6 +14,40 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-18 — ⚠ A random fuzz missed four known defects, including the one that doubled 19 live levels
+
+Session: [[market-maker/sessions/2026-08-18-go-port-reconciler]] ·
+Go repo PR #9
+
+The Go reconciler and boot healer are ported and certified against Python at
+the pin — **nineteen planted defects, all caught**.
+
+- ⚠⚠ ⭐ **FOUR of those nineteen were MISSED by the fuzz on the first attempt.**
+  Each was planted, watched to pass over **4 seeds × 800 steps**, and only then
+  closed. The second one is **the 08-08 defect** — an in-flight replace not
+  occupying its destination, which put **19 doubled levels** across the six QA
+  books live. The fuzz was already driving replaces and reading `pending_price`
+  back; it still could not see it, because the target ladder had no reason to
+  ask for that particular price.
+  **The rule: a random fuzz is not automatically a covering fuzz. The only way
+  to know is to plant each known defect and watch whether the fuzz passes.**
+  ⭐ **This vault already holds the defect list. Nobody had turned it into a
+  coverage checklist** — and that is now the bar before any chunk's gate is
+  called clean.
+- ⚠ **A BAD PROBE PASSED AND LOOKED LIKE COVERAGE.** A first attempt at testing
+  send order reordered three independent statements and changed nothing, so it
+  "passed". **A probe that passes is only evidence if the probe is known to
+  bite.**
+- ✅ **Post-first belongs in the DATA, not in a convention.** Python returns one
+  ordered tuple, so N12's ordering is carried by the value. The Go version had
+  three separate lists, which moved the contract into the caller's head; it now
+  exposes the ordered sequence and the fuzz compares it.
+- ✅ **A reject QUEUES the reconcile that must observe its suppression.** The
+  backoff's two tables are only exercised if something asks again while the
+  window is open, and randomness does not reliably arrange that.
+
+---
+
 ## 2026-08-18 — ✅ AC2 is closed on the real corpus, and CB4's shape had a third member
 
 Session: [[market-maker/sessions/2026-08-18-go-port-ac2-rig]] ·
