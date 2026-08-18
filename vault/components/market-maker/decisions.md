@@ -109,6 +109,148 @@ the taker starts from that seed and adopts the venue's current position.
 This session misread the count as evidence of widespread lost fills
 before testing it.
 
+## 2026-08-18 — ✅ The Go port is UNPARKED: maker + taker, starting now
+
+Session: [[market-maker/sessions/2026-08-18-go-port-discovery]] ·
+`specs/2026-08-18-mm-go-port/discovery.md` ·
+`specs/2026-08-17-mm-pre-port-close/w3-drain-verdict.md`
+
+✂ **Supersedes the 04-08 parking** ("build the whole thing in Python, get
+it working, then port to Go … not this session's concern") and
+`build/next.md`'s "decision parked at season-2/NCAA".
+
+- ✅ **George: the port covers the MAKER AND THE TAKER** — `src/mm` and
+  `src/snt`, both. The SR publisher (`inplay-sportradar-service`) stays
+  Python. The FIX gateway (`inplay-fix-gateway-go`) is untouched.
+- ✅ **George: start now.** "We're just doing it now. We're doing
+  everything now."
+- ✅ **George: Python keeps moving until he gives the go-ahead**, then the
+  deep scan-and-map runs at spec stage. **The port targets the commit he
+  names, never a moving tip** — `MM-PYTHON-FIX-SET-COMPLETE` is not
+  emitted, the gospel is not pinned, and #52/#54/#56 are unmerged.
+- ✅ **Functional identity, not improvement.** The port reproduces
+  Python's 🔴 gaps (R-V11, R-Q09, R-S07, R-S08) and **preserves the
+  taker's deliberately weaker determinism contract** rather than unifying
+  it. A port that also changes behaviour cannot be certified by
+  differential replay — the harness would have nothing to compare against.
+- 🟡 **Adopted by default, open for George's confirmation:** the
+  acceptance bar (**≤0.286 ms/ack at p90** on six-game-v2 at the
+  production VM shape — 11.1× on Python's 3.1744 — plus zero missed
+  sweeps and byte-identical differential replay); **shadow first**, then
+  cutover under R11; a **serial deterministic loop first**, parallelised
+  only after byte-equality is certified.
+
+⭐ **Why the port is justified rather than asserted — W3's verdict.** The
+residual venue-drain cost is **work, not an algorithm**: halving the
+portfolio (170 → 85 books) RAISED per-ack cost (0.6980 → 0.8114 ms/ack)
+and left the composition untouched (`_drive_cycles` 58.3% vs 58.5%). An
+O(portfolio) scan would have done the opposite on both counts. An
+algorithmic scan would have been *inherited* by the port; work-bound cost
+converts directly into headroom. The gap it converts: ~396 acks/s on one
+core today (v2, 2.5232 ms/ack p50) against an NCAA Saturday's ~2,500/s.
+
+⚠ **Five port hazards beyond the four recorded on 04-08**, all found by
+reading the code against the research (detail in the session note and
+`discovery.md` §9):
+
+1. **Decimal transcendentals on the hot path** — `Decimal.exp()` per
+   reading per book (`volatility.py:101`), `.ln()` constants
+   (`volatility.py:49`, `width.py:48`), `Decimal.__pow__`
+   (`quantity.py:61`). No Go decimal library guarantees correctly-rounded
+   `exp`/`ln`; CPython's libmpdec does.
+2. **Amdahl inverts CB4's "there is no Decimal problem"** — that was
+   under 5% of the path *in Python*; in Go everything around it speeds up
+   far more than decimal does, so decimal becomes the likely bottleneck.
+3. **The forked checkpoint writer has no Go equivalent** —
+   `checkpoint.py:90-137` double-forks against the COW image because the
+   synchronous form froze the tick ~22 s and the dead-man swept the book
+   hourly. Go cannot fork-and-continue. A design decision, not a
+   translation.
+4. **Go's `select` picks uniformly at random** among ready cases — spec'd,
+   so `-race` never flags it, and it passes most runs.
+5. **Timestamps** — Go's `RFC3339Nano` trims trailing zeros where
+   Python's `isoformat(timespec="milliseconds")` is fixed-width, and the
+   journal carries **mixed** precision by design (3 dp runtime-minted,
+   6 dp gateway-sourced). Preserve each producer's spelling; never
+   normalise.
+
+✎ **Hazard 4 of the 04-08 list ("seeded randomness — already safe") is
+stronger AND collapses into hazard 1.** `quotes/variation.py` has **no
+PRNG at all**: SHA-256 → first 8 bytes big-endian → u64 →
+`Decimal(h) / (2^64 − 1)` → `0.75 + 0.50 × U`. Exact cross-language parity
+is required and achievable — but that division runs in Python's default
+28-digit `ROUND_HALF_EVEN` context, so it is a decimal-context problem,
+not a randomness one.
+
+⚠ **Byte-equality through the venue leg is already a non-invariant in
+Python** (`stand_the_book` is un-journalled; admitted orders carry the
+gateway's price string — `"77.6"` ≠ `"77.60"`). The port's bar adopts R9's
+existing narrow split: deterministic core **byte**-identical, settled
+venue book **value**-identical.
+
+⚠ **The taker re-enters Phase 1 isolation.** Its own test plan's standing
+rule — isolation is per capability, not per calendar — makes a Go taker a
+new capability. TT1–TT9 and TJ1–TJ4 run again.
+
+---
+## 2026-08-17 — ✅ The ask cap reads its position FROM THE VENUE (W2 / R-Q08 / AC7 / E27's maker half)
+
+Session: [[market-maker/sessions/2026-08-17-mm-pre-port-close]] · MM
+[#52](https://github.com/Novosapien/inplay-market-maker/pull/52) — built,
+NOT merged, NOT deployed.
+
+✅ **George's ruling: do not wait for Edwin's E27. Read it from the venue.**
+
+R-Q08's bound is `holding − livS`, and `holding` came from
+`opening_position_shares` + our journalled net. That stub is 0, 0 read as
+UNKNOWN, so the bound failed open on **every** book since it was built.
+
+**The venue has been publishing the number all along.** FIX tag **9383**
+rides every execution report and the gateway has forwarded it as `posSize`
+since 14-08 (its PR #3). Measured live before anything was built:
+
+- **212 of 212** maker execution reports carried it — 100%
+- **per SYMBOL**, across 140 securities, **59,277–106,225 shares**
+- **133 consecutive deltas matched our own fills EXACTLY**, zero mismatches
+- the maker's account (`1797733477`) is **not** the taker's (`4963224393`),
+  so nothing else moves the figure
+
+⭐ **The account holds ~100,000 shares a book while the stub said 0.** E27
+was never the blocker it looked like.
+
+✅ **The maker takes the LATEST exec-borne figure, not the FIRST** — a
+deliberate deviation from the taker's boot rebase. The taker adopts once
+and halts on later divergence because it defends its own authoritative
+tally; the ask cap keeps no tally, so the venue's most recent answer is
+strictly the best evidence for "how much may this ladder offer right now".
+Riding the EXECUTION envelope the journal already stores also makes replay
+reproduce the fold **by construction** — no new event type, and no "since
+boot" notion that a replay cannot see. Venue-**borne**, not venue-**live**:
+that is the N45 distinction, and it is why AC9 survives.
+
+✅ **`0` from the venue BINDS; `None` does not.** The stub's conflation of
+the two is the whole reason R-Q08 sat dark. A venue-reported zero is a fact
+— we hold nothing, so we may offer nothing.
+
+✅ **The fold is the FIFTH order/position state question** and gets its own
+module (`position/venue_holding.py`). It reads no order states at all.
+Reaching for a nearby set caused two HIGHs in the last build.
+
+✅ **`MM_ASK_CAP_VENUE=off`** restores the old behaviour — the cap is
+book-visible, so an operator needs one lever without a code change.
+
+⚠ **Deploy-safety, measured against the live book: activating it changes
+nothing today.** 0 of 119 books would empty their ask side; 0 of 119 would
+be resized. Tightest book 52.6% of holding, p50 25.9%. A rail that only
+engages when a book gets thin.
+
+⚠ **Known gap: our livS is OURS, the venue's is the ACCOUNT's.** A resting
+sell the record does not know about makes this bound generous. That is
+exactly what the F4 boot healer closes at boot — **the cap and the healer
+are load-bearing for each other and should stay switched on together.**
+
+🔴 Still gating activation: N43 rider 2, the `[post-first]` ordering.
+
 ---
 
 ## 2026-08-15f — ✅ The boot healer: prove it dead, never assume it · the journal and the config version move together (fix-set CA4 / F4 / R-D05)
