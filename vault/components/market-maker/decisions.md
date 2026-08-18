@@ -14,6 +14,61 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-18 — ✅ AC2 is closed on the real corpus, and CB4's shape had a third member
+
+Session: [[market-maker/sessions/2026-08-18-go-port-ac2-rig]] ·
+Go repo PR #8 · `docs/ac2-gate.md` · closes **N46**
+
+The rig session was taken on George's ruling. `cb1-profile-clone` was stopped,
+not deleted, and still held the 16-08 GATE journal — 548,523,635 B, 555,710
+lines, **551,939 events**, sha256 `b187ae6d…55ed3959`.
+
+- ✅ ⭐ **AC2 PASSES.** Python's fold **at the pin** was run on BOTH the rig
+  (linux-x86_64) and the dev Mac (darwin-arm64) and the two agree **byte for
+  byte** — 102,953,252 canonical bytes, `c9220465…3df6a6b`, **zero publishes**.
+  R2a's two-independent-folds rule, satisfied across two ARCHITECTURES rather
+  than twice on one box. Go's `acceptor` and `venue` match it on both machines
+  at one state hash, at GOMAXPROCS 1/2/8. Phase 0's AC set is complete.
+  ⚠ **1,505 s (Python, rig) against ~107 s (Go, rig) is NOT a speedup** —
+  Python folds all eighteen subtrees, Go folds two.
+  ⚠ **The corpus is NOT committed** (548 MB). AC2 is certified ONCE, with
+  hashes standing in for reproducibility — unlike every other target in the Go
+  repo, which regenerates at the pin.
+- ✅ ⭐ **THE RIG IS 2.5× SLOWER THAN THE DEV MAC, and it was measured twice
+  independently** — 2.49× on Python's whole-engine fold, 2.5× on Go's
+  acceptor+venue fold. Two workloads, two languages, one factor. Every Mac
+  number in the port can be read against `n2-standard-2` through it.
+  ⚠ An estimate, not a licence: a capacity claim is still re-taken on the rig.
+  ⚠ It does not contradict "this rig drifts ~31% within a day" — that governs
+  comparing rig arms to each other, which is why only adjacent arms pair.
+- ⚠ ⭐⭐ **CB4's SHAPE HAS A THIRD MEMBER, and only rig scale could see it.**
+  `_record` takes its open-order count from `len(open_orders(...))`, and
+  `open_orders` **sorts every ClOrdID in the book on every venue event** — for a
+  number that cannot depend on the order. Profiled at **50.6% of the entire
+  venue fold** over 551,939 real events. The Go port takes the count without the
+  sort (identical by construction): **161.81 s → 36.32 s, 4.45×**.
+  ⚠ **The Python engine still has this.** It is a live performance item for the
+  maker, not only a port note — and the reason nobody saw it is that the two
+  committed corpora hold 8,090 and 2,931 orders while the rig corpus holds
+  **45,381**.
+  ⚠ **Sweep the CLASS, not its members.** Three instances of one scan shape have
+  now been found (`_stamp_and_prune`, `RejectBackoff.suppression`, this) and the
+  third needed rig scale. Ask of every hot function: what does it walk, and how
+  often?
+- ⚠ **91% of the remaining venue fold is two full-book walks per event**
+  (`pending_exposure`, the open-order count) and **Python does both too**.
+  Deliberately NOT fixed: `len(sorted(x))` → `count(x)` adds no state, while
+  running per-security sums are new derived state with a maintenance obligation
+  on every mutation path. That is a design change with its own review.
+- 🔴 **`gcloud compute scp` silently truncated a 548 MB file to 93,480,960 bytes
+  and exited 0.** Only the SHA-256 caught it. Gzip first (46 MB) and verify both
+  hashes. **"Silence is ambiguous" now has a fourth recorded disguise.**
+- **The rig's idle watchdog works.** `~/watchdog.sh` powers the box off after 30
+  idle minutes and fired mid-session; nothing was lost. `touch ~/cb4-hold` holds
+  it awake — **remove it before leaving**.
+
+---
+
 ## 2026-08-18 — ✅ The Go venue record is built, and a map's iteration order was hiding in it
 
 Session: [[market-maker/sessions/2026-08-18-go-port-venue-record]] ·
