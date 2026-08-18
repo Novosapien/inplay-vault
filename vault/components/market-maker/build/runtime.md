@@ -418,4 +418,10 @@ Two runtime facts born from the 08-12 incidents (session note:
   growth itself (~70–90 MB/h at the 500 ms/180-book cadence) is a
   standing follow-up: terminal-record pruning.
 
-Checkpoint schema is **5** (state carries `session_open`).
+✎ Checkpoint schema is **7** (corrected 18-08 against
+`events/checkpoint.py:35`; this page said 5). The chain: 5 the
+orchestrator's `session_open` · **6** `VenueOrder.terminal_at` plus the
+acceptor's per-leg seen set (an old checkpoint's unpruned million-key set
+must not seed a pruning engine) · **7** the freshness entries'
+`settled_game_id` (a settled echo must not re-arm the live regime, and
+the guard's memory must survive a checkpoint boot).
