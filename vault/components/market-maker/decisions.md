@@ -14,6 +14,53 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19 — ⚠⚠ §3.2.1's tolerance band and the pair-identity guard contradict each other
+
+Session: [[market-maker/sessions/2026-08-19-go-port-valuation]] ·
+Go repo PR #12
+
+The Go port's valuation chunk found a third live defect in the Python
+reference, and this one is a disagreement between two rules that are both
+written down.
+
+- ⚠⚠ 🔴 **§3.2.1 ACCEPTS a triple whose sum is within a millionth of 1 and uses
+  the numbers UNTOUCHED. The `[pairs]` guard then requires
+  `GEV(home) + GEV(away) = $5.00` EXACTLY — and `$5.00 × 1.0000005` is not
+  `$5.00`.** So a reading the gate deliberately tolerated **raises out of
+  `process()`**, and `cycle()` has no `except` to catch it.
+  Measured at the pin: **100%** of the accept band's non-exact sums, and
+  **2.7%** of §3.2.1 REPAIRS (their own precision-28 residue).
+  ⚠ **Latent only by luck.** SR's two percentages sum to exactly 100 on all
+  1,089 readings of the captured game — a property of the PROVIDER, not of the
+  code, and nothing checks it. `adapters/sportradar.py:93-94` reads SR's two
+  numbers rather than deriving one from the other, so a provider that rounds
+  differently one day starts raising.
+  ✅ **Not fixed in Python** — Phases 0–4 are a faithful port and any change
+  breaks the zero-diff mandate. Reproduced exactly in Go, pinned by test,
+  driven by the fuzz every 77 steps. **Open question N47 carries the ruling.**
+- ✅ **The sorted walk over a security's games is LOAD-BEARING, and the
+  `[exact-sum]` note is wrong where a §3.2.1 repair is involved.** The note
+  reasons that Decimal addition at these magnitudes is exact, so order cannot
+  matter. True while the terms are short — a repair produces a
+  28-significant-digit probability, and two of those round as soon as the
+  running total reaches 1. A real window gives
+  `68.50635988904318442204161368` sorted and `…367` on four of the six
+  orderings. [[market-maker/build/valuation|build/valuation]] corrected.
+- ✅ **Package filing may differ from Python's where Go's import graph forces
+  it.** Python imports by MODULE, so `events/business_validation.py` →
+  `valuation/probability_validation.py` and `valuation/engine.py` →
+  `events/envelope.py` are not a cycle; Go imports by PACKAGE, where they are.
+  The §3.2 gate moved down to the event door and `PythonISOFormat` to the
+  codec. No rule changed, and the Python source is named in both files.
+- ⚠ **The committed corpora drive TWO of the valuation engine's five entry
+  points.** Zero `OFFICIAL_RESULT` and zero `ANCHOR_SEED` in either, and
+  `ingest_reference_numbers` is a method rather than an event (N23), so no
+  journal can ever drive it. Settlement, `[settled]`, `[correction]`,
+  `[unseen]` and the whole F2 anchor seed are certified by a differential fuzz
+  instead, and the diff harness now prints what a run did not drive.
+
+---
+
 ## 2026-08-18 — ✅ Go port Phase 1 complete, and Python's stop() hangs for ever after a dead writer
 
 Session: [[market-maker/sessions/2026-08-18-go-port-phase-1]] ·
