@@ -142,6 +142,21 @@ what a requirement asks, and the port cannot fix them either.
 
 ---
 
+### GP-12 · 🔴 apd cannot represent the numbers CPython stores, and the a2 corpus needs them
+
+| | |
+|---|---|
+| **Where** | `github.com/cockroachdb/apd/v3` — `decimal.go:71`, `MaxExponent = 100000` (and `MinExponent = -MaxExponent`), a HARD package-level cap independent of the Context's own bounds |
+| **What** | CPython's decimal context runs to `Emin/Emax = ±999999`. apd stops at `±100000`. Any value outside that band **does not exist in apd** — it is not a rounding difference and no wrapper closes it. |
+| **Evidence** | Folding the a2 journal through the whole machine, Python's `variance_rate` for `IPTCCHIE` is `4.385597164977966123725114636E-916199`. Go cannot hold it: `decimal mul: exponent out of range`, even for `1 × tiny`. ⚠ **`variance_rate` is a CHECKPOINTED STRING**, so the value reaches canonical state directly — this is not an intermediate. |
+| **Why the corpus reaches it** | The a2 journal spans **60,871,126 seconds** — nearly two years. Its probability readings carry the captured **2024** game's own timestamps while its venue events and sweeps carry the **2026** replay's. The decay factor over that Δt is `exp(−2.1 × 10⁶)`. |
+| **Severity** | 🟠 **Blocks gate 0-b on the a2 corpus; almost certainly harmless in production.** In a live run consecutive events are seconds apart, so Δt never approaches this. The two-year span is an ARTEFACT of how the corpus was assembled, not an operating condition. |
+| **Found alongside** | ⭐ A **separate, genuinely dangerous apd defect that IS fixed**: `Context.Exp` works only while `\|x\| ≤ 23 × precision` and refuses to bump precision past 1000, so past `\|x\| = 22,977` it returns **ZERO** where Python returns the real value (`exp(−34657.359…)` → `0E-1000031` vs `3.163856671530324185927899991E-15052`). Fixed in `internal/decimal` by range reduction (`x = n·ln10 + r`, so `exp(x) = exp(r) × 10ⁿ`, a pure exponent shift); 4,000 vectors from the pin, 2,495 of them past the cliff, all exact. |
+| **The ruling needed** | Three readings, and it is **George's**: (a) accept that gate 0-b is certified on the six-game corpus and NOT on a2, recording a2's four affected subtrees as a known limit; (b) rebuild the a2 corpus so its readings and venue events share one timeline, which removes the two-year Δt and is arguably what the corpus should always have been; (c) carry a scaled representation inside `internal/decimal` so extreme exponents survive — real work, and it changes the port's most load-bearing package. ⭐ **(b) is the cheap one and probably right**, because the Δt it removes is not a thing the engine can ever see in production. |
+| **Owner** | George's ruling · found Go port Phase 3's orchestration chunk, folding gate 0-b for the first time |
+
+---
+
 ## C · Owed measurements and certification gaps
 
 Not defects — work the port still owes, listed here so it is not lost.
