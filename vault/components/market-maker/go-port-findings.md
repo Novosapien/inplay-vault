@@ -9,8 +9,9 @@ description: "The register of defects and gaps the Go port has found in the Pyth
 > **Python reference implementation**, so the list survives the port and can be
 > worked through deliberately at the end rather than reconstructed from session
 > notes.
-> **Status:** open. Phases 0, 1 and 2 are ported and reviewed; Phase 3 is in
-> progress. The register grows as the port continues.
+> **Status:** open. Phases 0, 1, 2 and **3** are ported and reviewed; Phase 4
+> is next. ⭐ **Gate 0-b passes as of 19-08** — all eighteen subtrees
+> byte-identical on both corpora. The register grows as the port continues.
 
 ---
 
@@ -138,7 +139,7 @@ what a requirement asks, and the port cannot fix them either.
 | **Severity** | 🟠 **Latent.** The separate-disk-plus-snapshot design is sound as far as it goes, and a VM rebuild does not lose the journal. This is a retention and reachability gap, not a data-loss bug. |
 | **Port impact** | ⚠ **None, and deliberately none.** The Go port inherits this unchanged; reproducing it is CORRECT under the zero-diff mandate. Nothing here may be built into the Go runtime while the differential replay is the certification — see the register's rule 5 below. |
 | **Fix** | Three options, in `N48`. Cheapest and most consistent with the 03-08 bucket/database split: ship each **closed** run directory to a bucket at rotation. ⚠ Whatever is chosen must not touch the fsync path — the N31 group commit is 2.4 ms and the venue drain is already 98% of the tick. |
-| **Owner** | `N48` in [[market-maker/open-questions]] — George's ruling · found 19-08 during Go port Phase-3 preparation |
+| **Owner** | ✅ **RULED 19-08 — George chose option (1): ship each closed run directory to a bucket at rotation.** Closes the retention inversion, the anchor seed's local-path dependency and the missing cloud path. ⚠ The one-hour window is **ACCEPTED, not closed** — continuous shipping was rejected as invasive. 🔨 **BUILT 19-08** in the Go port's `internal/runtime/rotation.go`, and ⚠⚠ **it is a deliberate DIVERGENCE from the reference**, confined to a path a fold cannot observe: it only ever READS a directory the engine has finished with, so no journalled state and no canonical comparison can see it. It ships at BOOT rather than at shutdown, because the PRIOR run's directory is the one that is definitively closed and shutdown-shipping sends nothing after a crash, an OOM or a kill -9 |
 
 ---
 
@@ -153,7 +154,40 @@ what a requirement asks, and the port cannot fix them either.
 | **Severity** | 🟠 **Blocks gate 0-b on the a2 corpus; almost certainly harmless in production.** In a live run consecutive events are seconds apart, so Δt never approaches this. The two-year span is an ARTEFACT of how the corpus was assembled, not an operating condition. |
 | **Found alongside** | ⭐ A **separate, genuinely dangerous apd defect that IS fixed**: `Context.Exp` works only while `\|x\| ≤ 23 × precision` and refuses to bump precision past 1000, so past `\|x\| = 22,977` it returns **ZERO** where Python returns the real value (`exp(−34657.359…)` → `0E-1000031` vs `3.163856671530324185927899991E-15052`). Fixed in `internal/decimal` by range reduction (`x = n·ln10 + r`, so `exp(x) = exp(r) × 10ⁿ`, a pure exponent shift); 4,000 vectors from the pin, 2,495 of them past the cliff, all exact. |
 | **The ruling needed** | Three readings, and it is **George's**: (a) accept that gate 0-b is certified on the six-game corpus and NOT on a2, recording a2's four affected subtrees as a known limit; (b) rebuild the a2 corpus so its readings and venue events share one timeline, which removes the two-year Δt and is arguably what the corpus should always have been; (c) carry a scaled representation inside `internal/decimal` so extreme exponents survive — real work, and it changes the port's most load-bearing package. ⭐ **(b) is the cheap one and probably right**, because the Δt it removes is not a thing the engine can ever see in production. |
-| **Owner** | George's ruling · found Go port Phase 3's orchestration chunk, folding gate 0-b for the first time |
+| **Owner** | ✅ **CLOSED 19-08 — George ruled (b): rebuild the a2 corpus on one timeline.** `testdata/generators/a2_corpus_rebuild.py` drives the real capture through `six_game_workload.run_profile`, whose `feed_game` already rewrites every stamp onto the run's own clock — which is why the six-game corpus never had the gap. The rebuilt corpus spans **212.6 s** and **all eighteen subtrees now match on both corpora, so gate 0-b passes.** |
+| **⚠ The trade George took** | At 120× the capture's real ~16-second reading cadence becomes 0.13 s, so **every reading lands in §3.3.1's Current band** and the a2 arm no longer exercises Warning, Degraded, Invalid, the §3.4.1 promotion dwell, or the §3.5 deductions. He took it with those numbers in front of him. The mitigation is real: the RETIRED corpus did not exercise them either — two-year-old readings are Invalid on all of them — and `testdata/valuation-fuzz/` drives that surface directly through the API. |
+| **⚠⚠ The LIMIT is not closed, only the CONDITION** | apd still stops at ±100000 and always will. The operational fact that follows: **a security whose Reference Price goes quiet for 76.9 days leaves apd's range.** The decay is `exp(−ln2·Δt÷20)`, so the rate crosses `1e-100000` at `Δt = 100000·ln10·20÷ln2 = 6,643,856 s`; the retired corpus's gap was **nine times** past it. That is far outside any real session — but *"we never go quiet that long"* is the REASON it is safe, and the reason now lives beside the limit in `internal/decimal/exponent_limit_test.go`: four tests on the exact numbers, naming the boundary on both sides and computing the 76.9-day budget rather than asserting it. |
+
+---
+
+### GP-13 · 🔴 The six-game reference is folded under a config version its own journal does not carry
+
+| | |
+|---|---|
+| **Where** | `scripts/go_reference_checkpoint.py` — `REPLAY_CONFIG_VERSION = "GO-REFERENCE"`, used by `_replay_to_state()` to fold the reference it commits |
+| **What** | The generator writes a matched pair — `journal.jsonl` and `state.canonical` — but folds the state under **its own** config version, not the one the RUN that produced the journal used. The run mints `CB1{epoch}` (`six_game_workload.run_profile`) and stamps it into every record. So the committed journal says `CB11787049727` and the committed reference is Python's fold under `GO-REFERENCE`. |
+| **Why it is a trap and not a footnote** | The config version **SALTS every §5.7.3 draw**. Reading it off the journal's records is the natural thing for any consumer to do, and it is the wrong answer. A fold under the wrong one reproduces every price that does not depend on a draw and gets every drawn one wrong — so the result reads as *nearly correct* rather than as obviously broken. |
+| **Evidence** | The Go port fell into it for the length of a whole chunk. `tools/diffreplay` folded under `CB11787049727` and got 13 of 18 subtrees byte-identical, with `quotes` differing in `extra_ticks`, `ask_carries_odd`, the drawn `shape`, every price that followed one, and `quote_number` running ahead on 3 of 12 securities — because a changed book changes whether a cycle publishes at all. It was carried as **"a σ²/width divergence in `quotes`"**. |
+| **What it cost** | A decay-cache investigation (exonerated — folding with the cache off is byte-identical, which incidentally re-confirmed AC23a on a venue-bearing corpus for the first time), a marketable-guard investigation (exonerated — Python's own run logs `MARKETABLE_GUARD_BLIND`, so it refuses nothing either), a determinism check (three runs, identical, so not map order), and a bisection harness over 15,000 events. The bisection is what exposed it: folding the journal with **Python** at the version the harness was passing made the two AGREE, which can only mean the committed reference was folded under something else. |
+| **⭐ And documentation did not prevent it** | `testdata/README.md` already stated `GO-REFERENCE` in as many words, and the `-config-version` flag's own help text already warned about this exact failure mode. Neither helped. |
+| **Severity** | 🟠 **No production impact whatsoever** — it is a property of a certification artefact, not of the engine. But it is a live trap for every future consumer of that pair, and it wastes the most expensive kind of time: the kind spent looking for a bug that is not there. |
+| **Fix** | Two halves. On the Go side, done: `assertReferenceIsForThisJournal` REFUSES unless the manifest beside the reference agrees with the config version being used, and unless the manifest's `journal_sha256` and `canonical_state_sha256` match the two files being compared — four planted defects prove it, including the exact one that was carried. On the Python side, owed: the generator should fold under the version the run actually used, or state loudly in the artefact itself that it does not. |
+| **The transferable rule** | **A setting that is part of a certification target must be ENFORCED against that target's own manifest, not documented beside it.** The other settings of this shape are `-securities` (the a2 corpus's universe) and the pin itself. |
+| **Owner** | 🔵 **Ours** — the Python-side half is a one-line change to the generator, to be made when the pin next moves · found 19-08, Go port Phase 3 |
+
+---
+
+### GP-14 · 🟠 Three documents give three different values for `sweep_max_interval_s`
+
+| | |
+|---|---|
+| **What** | The sweep's cadence and its missed-interval tolerance have moved three times, and the places that record them have not moved together. |
+| **The four sources** | `dictionary.py` — **0.5 / 2.0**, the shipped values, with a comment block that records all three rulings correctly. `loop.py:43-44` — comments reading `# ✅ §3.1.4 — 2.0 s` and `# ✅ §3.1.4 — 2.5 s`, which are §3.1.4's ORIGINAL numbers and predate every ruling. `build/runtime.md` — **1.0 s** for the max interval, which was George's 08-13 evening ruling and never picked up his **14-08** relaxation to 2.0. `parameters.md` row 35 — **2.0 s · 2.5 s ✅ E18**, superseded by its own row 223 further down the same table. |
+| **⚠ Why the `loop.py` comments are the worst of the four** | They carry the **✅ marker**, which under the vault's own ground rule means *confirmed*. A reader checking a number against the code finds a confirmed-looking value that the code beside it does not use. |
+| **Evidence** | `testdata/generators/runtime_producers.py` was written with 2.0 / 2.5 hard-coded — taken from `loop.py`'s comments and corroborated by `build/runtime.md` — and its own provenance assertion refused to run, naming the shipped 0.5 / 2.0. The generator now READS the dictionary and records what it read, and its step plan is written in MULTIPLES of the cadence, so a fourth ruling regenerates the artefact instead of silently invalidating it. |
+| **Severity** | 🟠 **No behavioural defect** — the code reads the dictionary and the dictionary is right. It is a documentation-integrity defect, and the risk is entirely to whoever trusts the wrong copy. The value decides when a sweep counts as MISSED, which drives §3.4 status and §3.5 confidence across all 170 books. |
+| **Fix** | Delete the numbers from `loop.py`'s comments and point at the dictionary; update `build/runtime.md` with the 14-08 ruling; retire `parameters.md` row 35 in favour of row 223. ⚠ None of it touches behaviour, so none of it is blocked by the zero-diff mandate. |
+| **Owner** | 🔵 **Ours** · found 19-08, Go port Phase 3's `runtime` chunk |
 
 ---
 
@@ -163,7 +197,7 @@ Not defects — work the port still owes, listed here so it is not lost.
 
 | # | Item | Why it matters |
 |---|---|---|
-| **GP-8** | **R13's economics table must be re-derived on Go's own numbers, on `n2-standard-2`.** The published table was modelled from an unguarded `exp()`; `internal/decimal` evaluates at guard precision because apd's `Exp` is not correctly rounded, which costs about **15%** more per call. | The decay cache is a **requirement**, not an optimisation — the verdict is unchanged, but the numbers behind it are stale. AC23b already re-measures the hit rate on the rig; the per-call cost needs the same trip. |
+| **GP-8** | **R13's economics table must be re-derived on Go's own numbers, on `n2-standard-2`.** The published table was modelled from an unguarded `exp()`; `internal/decimal` evaluates at guard precision because apd's `Exp` is not correctly rounded, which costs about **15%** more per call. | The decay cache is a **requirement**, not an optimisation — the verdict is unchanged, but the numbers behind it are stale. ✅ **AC23b's hit rate is MEASURED, 19-08: 82.39%** on the venue-bearing arm (3,856 lookups, 3,177 hits, 679 distinct Δt keys, zero evictions) against a ≥80% bar — and the rate is machine-independent, so that half needs no rig. ⚠ The **per-call cost** still does. ⭐ Worth knowing while reading this row: **Python has no decay cache at all** — `grep -rn 'DecayCache\|decay_cache'` over `src/`, `scripts/` and `tests/` at the pin returns nothing. R13 is a Go-side ADDITION, which is why AC23a (byte-identical with the cache ON and OFF) is the stricter of the two acceptance criteria: the cache may exist only because it cannot be observed. |
 | **GP-9** | **AC2 is certified ONCE and is not reproducible from `testdata/`.** The 548 MB gate corpus is a rig artefact and is not committed; only its hashes are. | A future change cannot re-run AC2 without another rig session. |
 | **GP-10** | **The rig is 2.5× slower than the dev Mac**, measured twice independently (2.49× Python, 2.5× Go). | Every Mac number in the port is an ESTIMATE of rig behaviour through this factor. It does not retire the rule that a capacity claim is re-taken on `n2-standard-2`. |
 

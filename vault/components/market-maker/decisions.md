@@ -14,6 +14,79 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19e — ✅ N52 and N48 ruled, gate 0-b passes, and a setting must be enforced rather than documented
+
+**Who:** George (both rulings), during the Go port's Phase-3 session.
+
+### N52 — rebuild the a2 corpus on one timeline
+
+The corpus carried two clocks 60,871,126 s apart: its probability readings kept
+the captured 2024 Chiefs-Ravens game's stamps while its venue events and sweeps
+carried the 2026 replay's. §5.3 decays the variance rate by
+`exp(−ln2 · Δt ÷ 20)`, so the first sweep after a reading asked for
+`exp(−2.1 × 10⁶)` and CPython stored a `variance_rate` of
+`4.385597164977966123725114636E-916199`. `apd` caps the exponent at ±100000 and
+cannot hold it at all.
+
+George was given three options and chose the rebuild. He was then given the
+**pacing** choice with this measured recommendation AGAINST the option he took:
+
+> The capture's real reading cadence is one every ~16 s, which sits in §3.3.1's
+> Warning and Degraded bands. Compressing onto the run clock at the drill's
+> 120× makes every gap 0.13 s — every reading Current — which removes the
+> freshness, status and confidence surface from the a2 arm.
+
+**He chose the 120× compression anyway, and that is the decision.** The
+mitigation is real and was part of the reasoning: the RETIRED corpus did not
+exercise those bands either — two-year-old readings are Invalid on all of them
+— and `testdata/valuation-fuzz/` drives §3.3/§3.4/§3.5 through the API rather
+than through a corpus. So it is a change of blind spot, not a new one.
+
+He also ruled the old corpus is **replaced with one regression test kept**: the
+two-clock case survives as four tests in `internal/decimal` on the exact
+numbers, so GP-12 stays reproducible without keeping a 9.8 MB journal to
+demonstrate it.
+
+⭐ **Gate 0-b now PASSES** — all eighteen subtrees byte-identical on both
+corpora, plus the AC11 determinism stress at GOMAXPROCS 1, 2 and 8.
+
+### N48 — ship each closed run directory to a bucket at rotation
+
+Option (1). It closes the retention inversion (the journal kept for 7 days
+against N19's perpetual retention for the input file that feeds it), the anchor
+seed's local-path dependency, and the absence of any cloud path in the engine.
+⚠ The one-hour window is **ACCEPTED, not closed** — option (2), continuous
+shipping, was rejected as invasive against a 2.4 ms group commit and a drain
+that is already 98% of the tick.
+
+Built the same day. ⭐ It ships at **BOOT, not at shutdown**: the PRIOR run's
+directory is the one definitively closed, it is exactly the directory the anchor
+seed reads, and shutdown-shipping would send nothing in the case that matters
+most — a crash, an OOM, a kill -9.
+
+### ⭐ The standing rule this session earned
+
+The `quotes` divergence that had been carried for a whole chunk was **never a
+port defect**. The six-game reference is Python's fold under config version
+`GO-REFERENCE`; the harness was passing `CB11787049727`, the value the journal's
+own RECORDS carry. The version salts every §5.7.3 draw, so the fold reproduced
+every price that does not depend on a draw and got every drawn one wrong —
+"nearly correct", which is why it survived so long.
+
+⚠ **`testdata/README.md` already named `GO-REFERENCE` in as many words, and the
+flag's own help text already warned about exactly this failure.** Documentation
+did not prevent it. So:
+
+> **A setting that is part of a certification target must be ENFORCED against
+> that target's own manifest, not documented beside it.**
+
+The harness now refuses unless the manifest agrees with the config version AND
+hashes both files being compared. Four planted defects prove it, including the
+exact one that was carried. Full detail in [[market-maker/go-port-findings|GP-13]];
+the sweep-interval documentation drift found alongside it is GP-14.
+
+---
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
