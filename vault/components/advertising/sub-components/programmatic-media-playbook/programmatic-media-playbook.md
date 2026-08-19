@@ -9,6 +9,7 @@ description: "Brett's operating model for InPlay programmatic ads — 18-SSP pri
 > **Status:** Reference (operating model, not a user-facing flow)
 > **Owner:** Brett (ad-tech / programmatic) + Novosapien AdOps
 > **Sources:** _[[meetings/17-06-2026-touchdown]]_ · source artifact: `Inplay Outreach/ssp-priority-stack.html` (deployed copy in `ssp-guide-deploy/`)
+> **IDs:** all publisher / app / ad-unit / SSP-seat IDs live in the central [[ad-network-ids]] registry.
 
 ---
 
