@@ -13,11 +13,15 @@ branches: { touched: 21, merged: 20, open: 1 }
 
 ## Headline
 
-The app stopped showing numbers it had invented. A price, an order book, a chart or a
-day change now comes from the venue, or the screen says it has no data. The team also made
-the app faster and shipped version 1.1 to the App Store. The app now reads the live game
-worker directly, so a kickoff, a score and a win probability arrive in seconds instead of
-a minute. Most of this work sits on `prerelease` and has not reached users yet.
+**The app stopped showing numbers it had invented.**
+
+- A price, an order book, a chart or a day change now comes from the venue, or the screen
+  says it has no data
+- The team made the app faster
+- The team shipped version 1.1 to the App Store
+- The app now reads the live game worker directly, so a kickoff, a score and a win
+  probability arrive in seconds instead of a minute
+- Most of this work sits on `prerelease` and has not reached users yet
 
 ## Scope
 
@@ -28,170 +32,241 @@ a minute. Most of this work sits on `prerelease` and has not reached users yet.
 
 Three counting notes, all checked:
 
-1. **Use explicit times in the git command.** A bare `--since="2026-08-09"` resolves to
-   2026-08-09 at the current time of day, not to midnight. Run at 19:30, it silently drops
-   every commit made before 19:30 on 09 August. That is 18 commits here — all westy412,
-   all on `feat/home-rework`, all between 15:59 and 18:42. The correct form is:
+1. **Use explicit times in the git command.**
+   - A bare `--since="2026-08-09"` resolves to 2026-08-09 at the current time of day, not
+     to midnight
+   - Run at 19:30, it silently drops every commit made before 19:30 on 09 August
+   - That is 18 commits here — all westy412, all on `feat/home-rework`, all between 15:59
+     and 18:42
+   - The correct form is:
 
-   ```
-   git log --all --since="2026-08-09 00:00:00" --until="2026-08-17 00:00:00"
-   ```
+     ```
+     git log --all --since="2026-08-09 00:00:00" --until="2026-08-17 00:00:00"
+     ```
 
-   The bare form returns 274. The correct form returns **292**. This file uses 292.
-2. The two `Claude Code` commits are agent checkpoints of `.claude/RESUME.md`. They live
-   on `refs/claude/*`, not on any branch. They belong to westy412's work `(agent commit)`.
-3. This repository is live. The snapshot is 2026-08-16 19:54 BST, with `prerelease` at
-   `00cbc9c`. One commit landed while this file was written.
+   - The bare form returns 274. The correct form returns **292**. This file uses 292.
+2. **The two `Claude Code` commits are agent checkpoints of `.claude/RESUME.md`.**
+   - They live on `refs/claude/*`, not on any branch
+   - They belong to westy412's work `(agent commit)`
+3. **This repository is live.**
+   - The snapshot is 2026-08-16 19:54 BST, with `prerelease` at `00cbc9c`
+   - One commit landed while this file was written
 
 ## Themes
 
 ### 1. No fabricated prices anywhere
 
-The app carried a simulated price engine from before the venue existed. It filled gaps
-with invented numbers. A tester could see a fake `$20-80` price above a real order book.
-A chart could draw a year of trades that never happened. A team page showed a
-"Season High/Low" that nobody had set. That is a data-integrity problem, not a cosmetic one.
+**Why it matters** — the app invented numbers where the venue had none. That is a
+data-integrity problem, not a cosmetic one.
 
-westy412 deleted the simulated price engine on `fix/no-fabricated-prices` (`9bdf1fb`).
-The `LivePriceProvider` now serves venue quotes only. No feed means no prices, not demo
-prices. He removed the fabricated position sparkline, the non-venue team-page fallback,
-and the stale "Demo" badges. Earlier in the week he removed every generated order-book
-ladder on `feat/home-rework` (`51af564`), so an empty ladder reads as
-`No live order book available`. Hxsan removed the mock candle generator on
-`fix/order-history-and-chart-migration` (`6e5a6a5`). It fabricated about 347 daily bars
-that started the previous September. That is why charts folded back on themselves.
+- **The source** — a simulated price engine, carried from before the venue existed. It
+  filled gaps with invented numbers.
+- **On the order book** — a tester could see a fake `$20-80` price above a real ladder
+- **On a chart** — a year of trades that never happened
+- **On a team page** — a "Season High/Low" that nobody had set
 
-Hxsan then fixed the opposite failure. `TBA` meant two different things. 164 of 170 symbols
-carried no previous close, so `TBA` was the default state of nearly every row on the board
-(`6416a93`, on `feat/data-sync`). A flat day change now reads `0.00%` with no arrow and a
-neutral colour, from one rule in `lib/format.dayChangePercent`. He also fixed a push that
-wiped the day-change baseline on the symbols that actually trade
-(`bd09e77`, `fix/tape-day-change-baseline`).
+**`fix/no-fabricated-prices`** · `9bdf1fb` · merged `origin/prerelease` only
+- **What** — westy412 deleted the simulated price engine
+  - `LivePriceProvider` now serves venue quotes only. No feed means no prices, not demo
+    prices.
+  - he removed the fabricated position sparkline, the non-venue team-page fallback, and
+    the stale "Demo" badges
 
-`fix/no-fabricated-prices`, `feat/data-sync` and `fix/tape-day-change-baseline` reached
-`origin/prerelease` only. `feat/home-rework` reached `origin/main`.
+**`feat/home-rework`** · `51af564` · merged `origin/main`
+- **What** — earlier in the week westy412 removed every generated order-book ladder
+- **Where it lands** — an empty ladder now reads as `No live order book available`
+
+**`fix/order-history-and-chart-migration`** · `6e5a6a5`
+- **What** — Hxsan removed the mock candle generator
+- **Why** — it fabricated about 347 daily bars that started the previous September. That
+  is why charts folded back on themselves.
+
+**`feat/data-sync`** · `6416a93` · merged `origin/prerelease` only
+- **Symptom** — `TBA` meant two different things
+- **Cause** — 164 of 170 symbols carried no previous close, so `TBA` was the default state
+  of nearly every row on the board
+- **Fix** — a flat day change now reads `0.00%` with no arrow and a neutral colour, from
+  one rule in `lib/format.dayChangePercent`
+
+**`fix/tape-day-change-baseline`** · `bd09e77` · merged `origin/prerelease` only
+- **Fix** — Hxsan fixed a push that wiped the day-change baseline on the symbols that
+  actually trade
 
 ### 2. Venue trading became reliable
 
-Testers reported orders that vanished, taps that did nothing, and a limit price that
-climbed under the thumb. Several of these are the kind of fault that ends in a user
-selling the same shares twice.
+**Why it matters** — testers reported orders that vanished, taps that did nothing, and a
+limit price that climbed under the thumb.
 
-westy412 fixed the order lifecycle on `prerelease`. A placed order stopped vanishing, and
-positions now heal inside a session (`1a3395a`). A tZERO reject with `CxlRejReason=0` no
-longer deletes a live order (`d0e3940`). The reducer had treated that catch-all code as
-proof of a fill. westy412 confirmed the fault live on an `IPTCBUCC` short. A dropped iOS
-sheet present no longer freezes every trade tap (`4bf5bdd`). The limit price is now frozen
-and seeded from the last traded price (`ff00387`). `Max` now mirrors the server's projected
-position, so the server no longer refuses the size the app proposed (`2d90015`). He also
-exposed the built-but-hidden edit sheet, so open orders can be edited on all five surfaces
-that show them (`e4ed039`).
+- **The stake** — several of these are the kind of fault that ends in a user selling the
+  same shares twice
 
-Hxsan built the trading features. `feat/synthetic-market-order` added the MKT chip, which
-sends `order_type='market'` with no price and lets the server walk the book (`aaaf0e5`).
-`feat/sell-availability` states and enforces the sell bound on both order sheets
-(`7fa0df9`). Two pending sells of 25 against 100 held no longer leave the user guessing.
-`feat/data-sync` settled a real divergence. The quote feed and the depth feed are two
-separate tZERO subscriptions that can legitimately disagree. Every surface picked one ad
-hoc. `hooks/useTopOfBook` now makes the precedence one rule (`8b8cd74`).
+**`prerelease` — the order lifecycle** · westy412
+- **Vanishing order** — a placed order stopped vanishing, and positions now heal inside a
+  session (`1a3395a`)
+- **Venue reject** — a tZERO reject with `CxlRejReason=0` no longer deletes a live order
+  (`d0e3940`)
+  - the reducer had treated that catch-all code as proof of a fill
+  - westy412 confirmed the fault live on an `IPTCBUCC` short
+- **Frozen taps** — a dropped iOS sheet present no longer freezes every trade tap
+  (`4bf5bdd`)
+- **Limit price** — the limit price is now frozen and seeded from the last traded price
+  (`ff00387`)
+- **Max size** — `Max` now mirrors the server's projected position, so the server no
+  longer refuses the size the app proposed (`2d90015`)
+- **Edit sheet** — he exposed the built-but-hidden edit sheet, so open orders can be
+  edited on all five surfaces that show them (`e4ed039`)
 
-All four branches reached `origin/prerelease` only.
+**`feat/synthetic-market-order`** · `aaaf0e5` · Hxsan
+- **What** — the MKT chip
+- **How** — it sends `order_type='market'` with no price, and lets the server walk the book
+
+**`feat/sell-availability`** · `7fa0df9` · Hxsan
+- **What** — the sell bound is stated and enforced on both order sheets
+- **Why** — two pending sells of 25 against 100 held no longer leave the user guessing
+
+**`feat/data-sync`** · `8b8cd74` · Hxsan
+- **Cause** — the quote feed and the depth feed are two separate tZERO subscriptions that
+  can legitimately disagree. Every surface picked one ad hoc.
+- **Fix** — `hooks/useTopOfBook` now makes the precedence one rule
+
+> All four branches reached `origin/prerelease` only.
 
 ### 3. The app got faster, and one fix was reverted
 
-The app lagged on tab switches and scrolls. Hxsan profiled it and worked through
-`fix-lag`. The root cause was whole-tree work unrelated to what was on screen.
+**Why it matters** — the app lagged on tab switches and scrolls.
 
-`18d7669` coalesced quote ticks into one flush per 250ms. It also made channel
-subscriptions follow what is on screen, not the first 60 rows of the board. `7ca292c` made a
-price tick re-render only the rows showing that symbol. `ccdf6b7` paused ticks and polls
-on blurred tabs. `370c922` gave each Discover panel its own scroller, so the schedule
-finally virtualizes. A 60-game NCAA Saturday now mounts a screenful of rows, not all of
-them. `0967655` enabled the React Compiler (486/486 components compile).
+- **Cause** — whole-tree work unrelated to what was on screen
+- **Who** — Hxsan profiled it and worked through `fix-lag`
 
-One change was reverted. `7821f78` set `freezeOnBlur` on the tab navigator and all five
-nested stacks. Prerelease then reported tabs that intermittently stopped painting, because
-`react-freeze` suspends a subtree and React 19 on the New Architecture can lose its
-effects. Hxsan removed all six sites (`5e1b947`) and kept the memoisation half.
+**`fix-lag` — the perf work** · Hxsan
+- **Quote ticks** — coalesced into one flush per 250ms; channel subscriptions now follow
+  what is on screen, not the first 60 rows of the board (`18d7669`)
+- **Re-renders** — a price tick re-renders only the rows showing that symbol (`7ca292c`)
+- **Blurred tabs** — ticks and polls pause (`ccdf6b7`)
+- **Discover** — each panel got its own scroller, so the schedule finally virtualizes
+  (`370c922`)
+  - a 60-game NCAA Saturday now mounts a screenful of rows, not all of them
+- **React Compiler** — enabled, 486/486 components compile (`0967655`)
 
-**This revert has not reached `origin/main`.** `7821f78` is on `origin/main`,
-`origin/dev` and `origin/testing`. `5e1b947` is on `origin/prerelease` only. See
-"Notable fixes" below.
+**The reverted fix** · `7821f78` then `5e1b947` · Hxsan
+- **What it did** — `7821f78` set `freezeOnBlur` on the tab navigator and all five nested
+  stacks
+- **Symptom** — prerelease reported tabs that intermittently stopped painting
+- **Cause** — `react-freeze` suspends a subtree, and React 19 on the New Architecture can
+  lose its effects
+- **Fix** — Hxsan removed all six sites (`5e1b947`) and kept the memoisation half
+
+> **This revert has not reached `origin/main`.** `7821f78` is on `origin/main`,
+> `origin/dev` and `origin/testing`. `5e1b947` is on `origin/prerelease` only. See
+> "Notable fixes" below.
 
 ### 4. Live game data now comes from the worker
 
-The app polled `/sr/games/{id}/live` every 60 seconds, so a game could sit on screen as
-"upcoming" for up to a minute after kickoff. The app has held a Centrifugo connection
-since Phase 2, and the game page already streamed the same deltas.
+**Why it matters** — the app polled `/sr/games/{id}/live` every 60 seconds, so a game could
+sit on screen as "upcoming" for up to a minute after kickoff.
 
-westy412 subscribed the live candidates to their game channels, so the first publication
-on a channel is itself the "live now" signal (`f8d8222`). He kept the 60-second poll as
-the cold-open read and the safety net. He fixed a screen left open across kickoff
-(`b7282d6`) and the final whistle (`1a1a3bf`). He fixed a socket drop that permanently
-shortened the game page's moments rail (`0095a2c`). He added the worker's live win
-probability to every card (`6844177`, `3fcf371`). He added a possession ball and the full
-SR play-by-play feed (`ee619ba`). He rebuilt the landscape watch screen as a full trading
-surface (`2ce92c2`, `438ccc6`). He also collapsed about 30 game-page requests into one
-`/sr/games/{id}/aggregate` call (`814f921`).
+- **What was already there** — the app has held a Centrifugo connection since Phase 2
+- **What was already there** — the game page already streamed the same deltas
 
-All of this sits on `prerelease` and is not on `origin/main`.
+**`prerelease` — the worker move** · westy412
+- **Live signal** — live candidates now subscribe to their game channels, so the first
+  publication on a channel is itself the "live now" signal (`f8d8222`)
+  - he kept the 60-second poll as the cold-open read and the safety net
+- **Kickoff** — a screen left open across kickoff now notices the game (`b7282d6`)
+- **Final whistle** — a screen left open across the final whistle now notices it (`1a1a3bf`)
+- **Moments rail** — a socket drop no longer permanently shortens the game page's moments
+  rail (`0095a2c`)
+- **Win probability** — the worker's live win probability now reaches every card
+  (`6844177`, `3fcf371`)
+- **Play-by-play** — a possession ball and the full SR play-by-play feed (`ee619ba`)
+- **Watch screen** — the landscape watch screen is rebuilt as a full trading surface
+  (`2ce92c2`, `438ccc6`)
+- **Requests** — about 30 game-page requests collapse into one `/sr/games/{id}/aggregate`
+  call (`814f921`)
+
+> All of this sits on `prerelease` and is not on `origin/main`.
 
 ### 5. Store 1.1, KYC tiers and the market-phase gate
 
-Hxsan shipped version 1.1 through the promotion chain on 2026-08-12. `feat/store-1.1`
-(`077f435`) cleared two iOS privacy-manifest blockers: `NSPrivacyTrackingDomains` was
-empty while `NSPrivacyTracking` was true, and `NSPrivacyCollectedDataTypes` was missing
-`ProductInteraction` and `SensitiveInfo`. That change is native and needed a full
-`eas build`. Version 1.0.2 moved to 1.1, which moves the OTA runtime fence.
+**What it is** — the release work. Hxsan shipped version 1.1 through the promotion chain on
+2026-08-12.
 
-`feat/role-tiers` made KYC skippable, so a user can explore before verification
-(`43ecac9`). `feat/referral-topup` replaced a mock wallet top-up that moved money only in
-React state (`d6688b4`). That branch is flag-gated off, because the crediting scheduler
-does not exist yet. `feat/leaderboard-verticals` and `feat/ranks-v2` turned the risk-adjusted and
-comeback boards from a hardcoded "coming soon" card into real server-driven boards
-(`2867b4e`, `3f0501f`).
+**`feat/store-1.1`** · `077f435` · Hxsan
+- **What** — two iOS privacy-manifest blockers cleared
+  - `NSPrivacyTrackingDomains` was empty while `NSPrivacyTracking` was true
+  - `NSPrivacyCollectedDataTypes` was missing `ProductInteraction` and `SensitiveInfo`
+- **Cost** — the change is native and needed a full `eas build`
+- **Version** — 1.0.2 moved to 1.1, which moves the OTA runtime fence
 
-Hxsan also replaced two build-channel switches with a per-league market phase served on
-`/trading/config` (`3cbe980`, `a7d3107`). NCAA secondary opens 27 August and NFL opens
-7 September, so a single global switch cannot be correct for ten days. About 90 call
-sites now pass the instrument's league.
+**`feat/role-tiers`** · `43ecac9` · Hxsan
+- **What** — KYC became skippable, so a user can explore before verification
 
-All these branches reached `origin/main`.
+**`feat/referral-topup`** · `d6688b4` · Hxsan
+- **What** — it replaced a mock wallet top-up that moved money only in React state
+- **Caveat** — the branch is flag-gated off, because the crediting scheduler does not exist
+  yet
+
+**`feat/leaderboard-verticals` and `feat/ranks-v2`** · `2867b4e`, `3f0501f` · Hxsan
+- **What** — the risk-adjusted and comeback boards became real server-driven boards
+- **Before** — a hardcoded "coming soon" card
+
+**The market-phase gate** · `3cbe980`, `a7d3107` · Hxsan
+- **What** — two build-channel switches became a per-league market phase served on
+  `/trading/config`
+- **Why** — NCAA secondary opens 27 August and NFL opens 7 September, so a single global
+  switch cannot be correct for ten days
+- **Reach** — about 90 call sites now pass the instrument's league
+
+> All these branches reached `origin/main`.
 
 ### 6. Home rebuilt to Edwin's mock, plus schedule and the season rollover
 
-Edwin handed over a front-end mock of the app on 2026-08-08. The mock's home page is
-trader-first: your money, your teams, the movers. The app's home page was games-first: the
-day's slate. westy412 wrote the merge plan on 2026-08-09 and committed it to `inplay-vault`
-(`ab0165b`, `vault/components/information-layer/sub-components/discovery-home/home-rework-plan.md`).
-That file holds the 13-block list, the mock-to-component mapping, and the work order. It is
-the written brief for this workstream, and it names the three open questions that were still
-open when the build started.
+**What it is** — a rebuild of the home page against a front-end mock Edwin handed over on
+2026-08-08.
 
-The build was an iterated design response, not one pass. westy412 wrote 18 commits on
-09 August alone, all on `feat/home-rework`. He built a first pass of the whole page
-(`c381c07`), then reworked the header twice. `46c0eff` is "v2" and dropped the 372px
-stadium hero. `68fec97` is "v3" and returned to a traditional header in George's block
-order. Six more commits tuned the header insets and the ticker edge. One of them is marked
-"George-approved" (`6331173`). He redesigned and restacked the IPO countdown three times,
-across `ba35179`, `ee58c71`, `745c85c` and `9fa7c94`.
+- **The mock's home page** — trader-first: your money, your teams, the movers
+- **The app's home page** — games-first: the day's slate
 
-The rest of the plan landed later in the week. On 2026-08-15 westy412 extracted the
-Discover movers rail into `components/market/TopMoversRail.tsx` and mounted it on Home as
-"Today's Movers" (`2bd6564`, `91346fd`). That is block 7 of the plan, and the commit says
-so. He then hid three cards behind `HOME_PROMO_CARDS_ENABLED` (`1b4c26c`). Two of
-them are plan blocks that had already been built: `CompetitionsCard` (block 4) and
-`IpoDriveCard` (block 9). The flag hides the way in and leaves the cards, routes and data
-in the bundle, so one environment variable restores them.
+**The written brief** · `ab0165b` · in `inplay-vault`
+- **Where** — `vault/components/information-layer/sub-components/discovery-home/home-rework-plan.md`
+- **When** — westy412 wrote the merge plan on 2026-08-09 and committed it
+- **What it holds** — the 13-block list, the mock-to-component mapping, and the work order
+- **Also** — it names the three open questions that were still open when the build started
 
-On `feat/preseason-labels` he made the schedule read all three season phases, so August no
-longer claims "No results yet" with three preseason weeks played (`fd5da17`). He added a
-Home results row (`49c7cee`) and a `PRE`/`POST` week label derived from `season_type`
-(`58f6822`). Hxsan fixed the IPO cards, which showed `TBA` for every last-season record
-once the server's season resolver rolled to 2026 (`b382ac3`).
+**`feat/home-rework` — the 09 August build** · westy412 · merged `origin/main`
+- **Shape** — the build was an iterated design response, not one pass. westy412 wrote 18
+  commits on 09 August alone.
+- **First pass** — the whole page (`c381c07`)
+- **Header v2** — dropped the 372px stadium hero (`46c0eff`)
+- **Header v3** — returned to a traditional header in George's block order (`68fec97`)
+- **Header tuning** — six more commits tuned the header insets and the ticker edge. One is
+  marked "George-approved" (`6331173`).
+- **IPO countdown** — redesigned and restacked three times, across `ba35179`, `ee58c71`,
+  `745c85c` and `9fa7c94`
 
-`feat/home-rework` and `feat/preseason-labels` reached `origin/main`. The Today's Movers
-and promo-card work sits on `prerelease`.
+**`prerelease` — the rest of the plan** · westy412
+- **Block 7** — on 2026-08-15 he extracted the Discover movers rail into
+  `components/market/TopMoversRail.tsx` (`2bd6564`, `91346fd`)
+  - he mounted it on Home as "Today's Movers"
+  - that is block 7 of the plan, and the commit says so
+- **Promo cards** — he then hid three cards behind `HOME_PROMO_CARDS_ENABLED` (`1b4c26c`)
+  - two of them are plan blocks that had already been built: `CompetitionsCard` (block 4)
+    and `IpoDriveCard` (block 9)
+  - the flag hides the way in and leaves the cards, routes and data in the bundle, so one
+    environment variable restores them
+
+**`feat/preseason-labels`** · westy412 · merged `origin/main`
+- **Season phases** — the schedule reads all three, so August no longer claims "No results
+  yet" with three preseason weeks played (`fd5da17`)
+- **Home results row** — added (`49c7cee`)
+- **Week label** — a `PRE`/`POST` label derived from `season_type` (`58f6822`)
+
+**The season rollover** · `b382ac3` · Hxsan
+- **Fix** — the IPO cards showed `TBA` for every last-season record once the server's
+  season resolver rolled to 2026
+
+> `feat/home-rework` and `feat/preseason-labels` reached `origin/main`. The Today's Movers
+> and promo-card work sits on `prerelease`.
 
 ## Branches
 
@@ -220,161 +295,231 @@ and promo-card work sits on `prerelease`.
 | `refs/claude/*` | Claude Code `(agent commit)` | 2 | **not a branch** | Two rate-limit checkpoints of `.claude/RESUME.md`. |
 
 Nine further refs carry commits in the window but hold **no work of their own**:
-`feat/games-year-dropdown`, `fix/order-history-and-chart-migration`, `fix-lag`,
-`fix/live-reseed`, `feat/live-winprob-cards`, `chore/home-hide-promo-cards`,
-`feat/home-top-movers`, `trading-ui-changes` and `origin/prerelease`. Each one is a
-pointer left at a position on the shared `prerelease` line. Their commits are counted once,
-under `prerelease`. The theme text still names them, because they label the work.
+
+- `feat/games-year-dropdown`
+- `fix/order-history-and-chart-migration`
+- `fix-lag`
+- `fix/live-reseed`
+- `feat/live-winprob-cards`
+- `chore/home-hide-promo-cards`
+- `feat/home-top-movers`
+- `trading-ui-changes`
+- `origin/prerelease`
+
+Three notes on those nine refs:
+
+- **What they are** — each one is a pointer left at a position on the shared `prerelease`
+  line
+- **How they count** — their commits are counted once, under `prerelease`
+- **Why they are named** — the theme text still names them, because they label the work
 
 ## Notable fixes and incidents
 
-**`freezeOnBlur` is on `origin/main` and its revert is not.** `7821f78` set
-`freezeOnBlur` on the tab navigator and five nested stacks. It reached `origin/main` on
-2026-08-13 in the promote `2d40c4e`. On 2026-08-14 Hxsan removed all six sites in
-`5e1b947`, because prerelease testers hit tabs that intermittently stopped painting: state
-intact, navigator moved, screen never painted. `react-freeze` 1.0.4 suspends a subtree by
-throwing a promise, and on React 19.1 with the New Architecture a suspended tree can lose
-its effects. `5e1b947` is on `origin/prerelease` only. **The App Store build therefore
-carries the fault.** Verified against the original repro on Metro; a device soak is still
-needed before `freezeOnBlur` returns.
+**`freezeOnBlur` is on `origin/main` and its revert is not.**
+- **Symptom** — prerelease testers hit tabs that intermittently stopped painting: state
+  intact, navigator moved, screen never painted
+- **Cause** — `react-freeze` 1.0.4 suspends a subtree by throwing a promise, and on React
+  19.1 with the New Architecture a suspended tree can lose its effects
+- **Timeline**
+  - `7821f78` set `freezeOnBlur` on the tab navigator and five nested stacks
+  - it reached `origin/main` on 2026-08-13 in the promote `2d40c4e`
+  - on 2026-08-14 Hxsan removed all six sites in `5e1b947`
+- **Fix** — `5e1b947`, which is on `origin/prerelease` only
+- **Impact** — **the App Store build therefore carries the fault**
+- **Evidence** — verified against the original repro on Metro. A device soak is still
+  needed before `freezeOnBlur` returns.
 
-**A missing ATT native module took the whole app down.** `expo-tracking-transparency` was
-the only eager import of an optional native module. On a binary built without it the
-import threw at `app/_layout.tsx` module load. The root layout never mounted and every
-screen blanked with `useAuth must be used within an AuthProvider`. Hxsan moved the require
-into `initAds`' existing `try` (`f33ff8e`). `tsc --noEmit` clean.
+**A missing ATT native module took the whole app down.**
+- **Symptom** — the root layout never mounted, and every screen blanked with `useAuth must
+  be used within an AuthProvider`
+- **Cause** — `expo-tracking-transparency` was the only eager import of an optional native
+  module. On a binary built without it the import threw at `app/_layout.tsx` module load.
+- **Fix** — Hxsan moved the require into `initAds`' existing `try` (`f33ff8e`)
+- **Evidence** — `tsc --noEmit` clean
 
-**Trade taps died after a sheet closed.** Presenting an iOS Modal while a sibling modal is
-still dismissing silently no-ops. The edit and cancel sheets added two new native modals.
-"Close the cancel sheet, tap Cover" then left `sheetOpen` true with nothing on screen.
-Every later tap was a no-op until a remount. Hxsan added a settle-then-flush gate
-(`4f8864d`); westy412 extended it to the order sheet's own dismissal and made `openTrade`
-self-heal (`4bf5bdd`).
+**Trade taps died after a sheet closed.**
+- **Symptom** — "Close the cancel sheet, tap Cover" left `sheetOpen` true with nothing on
+  screen. Every later tap was a no-op until a remount.
+- **Cause** — presenting an iOS Modal while a sibling modal is still dismissing silently
+  no-ops. The edit and cancel sheets added two new native modals.
+- **Fix** — Hxsan added a settle-then-flush gate (`4f8864d`)
+- **Fix** — westy412 extended it to the order sheet's own dismissal, and made `openTrade`
+  self-heal (`4bf5bdd`)
 
-**A venue reject deleted a live order.** tZERO overloads `CxlRejReason=0` as a catch-all
-for its risk stack. The cause lives only in the Tag 58 text. The reducer treated reason 0
-as proof of a fill: it removed the row and flashed a green "already filled". A short whose
-resize failed the borrow re-check vanished until a cold start. westy412 fixed the reducer
-and added tests (`d0e3940`). Confirmed live on 2026-08-15.
+**A venue reject deleted a live order.**
+- **Symptom** — the reducer removed the row and flashed a green "already filled". A short
+  whose resize failed the borrow re-check vanished until a cold start.
+- **Cause** — tZERO overloads `CxlRejReason=0` as a catch-all for its risk stack. The cause
+  lives only in the Tag 58 text.
+- **Cause** — the reducer treated reason 0 as proof of a fill
+- **Fix** — westy412 fixed the reducer and added tests (`d0e3940`)
+- **Evidence** — confirmed live on 2026-08-15
 
-**A placed order vanished and the share count did not move.** The open-order merge kept a
-local row only when the row post-dated the request. A snapshot that had not yet published
-the new order therefore deleted it. westy412 moved the decision into a pure
-`mergeOpenOrderSnapshot` under the Node harness, keyed on the app-minted ClOrdID with a
-30-second window (`1a3395a`). Positions also gained an in-session self-heal.
+**A placed order vanished and the share count did not move.**
+- **Cause** — the open-order merge kept a local row only when the row post-dated the
+  request. A snapshot that had not yet published the new order therefore deleted it.
+- **Fix** — westy412 moved the decision into a pure `mergeOpenOrderSnapshot` under the Node
+  harness, keyed on the app-minted ClOrdID with a 30-second window (`1a3395a`)
+- **Fix** — positions also gained an in-session self-heal
 
-**Charts drew a year of trades that never happened.** Both chart surfaces fed
-`getSeasonCandles()`. That mock generator anchored to 1 September of the previous year.
-In August it fabricated about 347 daily bars. Its day-grid re-stamp then made timestamps
-run 10am, 11am, 10am. Hxsan dropped the prop (`6e5a6a5`). The same commit fixed a filled
-order that never reached the Orders tab until a remount.
+**Charts drew a year of trades that never happened.**
+- **Symptom** — timestamps ran 10am, 11am, 10am
+- **Cause** — both chart surfaces fed `getSeasonCandles()`. That mock generator anchored to
+  1 September of the previous year.
+- **Cause** — in August it fabricated about 347 daily bars, and its day-grid re-stamp then
+  made the timestamps run backwards
+- **Fix** — Hxsan dropped the prop (`6e5a6a5`). The same commit fixed a filled order that
+  never reached the Orders tab until a remount.
 
-**Every IPO countdown ran about 13 hours fast.** `new Date(2026, 7, 22)` builds midnight
-in the device's timezone. The offering opens 1:00pm ET, and a tester in London hit zero at
-7pm ET the day before. Hxsan pinned all six countdowns to the real ET instants from the
-requirements document (`4fdbbdf`, `2dd04f3`).
+**Every IPO countdown ran about 13 hours fast.**
+- **Symptom** — a tester in London hit zero at 7pm ET the day before
+- **Cause** — `new Date(2026, 7, 22)` builds midnight in the device's timezone, and the
+  offering opens 1:00pm ET
+- **Fix** — Hxsan pinned all six countdowns to the real ET instants from the requirements
+  document (`4fdbbdf`, `2dd04f3`)
 
-**Every last-season record read `TBA`.** The IPO cards called `useStandings(league)` with
-no year. The server's season resolver had rolled to 2026, which has not kicked off, and
-returned 170 rows of `0-0-0`. Nothing errored and nothing was missing. Hxsan added
-`useCompletedStandings`, which asks whether any team has a season worth reporting
-(`b382ac3`). This will recur every August unless the predicate matches the question.
+**Every last-season record read `TBA`.**
+- **Symptom** — nothing errored and nothing was missing
+- **Cause** — the IPO cards called `useStandings(league)` with no year. The server's season
+  resolver had rolled to 2026, which has not kicked off, and returned 170 rows of `0-0-0`.
+- **Fix** — Hxsan added `useCompletedStandings`, which asks whether any team has a season
+  worth reporting (`b382ac3`)
+- **Caveat** — this will recur every August unless the predicate matches the question
 
-**The limit price climbed under the user's thumb.** A hotfix. While pegged, an effect
-rewrote the limit field on every book tick. westy412 removed the peg-follow effect; the
-field now seeds once from the last traded price (`ff00387`).
+**The limit price climbed under the user's thumb.**
+- **Symptom** — a hotfix case. While pegged, an effect rewrote the limit field on every
+  book tick.
+- **Fix** — westy412 removed the peg-follow effect. The field now seeds once from the last
+  traded price (`ff00387`).
 
 ## Cross-service dependencies
 
 The app changed shape this week because three other services changed. These links matter
 for the roll-up.
 
-**`inplay-sportradar-service` (the worker).** The app now depends on the worker for live
-state. `f8d8222` subscribes live candidates to their game channels and treats the first
-publication as the "live now" signal. `6844177` and `3fcf371` read a new optional
-`homeWinProb` on the delta snapshot; the commit says that feed is "live on testing".
-`1a1a3bf` treats the worker's terminal snapshot as the authoritative end signal, and adds
-SR's single-l `"canceled"` spelling. `814f921` follows service change `f2dff19` on testing:
-`GET /sr/games/{id}/aggregate` and `season_type=ALL` on `/sr/schedule`. `ee619ba` reads
-the `pbp` endpoint and `possessionAlias`. One open ask sits with the service team:
-`/sr/winprob` takes no `season_type`, so preseason ids never reach it. `5efe7bd` fills that
-gap client-side, capped at 20 probes, and retires itself when the endpoint learns
-`season_type`.
+**`inplay-sportradar-service` (the worker).**
+- **Dependency** — the app now depends on the worker for live state
+- **`f8d8222`** — subscribes live candidates to their game channels, and treats the first
+  publication as the "live now" signal
+- **`6844177` and `3fcf371`** — read a new optional `homeWinProb` on the delta snapshot.
+  The commit says that feed is "live on testing".
+- **`1a1a3bf`** — treats the worker's terminal snapshot as the authoritative end signal,
+  and adds SR's single-l `"canceled"` spelling
+- **`814f921`** — follows service change `f2dff19` on testing: `GET
+  /sr/games/{id}/aggregate` and `season_type=ALL` on `/sr/schedule`
+- **`ee619ba`** — reads the `pbp` endpoint and `possessionAlias`
+- **One open ask with the service team** — `/sr/winprob` takes no `season_type`, so
+  preseason ids never reach it
+  - `5efe7bd` fills that gap client-side, capped at 20 probes, and retires itself when the
+    endpoint learns `season_type`
 
-**`inplay-trading-service`.** `fc63509` and `dc5a22f` are explicit pointers. A cleared
-account that saw a generated ladder means one of two things. The service refused the
-book-channel token, or it served a both-sides-null quote. The fix lives on branch
-`feat/order-book-tokens` (`1d6def7`), PR #2. Do not patch the app fallback. `3cbe980` and
-`a7d3107` depend on the per-league market phase the service serves on `/trading/config`.
-`5de4af6` depends on `marketOrderBandPct` on the same endpoint — the app had hardcoded 2%
-while the server band moved to 30. `aaaf0e5` depends on `order_type='market'`, and on the
-server's `THIN_BOOK` / `fillableQuantity` response. `ef6b820` depends on the per-league
-board digest. `58bbb92` records that the digest contract is now 1s.
+**`inplay-trading-service`.**
+- **`fc63509` and `dc5a22f`** — explicit pointers. A cleared account that saw a generated
+  ladder means one of two things.
+  - the service refused the book-channel token
+  - or it served a both-sides-null quote
+- **The fix** — it lives on branch `feat/order-book-tokens` (`1d6def7`), PR #2. Do not
+  patch the app fallback.
+- **`3cbe980` and `a7d3107`** — depend on the per-league market phase the service serves on
+  `/trading/config`
+- **`5de4af6`** — depends on `marketOrderBandPct` on the same endpoint. The app had
+  hardcoded 2% while the server band moved to 30.
+- **`aaaf0e5`** — depends on `order_type='market'`, and on the server's `THIN_BOOK` /
+  `fillableQuantity` response
+- **`ef6b820`** — depends on the per-league board digest
+- **`58bbb92`** — records that the digest contract is now 1s
 
-**One open server-side gap.** `bd09e77` records that `previousClose` is derived server-side
-and patched into the REST cold open only. Both push payloads are built from `venue_quotes`
-rows where `previous_close` is NULL. The app now merges rather than replaces, but the push
-payloads still carry no baseline.
+**One open server-side gap.**
+- **`bd09e77`** — records that `previousClose` is derived server-side and patched into the
+  REST cold open only
+- **The gap** — both push payloads are built from `venue_quotes` rows where
+  `previous_close` is NULL
+- **State** — the app now merges rather than replaces, but the push payloads still carry no
+  baseline
 
-**`inplay-fix-gateway-go`.** `d0e3940` states that the gateway half of the reject fix ships
-separately, with the next gateway deploy. That half is a TTL on the request registry, plus
-the "stuck Updating…" case. `845e376` notes the gateway already publishes
-`market.trade.{symbol}`. Per-print pulse fidelity would need a `market:trades.{ticker}`
-channel that carries the FIX aggressor side.
+**`inplay-fix-gateway-go`.**
+- **`d0e3940`** — states that the gateway half of the reject fix ships separately, with the
+  next gateway deploy
+  - that half is a TTL on the request registry, plus the "stuck Updating…" case
+- **`845e376`** — notes the gateway already publishes `market.trade.{symbol}`
+  - per-print pulse fidelity would need a `market:trades.{ticker}` channel that carries the
+    FIX aggressor side
 
-**Market maker.** `18d7669` sizes its 250ms coalescing against the market maker's 2s sweep,
-and states the change reaches nothing on the market-maker side. `97be786` records that
-order pushes ran minutes behind under the market-maker push flood, which left the ticket on
-a stale side. `4595209` and `4f2c859` follow the IPO float v3 migration. That migration
-went to production on 2026-08-11: NCAA 1,000,000 and NFL 900,000. It also retired the
-holdback, because the market maker holds inventory by trading.
+**Market maker.**
+- **`18d7669`** — sizes its 250ms coalescing against the market maker's 2s sweep, and
+  states the change reaches nothing on the market-maker side
+- **`97be786`** — records that order pushes ran minutes behind under the market-maker push
+  flood, which left the ticket on a stale side
+- **`4595209` and `4f2c859`** — follow the IPO float v3 migration
+  - that migration went to production on 2026-08-11: NCAA 1,000,000 and NFL 900,000
+  - it also retired the holdback, because the market maker holds inventory by trading
 
-**`inplay-vault`.** The home rework implements a written plan that lives in the vault, not
-in this repository: `ab0165b`, `vault/components/information-layer/sub-components/discovery-home/home-rework-plan.md`.
-Two of its blocks are now hidden behind a flag (see Theme 6). Its section 7 names the next
-queued workstream — Gamecast — and states that Gamecast is blocked on the pricing engine.
-The pricing engine must publish the per-play decomposition of Edwin's `snap()` contract.
+**`inplay-vault`.**
+- **The plan** — the home rework implements a written plan that lives in the vault, not in
+  this repository (`ab0165b`)
+  - `vault/components/information-layer/sub-components/discovery-home/home-rework-plan.md`
+- **Divergence** — two of its blocks are now hidden behind a flag (see Theme 6)
+- **Next up** — its section 7 names the next queued workstream, Gamecast, and states that
+  Gamecast is blocked on the pricing engine
+- **The block** — the pricing engine must publish the per-play decomposition of Edwin's
+  `snap()` contract
 
-**Not yet deployable.** `d6688b4` (`feat/referral-topup`) is flag-gated off. Its config file
-lists the deploy order. Flipped before the scheduler exists, a user would get a pending
-top-up that nothing ever credits. `ebca840` depends on tZERO: the venue currently returns a
-500 on a successful account create, so a real activation may report `pending`.
+**Not yet deployable.**
+- **`d6688b4` (`feat/referral-topup`)** — flag-gated off. Its config file lists the deploy
+  order.
+  - flipped before the scheduler exists, a user would get a pending top-up that nothing
+    ever credits
+- **`ebca840`** — depends on tZERO. The venue currently returns a 500 on a successful
+  account create, so a real activation may report `pending`.
 
 ## Still open
 
-- **`local/live-replay-sandbox`** — 3 commits by westy412, last on 2026-08-13. It looks
-  **superseded, not abandoned**. All three changes exist again on `prerelease` under the
-  same subjects (`da13f24`, `05abb38`, `931766e`). The branch is a local replay sandbox and
-  is not on any remote.
-- **The stash entry `caf06e3`** — "live-game swipe pager (works; sluggish — needs perf
-  pass + swipe surface on gamecast card)", saved 2026-08-14. It is **in flight**, and the
-  commit message states what remains.
-- **Three open questions from the home-rework plan.** The plan (`ab0165b` in `inplay-vault`)
-  lists them and no commit this week answers them. Does the backend hold the daily streak
-  and the favourite teams? Which side implements which block, westy412's or Hxsan's? Has
-  Edwin signed off the block order, and must anything on the current home survive that the
-  mock drops? Two blocks also diverged from the plan. Block 3 wanted a greeting card
-  carrying the streak; the streak went into the app bar instead (`417ffff`), and Home has
-  no separate greeting card. Block 8 wanted a watchlist; `9fa7c94` **removed** the watchlist
-  rail from Home. Neither divergence is recorded in the vault plan.
-- **The promotion chain stopped on 2026-08-13.** 143 of the 292 commits in the window sit
-  on `prerelease` and have not reached `origin/main`. `origin/dev`, `origin/testing` and
-  `origin/main` all last moved on 2026-08-13. Everything in Themes 1, 2, 3 and 4 dated
-  2026-08-14 or later is **not in a user's hands**. This includes the `freezeOnBlur`
-  revert.
+- **Superseded, not abandoned** — `local/live-replay-sandbox`, 3 commits by westy412, last
+  on 2026-08-13.
+  - all three changes exist again on `prerelease` under the same subjects (`da13f24`,
+    `05abb38`, `931766e`)
+  - the branch is a local replay sandbox and is not on any remote
+- **In flight** — the stash entry `caf06e3`, saved 2026-08-14. The commit message states
+  what remains.
+  - "live-game swipe pager (works; sluggish — needs perf pass + swipe surface on gamecast
+    card)"
+- **Unanswered** — three open questions from the home-rework plan (`ab0165b` in
+  `inplay-vault`). No commit this week answers them.
+  - does the backend hold the daily streak and the favourite teams?
+  - which side implements which block, westy412's or Hxsan's?
+  - has Edwin signed off the block order, and must anything on the current home survive
+    that the mock drops?
+- **Undocumented** — two blocks diverged from the plan, and neither divergence is recorded
+  in the vault plan.
+  - block 3 wanted a greeting card carrying the streak. The streak went into the app bar
+    instead (`417ffff`), and Home has no separate greeting card.
+  - block 8 wanted a watchlist. `9fa7c94` **removed** the watchlist rail from Home.
+- **Stalled** — the promotion chain stopped on 2026-08-13.
+  - 143 of the 292 commits in the window sit on `prerelease` and have not reached
+    `origin/main`
+  - `origin/dev`, `origin/testing` and `origin/main` all last moved on 2026-08-13
+  - everything in Themes 1, 2, 3 and 4 dated 2026-08-14 or later is **not in a user's
+    hands**, including the `freezeOnBlur` revert
 
 ## Things this file does not settle
 
-- Seven duplicate commit pairs exist. Each pair has an identical subject and different
-  SHAs: `4da4e0d`/`51af564`, `fc63509`/`dc5a22f`, `da13f24`/`4570861`, `05abb38`/`0e6258d`,
-  `931766e`/`059c06b`, `343a787`/`fdcd794`, plus three copies of
-  `feat(education): gate the Learning Center off behind one flag`. These are cherry-picks
-  or rebases across the two `prerelease` lines. Each is counted once. I did not work out
-  which copy is canonical.
-- The `.claude/worktrees/house-ads`, `.claude/worktrees/max-edits` and
-  `.claude/worktrees/pwa` worktrees received **no commits in the window**. Their branch
-  tips date from 2026-07-11, 2026-06-09 and 2026-05-29. The prompt listed
-  `feature/house-ads`, `max-edits` and `worktree-pwa` as active; they were not.
+- **Seven duplicate commit pairs exist.** Each pair has an identical subject and different
+  SHAs.
+  - `4da4e0d`/`51af564`
+  - `fc63509`/`dc5a22f`
+  - `da13f24`/`4570861`
+  - `05abb38`/`0e6258d`
+  - `931766e`/`059c06b`
+  - `343a787`/`fdcd794`
+  - plus three copies of `feat(education): gate the Learning Center off behind one flag`
+  - these are cherry-picks or rebases across the two `prerelease` lines. Each is counted
+    once.
+  - I did not work out which copy is canonical.
+- **Three worktrees received no commits in the window.** `.claude/worktrees/house-ads`,
+  `.claude/worktrees/max-edits` and `.claude/worktrees/pwa`.
+  - their branch tips date from 2026-07-11, 2026-06-09 and 2026-05-29
+  - the prompt listed `feature/house-ads`, `max-edits` and `worktree-pwa` as active; they
+    were not
 
 ## Commit appendix
 
