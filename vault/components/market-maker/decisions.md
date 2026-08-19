@@ -14,6 +14,50 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19g — ✅ Go port Phase 4: AC13's named gaps, the boot sequence's wave, and where the anchor reader lives
+
+**Who:** George (AC13) and the Phase-4 team lead (the rest), 19-08.
+**Refs:** [[market-maker/sessions/2026-08-19-go-port-phase-4]].
+
+- ⭐ ✅ **George: AC13 is a PORT GATE WITH NAMED GAPS.** Every un-runnable
+  TT/TJ row is named individually — the row id, what it needs, and why this
+  repository cannot supply it. **A named gap is UNCOVERED**: never passed,
+  never deferred, never waived. The naming requirement is normative, not
+  descriptive, because the list has to survive into whoever books the QA-venue
+  session months from now. It is therefore a TEST rather than a document
+  (`TestAC13Coverage`), versioned beside the code it describes and failing when
+  a claim stops being true. The split is **3 covered · 5 partial · 11
+  uncovered**, of 19 rows. ⚠ Writing it down as a checkable thing immediately
+  caught two errors in figures already reported — a transport unblocks SEVEN
+  rows, not eight, and the headline was not the "1 / 4 / 14" first sent.
+
+- ✅ **The boot SEQUENCE is built in wave 2; the COMPOSITION stays in wave 3.**
+  AC8 gates Phase 4, and a gate that cannot be taken until the last wave is a
+  gate that gets taken under time pressure. The sequence is behaviour the pin
+  defines (lock → first beat → build → seed → replay → heal → stand); the
+  wiring is env, NATS and systemd, which is a different job.
+  ⚠ **The cost is recorded rather than hidden:** the recommendation to build
+  the composition FIRST was put and **declined by George**, so a boot sequence
+  lands one wave before the composition it will run inside.
+
+- ✅ **`ANCHOR_SEED`'s reader lives with the boot path, not with the event
+  core.** Python's `events/anchor_seed.py` is one file doing two jobs, and the
+  Go port splits it: the **applier** was delivered in Phase 2 inside the
+  valuation engine, and the **reader** sits beside the boot ceremony. The
+  reason is layering — the reader folds the prior journal's tail through a
+  throwaway valuation engine, and an `events → valuation` import inverts the
+  dependency. The event core may not know about an engine. Mirroring Python's
+  path was never available, because the file was already split across two Go
+  packages.
+
+- ✅ **S1's missing eviction is ported DEFECT INCLUDED**, and fixed in Phase 5.
+  ⚠ It is **not output-neutral**, which is why "fix it in passing" was refused:
+  `schedule.py:145` guards adoption with `if not game_id or game_id in
+  self._games: continue`, so evicting a finished game lets the file **re-adopt**
+  it with `from_file=True` and different facts — deriving LIVE for four hours
+  where the bus rules derive OVERNIGHT. Recording a defect is cheap; changing
+  behaviour inside a zero-diff phase is not.
+
 ## 2026-08-19f — ✅ N47 ruled: a price may be a millionth off, so the pair guard relaxes to the band
 
 **Who:** George, 19-08. **"Price is being a millionth off is fine."**
