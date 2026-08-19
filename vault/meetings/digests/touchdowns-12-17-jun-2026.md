@@ -1,3 +1,7 @@
+---
+description: "Digest of the 12–17 June 2026 touchdown syncs — onboarding flow locked, IPO draft naming, launch dates (CFB 22 Aug / NFL 2 Sept), and the SSP-first ad stack"
+---
+
 # Touchdown Sweep — 12–17 June 2026
 
 > **Type:** Consolidated digest of touchdown (sync) meetings
@@ -16,8 +20,8 @@ This sweep is dominated by two threads. First, the **pre-launch app** is taking 
 
 ### Customer Onboarding
 - **Onboarding flow locked (17-06):** create account, **email verification code** (auto-fills on mobile), **Persona ID check**, then the user lands inside the app on the **IPO page**. First in-app action is browse and buy (buy-only during the IPO phase). _(17-06)_
-- **Persona effectively done (12-06):** KYC integration is built; the T0-side wallet allocation is "grab an ID from the pool and allocate". A details call with the T0 engineers (Hassan / Abhishek) is set for the following week. _(12-06)_
-- **Wallet allocation timing resolved (17-06):** wallet IDs do **not** need to be provisioned at signup. They can be allocated the **day before trading starts** by feeding a small data payload to T0, which returns a pre-generated wallet ID. Troy has set up the wallets. Not on the pre-launch critical path. _(17-06)_
+- **Persona effectively done (12-06):** KYC integration is built; the tZERO-side wallet allocation is "grab an ID from the pool and allocate". A details call with the tZERO engineers (Hassan / Abhishek) is set for the following week. _(12-06)_
+- **Wallet allocation timing resolved (17-06):** wallet IDs do **not** need to be provisioned at signup. They can be allocated the **day before trading starts** by feeding a small data payload to tZERO, which returns a pre-generated wallet ID. Troy has set up the wallets. Not on the pre-launch critical path. _(17-06)_
 - **Launch blocker = the Apple developer account (17-06):** this is the single biggest gating item for the pre-launch app. Target is end-of-June to early-July if Apple approval clears; Google Play runs in parallel. A functional prototype build is expected in the prototype space by Mon–Tue. _(17-06)_
 
 ### Information Layer
@@ -34,8 +38,8 @@ This sweep is dominated by two threads. First, the **pre-launch app** is taking 
 - **Placement finalised (15-06):** the earnings report gets its **own page** (reached from the more / discover area) **plus an embedded earnings box** on each team page, with the **trade button kept accessible**. A **push notification fires ~15 minutes before** the release. Consistent with the existing batched-release feed design. _(15-06)_
 
 ### Trading
-- **Market maker required (12-06, 15-06, 17-06):** a recurring thread. **Kevin Murray (Head Execution Trader)** is leading the market-making algorithm work with George, position-based rather than high-frequency ("reflective of opinion in the market that day"), possibly with a data-science intern. Edwin separately flags the need to **build an internal market maker** (likely T0-integrated) to guarantee **IPO fill and ongoing liquidity**, and wants at least one **dummy IPO plus simulated events** to test before launch. Brett proposed a focused Mon–Tue ~90-minute session. See [[architecture/open-questions]] and the flag below. _(12-06, 15-06, 17-06)_
-- **T0 real-time P&L confirmed (12-06):** the T0 call resolved a buying-power concern: **T0 will handle real-time P&L calculations** on user holdings (unrealised gains/losses recalculate dynamically). _(12-06)_
+- **Market maker required (12-06, 15-06, 17-06):** a recurring thread. **Kevin Murray (Head Execution Trader)** is leading the market-making algorithm work with George, position-based rather than high-frequency ("reflective of opinion in the market that day"), possibly with a data-science intern. Edwin separately flags the need to **build an internal market maker** (likely tZERO-integrated) to guarantee **IPO fill and ongoing liquidity**, and wants at least one **dummy IPO plus simulated events** to test before launch. Brett proposed a focused Mon–Tue ~90-minute session. See [[architecture/open-questions]] and the flag below. _(12-06, 15-06, 17-06)_
+- **tZERO real-time P&L confirmed (12-06):** the tZERO call resolved a buying-power concern: **tZERO will handle real-time P&L calculations** on user holdings (unrealised gains/losses recalculate dynamically). _(12-06)_
 
 ### Challenge Website
 - **Rebuilt on a new template (12-06)** to enable **Google Analytics**; a fresh deployment link was issued. **Microsoft Clarity** heat-mapping is to be added across the websites (session recording, scroll/click heat maps, dwell time). _(12-06)_
@@ -83,7 +87,7 @@ This sweep is where advertising acquires an operating model. Two artifacts drive
 | **Programmatic media playbook** | 17-06 | Brett produced an end-to-end playbook: SSP roster (18 exchanges ranked), AppLovin MAX architecture, a 1-human + 9-AI-agent ad-ops operating model, KPIs, and a launch lifecycle | ✅ **Written as a sub-component under Advertising** ([[advertising/sub-components/programmatic-media-playbook/programmatic-media-playbook]]); key decisions summarised in [[components/components]]. Source artifact: `Inplay Outreach/ssp-priority-stack.html` |
 | **SSP-first stack (MAX now, Kevel phase 2)** | 17-06 | AppLovin MAX as ad server + mediator on day one; Kevel deferred to phase 2 for moment-based sponsorships; no GAM | ✅ **Advertising cross-cutting reframed** in [[components/components]]; detail in the playbook sub-component |
 | **AI-agent ad-ops at ~20% margin** | 17-06 | 1 campaign manager + agent workforce; cost must fit inside ~20% of ad revenue | 🚩 **Ad-ops P&L open question logged** in [[architecture/open-questions]]; model lives in the playbook |
-| **Market maker (IPO fill + liquidity)** | 12-06, 15-06, 17-06 | Internal market maker, T0-integrated, to guarantee IPO fill and ongoing liquidity; Kevin Murray leading the position-based pricing algo; wants a dummy IPO + sim events to test | 🚩 **Flagged for a dedicated scoping session** (Mon–Tue ~90 min). Logged in [[architecture/open-questions]] and noted in [[trading/trading]]. Candidate **new `trading/market-maker` sub-component** once scoped. Continues the 08-06 market-making-algorithm flag |
+| **Market maker (IPO fill + liquidity)** | 12-06, 15-06, 17-06 | Internal market maker, tZERO-integrated, to guarantee IPO fill and ongoing liquidity; Kevin Murray leading the position-based pricing algo; wants a dummy IPO + sim events to test | 🚩 **Flagged for a dedicated scoping session** (Mon–Tue ~90 min). Logged in [[architecture/open-questions]] and noted in [[trading/trading]]. Candidate **new `trading/market-maker` sub-component** once scoped. Continues the 08-06 market-making-algorithm flag |
 | **IPO draft naming + inventory visibility** | 17-06 | "IPO draft" name; hide shares-remaining until near close; straw buyer fills unsold inventory | ✅ **Noted in [[ipo-module/ipo-module]]**; inventory-visibility / straw-buyer mechanics logged in [[architecture/open-questions]] |
 | **AI brand-preview tool** | 15-06 | Self-serve advertiser preview across ~10 units, link goes in outreach emails | ✅ **Advertising note** in [[components/components]] |
 | **Synthetic off-field pricing (preview)** | 15-06 | Ad-spend-based off-field number for pre-launch IPO pricing | ✅ **Noted in [[ipo-module/ipo-module]]** as a preview/simulation pricing input; not a live-trading decision |
@@ -101,7 +105,7 @@ This sweep is where advertising acquires an operating model. Two artifacts drive
 3. ✅ **Information Layer** — update block: pre-launch **historical data preview** (2013-vs-1-year open), grayed-out trading + IPO countdown, **title-sponsor splash screen** (2–3s on open).
 4. ✅ **IPO Module** — update block: **"IPO draft"** naming + "What is an IPO draft?" link, **inventory-visibility / straw-buyer** approach, **launch dates** (CFB ~22 Aug / NFL ~2 Sept), **synthetic off-field** preview pricing.
 5. ✅ **Earnings Report** — update block: placement finalised (own page + embedded team-page box, trade button kept), **~15-min pre-release push**.
-6. ✅ **Trading** — update block: **market maker** (Kevin Murray, position-based; internal MM for IPO fill + liquidity; dummy IPO + sim events to test; flagged for a session), **T0 real-time P&L** confirmed.
+6. ✅ **Trading** — update block: **market maker** (Kevin Murray, position-based; internal MM for IPO fill + liquidity; dummy IPO + sim events to test; flagged for a session), **tZERO real-time P&L** confirmed.
 7. ✅ **Challenge Website** — update block: rebuilt for **Google Analytics** + **Microsoft Clarity**, build priority (how-to-enter → referral, prize-pool deferred), **prize pool $21M + $4M flex = "up to $25M"**.
 8. ✅ **InPlay Global Website** — update block: **press page signed off**, app screenshots in a later pass, Microsoft Clarity heat-mapping.
 9. ✅ **Education** — update block: delivery debate (TikTok + AI voice + code-gen animation + podcast), **brand-owned modules** with programmatic ad reads, beta first module + 18-06 session, "What is an IPO draft?" link.

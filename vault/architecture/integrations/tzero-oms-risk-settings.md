@@ -1,6 +1,10 @@
+---
+description: "IPLY default OMS risk-flag settings from tZERO — which flags are ON/OFF (Stop Wash Trades, overnight carry), the four-tier price band, and open items"
+---
+
 # tZERO OMS Risk Settings (IPLY defaults)
 
-> **Integration:** [[t0]] · [[integrations]]
+> **Integration:** [[tzero]] · [[integrations]]
 > **Source:** `tZERO_OMS_Risk_Settings_Matrix_IPLY.xlsx` (Rob Colucci, tZERO), delivered with the [[29-07-2026-tZERO-rob-qa]] Q&A. Copied into the vault at `sources/tZERO_OMS_Risk_Settings_Matrix_IPLY.xlsx` (beside this doc).
 > **Status:** Reference. These are the **default OMS risk-flag settings for IPLY** (the placeholder MPID for InPlay) accounts in SIM. Final configuration to be aligned with tZERO.
 
@@ -26,7 +30,7 @@ The OMS applies a per-account matrix of pre-trade and post-trade risk flags. Thi
 | **Stop Wash Trades** | ON | Prevents trading against your own open orders (scans live orders for opposite-side at matching or crossed prices). This is the **self-match prevention** the market maker needed. |
 | **Max Order Rate** | ON, **100 orders/sec** | Caps order submission rate; prevents flooding. |
 | **Max Duplicate Order Rate** | ON, **20 duplicate orders/sec** | Blocks rapid identical orders (same symbol, side, order type). |
-| **Stock Loan Fee** | ON | Calculates the stock-loan fee on short-sale orders in live buying-power (ties to the **$1.20/share** short fee, see [[t0]] §10.5). |
+| **Stock Loan Fee** | ON | Calculates the stock-loan fee on short-sale orders in live buying-power (ties to the **$1.20/share** short fee, see [[tzero]] §10.5). |
 | **Enforce Day Trading Buying Power** | ON (alerts only) | Buying power from order cost, open positions, and realized P/L. |
 
 ## Settings deliberately OFF (challenge-relevant)
@@ -57,4 +61,4 @@ Both aggressive (taker) and passive (maker) limit-price-range enforcement is ON,
 
 - **Align final IPLY risk-flag configuration** with tZERO (this matrix is the starting default, not the confirmed final set).
 - **Release DTBP** needs clearing-firm approval to avoid margin calls on overnight covers.
-- The **price-band tiers** need reconciling with the market maker's quote-bust procedure and with the synthetic-market-order "price-through" logic in [[t0]].
+- The **price-band tiers** need reconciling with the market maker's quote-bust procedure and with the synthetic-market-order "price-through" logic in [[tzero]].

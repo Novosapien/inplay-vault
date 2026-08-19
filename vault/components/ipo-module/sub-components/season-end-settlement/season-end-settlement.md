@@ -1,9 +1,13 @@
+---
+description: "Sub-component spec for season-end settlement of the trading challenge — longs credited, shorts force-closed per league, then the final leaderboard run"
+---
+
 # InPlay Trading Challenge — Season-End Settlement / Liquidation
 
 > **Component:** [[ipo-module]]
 > **Date:** 2026-05-26
 > **Status:** Defined
-> **Owner:** Edwin (client-facing — mechanics) + Troy (T0 / ledger) + George (engineering)
+> **Owner:** Edwin (client-facing — mechanics) + Troy (tZERO / ledger) + George (engineering)
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]]_
 
 ---
@@ -125,9 +129,9 @@ _No dedicated UI in this sub-component. User-facing results (final balance, fina
 
 | What | Direction | Description | Source / Destination |
 |------|-----------|------------|---------------------|
-| Settlement price per team | In | Final price at season close | InPlay / T0 |
-| Open positions (long/short) | In | All holdings to settle | T0 ledger / Trading |
-| Short entry prices | In | Needed to compute short P&L | T0 ledger |
+| Settlement price per team | In | Final price at season close | InPlay / tZERO |
+| Open positions (long/short) | In | All holdings to settle | tZERO ledger / Trading |
+| Short entry prices | In | Needed to compute short P&L | tZERO ledger |
 | Credited/debited balances | Out/Stored | Final wallet outcomes | Trading wallet |
 | Final P&L per user | Out | Input to final leaderboard | Leaderboard (Information Layer) |
 | Season-end trigger / dates | In | Per-league close timing | [[ipo-scheduling]] / schedule |
@@ -138,8 +142,8 @@ _No dedicated UI in this sub-component. User-facing results (final balance, fina
 
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
-| T0 ledger / Trading | Open positions, short entry prices, wallet write | Yes |
-| InPlay / T0 | Final settlement prices | Yes |
+| tZERO ledger / Trading | Open positions, short entry prices, wallet write | Yes |
+| InPlay / tZERO | Final settlement prices | Yes |
 | Leaderboard (Information Layer) | To run the final standings | Yes (for the final run) |
 | [[ipo-scheduling]] / schedule | Per-league season-end trigger | Yes |
 

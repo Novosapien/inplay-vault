@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — IPO Draft</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html" class="current">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>IPO draft module <span class="pill build">IN BUILD</span></h1>
+<p class="sub">How every tradable asset comes into existence — the gating event for the season</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  The <strong>IPO Draft Requirements v2 (28 July)</strong> is the adopted
+  baseline. Scope: <strong>138 NCAA team companies</strong> (1,000,000 shares
+  each) in a five-day continuous offering from 22 August, and <strong>32 NFL
+  team companies</strong> (900,000 shares each) in 18 one-minute sequential
+  rounds across 5–6 September. The draft screens (swipe and list browsing,
+  team detail, buy flow) are built in the app; the offering engine is the
+  build focus alongside trading.
+</div>
+
+<h2>Design settled</h2>
+<ul>
+  <li>Buy-only during the offering: no selling, no shorting; InPlay Markets is the exclusive seller.</li>
+  <li>NFL rounds: 50,000 shares per team per round; a pre-buy book of binding orders fills instantly at window open; per-participant cap of 2,500 shares per team per round to spread ownership.</li>
+  <li>Water-line load balancing keeps float roughly equal across teams without alphabetical-order artifacts; round order alternates alphabetical / reverse.</li>
+  <li>The market maker sweeps every unfilled share in rounds 1–10 (the primary mandate), so every team reaches the secondary market tradable; unsold inventory seeds the market maker's opening book.</li>
+  <li>Oversubscribed pre-buy books allocate pro-rata, residuals by random draw — an explicit fairness choice over first-come racing.</li>
+  <li>Shares-remaining hidden until an offering nears close (Edwin, 17 June).</li>
+  <li>NCAA IPO prices pushed into the app (24 July); NFL off-field values already baked into NFL listing prices.</li>
+</ul>
+
+<h2>In flight</h2>
+<ul>
+  <li>NCAA continuous-offering engine first (simpler shape), then the NFL round engine with pre-buy book, caps and water line.</li>
+  <li>Friends-and-family dry run to test load and allocation before the real event.</li>
+  <li>IPO countdown and announcement mechanics across push, social and CRM.</li>
+</ul>
+
+<h2>Open</h2>
+<ul>
+  <li><strong>E25 — the requirements document's NCAA dates conflict</strong>: offering close 26 vs 28 Aug; secondary open 26 vs 27 Aug. One reading opens secondary trading before the primary closes. Needs InPlay reconciliation.</li>
+  <li><strong>E27 — opening-position hand-off</strong>: at close, something must publish each team's allocation and unsold inventory to the market maker. Owner needed.</li>
+  <li><strong>E24 — mandate round count</strong> appears three ways in supporting material (10 / 16 / 18 rounds); the difference is billions in opening inventory. v2 §4 says rounds 1–10; confirming that as final.</li>
+  <li>Last-block concurrency (two buyers, one remaining block) and early-sellout behaviour need rulings.</li>
+  <li>Expected-wins model ownership: Edwin supplies the projections; the weekly refresh process is being formalised.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Build and rehearse the NCAA engine for 22 August; freeze prices 19 August.</li>
+  <li>Harden the NFL round engine in the week before 5 September.</li>
+  <li>Resolve E25/E27/E24 with InPlay — these are decision items, not build items.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

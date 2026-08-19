@@ -1,3 +1,7 @@
+---
+description: "Digest of the 18–29 June 2026 sync calls — participation-gated prize payouts, the referral launch with KYC, SSP registration, and AI-drafted legal T&C pages"
+---
+
 # Touchdown Sweep — 18–29 June 2026
 
 > **Type:** Consolidated digest of sync / strategy meetings
@@ -47,12 +51,12 @@ The 24-06 call **restructured the prize model** to de-risk the up-to-$25M agains
 
 ### Information Layer _(minor app confirmations, 29-06)_
 
-Edwin's app walkthrough surfaced confirmations/bugs (mostly delivery, noted for traceability): **buy/sell markers now render on the chart** (blue dot + "B" on buy, red dot + "S" on sell); the **community/chat view defaults to the most recent chat** (by design — don't scroll stale chats); the **open/splash screen should be the arrow only** (remove the "arrow over a mountain" — no "climbing-a-mountain contest" read). Price **integer/rounding glitches** are mock-data artefacts (no live T0 data yet); a **Visa header label is cut off / mis-scaled** (Max to fix). No doc rewrites — status/bugs. _(29-06)_
+Edwin's app walkthrough surfaced confirmations/bugs (mostly delivery, noted for traceability): **buy/sell markers now render on the chart** (blue dot + "B" on buy, red dot + "S" on sell); the **community/chat view defaults to the most recent chat** (by design — don't scroll stale chats); the **open/splash screen should be the arrow only** (remove the "arrow over a mountain" — no "climbing-a-mountain contest" read). Price **integer/rounding glitches** are mock-data artefacts (no live tZERO data yet); a **Visa header label is cut off / mis-scaled** (Max to fix). No doc rewrites — status/bugs. _(29-06)_
 
-### Trading _(T0 buying-power mechanism, 24-06 + 26-06)_
+### Trading _(tZERO buying-power mechanism, 24-06 + 26-06)_
 
-- **Daily buying-power file → "elegant" API (24-06, 26-06).** To support moving funds from the **referral wallet into the trading wallet**, InPlay must give T0 each account's **buying power** — initially as a **start-of-day file** (no intraday wallet rebalancing, by decision, to avoid complexity; T0 calculates buying power intraday). George proposed a more **elegant mechanism**: an **API call** that increases the user's T0 wallet buying power while InPlay **consumes the referral** on its side (so it can't be reused) — instead of an FTP file load. Troy endorsed it; George is **drafting it to the T0 team**. Reinforces the standing split: **buying power = "trading power"** (covers selling/shorting, not just buying); the **ledger = clearing/settlement custodial record**; the simulator uses a **synthetic wallet**, production a **real digital wallet** funded from broker/stablecoin. _(24-06, 26-06)_
-- **Market-maker session reconfirmed (24-06, 26-06, 29-06).** Edwin will **co-build the market-making algo with George** — he has the parameters (a prior algo from the "Xperry" platform; the hard part was API-connecting feeds), wants it integrated with **T0 feeds**. A separate session is needed (it's "another research agent / another call"). The MM session should also **capture data for prod market makers** to model on, and feeds **academic white papers** (Jim Angel; Josh's, scope TBD) on how the market behaves when outcomes are a foregone conclusion. Continues the existing market-maker flags. _(24-06, 26-06, 29-06)_
+- **Daily buying-power file → "elegant" API (24-06, 26-06).** To support moving funds from the **referral wallet into the trading wallet**, InPlay must give tZERO each account's **buying power** — initially as a **start-of-day file** (no intraday wallet rebalancing, by decision, to avoid complexity; tZERO calculates buying power intraday). George proposed a more **elegant mechanism**: an **API call** that increases the user's tZERO wallet buying power while InPlay **consumes the referral** on its side (so it can't be reused) — instead of an FTP file load. Troy endorsed it; George is **drafting it to the tZERO team**. Reinforces the standing split: **buying power = "trading power"** (covers selling/shorting, not just buying); the **ledger = clearing/settlement custodial record**; the simulator uses a **synthetic wallet**, production a **real digital wallet** funded from broker/stablecoin. _(24-06, 26-06)_
+- **Market-maker session reconfirmed (24-06, 26-06, 29-06).** Edwin will **co-build the market-making algo with George** — he has the parameters (a prior algo from the "Xperry" platform; the hard part was API-connecting feeds), wants it integrated with **tZERO feeds**. A separate session is needed (it's "another research agent / another call"). The MM session should also **capture data for prod market makers** to model on, and feeds **academic white papers** (Jim Angel; Josh's, scope TBD) on how the market behaves when outcomes are a foregone conclusion. Continues the existing market-maker flags. _(24-06, 26-06, 29-06)_
 
 ---
 
@@ -67,7 +71,7 @@ The most consequential people-decision: **Skye should be pointed at user acquisi
 - **Automated outreach workforce (18-06).** Novo's agentic workforce (the same kind building the app) will run **24/7 outreach** — turning **InPlay's LinkedIn accounts + purchased domains** into lead-generation systems for the direct-advertising pipeline, plus amplifying Skye's content. Needs **domains** and **LinkedIn access**. Offered to InPlay **for free** (Novo absorbs LLM cost). _(18-06)_
 - **B2B vs B2C email infrastructure (24-06).** **B2C** transactional emails to the 600 existing signups can go now (consent given). **B2B cold outreach** needs warm-up infra: **3 real-named mailboxes per domain** (~£8–9/license), **domain redirects** (e.g. `getinplaytradingchallenge.com` → challenge page), and a 2–3 week warm-up before sending, plus LinkedIn. George researching B2C deliverability for the already-consented list. _(24-06)_
 - **Newsletter → community channel (29-06).** See Challenge Website — the newsletter is reframed as a future **owned community channel** (give-back content, tips, interviews), distinct from the first action-driving send. _(29-06)_
-- **T0 partnership press release (29-06).** T0 PR scheduled **8:30 ET the next morning**; link to be embedded on the website + the first distribution. _(29-06)_
+- **tZERO partnership press release (29-06).** tZERO PR scheduled **8:30 ET the next morning**; link to be embedded on the website + the first distribution. _(29-06)_
 
 ### Cybersecurity & compliance
 
@@ -83,7 +87,7 @@ The most consequential people-decision: **Skye should be pointed at user acquisi
 | **Referral program LIVE via challenge website + KYC** | 24-06 | Referral now runs through the challenge website with full KYC; launches ~July 4 week; 600 signups emailed | ✅ **Noted in [[referral/referral]] + [[challenge-website/challenge-website]] + [[customer-onboarding/customer-onboarding]]** |
 | **Legal / T&C AI-drafted, counsel review, footer disabled at go-live** | 29-06 | T&C / privacy / competition-rules populated by AI; need Marlin/Vogler review; KYC opt-in copy | ✅ **Noted in [[challenge-website/challenge-website]]**; reinforces compliance concern in [[components/components]] |
 | **Challenge-site build: hype video in phone, How-It-Works page, IPO calculator, OG image** | 29-06 | Review-ready homepage; interactive IPO pricing calculator; designed OG card still needed | ✅ **Noted in [[challenge-website/challenge-website]]** |
-| **T0 buying-power: daily file → George's elegant API** | 24-06, 26-06 | Start-of-day buying-power file for referral→trading moves (no intraday rebalance); George drafting an API mechanism (increase wallet + consume referral) vs FTP | ✅ **Noted in [[trading/trading]]**; mechanism row added to [[architecture/open-questions]] |
+| **tZERO buying-power: daily file → George's elegant API** | 24-06, 26-06 | Start-of-day buying-power file for referral→trading moves (no intraday rebalance); George drafting an API mechanism (increase wallet + consume referral) vs FTP | ✅ **Noted in [[trading/trading]]**; mechanism row added to [[architecture/open-questions]] |
 | **App-store status (Apple moving, Android stuck)** | 24-06 | $99 Apple fee paid/processing; Android Play verification stuck on website+phone (needs owner access) | ✅ **Noted in [[customer-onboarding/customer-onboarding]]**; continues the "Apple = launch blocker" flag |
 | **Skye → user acquisition / brand (not ad sales)** | 18-06 | Reposition Skye to brand + UA; don't hire heavyweight media sales until ~500k users | ✅ **Advertising / UA note in [[components/components]]** |
 | **Automated outreach workforce + B2B/B2C email infra** | 18-06, 24-06 | Agentic 24/7 outreach via LinkedIn + domains; B2B warm-up (3 mailboxes/domain, redirects); B2C to consented 600 | ✅ **Push/CRM note in [[components/components]]** |
@@ -91,7 +95,7 @@ The most consequential people-decision: **Skye should be pointed at user acquisi
 | **Impression-forecast calculator** | 18-06, 24-06 | Brett building a minutes→impressions forecast on industry mechanics; due next touchdown | ℹ️ **Status** — feeds the impression model + Advertiser-KPI open question |
 | **AI brand-preview tool missing from ad page** | 29-06 | Tool dropped off the challenge-site advertising page; Max to restore for Mastercard demo | ✅ **Noted in [[challenge-website/challenge-website]]** |
 | **Newsletter vs action-first send** | 29-06 | First outreach optimised for download/KYC/referral; fuller newsletter/community deferred | ✅ **Push/CRM note in [[components/components]]** + challenge-website |
-| **Market-maker session reconfirmed** | 24-06, 26-06, 29-06 | Edwin co-builds MM algo with George; T0-integrated; capture data for prod MMs + white papers | 🚩 **Reinforces existing flag** in [[architecture/open-questions]] |
+| **Market-maker session reconfirmed** | 24-06, 26-06, 29-06 | Edwin co-builds MM algo with George; tZERO-integrated; capture data for prod MMs + white papers | 🚩 **Reinforces existing flag** in [[architecture/open-questions]] |
 | **App bugs / design confirmations** | 29-06 | Buy/sell chart markers, chat-defaults-to-latest, splash = arrow only, price rounding (mock data), Visa label cutoff | ℹ️ **Status / delivery** — no doc change |
 | **Corp-dev: Teddy Sagi NDA, Goldman, Kalshi $40B / perpetuals** | 26-06, 29-06 | Family-office NDA (could close July); Goldman intros; InPlay as "source data" for sports perpetual futures | ⏸️ **Parked** — commercial / vision-adjacent, no component change |
 | **Templated deck system (Max)** | 29-06 | One master-branded deck so per-market one-pagers stay consistent | ℹ️ **Status** — internal tooling |
@@ -100,12 +104,12 @@ The most consequential people-decision: **Skye should be pointed at user acquisi
 
 ## Doc updates applied (2026-06-30)
 
-1. ✅ **components.md** — Advertising cross-cutting: SSP registration underway + inventory-layering model + data play + Skye→UA + don't-hire-sales-until-500k; Push/CRM: outreach workforce + B2B/B2C email infra + newsletter→community + T0 PR; compliance: legal/T&C counsel-review control.
+1. ✅ **components.md** — Advertising cross-cutting: SSP registration underway + inventory-layering model + data play + Skye→UA + don't-hire-sales-until-500k; Push/CRM: outreach workforce + B2B/B2C email infra + newsletter→community + tZERO PR; compliance: legal/T&C counsel-review control.
 2. ✅ **referral/referral.md** — changelog row: participation-gated prize model (Sat/Sun dailies + Tue weekly; ~3 criteria; referrals not a hard gate; referral leaderboard + separate prize; multiplier/badging); referral program LIVE via challenge website + KYC.
 3. ✅ **challenge-website/challenge-website.md** — update block: legal/T&C AI-drafted + counsel review + footer disabled at go-live + KYC opt-in; hype video in phone; How-It-Works page; IPO pricing calculator; OG image needed; AI brand-preview tool restore; referral program live; newsletter-vs-link.
 4. ✅ **customer-onboarding/customer-onboarding.md** — update block: app-store status (Apple moving / Android stuck), TestFlight distribution (Apple IDs, ≤100), pre-launch build strips functionality + demo ads, web KYC powers referral, KYC opt-in copy.
 5. ✅ **trading/trading.md** — update block: buying-power daily file → George's elegant API (vs FTP), no intraday rebalance, buying-power = trading-power, ledger = settlement; market-maker session reconfirmed + prod-MM data capture + white papers.
-6. ✅ **architecture/open-questions.md** — rows added: prize/competition mechanics (final criteria + payout schedule + multiplier); referral-funding-to-T0 mechanism (elegant API vs FTP).
+6. ✅ **architecture/open-questions.md** — rows added: prize/competition mechanics (final criteria + payout schedule + multiplier); referral-funding-to-tZERO mechanism (elegant API vs FTP).
 
 Not applied (parked / status only):
 - **Corp-dev thread** (Teddy Sagi NDA, Goldman, Kalshi perpetuals) — commercial / vision-adjacent, triage only.

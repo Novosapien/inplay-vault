@@ -1,3 +1,7 @@
+---
+description: "Session log, 2026-07-23 — tZERO FIX specs read end-to-end, the 23-07 MM call extracted, and Edwin's simpler v1 lifecycle reworked into all the MM docs"
+---
+
 # 2026-07-23 — tZERO specs read · MM call · the v1 model lands
 
 > **Who:** George + Claude (one continuous working session, 22-07 evening → 23-07)
@@ -24,7 +28,7 @@
   v8) and mined them: replace chain semantics, no iceberg/ExecInst,
   Pos*-per-fill, aggregated-only book, halt machinery on the feed, busts as
   public trade deletes, disconnect behaviour.
-- **Prepped and supported the T0 call** (plain-English ask list in chat) and
+- **Prepped and supported the tZERO call** (plain-English ask list in chat) and
   **extracted the 23-07 MM follow-up call** in full — 17 findings routed into
   decisions / open-questions / parameters / plan / learnings.
 - **Reworked all the docs to the v1 model** (hub, valuation engine, quoting

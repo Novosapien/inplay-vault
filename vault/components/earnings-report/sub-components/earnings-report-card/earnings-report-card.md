@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the graphical EST-vs-ACT report card with an embedded trade button — journeys, states, data needs and dependencies"
+---
+
 # InPlay Trading Challenge — Earnings Report Card
 
 > **Component:** [[earnings-report]]

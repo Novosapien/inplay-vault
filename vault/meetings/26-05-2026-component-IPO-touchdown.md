@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-26 InPlay IPO-module call — static-ask 72-hour IPO windows, end-of-season settlement, and the 10 sponsor ad territories"
+---
+
 **
 
 May 26, 2026
@@ -209,7 +213,7 @@ George Westbrook: there's going to be obviously a lot of movement, a lot of adve
 Brett StClair: My That's  
 George Westbrook: If you're saying right, a user spends 80% of their time on this specific section of the app when  
 Brett StClair: it.  
-George Westbrook: it is a game day, um then obviously maybe it's at the moment 750 for a moment, but as time goes on, if they're spending 80% of their time, that moment price can go up and up. Um what else? So some of the let's call it more boring backend work. Um the less visual stuff. Um, obviously given the call that we have with T0, what what we're doing is getting the the infrastructure up, um, making sure that we've got like the VP VPN set up,  
+George Westbrook: it is a game day, um then obviously maybe it's at the moment 750 for a moment, but as time goes on, if they're spending 80% of their time, that moment price can go up and up. Um what else? So some of the let's call it more boring backend work. Um the less visual stuff. Um, obviously given the call that we have with tZERO, what what we're doing is getting the the infrastructure up, um, making sure that we've got like the VP VPN set up,  
 Brett StClair: It's not  
 George Westbrook: the IP whitelisting so that we can start start testing that with real data. The sports radar API is built but not yet integrated into the application. So hopefully by end of this week on the application,  
 Brett StClair: Breakfast.  
@@ -323,7 +327,7 @@ Brett StClair: So, that is a So, that's an absolute must. Okay. I just wanted to
 George Westbrook: because we we need the KYC in order to obviously identify them as a customer which then is a  
 Troy McDonald Kane: And  
 Brett StClair: if  
-George Westbrook: requirement from T0 in order to be able to provision the wallet which then means when they do a referral when it  
+George Westbrook: requirement from tZERO in order to be able to provision the wallet which then means when they do a referral when it  
 Brett StClair: Okay.  
 Troy McDonald Kane: I mean, we'll we'll get this contract figured out today or tomorrow. Like, if not, we're going to go find another partner at this point because if they can't get the contract back to us by tomorrow,  
 Kevin Murray: Yeah.  
@@ -380,9 +384,9 @@ Troy McDonald Kane: here's the thing. Yeah.
 Brett StClair: yeah.  
 Troy McDonald Kane: I mean, I wouldn't I So, here's a couple things that to not overengineer it.  
 George Westbrook: be  
-Troy McDonald Kane: Like, the wallets actually don't need to be created right away. The wallets actually don't need to be created till the trading competition's ready to go live because the referral wallet is a is not a wallet. It's just a trackable side database, right? that we we agreed on after the last couple sessions with T0. So all we really need in place for the app to be operational is the KYC function and  
+Troy McDonald Kane: Like, the wallets actually don't need to be created right away. The wallets actually don't need to be created till the trading competition's ready to go live because the referral wallet is a is not a wallet. It's just a trackable side database, right? that we we agreed on after the last couple sessions with tZERO. So all we really need in place for the app to be operational is the KYC function and  
 Brett StClair: You sure?  
-Troy McDonald Kane: then that you know the minimum functionality that we want to go live because what ends up happening is we actually will take a file from Persona and send that to T0 with the KYC information for them to create the wallets. There's not a a current straight through process for that and it's not anything that that you will have to handle through your processes until it comes time to load in the credentials for the keys to be able to start trading through the app, which will come through multiple iterations in the future after that functionality has been built,  
+Troy McDonald Kane: then that you know the minimum functionality that we want to go live because what ends up happening is we actually will take a file from Persona and send that to tZERO with the KYC information for them to create the wallets. There's not a a current straight through process for that and it's not anything that that you will have to handle through your processes until it comes time to load in the credentials for the keys to be able to start trading through the app, which will come through multiple iterations in the future after that functionality has been built,  
    
  
 
@@ -390,10 +394,10 @@ Troy McDonald Kane: then that you know the minimum functionality that we want to
 
    
 Brett StClair: See?  
-Troy McDonald Kane: tested, and made available. So, I don't know that we have to go as far as getting T0 what they need to create the wallets as long as there's a trackable way to start tracking the referral bank  
+Troy McDonald Kane: tested, and made available. So, I don't know that we have to go as far as getting tZERO what they need to create the wallets as long as there's a trackable way to start tracking the referral bank  
 George Westbrook: Mhm. Okay.  
 Troy McDonald Kane: acruals.  
-Brett StClair: Just one last point on stuff delivered is the VPC. We're working on that now. H apps with um the T0 uh information that they sent to  
+Brett StClair: Just one last point on stuff delivered is the VPC. We're working on that now. H apps with um the tZERO uh information that they sent to  
 George Westbrook: Yeah.  
 Brett StClair: us to get back to them with um IP addresses, static IP addresses. Um so we're aiming to try and get that to them tomorrow. So what a VPC is the environment, the landing zone where everything's going to exist and and just getting that built out. Um,  
 Kevin Murray: Okay.  
@@ -640,7 +644,7 @@ Brett StClair: Um
 Troy McDonald Kane: the only seller of the securities during the initial offering. Yeah.  
 Edwin Johnson: Correct.  
 Brett StClair: um the ticket  
-Troy McDonald Kane: So I mean that's that's important to that's important for us to take away when we talk to the T0 team because we're going to  
+Troy McDonald Kane: So I mean that's that's important to that's important for us to take away when we talk to the tZERO team because we're going to  
 Brett StClair: just  
 Troy McDonald Kane: have to figure out how that ledger is going to work. So essentially the 5 million shares issued are actually being issued by the team company's treasuries themselves. They're the issuer even in the simulated environment. So that has to be represented on the chain because they're initially selling these to the buyers in the initial offering that gives them that first ownership of these shares.  
 Edwin Johnson: That's great.  
@@ -660,7 +664,7 @@ Troy McDonald Kane: Heat.
 Brett StClair: quickly as possible. I don't know,  
 Edwin Johnson: Yeah. So the the IPO,  
 Brett StClair: George.  
-Edwin Johnson: you know, it's a critical piece and we want it to be amazing and beautiful, but it's only going to last for 3 days. So your your bandwidth should keep that in mind at least for the challenge. We again we can iterate on this throughout the fall or throughout the late in the summer after we got everything else done if we want to augment what that IPO experience can look like. Um the other thing Troy is um when you talk to T0 remember we always are going to hold back some of these shares to get  
+Edwin Johnson: you know, it's a critical piece and we want it to be amazing and beautiful, but it's only going to last for 3 days. So your your bandwidth should keep that in mind at least for the challenge. We again we can iterate on this throughout the fall or throughout the late in the summer after we got everything else done if we want to augment what that IPO experience can look like. Um the other thing Troy is um when you talk to tZERO remember we always are going to hold back some of these shares to get  
 Brett StClair: Can you find  
    
  
@@ -1140,7 +1144,7 @@ Edwin Johnson: there's a partner branding ownership. So in instead of putting a 
 ### 00:56:22
 
    
-Edwin Johnson: There's only going to be one owner of the homepage. There's only going to be one owner of the chat page and that's it for the season. And so um I think less is more in this case. We have a total of 10 spots. T0 is down for one.  
+Edwin Johnson: There's only going to be one owner of the homepage. There's only going to be one owner of the chat page and that's it for the season. And so um I think less is more in this case. We have a total of 10 spots. tZERO is down for one.  
 Brett StClair: Wow.  
 Edwin Johnson: That's going to be our exchange uh technology provider. And we they will they'll go up to two million but the baseline is 1.8 million. Um and then based on how well we deliver users in terms of volume in minutes then it escalates up and on a tier three you can get to 6 million uh I'm sorry 7 million tier 2 eight and tier one nine and then for another 1.8 8 million out of the uh 10 sponsors one can purchase to be the title sponsor. And the other thing that I thought about George, you know, I tried to pull a George move and be smart about this. Instead of having the video ads within the like screen itself, I want to have another button, another space that exists within the app called sponsor reward, uh sponsor rewards.  
    

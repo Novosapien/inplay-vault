@@ -1,3 +1,7 @@
+---
+description: "Session log, 2026-07-22 — the MM workstream foundation: standards decoded, vault component built, decision-cycle pseudocode, build sizing and working process"
+---
+
 # 2026-07-22 — MM workstream foundation: standards → understanding → structure → process
 
 > **Who:** George + Claude
@@ -59,7 +63,7 @@ Full detail in [[market-maker/decisions]]. Headlines:
   event-triggered recompute; three liquidity sessions (in-game / around-game /
   overnight-wide); markets truly isolated intragame (each game a pairs trade).
 - New build items surfaced: **synthetic market order** (before first NFL
-  game), **trading bands (~30%) + quote busting** with T0, **MM ops desktop
+  game), **trading bands (~30%) + quote busting** with tZERO, **MM ops desktop
   UI** (Kevin), find **Edwin's old simulation trigger script**.
 
 ### 3 · Built the vault component (custom structure)
@@ -90,7 +94,7 @@ sourced content.
   whole posted ladder + lifecycle metadata. The order book = everyone's
   orders merged by the venue.
 - **Bands / halts / busts and who can bust:** three-role model — participants
-  cancel their own unfilled orders only; the **venue** (T0) voids executed
+  cancel their own unfilled orders only; the **venue** (tZERO) voids executed
   trades (`ExecType=H` plumbing already in our FIX docs); the **operator**
   decides when per policy. Busting is NOT an MM power → implies a separate
   **market-supervision** function (conflict of interest: the MM can't judge
@@ -115,7 +119,7 @@ Thursday agenda.
   under load, exploitability (stale-quote sniping = #1 prize-integrity
   threat), calibration tail.
 - **Estimate:** ~4–6 engineer-weeks build effort with Claude-Code-heavy
-  development; **5–8 weeks calendar** (dependency-gated: T0 access, SR feed,
+  development; **5–8 weeks calendar** (dependency-gated: tZERO access, SR feed,
   Edwin's numbers), one primary builder. **2–3 weeks to a tradeable QA thin
   slice is feasible (~60–70%)** with hard preconditions and an explicit cut
   list — and the mid-August window demands roughly that anyway.
@@ -180,7 +184,7 @@ must read the guide first. This note is the first artifact of that process.
 4. **Two teams are converging independently on the same design** — platform's
    prototype params ≈ ours without coordination. Good sign for the design;
    also a warning that coordination (the 22-07 filter, N9) matters.
-5. **The real risks are not the math:** T0 rate limits, the SR probabilities
+5. **The real risks are not the math:** tZERO rate limits, the SR probabilities
    feed, stale-quote exploitability, and the calendar.
 
 ## What went wrong / got stuck
@@ -239,5 +243,5 @@ is overdue and should happen before Thursday.
    decision-cycle reference as the defaults-for-sign-off document.
 3. **Start the from-scratch design pass** (N9 adopt-or-redesign calls + N7
    topology) so Thursday's answers land into a design, not a vacuum.
-4. Keep chasing Phase-0 blockers: SR probabilities feed, T0 QA MM account,
+4. Keep chasing Phase-0 blockers: SR probabilities feed, tZERO QA MM account,
    gateway cancel-system build (Hasan).

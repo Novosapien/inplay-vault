@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Status — Earnings Report</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<nav class="site">
+  <span class="brand"><img src="../../brand/logos/inplay-mark.svg" alt="InPlay"><span>Project Status</span></span>
+  <a href="index.html">Overview</a>
+  <a href="flight-plan.html">Flight plan</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="referral.html">Referral</a>
+  <a href="app.html">App</a>
+  <a href="trading.html">Trading</a>
+  <a href="ipo.html">IPO</a>
+  <a href="market-maker.html">Market maker</a>
+  <a href="data-platform.html">Data platform</a>
+  <a href="education.html">Education</a>
+  <a href="advertising.html">Advertising</a>
+  <a href="earnings-report.html" class="current">Earnings</a>
+  <a href="research.html">Research</a>
+  <a href="third-space.html">Third space</a>
+  <a href="withdrawals.html">Withdrawals</a>
+  <a href="websites.html">Websites</a>
+  <a href="post-launch.html">Post-launch</a>
+</nav>
+
+<h1>Earnings report <span class="pill spec">SPECIFIED — BUILD SCHEDULED</span></h1>
+<p class="sub">The weekly tradable event that keeps every stock alive between games</p>
+
+<h2>Where it stands</h2>
+<div class="callout">
+  This is the most fully specified unbuilt component: all five sub-systems are
+  decomposed with entity journeys and acceptance criteria. Build is
+  deliberately sequenced <strong>after</strong> the IPO and trading path — the
+  first report cycle is needed in the opening weeks of the season (Tuesday NFL,
+  Wednesday NCAA, released ~7:30 in a Bloomberg-style batch), not on IPO day.
+</div>
+
+<h2>Design settled</h2>
+<ul>
+  <li>Every team company publishes a weekly off-field earnings figure: an Estimate the week before, an Actual on the day — the gap re-prices the stock.</li>
+  <li>Off-field pool: $250 per game, allocated by each team's share of matchup trade volume; the off-field total per game is half the on-field winner's earnings.</li>
+  <li>Corner cases ruled by Edwin in July: bye weeks earn no allocation; when a tradable team plays a school with no offering (~180 of ~2,100 games), 100% of the pool goes to the tradable team.</li>
+  <li>Estimates are designed to be tradable — built from attendance, jersey sales and viewership with deliberate spread (Dallas ≈ $30 vs Carolina ≈ $14) — and the same projection feeds the market maker's reference price.</li>
+  <li>Surfaces: a batched release feed with favourites and portfolio pinned to top, graphical report cards with an embedded trade button, a per-team history archive, a coloured earnings dot on the price chart, and a countdown with a push alert ~15 minutes before release.</li>
+  <li>Two routes only: a dedicated page under More, plus the reports box on each team page — each with a trade button on the report itself.</li>
+</ul>
+
+<h2>Open</h2>
+<ul>
+  <li>Zero/negligible-volume allocation rule for the $250 pool.</li>
+  <li>Estimate methodology ownership and its weekly production process (pairs with Edwin's Wednesday data drop).</li>
+  <li>Anti-manipulation design — coordinated volume inflation to engineer a beat is identified as the core exploit loop and not yet designed against.</li>
+  <li>Release-burst load handling for the synchronised 7:30 spike.</li>
+  <li>Visual design — direction is set ("Bloomberg energy, not Bloomberg density") but no mockups exist yet.</li>
+</ul>
+
+<h2>Next</h2>
+<ul>
+  <li>Build the earnings engine first (the proprietary core — the feed and cards have nothing to render without it), starting as the trading path lands (~week of 31 August).</li>
+  <li>First live cycle in the opening weeks of the season; the history archive and chart dot can fast-follow.</li>
+</ul>
+
+<footer><a class="cardlink" href="index.html">← Overview</a> · <a class="cardlink" href="flight-plan.html">Flight plan</a></footer>
+
+</div>
+</body>
+</html>

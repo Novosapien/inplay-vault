@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-28 InPlay touchdown — multi-sport data debate, tZERO white-label app idea, KYC/referral priorities, and a 3x-week standup cadence"
+---
+
 **
 
 May 28, 2026
@@ -148,7 +152,7 @@ Edwin Johnson: teaching
 ### 00:06:43
 
    
-George Westbrook: doing. First one's mobile PWA. So, hopefully by the end of today that will be there. Um, it's just obviously we got to port everything across. Some of the things change when it's ported across, making sure it's consistent. Um, one of the things we were doing as well was trying to work on the 3D stadium. That's been at the moment it there's progress, but not enough. Um, so it's not a crucial thing, I think, for the time being. So, we're going to park that for a bit. um make progress where we can, but obviously the priority is people need to be able to log in, do KYC, and refer so we get all of those users up front. Um so that's going to be one of the priorities. Um with the backend stuff, um we have started or we've built the the fixed gateway. Um we need to set up a few things like the messaging bus and the websocket connections. um get them deployed and then that's at the point at which we can get the um whitelisted IP over to T0 and then get then get testing in parallel with that the sports radar data that micros service is being built out so that we get that connected to the to the front end as well so it's not fake data when it comes to sports radar it's real it's going to be real data Um,  
+George Westbrook: doing. First one's mobile PWA. So, hopefully by the end of today that will be there. Um, it's just obviously we got to port everything across. Some of the things change when it's ported across, making sure it's consistent. Um, one of the things we were doing as well was trying to work on the 3D stadium. That's been at the moment it there's progress, but not enough. Um, so it's not a crucial thing, I think, for the time being. So, we're going to park that for a bit. um make progress where we can, but obviously the priority is people need to be able to log in, do KYC, and refer so we get all of those users up front. Um so that's going to be one of the priorities. Um with the backend stuff, um we have started or we've built the the fixed gateway. Um we need to set up a few things like the messaging bus and the websocket connections. um get them deployed and then that's at the point at which we can get the um whitelisted IP over to tZERO and then get then get testing in parallel with that the sports radar data that micros service is being built out so that we get that connected to the to the front end as well so it's not fake data when it comes to sports radar it's real it's going to be real data Um,  
    
  
 
@@ -267,9 +271,9 @@ Troy McDonald Kane: Yeah, one idea that I had was is there a way for us to event
 
    
 Kevin Murray: Mhm.  
-Troy McDonald Kane: TZ's platform fully integrated with the app beyond the performance securities because T0 will be a broker as well that will onboard clients and if we can control  
+Troy McDonald Kane: TZ's platform fully integrated with the app beyond the performance securities because tZERO will be a broker as well that will onboard clients and if we can control  
 Skye Capazorio: It's  
-Troy McDonald Kane: the app, we can control the ads. If we try to get clients through TZ's broker dealer, you know, they've already said that their app doesn't look or feel very good. And liked even the demo that we showed them that you mocked up for us, uh, George and Brett. So, I think there could be a path to full full integration or white labeling the app to T0 for anything that is that for anything that trades on T0, not just um our performance securities. And that becomes T0's primary app, which allows us to then control the advertising through the app through T0 instead of relying on working with the other retail brokers like Robin Hood or or Interactive Brokers. And it's really shouldn't be too much work because you're building APIs already. It's just what are those APIs pointing to?  
+Troy McDonald Kane: the app, we can control the ads. If we try to get clients through TZ's broker dealer, you know, they've already said that their app doesn't look or feel very good. And liked even the demo that we showed them that you mocked up for us, uh, George and Brett. So, I think there could be a path to full full integration or white labeling the app to tZERO for anything that is that for anything that trades on tZERO, not just um our performance securities. And that becomes tZERO's primary app, which allows us to then control the advertising through the app through tZERO instead of relying on working with the other retail brokers like Robin Hood or or Interactive Brokers. And it's really shouldn't be too much work because you're building APIs already. It's just what are those APIs pointing to?  
    
  
 
@@ -281,8 +285,8 @@ Troy McDonald Kane: Well,
 Skye Capazorio: What was that?  
 Troy McDonald Kane: we are well, we are as a we are as a base for our performance securities,  
 George Westbrook: product.  
-Troy McDonald Kane: but the concept doesn't just have to be for our performance securities. It could be it could be done for other products on the app where there can be ad placements or brand placements and then it it just incorporates what other symbols T0 is bringing on but we own those assets or we own those relationships essentially.  
-Edwin Johnson: Yeah. Yeah, picture you're going to trade some other type of securities on there just like let's say T0 now list you know Apple um stock and then you want to trade Apple stock instead of pulling in the sport radar feeds you know like well you pull them in for sports but maybe you also pull in like Reuters or Bloomberg or Yahoo data or what whatever other mechanism so that the experience isn't just sports it's anything right so like our our wheel looks  
+Troy McDonald Kane: but the concept doesn't just have to be for our performance securities. It could be it could be done for other products on the app where there can be ad placements or brand placements and then it it just incorporates what other symbols tZERO is bringing on but we own those assets or we own those relationships essentially.  
+Edwin Johnson: Yeah. Yeah, picture you're going to trade some other type of securities on there just like let's say tZERO now list you know Apple um stock and then you want to trade Apple stock instead of pulling in the sport radar feeds you know like well you pull them in for sports but maybe you also pull in like Reuters or Bloomberg or Yahoo data or what whatever other mechanism so that the experience isn't just sports it's anything right so like our our wheel looks  
    
  
 
@@ -303,7 +307,7 @@ Edwin Johnson: they're active sports traders or want to be active sports traders
 ### 00:19:55
 
    
-Edwin Johnson: So if we could be if we bring enough people into T0 and you know then once we go to production 200,000 or 300,000 people open accounts with you know over 2500 bucks in there that becomes a material difference to TZ's business model able to pull in more listings. So, think of it as new blood gets familiar trading on the Inplay app and they can trade sports, they can trade futures, they can trade options. It's it's basically like once you have money at a broker, it's a b**** to go. If I have to take money out and trade options at Schwab and futures at um you know uh Robin Hood and and equities at Interactive Brokers and then sports at InPlay. It's it's a total mess. Like no one does that. you know, you look for a broker who's full service and that, you know, obviously ultimately we're not there yet. We're not in production, but you know, keep a keen eye towards like, you know, how we roll this out because the the whole idea of bringing advertising into an app or or into a trading experience.  
+Edwin Johnson: So if we could be if we bring enough people into tZERO and you know then once we go to production 200,000 or 300,000 people open accounts with you know over 2500 bucks in there that becomes a material difference to TZ's business model able to pull in more listings. So, think of it as new blood gets familiar trading on the Inplay app and they can trade sports, they can trade futures, they can trade options. It's it's basically like once you have money at a broker, it's a b**** to go. If I have to take money out and trade options at Schwab and futures at um you know uh Robin Hood and and equities at Interactive Brokers and then sports at InPlay. It's it's a total mess. Like no one does that. you know, you look for a broker who's full service and that, you know, obviously ultimately we're not there yet. We're not in production, but you know, keep a keen eye towards like, you know, how we roll this out because the the whole idea of bringing advertising into an app or or into a trading experience.  
    
  
 

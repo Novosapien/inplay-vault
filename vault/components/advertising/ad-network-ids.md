@@ -1,3 +1,7 @@
+---
+description: "The single central registry of InPlay ad-monetisation identifiers — publisher, app, ad-unit and SSP seat IDs, with AdMob captured and the SSP roster tracked"
+---
+
 # Ad Network & Inventory ID Registry
 
 > **Component:** [[advertising]]

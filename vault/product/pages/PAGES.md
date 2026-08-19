@@ -1,3 +1,7 @@
+---
+description: "Index of all 21 app screens grouped by the 5 bottom-nav tabs, with links to each page doc and the key navigation flows between them"
+---
+
 # App Pages
 
 > **Last updated:** 2026-05-17

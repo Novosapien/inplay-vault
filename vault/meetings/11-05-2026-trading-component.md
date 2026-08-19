@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-11 InPlay call — vault review-tool demo, then a trading-module workshop: entry points, persistent buy/sell, limit-only tZERO orders"
+---
+
 **
 
 May 11, 2026
@@ -145,7 +149,7 @@ Max Kingaby: So, we've enabled the ability to do a review. So, you kind of highl
 
    
 Edwin: Cool.  
-Max Kingaby: Whereas the documents are all just copy. It's copy copy copy copy. What we're going to cover today are two modules. after that um we think it's really important to get a head start on the trade module um only because as we go we spent a lot of time on the architecture this weekend after doing quite a deep dive on the T0 uh APIs and they got some custom APIs well it's custom it's more like the industry standard in the space but it's fairly custom compared to building a API gateway And so instead of being able to host it on something called uh containers, we're probably going to have to look at something more like a VM to manage it. But then we'll think about how we scale those VMs. Um we figured let's let's start talking about that trade mechanism and get those conversations going with T0. And as much as it's a fairly simple module, we just need to get cracking on that. That's the one with the biggest risk as far as we can see.  
+Max Kingaby: Whereas the documents are all just copy. It's copy copy copy copy. What we're going to cover today are two modules. after that um we think it's really important to get a head start on the trade module um only because as we go we spent a lot of time on the architecture this weekend after doing quite a deep dive on the tZERO uh APIs and they got some custom APIs well it's custom it's more like the industry standard in the space but it's fairly custom compared to building a API gateway And so instead of being able to host it on something called uh containers, we're probably going to have to look at something more like a VM to manage it. But then we'll think about how we scale those VMs. Um we figured let's let's start talking about that trade mechanism and get those conversations going with tZERO. And as much as it's a fairly simple module, we just need to get cracking on that. That's the one with the biggest risk as far as we can see.  
    
  
 
@@ -774,7 +778,7 @@ Troy McDonald Kane: information.
 Edwin: so you can have a um a persistent order type that you select, which is a market order or a limit order. Um,  
 Troy McDonald Kane: Yeah.  
 Edwin: I strongly uh advise against market orders for all those traders out there as much as possible. Um, so I I would say if we could figure out a way to have the p uh an order type be persistent and then you're people are going to  
-Troy McDonald Kane: Oh, by the way, oh, wait. So, first of all, there actually aren't market orders on T0.  
+Troy McDonald Kane: Oh, by the way, oh, wait. So, first of all, there actually aren't market orders on tZERO.  
 Edwin: have  
 Troy McDonald Kane: So, we actually need them to all be limit orders or we need to figure out a backend functionality for market orders.  
 Edwin: Oh, they don't have market orbs.  
@@ -824,7 +828,7 @@ Edwin: saying that well, I guess it's always been that way, Troy. Maybe CME is d
 
    
 Edwin: So um you know that that would be something. Let me think on that a day on on order type. But essentially it just prepopulates what the best bidder offer is if you're going to go with a market order.  
-George Westbrook: Okay. And then just to the one that we know T0 can do is the  
+George Westbrook: Okay. And then just to the one that we know tZERO can do is the  
 Edwin: limit order.  
 Troy McDonald Kane: Limit  
 George Westbrook: the limit order.  
@@ -1258,14 +1262,14 @@ George Westbrook: Um, okay. That's Yeah, that's I'm getting some I think we're a
 ### 01:18:03
 
    
-George Westbrook: So maybe a team page just for sake of it. There's going to be other pages where the trading might be the secondary experience, but we want to minimize the friction them getting to that secondary experience. And then we've got in that trading page, we will make some assumptions about who they will want to trade, but give them the flexibility so that if those assumptions are wrong, they can quickly take the action with the team that they want to do. Um, okay. The data side, one, this is kind of a side note, but kind of related. One of the things we we probably need to do is have a conversation with T0 um just because when we've been when uh we've been doing a bit of research or sand found that they've got a rest API um and the fix 4.2 protocol. So fix 4.2 to that's going to be for the trading. Um but certain aspects like maybe the um fetching data um rest might be a better protocol for that. So what we might need to do is work out are they storing data?  
+George Westbrook: So maybe a team page just for sake of it. There's going to be other pages where the trading might be the secondary experience, but we want to minimize the friction them getting to that secondary experience. And then we've got in that trading page, we will make some assumptions about who they will want to trade, but give them the flexibility so that if those assumptions are wrong, they can quickly take the action with the team that they want to do. Um, okay. The data side, one, this is kind of a side note, but kind of related. One of the things we we probably need to do is have a conversation with tZERO um just because when we've been when uh we've been doing a bit of research or sand found that they've got a rest API um and the fix 4.2 protocol. So fix 4.2 to that's going to be for the trading. Um but certain aspects like maybe the um fetching data um rest might be a better protocol for that. So what we might need to do is work out are they storing data?  
    
  
 
 ### 01:19:18
 
    
-George Westbrook: Obviously yes they are um what data are they storing? How can we access different bits of data because then that's going to inform a bit more in the architecture as well. Um we think we're 80% there. It's just some of maybe the this is what this table looks like, this is what that table looks like. Um, which we just need a bit more clarity on because obviously we don't want to be storing data that T0 already have.  
+George Westbrook: Obviously yes they are um what data are they storing? How can we access different bits of data because then that's going to inform a bit more in the architecture as well. Um we think we're 80% there. It's just some of maybe the this is what this table looks like, this is what that table looks like. Um, which we just need a bit more clarity on because obviously we don't want to be storing data that tZERO already have.  
 Troy McDonald Kane: Yeah, George, let me know when you want to set that up. They're happy to do whatever collaboration sessions you want, as many as you want.  
 George Westbrook: Perfect.  
 Troy McDonald Kane: They're very engaged and ready to to set those up. So, you let me if you want to come back to me on what works for you. I can get that set up if you you're probably going to need a couple sessions with them.  
@@ -1276,7 +1280,7 @@ George Westbrook: Yeah. Yeah. I think because I think what we'll we'll spend the
 ### 01:20:15
 
    
-George Westbrook: So that' be that' be really really handy. Um just looking through the thing. So the data that's something that we we need speak to T0 about access obviously the only people that can access the trading mechanism are people who are on boarded um I mean  
+George Westbrook: So that' be that' be really really handy. Um just looking through the thing. So the data that's something that we we need speak to tZERO about access obviously the only people that can access the trading mechanism are people who are on boarded um I mean  
 Cody Haugen: Yep. On boarded and signed up.  
 George Westbrook: yeah  
 Cody Haugen: Yep.  

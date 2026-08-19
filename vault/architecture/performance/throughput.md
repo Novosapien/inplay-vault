@@ -1,7 +1,11 @@
+---
+description: "Throughput estimates for the market-data pipeline — ~25K msg/sec upstream from tZERO, the fan-out arithmetic, and the conflation strategies that contain it"
+---
+
 # Throughput Estimates
 
 > **Architecture:** [[architecture]]
-> **Source:** T0 Integration Spec
+> **Source:** tZERO Integration Spec
 > **Status:** Draft
 
 ## Upstream from tZERO

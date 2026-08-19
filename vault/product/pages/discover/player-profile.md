@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Player Profile — jersey badge, injury banner, position-specific stat grids and bio; research context since players have no tradeable stock"
+---
+
 # Player Profile
 
 > **Tab:** Discover

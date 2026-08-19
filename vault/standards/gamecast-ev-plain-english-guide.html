@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edwin's Fair-Value (EV) Model — Plain English Guide</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --val:#0e5a6a; --val-deep:#0a4350; --val-soft:#dfecef; --val-ghost:#edf4f5;
+    --mkt:#a83a2c; --mkt-deep:#7f2b20; --mkt-soft:#f5e4df;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --conf:#0e6a4c; --conf-soft:#e0eee5;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:.5rem 1rem}
+  .stripe b{color:#9fd4c4;font-weight:600}
+  .topnav{position:sticky;top:0;z-index:10;background:var(--paper-deep);border-bottom:1px solid var(--rule-strong);padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;box-shadow:0 2px 8px rgba(60,50,25,.08)}
+  .topnav a{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s}
+  .topnav a:hover{border-color:var(--val);color:var(--val-deep);background:var(--val-ghost)}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--val);margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5.2vw,3rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--mkt);color:var(--mkt)}
+  .meta span.go{border-color:var(--conf);color:var(--conf)}
+
+  section{padding:2.6rem 0 0}
+  h2{font-size:1.55rem;letter-spacing:-.01em;padding-top:1rem;border-top:1px solid var(--rule);display:flex;gap:.7rem;align-items:baseline}
+  h2 .n{font-family:var(--mono);font-size:.8rem;color:var(--val);letter-spacing:.1em}
+  h3{font-size:1.08rem;margin-top:1.7rem}
+  h4{font-size:.94rem;margin-top:1.3rem;font-family:var(--mono);letter-spacing:.02em;color:var(--val-deep)}
+  p{margin-top:.85rem;max-width:44rem}
+  p.lead{font-size:1.08rem}
+  ul,ol{margin:.85rem 0 0 1.3rem;max-width:44rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--val)}
+  b{font-weight:700}
+  em{color:var(--ink-soft)}
+  code{font-family:var(--mono);font-size:.82em;background:rgba(255,255,255,.6);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+
+  .pull{margin:1.4rem 0 0;padding:1rem 1.3rem;border-left:4px solid var(--val);background:var(--val-ghost);font-size:1.06rem;font-style:italic}
+  .pull b{font-style:normal}
+
+  .callout{margin:1.4rem 0 0;border:1px solid var(--rule-strong);border-radius:10px;padding:1rem 1.2rem;background:rgba(255,255,255,.5)}
+  .callout .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;display:inline-block;margin-bottom:.4rem}
+  .callout.touchdown{border-color:var(--conf);background:var(--conf-soft)}
+  .callout.touchdown .tag{color:var(--conf)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.warn .tag{color:var(--amber)}
+  .callout.stop{border-color:var(--mkt);background:var(--mkt-soft)}
+  .callout.stop .tag{color:var(--mkt-deep)}
+  .callout p{margin-top:.35rem}
+  .callout p:first-of-type{margin-top:.2rem}
+
+  .formula{margin:1.3rem 0 0;background:#20241f;color:#cfe8d8;border-radius:10px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.85rem;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula .c{color:#7fa08c}
+  .formula b{color:#9fe8c4;font-weight:600}
+  .formula .hot{color:#f0a58c}
+
+  .tablewrap{overflow-x:auto;margin-top:1.2rem}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:34rem}
+  th{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong)}
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{font-weight:700}
+  tr:nth-child(even) td{background:rgba(255,255,255,.35)}
+  table.num td:first-child{white-space:nowrap}
+  td.ok{color:var(--conf);font-weight:700}
+  td.no{color:var(--mkt);font-weight:700}
+
+  .chain{margin:1.6rem auto 0;max-width:30rem;text-align:center;font-family:var(--mono)}
+  .chain .box{border:1.5px solid var(--rule-strong);background:rgba(255,255,255,.6);border-radius:8px;padding:.55rem .8rem;font-size:.78rem}
+  .chain .box b{display:block;font-size:.85rem;color:var(--val-deep)}
+  .chain .box small{color:var(--ink-soft);font-family:var(--serif);font-style:italic;font-size:.78rem;display:block;margin-top:.15rem}
+  .chain .arr{color:var(--val);font-size:.8rem;padding:.25rem 0}
+  .chain .box.mkt b{color:var(--mkt-deep)}
+  .chain .box.mkt{border-style:dashed}
+  .chain .box.live{border-color:var(--val);background:var(--val-ghost)}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+  @media(max-width:40rem){.split{grid-template-columns:1fr}}
+  .split .card{border:1px solid var(--rule-strong);border-radius:10px;padding:.9rem 1rem;background:rgba(255,255,255,.5)}
+  .split .card h4{margin-top:0}
+  .split .card.a{border-color:var(--val);background:var(--val-ghost)}
+  .split .card.b{border-color:var(--mkt);background:var(--mkt-soft)}
+  .split .card p{font-size:.92rem;margin-top:.5rem}
+  .split .card ul{font-size:.9rem;margin-left:1.1rem}
+
+  .rulelist{counter-reset:rule;list-style:none;margin-left:0}
+  .rulelist li{counter-increment:rule;position:relative;padding-left:2.6rem;margin-top:1.1rem}
+  .rulelist li::before{content:counter(rule,decimal-leading-zero);position:absolute;left:0;top:.1rem;font-family:var(--mono);font-size:.72rem;color:var(--val);border:1px solid var(--rule-strong);border-radius:6px;padding:.1rem .3rem;background:rgba(255,255,255,.6)}
+
+  footer{margin-top:4rem;border-top:3px double var(--rule-strong);padding-top:1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+</style>
+</head>
+<body>
+
+<div class="stripe">Derived explainer · source: Edwin Johnson's Aug&nbsp;8 handoff bundle · <b>the source docs win where this guide disagrees</b> · trade secret of InPlay Global, Inc.</div>
+<nav class="topnav">
+  <a href="#thirty">30-sec</a><a href="#idea">1 · The idea</a><a href="#resting">2 · Resting price</a><a href="#live">3 · Live price</a><a href="#behaviours">4 · The 3 behaviours</a><a href="#daily">5 · The daily report</a><a href="#diverge">6 · Is it the same model?</a><a href="#consume">7 · Consuming it</a><a href="#asks">8 · Asks for Edwin</a><a href="#glossary">9 · Glossary</a>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">InPlay Gamecast fair value · in plain english</div>
+  <h1>What a share is worth <span class="thin">— Edwin's EV model, decoded</span></h1>
+  <p class="deck">Edwin sent a bundle on <b>9 August 2026</b>. Inside it is the pricing model behind the front-end mock. This guide explains that model in plain English, checks its arithmetic, and answers the real question: <b>how does it relate to the daily report we already receive?</b></p>
+  <div class="meta">
+    <span class="go">✓ arithmetic re-derived and verified</span>
+    <span class="hot">7 items to put to Edwin</span>
+    <span>source: InPlay-Handoff-George-FairValue-EV.md</span>
+    <span>source: InPlay-Gamecast-Pricing-Spec.md (v3)</span>
+  </div>
+</header>
+
+<section id="thirty">
+  <h2><span class="n">◎</span>The 30-second version</h2>
+
+  <p class="lead">Edwin's document answers one question: <b>what is a share of a team worth at this instant?</b> It does not cover order matching, spreads, or the market maker. It is the value number that everything else is priced around.</p>
+
+  <p>The model has two layers.</p>
+
+  <div class="chain">
+    <div class="box"><b>LAYER 1 · seasonFair(team)</b><small>the resting price — what a share is worth when no game is live</small></div>
+    <div class="arr">▼ &nbsp;a game kicks off</div>
+    <div class="box live"><b>LAYER 2 · lgValuePrice(…)</b><small>the live price — Layer 1 re-priced play by play</small></div>
+    <div class="arr">▼ &nbsp;the crowd trades</div>
+    <div class="box mkt"><b>traded price = pFair + ε</b><small>ε is simulated noise in the mock — real order flow replaces it in production</small></div>
+  </div>
+
+  <p>The headline answer to your question is <b>yes</b>. The model is directly related to the daily report. <b>Layer 1 is a stand-in for it.</b> Edwin's mock runs in a browser with no feed, so it computes its own view of a team's remaining season from the IPO price and the results so far. In production that number does not get computed — <b>it arrives every morning in Edwin's 06:00 ET file as <code>expected_remaining_wins</code></b>. Section&nbsp;5 sets the two side by side.</p>
+
+  <div class="callout warn">
+    <span class="tag">⚠ Read this before you port anything</span>
+    <p><b>This is not a new pricing model.</b> Expand Edwin's formulas and they reduce to the model we already built from his own 28-07 email — same $5 win, same off-field pool, same forward-wins term, written in a different accounting frame. Section&nbsp;6 shows the algebra. <b>The only genuinely new content in the bundle is the off-field method</b>, which happens to fill the one leg of our engine that is still mocked.</p>
+  </div>
+</section>
+
+<section id="idea">
+  <h2><span class="n">01</span>The one idea the whole model rests on</h2>
+
+  <div class="pull"><b>Price tracks value, not win probability.</b> Win probability is an <em>input</em> to one component. It is never the price.</div>
+
+  <p>A share is a claim on a team-company's season revenue. That revenue has two sources, and both are fixed amounts:</p>
+
+  <ul>
+    <li><b>On-field — a win pays $5.00 per share.</b> Absolute. It never floats on the quality of the opponent.</li>
+    <li><b>Off-field — a pool of $2.50 per game</b>, split between the two teams. A team's share of that pool is weighted by its brand.</li>
+  </ul>
+
+  <p>So the value of a share is: money already banked, plus the money the rest of the season is expected to produce. Nothing else.</p>
+
+  <p>This is why the price can fall while a team is winning. The win adds $5. But if the team wins badly, or loses its quarterback in the process, the <em>rest of the season</em> is now worth less. If the second effect is bigger than $5, the share drops. A model built on win probability alone can never produce that. This is the whole point of the design.</p>
+</section>
+
+<section id="resting">
+  <h2><span class="n">02</span>Layer 1 — the resting price</h2>
+
+  <p>Between games, a share is worth its IPO price, corrected for everything we have learned since the IPO.</p>
+
+  <div class="pull"><b>fair = IPO price + (the revenue we now expect this season) − (the revenue the IPO price already assumed)</b></div>
+
+  <p>If the season is going better than the IPO assumed, the share is worth more than the IPO price. If it is going worse, less. That is the entire idea.</p>
+
+  <h3>How the model reads the IPO price</h3>
+
+  <p>The model has no separate table of team strength. It derives strength from the IPO price. The NFL IPO range runs from <b>$35.66 (Arizona)</b> to <b>$81.20 (LA Rams)</b>. A team's position in that range is called <code>pct</code>, and it drives three things: expected wins, off-field share, and star-player value.</p>
+
+  <div class="formula"><span class="c">// where a team sits in the league, 0 = cheapest, 1 = most expensive</span>
+pct       = clamp( (px − 35.66) / (81.20 − 35.66), 0, 1 )
+
+<span class="c">// the three things pct drives</span>
+e0        = 5.5 + pct * 6.5     <span class="c">// preseason expected wins  →  5.5 to 12.0</span>
+offShare  = 1.0 + pct * 0.5     <span class="c">// off-field $ per game     →  1.00 to 1.50</span>
+starValue = 0.6 + 1.2 * pct     <span class="c">// star-player multiplier   →  0.6 to 1.8</span></div>
+
+  <h3>The formula</h3>
+
+  <div class="formula">wins, played, banked                <span class="c">// results so far this season</span>
+remGames   = 17 − played
+
+pRem       = clamp( (e0 + 2*wins) / (17 + 2*played), 0.08, 0.85 )
+expRemWins = remGames * pRem
+expRemRev  = remGames * (pRem * <b>5.25</b> + offShare)
+pre        = e0 * <b>5.25</b> + 17 * offShare
+
+<b>fair       = clamp( px + (banked + expRemRev) − pre , 14, 118 )</b></div>
+
+  <p>Two lines deserve a note.</p>
+
+  <p><b><code>pRem</code> — the forward win rate.</b> It blends the prior with the form. <code>e0</code> is what the IPO expected over 17 games. <code>2*wins</code> over <code>2*played</code> is the season so far, given double weight. Early in the season the prior dominates. Late in the season the form dominates. The clamp stops any team from being priced at certainty.</p>
+
+  <p><b>The two win coefficients.</b> A <em>banked</em> win is exactly <b>$5.00</b>. A <em>forecast</em> win is worth <b>$5.25</b>. Edwin says to keep both and calls the extra 25 cents "a small blend". He does not say what it blends. See the asks in Section&nbsp;7.</p>
+
+  <h3>Worked example — Kansas City, 6–4</h3>
+
+  <p>Edwin gives one output tuple. Everything below the line is my back-solve from his own formulas, and it reconciles exactly. Use it as your first unit test.</p>
+
+  <div class="tablewrap">
+  <table class="num">
+    <tr><th>Quantity</th><th>Value</th><th>Where it comes from</th></tr>
+    <tr><td>px (IPO price)</td><td>≈ 73.94</td><td>back-solved — not stated in the doc</td></tr>
+    <tr><td>pct</td><td>0.8405</td><td>(73.94 − 35.66) / 45.54</td></tr>
+    <tr><td>e0</td><td>10.96 wins</td><td>5.5 + 0.8405 × 6.5</td></tr>
+    <tr><td>offShare</td><td>1.420</td><td>1.0 + 0.8405 × 0.5</td></tr>
+    <tr><td>wins / played</td><td>6 / 10</td><td>Edwin's tuple</td></tr>
+    <tr><td>banked</td><td>43.94</td><td>Edwin's tuple — 6 wins × $5 + off-field earned</td></tr>
+    <tr><td>pRem</td><td>0.6206</td><td>(10.96 + 12) / (17 + 20)</td></tr>
+    <tr><td>expRemWins</td><td>4.34</td><td>7 × 0.6206 &nbsp;<em>(Edwin: 4.3 ✓)</em></td></tr>
+    <tr><td>expRemRev</td><td>32.75</td><td>7 × (0.6206 × 5.25 + 1.420) &nbsp;<em>(Edwin: 32.75 ✓)</em></td></tr>
+    <tr><td>pre</td><td>81.70</td><td>10.96 × 5.25 + 17 × 1.420</td></tr>
+    <tr><td><b>fair</b></td><td><b>68.93</b></td><td>73.94 + (43.94 + 32.75) − 81.70 &nbsp;<em>(Edwin: 68.93 ✓)</em></td></tr>
+  </table>
+  </div>
+
+  <div class="callout stop">
+    <span class="tag">✗ Error found in the source doc</span>
+    <p>Edwin's §1.4 says KC "rests at 68.93 (<b>up</b> from a lower IPO)". <b>The arithmetic says the opposite.</b> The IPO price implied by his own numbers is 73.94, so the share is <b>down $5.01</b>. This is correct behaviour, not a model bug: the IPO priced KC for 10.96 wins, and a 6–4 record is below that pace. The narrative sentence is simply wrong. Worth confirming, because it points the wrong way for anyone reading the example to learn the direction of travel.</p>
+  </div>
+
+  <p>Edwin's cross-section check on the mock: <code>corr(wins, fair) ≈ 0.96</code>. A 9–1 team prices near 90. A 1–10 team prices near 17.</p>
+</section>
+
+<section id="live">
+  <h2><span class="n">03</span>Layer 2 — the live price</h2>
+
+  <p>At kickoff the resting price becomes the <b>anchor</b>. Every play then adjusts it.</p>
+
+  <div class="formula">anchor = clamp( seasonFair(team).fair, 24, 96 )
+
+<b>pFair  = anchor + banked + C1 + (C2 − C2₀) + (C4 − C4₀) + offCur</b></div>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Term</th><th>What it is</th><th>How fast it moves</th></tr>
+    <tr><td>anchor</td><td>the resting price from Layer 1</td><td>fixed for the game</td></tr>
+    <tr><td>banked</td><td>wins banked <em>earlier in the same session</em> only. <b>Zero for a single live game.</b> Do not add the season's banked money here — it is already inside the anchor.</td><td>step changes</td></tr>
+    <tr><td>C1</td><td>this game's win premium</td><td><b>every play</b></td></tr>
+    <tr><td>C2 − C2₀</td><td>the re-rate of the <em>remaining</em> games</td><td>slow, except on injury or a decisive scoreline</td></tr>
+    <tr><td>C4 − C4₀</td><td>the re-rate of remaining off-field value</td><td>injury only</td></tr>
+    <tr><td>offCur</td><td>this game's off-field money</td><td>locked at kickoff</td></tr>
+  </table>
+  </div>
+
+  <h3>C1 — the win premium, and the time-decay dial</h3>
+
+  <div class="formula">M     = 0.35 + 0.65 * clamp(1 − timeLeftSecs/3600, 0, 1)^1.5
+cgWin = 5 * ( wpPre + M * (wpLive − wpPre) )
+C1    = cgWin − 5 * 0.5</div>
+
+  <p><code>M</code> is the leverage dial. It controls how much a swing in live win probability is allowed to move the price <em>yet</em>. Early in a game the model is deliberately sceptical of the scoreboard. Late in a game it is not.</p>
+
+  <div class="tablewrap">
+  <table class="num">
+    <tr><th>Moment</th><th>M</th><th>Price move per 0.01 of win probability</th></tr>
+    <tr><td>Kickoff</td><td>0.35</td><td>$0.018</td></tr>
+    <tr><td>Halftime</td><td>0.58</td><td>$0.029</td></tr>
+    <tr><td>Two-minute warning</td><td>0.97</td><td>$0.048</td></tr>
+  </table>
+  </div>
+
+  <p>A late tie game gets both a high <code>M</code> <em>and</em> a live win probability that swings violently on every play. The two multiply. That is why the last two minutes move the price hard and a Q1 first down barely registers.</p>
+
+  <p><b>This is the only place win probability enters the price.</b></p>
+
+  <h3>C2 — where re-rating lives</h3>
+
+  <p>This is the component that makes the model interesting, and it is the one our engine does not have.</p>
+
+  <div class="formula">domActual   = clamp( (homeS − oppS) / 21, −1, 1 )   <span class="c">// what the scoreboard says</span>
+domExpected = (wpPre − 0.5) * 1.5                  <span class="c">// what a team this good SHOULD show</span>
+perf        = clamp( domActual − domExpected, −1, 1 )
+reRate      = clamp( 1 + 0.15 * rhoJit * perf, 0.80, 1.25 )
+
+C2₀ = gRemAfter * winRateBase * 5                  <span class="c">// remaining value at kickoff</span>
+C2  = gRemAfter * (winRateBase * reRate * injOn) * 5</div>
+
+  <p>In words: the model compares how much a team <em>is</em> dominating against how much it <em>should be</em> dominating, given the pregame line. The gap re-rates the whole rest of the season, up to ±25%.</p>
+
+  <p><code>gRemAfter</code> is the lever that decides how much this matters. With 9 games left, a re-rate moves a lot of money. With 1 game left, almost none. An unconvincing win in week 2 hurts far more than the same performance in week 16.</p>
+
+  <h3>Injuries</h3>
+
+  <p>The mock invents injuries at random. Production would take them from a real feed. Either way the <em>impact</em> formula is what ports:</p>
+
+  <div class="formula">hit    = posWeight * starValue * severityFrac
+
+injOn  = clamp( injOn  * (1 − hit * 0.60 * rnd(0.7,1.3)), 0.40, 1 )   <span class="c">// hits C2</span>
+injOff = clamp( injOff * (1 − hit * 0.30 * rnd(0.7,1.3)), 0.55, 1 )   <span class="c">// hits C4</span></div>
+
+  <ul>
+    <li><b>Position weights:</b> QB 0.35 ≫ WR / DE / CB 0.09 ≫ LT / OL 0.06 ≫ RB / S 0.05 ≫ LB / TE 0.03.</li>
+    <li><b>Severity:</b> 65% minor (0–0.05) · 25% moderate (0.10–0.30) · 10% major (0.50–1.00).</li>
+    <li><b>Star value comes from the IPO price</b>, via <code>pct</code>. No hand-written table. A top team's quarterback marks the team down roughly twice as hard as a bottom team's.</li>
+    <li><b>Two-sided.</b> Your star goes down: you are marked down, and the opponent's win probability rises. Their star goes down: the reverse.</li>
+    <li>An elite quarterback lost for the season can cut remaining on-field value by <b>40–60% in one play</b>. This is the "Aaron Rodgers 2023" case Edwin names in the v3 spec.</li>
+  </ul>
+
+  <h3>Off-field</h3>
+
+  <div class="formula">C4₀    = gRemAfter * offShare
+C4     = C4₀ * injOff
+offCur = offShare</div>
+
+  <p>Off-field value is a <b>projection only</b>. It never keys off live trading volume. Edwin is explicit about why: volume feeding price makes the price circular. Volume is disclosed on the weekly Friday report and never per team, live.</p>
+
+  <h3>Your unit test</h3>
+
+  <div class="pull"><b>pFair = seasonVal + cgWin + offCur.</b> Edwin's worked case: 65.93 + 3.10 + 1.42 = 70.45. If those three do not sum to <code>pFair</code>, something is wrong.</div>
+</section>
+
+<section id="behaviours">
+  <h2><span class="n">04</span>The three behaviours the model exists to produce</h2>
+
+  <p>Everything above is machinery. These three outcomes are the point of it.</p>
+
+  <ol class="rulelist">
+    <li><b>An upset is worth more than $5.</b> A 30% underdog wins. The win banks $5, of which $3.50 was unpriced. <code>perf</code> goes strongly positive, the forward win rate is revised up, and C2 adds another ~$3.20. Total move ≈ <b>+$6.70</b> on a $5 win.</li>
+    <li><b>A favourite squeaking past a weak team can lose money.</b> An 80% favourite wins by 2. Only $1.00 of the win was unpriced. But the team was expected to dominate and did not, so C2 is marked down ~$2.00. Total ≈ <b>−$1.00 — the share falls on a win.</b></li>
+    <li><b>A star injury drops a winning team.</b> Team leads 14–3 in Q3. The quarterback is carted off. <code>injOn</code> falls to ~0.72, C2 loses ~$6.50. Net ≈ <b>−$7 while winning.</b></li>
+  </ol>
+
+  <div class="callout touchdown">
+    <span class="tag">✓ Tested in the mock</span>
+    <p>Edwin reports that a major injury to a <em>leading</em> team dropped its share price in <b>26 of 26 test cases (100%)</b>. That is the behaviour a win-probability price can never produce, and it is the strongest evidence the design does what it claims.</p>
+  </div>
+</section>
+
+<section id="daily">
+  <h2><span class="n">05</span>The daily report — the connection you were looking for</h2>
+
+  <p class="lead">Yes. They are the same quantity, produced two different ways.</p>
+
+  <p>Every morning at <b>06:00 ET</b> we receive one JSON file from Edwin. It carries all 170 teams — 32 NFL and 138 college — and it is published even when nothing has changed. Per team it carries:</p>
+
+  <div class="formula">{
+  "team_id":                "sr:competitor:nfl0",
+  "league":                 "NFL",
+  "effective_time":         "2026-08-29T10:00:00Z",
+  "revision":               1,
+  "is_correction":          false,
+  <b>"expected_remaining_wins": 11.60137430577575,</b>
+  "sigma":                  1.9035016198976913,
+  "games_remaining":        17,
+  "methodology_version":    "1.0.0"
+}</div>
+
+  <p>The bolded field is <b>T</b>. It is the single most important number in our pricing engine. Our on-field value is built directly from it:</p>
+
+  <div class="formula">on-field = $5 × ( T − Σ p_ref(g) + Σ x_g )     <span class="c">over g ∈ G</span></div>
+
+  <p>Without T, a security has <b>no price at all</b> — our code refuses to construct one.</p>
+
+  <h3>So where does Edwin's mock get T?</h3>
+
+  <p>It does not have one. The mock runs entirely in a browser with no feed. So it manufactures its own equivalent from the only two things it has: the IPO price and the results so far.</p>
+
+  <div class="split">
+    <div class="card a">
+      <h4>Production — what we built</h4>
+      <p><b>T arrives.</b> Edwin's engine computes it: MOV-capped Elo for college, raked to the de-vigged sportsbook total for the NFL. We read it and use it.</p>
+      <ul>
+        <li>Source: the 06:00 ET file</li>
+        <li>Covers all <b>170</b> teams</li>
+        <li>Rebuilt every morning</li>
+        <li>Carries <code>sigma</code> and a methodology version</li>
+        <li>Reflects the betting market's view</li>
+      </ul>
+    </div>
+    <div class="card b">
+      <h4>The mock — what Edwin sent</h4>
+      <p><b>T is invented.</b> <code>expRemWins = remGames × pRem</code>, where <code>pRem</code> blends the IPO-implied win total with the season record so far.</p>
+      <ul>
+        <li>Source: the IPO price plus results</li>
+        <li>Covers <b>32</b> NFL teams only</li>
+        <li>Recomputed on demand, in the browser</li>
+        <li>No uncertainty measure</li>
+        <li>Reflects nothing outside the mock</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pull"><b>Layer 1 of Edwin's document is the placeholder for the daily report.</b> It is what the mock does <em>because</em> it cannot receive the file. Do not port it — we already have the real thing, and the real thing is better.</div>
+
+  <h3>Why the mock's version cannot be used in production anyway</h3>
+
+  <ul>
+    <li><b>It is NFL-only by construction.</b> Every input keys off <code>pct</code>, which is a position within the NFL IPO range of $35.66–$81.20. The 138 college teams have no place in it. We already established that no Sportradar product carries college season win totals, which is exactly why Edwin's own engine exists.</li>
+    <li><b>It hard-codes a 17-game season</b> (<code>remGames = 17 − played</code>). The daily file carries <code>games_remaining</code> per team, which is the correct source.</li>
+    <li><b>It has no uncertainty measure.</b> The daily file carries <code>sigma</code>. Our reference-price work already needed it.</li>
+  </ul>
+
+  <div class="callout touchdown">
+    <span class="tag">✓ Where the two models genuinely agree</span>
+    <p>Both price a win at a flat <b>$5.00</b>. Both treat off-field as a <b>$2.50-per-game pool</b> split by brand. Both freeze the <b>pregame win probability at kickoff</b> and price the live game as the movement away from it. Both insist the traded print is <b>not</b> the fair value. That is a lot of agreement, and it is the part that matters.</p>
+  </div>
+</section>
+
+<section id="diverge">
+  <h2><span class="n">06</span>Is this any different to what we already have?</h2>
+
+  <p class="lead">Largely, <b>no</b>. Expand Edwin's Layer 1 and it collapses into the model we already built. Here is the working.</p>
+
+  <h3>The resting price — the same formula in a different frame</h3>
+
+  <p>Substitute the definitions of <code>banked</code>, <code>expRemRev</code> and <code>pre</code> into <code>seasonFair</code>, then group the terms by what they represent. Write <b>W</b> for banked wins and <b>E</b> for expected remaining wins:</p>
+
+  <div class="formula"><span class="c">// Edwin, expanded and regrouped</span>
+seasonFair = (px − 5.25·e0)  +  5.00·W  +  5.25·E  +  (offEarned − played·offShare)
+             <span class="c">└─ base ─┘     └ banked ┘  └ forward ┘  └──── off-field, nets to ≈0 ────┘</span>
+
+<span class="c">// Ours, between games (G is empty, so on-field = $5 × T)</span>
+RP         =        0        +  5.00·W  +  5.00·E  +  (RAV + EAV)
+             <span class="c">└ no base ┘   └ banked ┘  └ forward ┘  └─── off-field, carried in full ───┘</span></div>
+
+  <p><b>Same functional form.</b> A base, plus $5 for every win banked, plus about $5 for every win still expected, plus off-field. Verified numerically on his own KC example:</p>
+
+  <div class="tablewrap">
+  <table class="num">
+    <tr><th>Term</th><th>Edwin</th><th>Ours</th></tr>
+    <tr><td>base</td><td>16.38 &nbsp;<em>(px − 5.25·e0)</em></td><td>—</td></tr>
+    <tr><td>banked wins</td><td>30.00</td><td>30.00</td></tr>
+    <tr><td>forward wins</td><td>22.81 &nbsp;<em>(at $5.25)</em></td><td>21.72 &nbsp;<em>(at $5.00)</em></td></tr>
+    <tr><td>off-field</td><td>−0.26 &nbsp;<em>(net of what px assumed)</em></td><td>24.14 &nbsp;<em>(full season)</em></td></tr>
+    <tr><td><b>total</b></td><td><b>68.93</b></td><td><b>75.87</b></td></tr>
+  </table>
+  </div>
+
+  <p>The two numbers differ by $6.94, and every dollar of that gap is <b>accounting frame, not method</b>:</p>
+
+  <ul>
+    <li><b>His is relative, ours is absolute.</b> He starts at the IPO price and adds the <em>revision</em> in expected revenue. We build the price from expected revenue directly, and the IPO price never appears. Ours has to work that way, because our price must converge on the settlement value, and settlement pays revenue only — there is no residual franchise value in a share.</li>
+    <li><b>His off-field nets to nothing</b> because the IPO price already contains a full season of it. Ours carries it explicitly as RAV + EAV. His "base" of $16.38 and our off-field of $24.14 are doing the same job.</li>
+    <li><b>His forward coefficient is $5.25, ours is $5.00.</b> That is the unexplained 25 cents — see the asks.</li>
+  </ul>
+
+  <h3>The live price — literally our formula times M</h3>
+
+  <p>This is the tightest correspondence in the whole document. Take the movement away from the kickoff price:</p>
+
+  <div class="formula"><span class="c">// ours — the live term of $5 × (T − Σp_ref + Σx)</span>
+Δprice = 5 · (x − p_ref)
+
+<span class="c">// Edwin — C1(t) − C1(0), with cgWin expanded</span>
+Δprice = 5 · <b>M</b> · (wpLive − wpPre)</div>
+
+  <p>Same $5. Same difference between the live and the pregame probability. <b>The only difference in the entire live on-field leg is the multiplier <code>M</code>.</b> And because <code>M → 1.0</code> at the whistle, both models bank exactly the same amount on every result. The dial changes the <em>path</em>, never the destination.</p>
+
+  <div class="callout touchdown">
+    <span class="tag">✓ Why the two models agree so closely</span>
+    <p>Because they are the same person's model, arriving twice. Edwin wrote the 28-07 email that our engine implements, and he wrote the mock. The Gamecast document is a <b>browser-side reimplementation</b> of what we already consume, built that way because a front-end mock cannot call his daily engine.</p>
+  </div>
+
+  <h3>So what is actually left over?</h3>
+
+  <p>Three things, and only one of them is ours to build.</p>
+
+  <ol class="rulelist">
+    <li><b>C2, the live re-rate — probably not ours.</b> C2 re-rates the value of the remaining games play by play. But the remaining games are <b>T</b>, and T is Edwin's number, rebuilt every morning by his own engine off the same evidence. C2 exists in the mock <em>because the browser cannot fetch a fresh T mid-game</em>. In production the thing that re-rates the forward leg is his daily file. Adding a live re-rate on top of T would double-count the next morning.</li>
+
+    <li><b>The injury model — Edwin's side, not ours.</b> Same argument. An injury changes how many games a team is expected to win. That is the definition of T. The right home for <code>injOn</code> / <code>injOff</code> is inside his engine, so it reaches us as a moved T — not bolted onto our price as a second, parallel adjustment.</li>
+
+    <li><b>⭐ The off-field method — this one we should take.</b> Our RAV / EAV are <b>mocked</b>: build/valuation.md says the methodology "is unbuilt and is Edwin's world". The Gamecast doc contains a complete, implementable one — <code>offShare = 1.0 + pct × 0.5</code> against the $2.50 per-game pool, brand-weighted by IPO-price percentile, and explicitly never keyed to live volume. <b>That is the only genuinely new content in the bundle, and it fills the one real hole in our valuation engine.</b></li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="tag">⚠ A pattern worth naming — this corroborates E34</span>
+    <p>The v3 spec's stated governing principle is <b>variability</b>: "the model should breathe, not tick deterministically." To deliver that, the Gamecast adds a random per-game re-rate jitter (<code>rhoJit</code>), random injury draws, and a volume-scaled noise term <code>ε</code>. That is three separate mechanisms whose only job is to manufacture price movement.</p>
+    <p>We have seen this before. <b>E30</b> records that Edwin built RPV-2's invented price drift <em>because he noticed his prices did not move</em>. <b>E34</b> asks the structural question underneath it: can the market move our price at all? The Gamecast bundle is a third independent instance of the same instinct, and it collides directly with our determinism rule (§1.6-4). Log it against E34 — it is evidence, not a new question.</p>
+  </div>
+
+  <h3>The full comparison</h3>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Question</th><th>Edwin's mock</th><th>What we built</th></tr>
+    <tr>
+      <td>Expected remaining wins</td>
+      <td>computed in-browser from IPO price + form</td>
+      <td><b>T</b>, read from the 06:00 ET daily file</td>
+    </tr>
+    <tr>
+      <td>Value of a win</td>
+      <td class="ok">$5.00 flat</td>
+      <td class="ok">$5.00 flat &nbsp;·&nbsp; tie $2.50</td>
+    </tr>
+    <tr>
+      <td>Live game effect</td>
+      <td>four components: C1, ΔC2, ΔC4, offCur</td>
+      <td>one term: <code>$5 × (x_g − p_ref(g))</code></td>
+    </tr>
+    <tr>
+      <td><b>Time decay on early moves</b></td>
+      <td class="ok">yes — <code>M</code> runs 0.35 → 0.97</td>
+      <td class="no">none — a Q1 move hits at full $5 weight</td>
+    </tr>
+    <tr>
+      <td><b>Live re-rate of the rest of the season</b></td>
+      <td class="ok">yes — <code>reRate</code>, ±25%</td>
+      <td class="no">none — it only moves when tomorrow's file lands</td>
+    </tr>
+    <tr>
+      <td><b>Injury markdown</b></td>
+      <td class="ok">explicit — <code>injOn</code> / <code>injOff</code></td>
+      <td class="no">no direct path; reaches price only via live WP, then via tomorrow's T</td>
+    </tr>
+    <tr>
+      <td>Off-field</td>
+      <td><code>1.0 + pct × 0.5</code> per game, injury-sensitive</td>
+      <td>RAV + EAV — <b>mocked</b>, static construction inputs; methodology is Edwin's and unbuilt</td>
+    </tr>
+    <tr>
+      <td>Pregame probability</td>
+      <td class="ok"><code>wpPre</code>, set at kickoff</td>
+      <td class="ok"><code>p_ref(g)</code>, frozen at kickoff (N22)</td>
+    </tr>
+    <tr>
+      <td>After the whistle</td>
+      <td class="ok">the adjustment persists</td>
+      <td class="ok">G is a set; a game leaves only when a new T absorbs it</td>
+    </tr>
+    <tr>
+      <td>Traded price</td>
+      <td>pFair + simulated ε</td>
+      <td>real order flow; the MM quotes a fixed spread around RP</td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>The difference that will show up first</h3>
+
+  <p>The time-decay dial. Take a Q1 play that moves win probability by 0.03.</p>
+
+  <div class="tablewrap">
+  <table class="num">
+    <tr><th>Model</th><th>Price move</th><th>Sensitivity at kickoff</th></tr>
+    <tr><td>Edwin's mock</td><td>$0.05</td><td>$5 × 0.35 = $1.75 per unit of probability</td></tr>
+    <tr><td>Our engine</td><td>$0.15</td><td>$5.00 per unit of probability</td></tr>
+  </table>
+  </div>
+
+  <p><b>Our price is roughly 2.9× more sensitive in the first quarter</b>, and it stays more sensitive until late in the game, when the two converge. Both still bank exactly $5 at the whistle. Only the path differs. If the app shows a Gamecast price beside the real traded price, the two will visibly disagree in the first half, and that is a product problem before it is an engineering one.</p>
+
+  <p>Both still bank exactly $5 at the whistle. If the app ever shows a Gamecast price beside the real traded price, the two will visibly disagree through the first half. That is a product problem before it is an engineering one.</p>
+</section>
+
+<section id="consume">
+  <h2><span class="n">07</span>How we would actually consume it</h2>
+
+  <p class="lead">If Edwin does want us to reproduce <code>pFair</code>, this is the shopping list. Most of it we already have. Two items we do not, and one of those is a hard stop.</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Input</th><th>Have it?</th><th>Where it is today</th></tr>
+    <tr>
+      <td><code>wpLive</code></td>
+      <td class="ok">✓ already</td>
+      <td>the SR probabilities feed over NATS. <b>It is our <code>x_g</code></b> — same number, no new work</td>
+    </tr>
+    <tr>
+      <td><code>wpPre</code></td>
+      <td class="ok">✓ already</td>
+      <td><b>It is our <code>p_ref(g)</code></b>, frozen at kickoff under the N22 interim ruling</td>
+    </tr>
+    <tr>
+      <td>live score</td>
+      <td class="ok">✓ already</td>
+      <td><code>home_score</code> / <code>away_score</code> ride the bus payload. Feeds <code>domActual</code></td>
+    </tr>
+    <tr>
+      <td>IPO price <code>px</code></td>
+      <td class="ok">✓ already</td>
+      <td><code>reference/ipo-prices-170.csv</code></td>
+    </tr>
+    <tr>
+      <td>results to date, schedule</td>
+      <td class="ok">✓ already</td>
+      <td>schedule from the daily Sport Schedule discovery; results from our own minted <code>OFFICIAL_RESULT</code> (N16)</td>
+    </tr>
+    <tr>
+      <td><b>game clock / time remaining</b></td>
+      <td class="no">✗ NOT AVAILABLE</td>
+      <td><b>The SR probabilities endpoint does not carry one.</b> Verified against the Chiefs–Ravens capture: the status block is <code>status · match_status · home_score · away_score · live · position · possession · try · yards</code>. No quarter, no clock, no seconds remaining</td>
+    </tr>
+    <tr>
+      <td><b>injury events</b></td>
+      <td class="no">✗ not ingested</td>
+      <td>needs player, position and severity. A different Sportradar product; we have never verified it exists at the granularity the model wants</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="callout stop">
+    <span class="tag">✗ The hard stop</span>
+    <p><b><code>M</code> cannot be computed from anything we ingest.</b> The maturity dial is a function of <code>timeLeftSecs</code>, and the probabilities feed carries no clock at any point. Reproducing Edwin's live price would mean adding a second Sportradar endpoint, on its own poll tier, purely to drive a damping factor — new ingestion, new freshness bands, new failure modes, on the live path, for a number that changes nothing at settlement.</p>
+    <p>That is the cost. It should be paid only if Edwin says the damping belongs in the traded price, and Section&nbsp;8 asks him directly.</p>
+  </div>
+
+  <h3>What we should consume instead</h3>
+
+  <p>One thing, and it is cheap:</p>
+
+  <div class="formula">pct      = clamp( (px − 35.66) / (81.20 − 35.66), 0, 1 )
+offShare = 1.0 + pct * 0.5          <span class="c">// this team's cut of the $2.50 per-game pool</span>
+
+RAV = offShare × games played
+EAV = offShare × games remaining</div>
+
+  <p>Every input is static and already in the vault. It needs no feed, no new poll tier and no clock. It replaces a leg of the reference price that is <b>mocked today</b>, and it comes from the person who owns that methodology.</p>
+
+  <div class="callout stop">
+    <span class="tag">✗ But the formula does not conserve the pool</span>
+    <p>Edwin's text says off-field is "<b>$2.50 per game, split between the two teams</b> pro-rata by share volume". The formula that follows is not a split. <code>offShare = 1.0 + pct × 0.5</code> reads only the team's own IPO percentile and <b>never references the opponent</b>. Add the two sides of a fixture:</p>
+    <div class="formula">two average teams   (pct 0.5, 0.5)   →  1.25 + 1.25 = <b>2.50</b>   <span class="c">✓ conserves</span>
+two elite teams     (pct 1.0, 1.0)   →  1.50 + 1.50 = <span class="hot">3.00</span>   <span class="c">✗ $0.50 OVER the pool</span>
+two cellar teams    (pct 0.0, 0.0)   →  1.00 + 1.00 = <span class="hot">2.00</span>   <span class="c">✗ $0.50 UNDER the pool</span></div>
+    <p>It conserves only when the two percentiles average 0.5. This matters because settlement pays out of real revenue: over-allocating means the claims on a fixture exceed the money the fixture produced. A per-team brand weight is a reasonable idea — but it has to be normalised across the pair before it can touch a price.</p>
+  </div>
+
+  <div class="callout warn">
+    <span class="tag">⚠ Two more caveats</span>
+    <p><b>It is NFL-only as written.</b> The 35.66–81.20 range is the NFL IPO band. The 138 college teams need their own band, or a league-relative percentile. Confirm with Edwin which.</p>
+    <p><b>Confirm the range first.</b> The formula yields 1.00–1.50; his own comment says 1.0–1.9. That is ask 5, and it is worth settling before the number goes anywhere near a price.</p>
+  </div>
+</section>
+
+<section id="asks">
+  <h2><span class="n">08</span>What to put to Edwin</h2>
+
+  <p>Seven items. The first one decides whether the other six matter.</p>
+
+  <ol class="rulelist">
+    <li><b>⭐ Is the Gamecast price meant to BE the traded price, or is it the mock's display model?</b> Expanded, your Layer 1 is the model we already built from your 28-07 email, written as a delta from the IPO price rather than as absolute revenue. Your v3 spec §11 says the production market maker quotes around <code>P_fair</code> — which reads as the second answer. If the Gamecast is the mock's internal pricing and production keeps quoting around RP, then this bundle needs no build from us and the remaining questions are cheap. <b>Ask this one first.</b></li>
+
+    <li><b>Does the live re-rate belong in production at all?</b> The mock re-rates the rest of the season play by play. Our engine takes that number from your daily file. If we add a live re-rate on top of T, tomorrow's file will re-price the same evidence a second time. Which is intended — a static T with all movement in the current game, or a live re-rate that tomorrow's T must then be built to avoid repeating? The same question covers the injury model: should an injury move T inside your engine, rather than move our price alongside it?</li>
+
+    <li><b>Is the time-decay dial <code>M</code> meant to be in the real price?</b> Our on-field leg has no equivalent, so we are ~2.9× more sensitive to a Q1 probability move than the Gamecast is. <b>The cost of matching you is concrete:</b> the Sportradar probabilities feed carries no game clock, so <code>M</code> would need a second endpoint on the live path purely to drive a damping factor that changes nothing at settlement. Confirm before we build it.</li>
+
+    <li><b>The KC worked example points the wrong way.</b> §1.4 says the share is up from its IPO. Back-solving your own formulas gives an IPO price of ≈$73.94 against a fair value of $68.93 — it is down $5.01. The model is behaving correctly; the sentence is wrong. Confirm, so the example can be used for teaching.</li>
+
+    <li><b>The <code>offShare</code> range is stated two ways.</b> §1.2's comment says ≈1.0–1.9, but the formula <code>1.0 + pct × 0.5</code> yields 1.0–1.5. The v3 spec §4 says 1.0–1.9 is the dial target and 1.0–1.5 is what is coded. Confirm which one production should use — <b>and confirm the college band</b>, because the 35.66–81.20 percentile is NFL-only and 138 of the 170 teams fall outside it. <em>This is the ask that unblocks the one piece of the bundle we do want: §3.6's off-field methodology, which is mocked in our engine today.</em></li>
+
+    <li><b>Star values disagree between your two documents.</b> The EV doc gives KC ≈1.61 and CAR ≈1.10. The v3 spec Appendix A gives KC 1.57 and CAR 0.83. The formula is the same, so the difference is the <code>pct</code> basis — IPO price percentile in one, <code>seasonFairPct</code> in the other. Which basis is correct?</li>
+
+    <li><b>What is the extra 25 cents in $5.25?</b> The doc says to use $5.00 for a banked win and $5.25 for a forecast win, and calls the difference "a small blend". Our engine uses $5.00 throughout. We cannot adopt a coefficient without knowing what it represents.</li>
+  </ol>
+
+  <div class="callout">
+    <span class="tag">Also owed, from the bundle's own README</span>
+    <p>Edwin lists the <b>Sportradar win-probability backfill for historical game-week replay</b> as owed by us, twice. It is the input his replay engine needs and it is not in his court.</p>
+  </div>
+</section>
+
+<section id="glossary">
+  <h2><span class="n">09</span>Glossary</h2>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>Symbol</th><th>Meaning</th></tr>
+    <tr><td>px</td><td>the team's static IPO price. NFL range $35.66–$81.20</td></tr>
+    <tr><td>pct</td><td>where px sits in that range, 0 to 1. Drives expected wins, off-field share and star value</td></tr>
+    <tr><td>e0</td><td>preseason expected wins implied by the IPO price. 5.5 to 12.0</td></tr>
+    <tr><td>pRem</td><td>forward win rate. The IPO prior blended with the season's form</td></tr>
+    <tr><td>banked</td><td>revenue already earned this season: $5 per win plus off-field to date</td></tr>
+    <tr><td>fair</td><td>the resting price. The output of Layer 1</td></tr>
+    <tr><td>anchor</td><td><code>fair</code>, clamped to [24, 96], held fixed for the game</td></tr>
+    <tr><td>wpPre</td><td>the pregame win probability, set at kickoff. Our equivalent is <code>p_ref(g)</code></td></tr>
+    <tr><td>wpLive</td><td>the live win probability. The only place win probability enters the price</td></tr>
+    <tr><td>M</td><td>the time-decay dial. 0.35 at kickoff, 0.97 at the two-minute warning</td></tr>
+    <tr><td>C1</td><td>this game's win premium. The only component that moves every play</td></tr>
+    <tr><td>C2</td><td>the value of the remaining games. Where all re-rating lives</td></tr>
+    <tr><td>C4</td><td>remaining off-field value. Moves on injury only</td></tr>
+    <tr><td>offShare</td><td>a team's off-field money per game, from the $2.50 pool. 1.00 to 1.50 as coded</td></tr>
+    <tr><td>injOn / injOff</td><td>injury markdown multipliers. Floors at 0.40 and 0.55</td></tr>
+    <tr><td>pFair</td><td>the live fair value. The output of Layer 2</td></tr>
+    <tr><td>ε</td><td>simulated market noise in the mock. Real order flow replaces it. <b>Never port it</b></td></tr>
+    <tr><td><b>T</b></td><td><b>expected remaining wins. Our production input, from the 06:00 ET daily file. Layer 1 is the mock's substitute for it</b></td></tr>
+  </table>
+  </div>
+
+  <h3>Clamps, in one place</h3>
+
+  <div class="formula">anchor       ∈ [24, 96]        pRem     ∈ [0.08, 0.85]
+final price  ∈ [14, 118]       reRate   ∈ [0.80, 1.25]
+winRateBase  ∈ [0.08, 0.85]    injOn    ∈ [0.40, 1.00]
+perf         ∈ [−1, 1]         injOff   ∈ [0.55, 1.00]</div>
+</section>
+
+<footer>
+  <span>Derived from Edwin Johnson's handoff bundle, 9 August 2026</span>
+  <span>Companion: market-maker/build/valuation.md</span>
+  <span>Trade secret of InPlay Global, Inc.</span>
+</footer>
+
+</div>
+</body>
+</html>

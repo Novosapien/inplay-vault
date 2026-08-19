@@ -1,3 +1,7 @@
+---
+description: "Edwin's CTS-001 master draft — laws, definitions and financial architecture for ESV valuation of InPlay Securities; the Section 3 math is missing"
+---
+
 ## JULY 1, 2026 
 
 # INPLAY CORE TECHNICAL STANDARDS CTS-001 FINANCIAL VALUATION STANDARD (FVS-1 MASTER DRAFT) 

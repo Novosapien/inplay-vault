@@ -1,3 +1,7 @@
+---
+description: "Plain-English definitions for every market-maker term and equation symbol used across the standards, systems docs and calls"
+---
+
 # Market Maker — Glossary
 
 > **Component:** [[market-maker/market-maker]]
@@ -20,6 +24,10 @@
 | **Order book** | All live limit orders for one team from everyone (MM + users), sorted by price, two sides. |
 | **Depth / ladder** | The levels beyond the best price. Level 0 = best bid/offer; level 1+ = progressively worse prices with more size. |
 | **Resting liquidity** | Passive orders sitting in the book waiting to be hit (Edwin's phrase for what the MM posts). |
+| **Maker / taker** | Maker posts resting liquidity (the MM); taker crosses the spread to hit it (users, and the Synthetic Noise Taker). |
+| **Synthetic Noise Taker (SNT-1)** | The second house agent: a taker-only, non-participant account that crosses the spread with random noise flow so every book trades from IPO onward. A controlled loser by design. See [[market-maker/systems/synthetic-noise-taker]]. |
+| **Noise flow** | Uninformative order flow (random direction/size/timing) that creates activity without predicting price. SNT-1 manufactures it. |
+| **Disposition effect** | The retail tendency to take profits sooner than losses. SNT-1 mimics it: profit tilts its P(flatten) up to 0.65, losers ride at 50/50. |
 | **Crossing / pricing through** | A limit order priced past the other side's best — executes immediately at the resting prices (bid 11 on a 7-at-8 market → fills at 8, 9, 10). Market-order behaviour without market orders. |
 | **Price-time priority** | Matching rule: best price first; among equal prices, earliest first. |
 | **Locked / crossed market** | Bid = offer (locked) or bid > offer (crossed). Nonsense states — never published. |
@@ -30,7 +38,7 @@
 | **OrderQty / CumQty / LeavesQty** | An order's three numbers: total · filled so far · still resting. 500 total, 250 filled → 250 resting. Fills survive a cancel-replace (CumQty carries to the updated order). |
 | **Queue position** | At one price, resting orders fill first-come-first-served. Whether an update keeps your place or sends you to the back = T8.1. |
 | **Pairs trade** | Two correlated symbols traded against each other — every game is one (Troy's frame). |
-| **Bust** | Voiding an already-executed trade at a clearly-wrong price; positions/cash reversed by T0 (`ExecType=H`). Operator + venue power, never a participant's. |
+| **Bust** | Voiding an already-executed trade at a clearly-wrong price; positions/cash reversed by tZERO (`ExecType=H`). Operator + venue power, never a participant's. |
 | **Band** | Allowed price corridor around the RP (~±30%) — outside it, orders reject or fills get busted. |
 | **Halt** | Matching stopped for a team (or all); defensive/pulled quotes until resumed. |
 

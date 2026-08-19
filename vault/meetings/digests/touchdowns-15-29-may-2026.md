@@ -1,3 +1,7 @@
+---
+description: "Digest of the 15–29 May 2026 touchdown syncs — tZERO confirmed as ATS, the AI Research Agent, HubSpot as CRM, and the multi-sport expansion decision"
+---
+
 # Touchdown Sweep — 15–29 May 2026
 
 > **Type:** Consolidated digest of touchdown (sync) meetings
@@ -12,9 +16,9 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 ## Per-component synthesis
 
 ### Trading
-- **T0 (tZERO) confirmed as the ATS / settlement partner** — FINRA-approved ATS, first US ATS for tokenized assets, ~30k active accounts. Scale concerns **resolved**: handles ~1M trades/sec, 3M wallets/users, no queueing (kills the earlier multi-day account-creation worry). Weekly **Friday T0 sync** established. _(15-05, 18-05, 28-05, 29-05)_
-- Backend architecture: **FIX gateway built**; still need the messaging bus + websocket connections deployed, then whitelisted IP to T0 for parallel testing. Pursuing **GCP-to-GCP direct connect** to avoid a ~3-month application wait. _(28-05)_
-- **Trading-engine simulation/testing tool** (internal) — example traders ("Contrarian Carol", "Panic Pete"); measures order fulfilment, latency, bid-ask spread under bursts; stress-test ~100k users before T0 integration. Intended to grow into an **admin/monitoring panel**. _(19-05)_
+- **tZERO confirmed as the ATS / settlement partner** — FINRA-approved ATS, first US ATS for tokenized assets, ~30k active accounts. Scale concerns **resolved**: handles ~1M trades/sec, 3M wallets/users, no queueing (kills the earlier multi-day account-creation worry). Weekly **Friday tZERO sync** established. _(15-05, 18-05, 28-05, 29-05)_
+- Backend architecture: **FIX gateway built**; still need the messaging bus + websocket connections deployed, then whitelisted IP to tZERO for parallel testing. Pursuing **GCP-to-GCP direct connect** to avoid a ~3-month application wait. _(28-05)_
+- **Trading-engine simulation/testing tool** (internal) — example traders ("Contrarian Carol", "Panic Pete"); measures order fulfilment, latency, bid-ask spread under bursts; stress-test ~100k users before tZERO integration. Intended to grow into an **admin/monitoring panel**. _(19-05)_
 - Trade entry reachable **"two clicks away" from every page**. _(18-05)_
 
 ### Information Layer
@@ -45,7 +49,7 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 - **Live site launched** (delayed from Saturday over domain-production risk); Edwin using it as an outreach asset. _(18-05)_
 - Added **Investor page** + **Partner With Us** form + **light-mode toggle** (toggle incomplete site-wide). _(15-05)_
 - **Team page:** expand beyond 2 execs (add Skye, Cody, Kevin…); everyone drafts short bios with a personality element; **go live with bios first, images later** (LinkedIn portraits as placeholders). _(29-05)_
-- **Dual-audience sales tool:** B2B (advertisers/brands) + users, messaging split. Downloadable **thought-leadership white papers** (Jim Angel / Georgetown; possible 2nd professor). **T0 / Sport Radar partnerships featured** for credibility. Post-launch **live metrics ticker** ("George traded $87k this week") to drive return visits. _(29-05)_
+- **Dual-audience sales tool:** B2B (advertisers/brands) + users, messaging split. Downloadable **thought-leadership white papers** (Jim Angel / Georgetown; possible 2nd professor). **tZERO / Sport Radar partnerships featured** for credibility. Post-launch **live metrics ticker** ("George traded $87k this week") to drive return visits. _(29-05)_
 
 ### Challenge Website
 - Standalone **"coming soon" landing page** built — countdown (August placeholder), American-footballer hero, lead-capture form; move onto correct domains. _(15-05, 18-05)_
@@ -59,7 +63,7 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 - **Native-integration mandate (Edwin, emphatic):** ad/sponsor units must NOT be "squeezed-in tiles" or placeholders — they must be **ingrained into each tab's visual layout as a cornerstone**, tied to volatility/special moments (glow behind a team chart, animated turnover dot, NFL flyover banner, exploding Dorito bag). Noticeable but not distracting; must not read as "a betting app." _(19-05)_
 - **Google Ad Manager confirmed rejected** — tested, does not support custom per-minute / blocked-out game-play serving. Testing two new platforms (one fully API-based for agentic feeding of ad units + rulesets + stats) → consistent with the **Kevel + Booster** direction. _(18-05, 19-05)_
 - **Controlled demo asset** for advertiser pitches (screen-recorded now, clickable later; not distributed). **B2B hype video** (brand-adjacency angle, not fan/sports hype). _(19-05, 29-05)_
-- Live deals in motion: **T0 willing to commit ad money**; **Windrust Bank** meeting (shown generic top-US-brand mockups, custom mockup offered as a "hard-to-get" close). _(15-05, 29-05)_
+- Live deals in motion: **tZERO willing to commit ad money**; **Windrust Bank** meeting (shown generic top-US-brand mockups, custom mockup offered as a "hard-to-get" close). _(15-05, 29-05)_
 
 ### Push / CRM
 - **HubSpot selected as the CRM** (final contract stages, ~3-month evaluation; likely a 1:1 HubSpot onboarding partner providing API endpoints + tag manager/pixels). Lead-form data also stored in an **Airtable mini-CRM** with a dashboard + emailed to info@inplayglobal.com. _(18-05)_ — **resolves the previously-"undefined" Push/CRM tooling question.**
@@ -76,9 +80,9 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 | Item | Source | What it is | Decision |
 |------|--------|-----------|----------|
 | **AI Research Agent** (3 modes, premium ~$99.99/mo) | 18-05 | Manual chat + scheduled reports + event-triggered proactive research over Sport Radar data | ✅ **Part of the Research Tab** ([[information-layer]] sub-component). Documented; manual-chat mode = Third Space's Research AI Chat (reconcile ownership) |
-| **Trading-engine simulation / admin panel** (internal) | 19-05 | Internal stress-test + monitoring tool; example-trader simulation; pre-T0 load testing | ✅ **Internal tooling.** Added as a Trading sub-component, marked internal/not-user-facing |
+| **Trading-engine simulation / admin panel** (internal) | 19-05 | Internal stress-test + monitoring tool; example-trader simulation; pre-tZERO load testing | ✅ **Internal tooling.** Added as a Trading sub-component, marked internal/not-user-facing |
 | **Multi-sport expansion** (baseball, soccer by July, view-only) | 28-05 | Non-tradable sports data as funnel/lead-magnet | ❌ **NOT doing this.** Was an exploratory ask only — decided against. Stays out of scope |
-| **T0 white-label** (InPlay app as T0's primary app for all products) | 28-05 | Exploratory: license InPlay app to T0 for equities/futures/options/tokenized | Exploratory business deal — note in vision/commercial, not a build component yet |
+| **tZERO white-label** (InPlay app as tZERO's primary app for all products) | 28-05 | Exploratory: license InPlay app to tZERO for equities/futures/options/tokenized | Exploratory business deal — note in vision/commercial, not a build component yet |
 | **B2B hype video / white papers / live metrics ticker** | 29-05 | Marketing/credibility assets on the Global Website | Belong to **InPlay Global Website** scope |
 
 ---
@@ -86,7 +90,7 @@ Touchdowns are multi-topic status syncs. This digest captures the durable signal
 ## Doc updates applied (2026-06-02)
 
 1. ✅ **Information Layer → Research Tab** — defined via the AI Research Agent (3 modes, ~$99.99/mo production). Updated sub-component doc, changelog, and parent entries.
-2. ✅ **Trading** — added the internal Trading-Engine Simulation / Admin Panel sub-component + a T0/architecture note (T0 confirmed ATS, FIX gateway, scale validated).
+2. ✅ **Trading** — added the internal Trading-Engine Simulation / Admin Panel sub-component + a tZERO/architecture note (tZERO confirmed ATS, FIX gateway, scale validated).
 3. ✅ **Push/CRM** cross-cutting bullet — recorded **HubSpot + Airtable** (resolves "undefined").
 4. ✅ **Customer Onboarding** — added the PWA-first delivery note; confirmed **Persona** as the identity-verification vendor (already documented); clarified lead-form fields live on the website, not app registration.
 

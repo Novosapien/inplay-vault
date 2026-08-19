@@ -1,7 +1,89 @@
+---
+description: "Network layout — the five inplay.com domains and their targets, internal GCP paths, tZERO co-location (<1ms FIX link), and SSL termination points"
+---
+
 # Networking
 
 > **Architecture:** [[architecture]]
-> **Status:** Draft
+> **Status:** Draft — ⚠ **except the "Live network reality" section below,
+> which is verified and outranks the rest of this file.**
+
+---
+
+## ⭐ Live network reality (verified 2026-08-03) — GOSPEL
+
+**Source:** `Novosapien/inplay-admin-panel-trading` — `proxy/.env.example`
+(the deployed proxy's own configuration), plus its
+`src/app/(dashboard)/health/page.tsx` and `resilience/page.tsx`.
+
+**Ruling (George, 03-08): the live setup is gospel.** Where any vault
+document disagrees with this table, this table wins.
+
+| Component | Private IP | Port / notes |
+|---|---|---|
+| FIX gateway | `10.0.1.2` | health endpoint on `:8080/health` |
+| NATS | `10.0.2.2` | `:4222`. Users `trading-service` and `admin` |
+| Redis | `10.78.64.3` | `:6378`, **TLS** (`rediss://`) |
+| Cloud SQL — `inplay-postgres` | `10.78.65.3` | PostgreSQL 15, port `5432`. Databases `inplay` and `zitadel`. App user `inplay_app` |
+| Cloud SQL — `inplay-trading-db` | `10.78.65.8` | second instance (`proxy/vpc_topology.py:163`) |
+| Redis — `inplay-redis` | `10.78.64.3` | as above |
+
+**The data stores** (verified 03-08):
+
+| Store | What it is | Used by |
+|---|---|---|
+| Cloud SQL `inplay` | PostgreSQL 15 on `inplay-postgres` | `inplay-onboarding-referral` (`asyncpg`) |
+| Cloud SQL `inplay-trading-db` | second instance, contents not yet verified | the trading side |
+| `zitadel` | identity provider, own database on `inplay-postgres` | auth |
+| Supabase | a separate hosted Postgres (`supabase.co`) — **NOT Cloud SQL, and NOT on the trading path** | see the scope note below |
+
+⚠ **Supabase scope — do not overstate it (checked 03-08 after George
+challenged an earlier, looser claim).** Supabase is **absent from the
+whole trading path**: nothing in `inplay-admin-panel-trading`, its
+`proxy/`, either FIX gateway repo, or `inplay-market-maker` references it.
+Where it genuinely is:
+
+- **`inplay-admin-api`** — real. `src/app/config.py` carries
+  `supabase_url`, `supabase_jwt_secret`, `supabase_anon_key` and
+  `supabase_service_role_key`. This is the **internal-operations** admin
+  API, not the trading one.
+- **`inplay-admin-panel`** — real. `@supabase/supabase-js` +
+  `@supabase/ssr`, used in `src/middleware.ts` for auth. Again the
+  internal-operations panel.
+- **`inplay-app`** — the PWA. Its own `CLAUDE.md` states *"PWA login
+  (Supabase) requires the admin API"*, so sign-in rides it. A feedback
+  integration exists but is **commented out** in `.env.example`.
+- **`inplay-global-website`, `inplay-website`** — the dependency is
+  present in `package.json`; usage not verified.
+
+**Conclusion: Supabase is internal-operations tooling plus PWA login. It
+is not part of trading, and the market maker should not plan around it.**
+
+Also confirmed:
+
+- The **trading admin panel** deploys to Vercel
+  (`inplay-admin-panel-trading.vercel.app`) and reaches the private
+  network only through its own **`proxy/`** — a Python FastAPI service
+  running inside the VPC. The proxy speaks NATS, Redis and HTTP. It holds
+  **no database client**.
+- Weekly database dumps exist and export to GCS:
+  `inplay-postgres-weekly.sql.gz`, `inplay-trading-db-weekly.sql.gz`,
+  `zitadel-weekly.sql.gz`.
+- **`zitadel`** is the identity provider, with its own database.
+
+⚠ **`vault/drafts/VPC Setup.md` contradicts every address above** (it says
+gateway `10.0.0.2`, NATS `10.0.2.2` → `10.0.0.3`, one `10.0.0.0/24`
+subnet). That file belongs to another session, so this session did not
+edit it, per the drafts convention. **Its owner should reconcile it or
+mark it superseded.** Until then, read this section and not that file.
+
+⚠ **Still unknown, and asked as MM open question N30:** the full subnet
+layout. The live addresses span at least `10.0.1.x`, `10.0.2.x` and
+`10.78.64–65.x`, so the single-subnet picture in the draft is wrong. The
+market maker's own VM address depends on the answer. **For Hasan**, with
+the Cloud NAT question.
+
+---
 
 ## Domain Structure
 

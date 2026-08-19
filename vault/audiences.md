@@ -1,3 +1,7 @@
+---
+description: "Canonical definitions of the four audiences — Crypto-Savvy Trader, Analytical Fan, Finance-Curious Student, Veteran Trader-Bettor — pains and channels"
+---
+
 # InPlay Trading Challenge — Audiences
 
 > **Vision:** [[vision]]
@@ -104,7 +108,7 @@ Edwin's overall target: _"an 18 to 55 year old who loves sports and wants to try
 - Understands order books, microstructure, momentum, risk management
 - Edwin: _"is the money as important to a person my age? Probably not as someone who's young"_ — motivation is intellectual challenge + leaderboard recognition, not financial necessity
 
-**Acquisition channels:** Press releases (T0, Sport Radar, Rebel partnerships), industry podcasts, professional networks, direct word of mouth.
+**Acquisition channels:** Press releases (tZERO, Sport Radar, Rebel partnerships), industry podcasts, professional networks, direct word of mouth.
 
 **Why they switch to InPlay:** A genuinely new asset class with familiar mechanics (order book, continuous pricing). Sophisticated trading infrastructure. Single liquidity pool. Risk-adjusted return leaderboard rewards disciplined approach. Pathway to production trading as a new income stream. The most transparent equity market in the world — _"there's no other company that you could turn on your television and watch firsthand."_
 

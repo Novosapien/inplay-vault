@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InPlay Project Status — Working Synthesis (31 Jul 2026)</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --accent: #f26522;
+    --navy: #1b3a5c;
+    --line: #e3e8ee;
+    --bg-soft: #f7f9fb;
+    --green: #1e7d4e;
+    --amber: #b97a0e;
+    --red: #b3382c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    background: #fff;
+  }
+  .page { max-width: 980px; margin: 0 auto; padding: 48px 32px 80px; }
+  header { border-bottom: 3px solid var(--accent); padding-bottom: 20px; margin-bottom: 32px; }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--navy); }
+  header p { margin: 0; color: var(--muted); font-size: 14px; }
+  h2 {
+    font-size: 20px; color: var(--navy); margin: 44px 0 12px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 15px; margin: 22px 0 8px; color: var(--ink); }
+  p, li { font-size: 14.5px; }
+  ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; background: var(--bg-soft);
+    padding: 1px 5px; border-radius: 4px;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13.5px; }
+  th {
+    text-align: left; background: var(--navy); color: #fff;
+    padding: 8px 10px; font-weight: 600; font-size: 12.5px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--bg-soft); }
+  .pill {
+    display: inline-block; padding: 1px 9px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 600; white-space: nowrap;
+  }
+  .pill.live { background: #e2f3ea; color: var(--green); }
+  .pill.build { background: #fdeede; color: #c2551a; }
+  .pill.spec { background: #fdf3dc; color: var(--amber); }
+  .pill.post { background: #e9edf2; color: var(--muted); }
+  .callout {
+    border-left: 4px solid var(--accent); background: var(--bg-soft);
+    padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 14px;
+  }
+  .callout.warn { border-left-color: var(--red); }
+  .internal {
+    border: 2px dashed var(--red); border-radius: 8px;
+    padding: 18px 22px; margin-top: 20px; background: #fdf6f5;
+  }
+  .internal h2 { margin-top: 0; border-bottom: none; color: var(--red); }
+  .internal-banner {
+    display: inline-block; background: var(--red); color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 2px 10px; border-radius: 4px; text-transform: uppercase;
+  }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  @media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+  .table-scroll { overflow-x: auto; }
+  @media print {
+    .page { padding: 0; max-width: none; }
+    h2 { break-after: avoid; }
+    tr, .callout, li { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>InPlay Project Status — Working Synthesis</h1>
+  <p>31 July 2026 · Internal working document · Source: full sweep of the vault (13 components, architecture, standards, meeting digests) and 12 repositories</p>
+</header>
+
+<div class="callout">
+  This is the working source for the client-facing status deck. Everything in the
+  <strong>Internal only</strong> section at the end stays out of the deck.
+</div>
+
+<h2>Launch calendar — per IPO Draft Requirements v2 (28 Jul, gospel)</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Date</th><th>Event</th></tr>
+  <tr><td>Wed 19 Aug</td><td>NCAA IPO price freeze</td></tr>
+  <tr><td>Sat 22 Aug, 1:00pm ET</td><td><strong>NCAA IPO opens</strong> — 138 team companies, 1,000,000 shares each. Trading + IPO module must be live. This is the "trading live 22 Aug" date.</td></tr>
+  <tr><td>26 Aug 10pm ET <em>or</em> 28 Aug 10pm ET</td><td>NCAA offering ends — the v2 document contradicts itself (§1.1 vs §2.1). Open item E25.</td></tr>
+  <tr><td>26 Aug <em>or</em> 27 Aug, 9:30am ET</td><td><strong>NCAA secondary trading opens</strong> (§5.2 vs §1.1 — same E25 contradiction; one reading opens secondary before the primary closes). <strong>Market maker must be quoting from this date.</strong></td></tr>
+  <tr><td>Wed 2 Sep</td><td>NFL IPO price freeze</td></tr>
+  <tr><td>Sat 5 – Sun 6 Sep, 1–6pm ET</td><td>NFL IPO — 32 team companies, 900,000 shares each; 18 one-minute rounds per day, water-line load balancing, MM completion sweep rounds 1–10</td></tr>
+  <tr><td>Mon 7 Sep, 9:30am ET</td><td><strong>NFL secondary trading opens</strong> (consistent throughout the document)</td></tr>
+</table>
+</div>
+<ul>
+  <li>The MM buys all unsold shares; max opening inventory ~85M shares across 170 names (~$4.26bn notional).</li>
+  <li>The 17-07 touchdown's "29 Aug" secondary date is superseded by the v2 requirements document.</li>
+  <li>Minor v2 erratum: §5.2 labels both shorting figures (1M / 900k) as "NFL"; one should read NCAA.</li>
+  <li>~10k users targeted at IPO launch. Edwin committing $1M Aug + $2M Sep user acquisition.</li>
+</ul>
+
+<h2>Status matrix</h2>
+<div class="table-scroll">
+<table>
+  <tr><th>Component</th><th>Spec state</th><th>Build state</th><th>Phase</th></tr>
+  <tr><td><strong>Customer onboarding + KYC</strong></td><td>Locked 17-06</td><td><span class="pill live">LIVE</span> Persona signed; 83 approved KYCs; flow in app</td><td>Shipped — app live on the Apple App Store since ~22-07</td></tr>
+  <tr><td><strong>Referral programme</strong></td><td>Deep; changelog to 24-06</td><td><span class="pill live">LIVE</span> via challenge website since ~4 Jul</td><td>Shipped — phase-2 items open (prize criteria, eligibility rules)</td></tr>
+  <tr><td><strong>Challenge website</strong></td><td>Full spec</td><td><span class="pill live">LIVE</span> legal pages pending counsel; OG image outstanding</td><td>Shipped — content/legal pass</td></tr>
+  <tr><td><strong>Global website</strong></td><td>Decision log</td><td><span class="pill live">DEPLOYED</span> placeholder pages: platform, methodology, investors, 4 legal</td><td>Shipped — content pass pre-launch</td></tr>
+  <tr><td><strong>Consumer app</strong></td><td>Deep on Discover / Watch Mode</td><td><span class="pill build">IN BUILD</span> late-stage: build 30, OTA pipeline, 309 commits in Jul; prices mocked until trading service lands</td><td>Pre-launch critical</td></tr>
+  <tr><td><strong>Trading execution (tZERO)</strong></td><td>Hub current to 24-07</td><td><span class="pill build">IN BUILD</span> infra map complete 23-07; Go FIX gateway working (2 of 4 sessions); remaining: cancel, cancel-replace, notifications</td><td>Pre-launch critical — 22 Aug</td></tr>
+  <tr><td><strong>IPO module</strong></td><td>6 sub-components defined; v2 requirements gospel 29-07</td><td><span class="pill build">IN BUILD</span> IPO draft screens in app; primary-plane execution with tZERO</td><td>Pre-launch critical — 22 Aug</td></tr>
+  <tr><td><strong>Market maker</strong></td><td>v1.3 spec gospel; deepest working docs</td><td><span class="pill build">IN BUILD</span> valuation + position engines built (235 tests); quoting (Ch 5) in build; market state, venue sync, poller unbuilt</td><td>Pre-launch critical — quoting by 26–27 Aug</td></tr>
+  <tr><td><strong>Sportradar data platform</strong></td><td>t0.md deep; sportradar.md missing</td><td><span class="pill live">DEPLOYED</span> production, 18 API domains; live worker deployed but idle (sim host, no live game IDs)</td><td>Shipped — live-game switch-on is a launch task</td></tr>
+  <tr><td><strong>Education</strong></td><td>Reset 22-06 to card library</td><td><span class="pill build">IN BUILD</span> 16 beginner modules live in build 17-07; 36 videos rendered; intermediate/expert timings provisional</td><td>Pre-launch: beginner tier; rest phased</td></tr>
+  <tr><td><strong>Advertising</strong></td><td>Playbook concrete; AppLovin MAX confirmed 17-07</td><td><span class="pill build">IN BUILD</span> house ads in app; SSP onboarding blocked on App Store approval</td><td>Pre-launch (Edwin's #2); first 3–6 months are calibration</td></tr>
+  <tr><td><strong>Earnings report</strong></td><td>Deepest decomposition (5 sub-components, acceptance criteria)</td><td><span class="pill spec">NOT STARTED</span> no code found anywhere</td><td>Launch window — first cycle needed in opening weeks of season</td></tr>
+  <tr><td><strong>Withdrawal / payouts</strong></td><td>Stub; 11 unknowns; provider unsigned</td><td><span class="pill spec">NOT STARTED</span></td><td>Launch remainder — accepted worst case: visible owed amounts, delayed payout, manual Zelle/wire interim</td></tr>
+  <tr><td><strong>Third space (chat/community)</strong></td><td>Full May spec</td><td><span class="pill post">DEFERRED</span> indefinitely 06-07; Discord alternative discussed 10-07, unresolved</td><td>Post-launch, threshold-gated</td></tr>
+  <tr><td><strong>Admin panel + API</strong></td><td>n/a (internal)</td><td><span class="pill live">DEPLOYED</span> vault docs + CI viewer live</td><td>Shipped (internal tooling)</td></tr>
+  <tr><td><strong>Research tab (subscription)</strong></td><td>Defined; 99c first month → $14.99/mo</td><td><span class="pill build">IN BUILD</span> pre-canned reports demoed in app 13-07</td><td>May slip past launch by design; AI tier is Phase 2</td></tr>
+  <tr><td><strong>Watch Mode</strong></td><td>Candidate sub-component; needs own session</td><td><span class="pill build">IN BUILD</span> built through July standups; custom Gamecast is InPlay-owned IP</td><td>In app for launch; monetisation parked</td></tr>
+</table>
+</div>
+
+<h2>Cross-cutting blockers (client-facing)</h2>
+<ul>
+  <li><strong>Apple App Store review — RESOLVED.</strong> The app went live as "InPlay Challenge" between 20-07 and 23-07 (37 downloads on 22-07, OTA updates rolling). Remaining store items: the Google Play listing (screenshots + frozen build, 23-07) and its gambling-classification risk. SSP onboarding unblocks now the store listing exists.</li>
+  <li><strong>tZERO scope question</strong> — "what does tZERO manage for the simulated challenge?" still marked Open — BLOCKING (<code>architecture/open-questions.md:18</code>); partly answered 10-06, never reconciled.</li>
+  <li><strong>Payment provider unsigned</strong> — gates payouts; interim manual rail (Zelle/wire) accepted.</li>
+  <li><strong>tZERO account permission (T1)</strong> — gates MM venue work; ~9 open questions with tZERO.</li>
+  <li><strong>E25</strong> — NCAA offering-close and secondary-open dates contradict inside the v2 requirements document.</li>
+  <li><strong>E27</strong> — nothing publishes the MM's opening position after the IPO; InPlay must supply the day-one book.</li>
+  <li><strong>Sportradar</strong> — production entitlement and quota unconfirmed (4 open questions).</li>
+  <li><strong>Legal</strong> — NFL/NCAA imagery licensing artifact absent; real-securities vs simulated copy inconsistency; challenge-site legal pages pending counsel; two-house-accounts FINRA/wash-trade question (E33/T13).</li>
+</ul>
+
+<h2>Proposed deck outline</h2>
+<ol>
+  <li>Where we are — one-slide summary: shipped / in build / not started</li>
+  <li>The launch calendar — IPO windows, secondary opens, first games</li>
+  <li>Shipped and live — onboarding + KYC, referral, websites, data platform, admin</li>
+  <li>The app — late-stage, App Store review status, what is mocked until trading lands</li>
+  <li>Trading + IPO + market maker — the critical path to 22 Aug: built vs remaining</li>
+  <li>Advertising + education — pre-launch state</li>
+  <li>Launch remainder — notifications, tax forms, payouts (with the agreed interim rail)</li>
+  <li>Deliberately after launch — chat/community, research-tab AI tier, MM ops UI, season-end settlement, KYC-less academic variant, NBA challenge (late Oct)</li>
+  <li>Open decisions we need from InPlay — E25 dates, E27 opening position, E24 mandate rounds, payment provider, legal clearances</li>
+  <li>Next 4 weeks — week-by-week plan to secondary open</li>
+</ol>
+
+<div class="internal">
+  <span class="internal-banner">Internal only — not for the client deck</span>
+  <h2>Engineering risks to fix, quietly</h2>
+  <ul>
+    <li><strong><code>inplay-education-videos</code> has no git remote.</strong> 36 rendered videos and all 9 commits exist only on this laptop. Push to origin urgently.</li>
+    <li><strong><code>inplay-fix-gateway-go</code></strong> — untouched 2 months, missing IOI + Drop Copy sessions, Dockerfile broken (<code>golang:1.23</code> vs <code>go 1.26</code>). It is on the MM critical path for 26 Aug.</li>
+    <li><strong>Plaintext production secrets</strong> in <code>inplay-admin-api/infrastructure/terraform.production.tfvars</code> (not committed, but on disk). Move to Secret Manager — the onboarding service already shows the pattern.</li>
+    <li><strong>Challenge-site branch divergence</strong> — live site reflects <code>main</code> as of 25 Jun; 55 newer commits on <code>client-imagery-demo</code> are not deployed. Needs reconciliation before describing the live state.</li>
+    <li><strong>Python fix-gateway is an archived prototype</strong> — <code>main.py</code> is 13 comment lines; its value is docs + the demo dashboard only.</li>
+    <li><strong>Sportradar prod worker points at the simulation host</strong>; <code>LIVE_GAME_IDS</code> empty. Deliberate, but must flip before the first live game.</li>
+    <li><strong>Admin API CORS fix unmerged</strong> on <code>fix/cors-pwa-origins</code>.</li>
+    <li><strong>Test coverage near zero</strong> on admin panel/API and the onboarding-referral service.</li>
+    <li><strong>onboarding-referral service</strong> — KYC endpoints stubbed (webhook returns 501), shared static admin key, CORS <code>*</code>, one squashed commit. Verify which service actually performs Persona KYC in production.</li>
+    <li><strong><code>vault/product/pages/</code> stale since 17-05</strong> — superseded in practice by component sub-component docs. Decide: deprecate or refresh.</li>
+    <li><strong>Vault currency</strong> — component docs current to ~29 Jun; July touchdowns undigested (01/06/08/10-07 raw). The deck must use July truths from transcripts, not stale component docs.</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

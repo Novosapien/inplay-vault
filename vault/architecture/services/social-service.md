@@ -1,3 +1,7 @@
+---
+description: "Social Service spec — the referral engine with dual-sided rewards and wallet reload, push notification endpoints, and leaderboard queries from Redis"
+---
+
 # Social Service
 
 > **Architecture:** [[architecture]]

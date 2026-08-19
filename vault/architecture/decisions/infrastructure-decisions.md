@@ -1,3 +1,7 @@
+---
+description: "Decision record for GCP infrastructure — Cloud Run over GKE for APIs, Managed Instance Group for Centrifugo, a VM for the FIX gateway, and API Gateway"
+---
+
 # Infrastructure Decisions
 
 > **Architecture:** [[architecture]]

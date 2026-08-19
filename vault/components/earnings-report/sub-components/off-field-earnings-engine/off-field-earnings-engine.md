@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the off-field earnings engine — the model that computes weekly EST/ACT figures from the $250/game pool allocated by matchup trade volume"
+---
+
 # InPlay Trading Challenge — Off-Field Earnings Engine
 
 > **Component:** [[earnings-report]]
@@ -124,7 +128,7 @@ _No UI. Outputs are rendered by [[earnings-feed]] and [[earnings-report-card]]._
 
 | What | Direction | Description | Source / Destination |
 |------|-----------|------------|---------------------|
-| Matchup trade volume | In | Per-team share of a matchup's volume | Trading / T0 |
+| Matchup trade volume | In | Per-team share of a matchup's volume | Trading / tZERO |
 | On-field result / winner earnings | In | Peg for the off-field total | Sport Radar + IPO valuation model |
 | $250/game off-field pool rule | In | Allocation pool per game | [[ipo-module]] mechanic |
 | EST | Out / Stored | Estimate, week prior | → feed/cards, archive |
@@ -137,7 +141,7 @@ _No UI. Outputs are rendered by [[earnings-feed]] and [[earnings-report-card]]._
 
 | Depends on | What we need | Blocking? |
 |-----------|-------------|----------|
-| Trading / T0 | Matchup trade volume (allocation basis) | Yes |
+| Trading / tZERO | Matchup trade volume (allocation basis) | Yes |
 | Sport Radar + IPO model | On-field result / winner earnings | Yes |
 | [[ipo-module]] | The $250/game off-field mechanic it builds on | Yes (conceptual) |
 | Scheduler | EST/ACT timing + embargo | Yes |

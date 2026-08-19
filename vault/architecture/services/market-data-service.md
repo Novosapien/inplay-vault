@@ -1,3 +1,7 @@
+---
+description: "Market Data Service spec — read-heavy REST for teams, games, news and history, combining Sport Radar, tZERO REST and PostgreSQL with per-source cache TTLs"
+---
+
 # Market Data Service
 
 > **Architecture:** [[architecture]]

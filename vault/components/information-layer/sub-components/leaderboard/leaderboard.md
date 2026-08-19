@@ -1,3 +1,7 @@
+---
+description: "Sub-component doc for the Trading Challenge leaderboard — three verticals, four time horizons, gap-to-payout mechanics, journeys, data needs and open questions"
+---
+
 # InPlay Trading Challenge -- Leaderboard
 
 > **Component:** [[information-layer]]

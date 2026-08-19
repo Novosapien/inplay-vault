@@ -1,3 +1,7 @@
+---
+description: "Deploy paths for iOS, Android and web builds — EAS submit flows, OTA update rules and store caps, release governance, and the pre-launch submission timeline"
+---
+
 # Frontend Deployment
 
 > **Architecture:** [[architecture]]
@@ -56,6 +60,48 @@ eas update --branch production --message "fix price display bug"
   - **OTA (over-the-air):** feels flexible, but the stores **cap how much you can push** over the air. Exceed the cap and you must do additional work and start risking the release.
 - **Consequence:** releases will be **staged**, work is slotted into the OTA caps ("filling that bucket") so InPlay does not blow the production criteria each app store governs. When Novo appears to stall a request for a couple of weeks, the two reasons are **(1) risk** and **(2) app-store compliance / cap management**, not lack of capacity.
 - This sits on top of the existing **CI/CD / DevOps** testing and release-cycle discipline; the new constraint is the app-store layer on top of it.
+
+## Release sequencing: bucket the OTAs, then review (03-08-2026)
+
+> Source: [[03-08-2026-touchdown]]. The operational rule that follows from the
+> governance principles above.
+
+The pattern George set out, and the team is now running:
+
+1. **Bucket every OTA-able change** and push them in one go, early in the week.
+2. **Then** submit the App Store review, which is required for anything native.
+3. **Do not push OTA updates while Apple is reviewing.** Partly it is not
+   permitted, mostly it complicates the release. Review is _"could be one day,
+   could be four days, could be a week"_ — an unpredictable freeze window, so
+   everything wanted in the app has to be in before it starts.
+
+Two things forced the review on this cycle: the **watch page** and the
+**ads integration**. Every new SSP will force another one (see
+[[advertising/advertising]]) — each integration embeds third-party serving code
+plus a policy update, so it is **a resubmission per network**, 24 to 48 hours,
+with the live version staying up and being swapped on approval.
+
+**IPO prices ship as an OTA push** rather than a native build, which is why
+publication timing is a release question as well as a tZERO one (see
+[[ipo-module/ipo-module]]).
+
+## Android is live (31-07-2026)
+
+The **Google Play submission was approved and the Android app went live** on
+31 July, announced on the Novo Slack channel and blasted on social on the
+Saturday. Cody had been fielding daily "where's the Android?" questions and was
+surprised by the demand; Brett, formerly Android country director for emerging
+markets, was less so.
+
+⚠ Worth recording honestly: the social blast produced **two signups**
+(03-08). Store availability was a blocker, not a growth lever.
+
+Also unblocked by going live: **AdMob for Android**. An SSP application needs an
+app-store URL, so Android ad serving could not be set up until the listing
+existed (27-07).
+
+**Follow-ups:** Kevin needs the Play Store icon and link for the website;
+listing name confirmed as "InPlay Challenge".
 
 ## Launch Timeline
 

@@ -1,10 +1,15 @@
+---
+description: "Trading component doc — the execution engine: limit orders via tZERO FIX, context-aware 3-click trade modal, wallets, fill notifications, and sub-component map"
+---
+
 # InPlay Trading Challenge -- Trading
 
 > **Vision:** [[vision]]
 > **Date:** 2026-05-11
-> **Status:** Collecting
+> **Status:** Collecting — **end-to-end working in QA as of 29-07-2026**
 > **Owner:** George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[08-05-2026-component-1-simulation-app]], [[11-05-2026-trading-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[08-05-2026-component-1-simulation-app]], [[11-05-2026-trading-component]], [[27-07-2026-touchdown]], [[29-07-2026-touchdown]], [[03-08-2026-touchdown]]_
+> **Updated:** 2026-08-10 — full order loop working into tZERO, short-while-long prohibited, arrow-direction bug logged, team naming moves to acronym tickers.
 
 ---
 
@@ -17,6 +22,153 @@ The Trading component is the execution engine of the InPlay app -- where users a
 The component is designed to be accessible from anywhere in the app, not confined to a single page. A persistent trade capability follows the user across screens -- team pages, game day pages, leaderboard, and beyond. The core design principle is context-aware trading: the system infers which team(s) the user is most likely to want to trade based on where they are in the app, while always providing search as a fallback.
 
 Trading must be fast. The target is 3 clicks or fewer from any page to a submitted order. A modal/overlay approach keeps users in context rather than navigating to a separate page.
+
+> ### Update (27-07 → 03-08 touchdowns): trading is end-to-end working
+>
+> **Status change.** As of 29-07 the full loop runs: order placed in the app →
+> tZERO → execution returned → handled and displayed in the app. George, after
+> testing it with Hasan against Rob at tZERO: _"trading is pretty much there."_
+> By 03-08 it was _"pretty much all there,"_ with the remaining gap being the
+> things testing surfaces rather than anything known-missing. This is the
+> component's first working end-to-end state.
+>
+> **What Hasan demoed** (27-07 and 29-07): buy and sell with quantity presets
+> (25 / 100 / 250) plus free entry, expiry choice (day, 3 days, a week, or until
+> explicitly closed), order preview, order-placed confirmation, partial fills
+> shown correctly, cancel of a resting order, shorting with an explanatory
+> message, and an automatic **sell/exit action pre-loaded on an open position**.
+> Executions and full trade history surface at the bottom of the wallet screen.
+> Ads are already placed in the same views.
+>
+> **Edwin's trading-desk feedback**, all of it recognisable market-maker
+> instinct:
+> - **Add a "max" quantity button** computed from buying power. _"Sometimes when
+>   I'm trading quickly and I want to get an edge… I don't want to do the math in
+>   my head or get out a calculator."_ Hasan can add it under the quantity
+>   field.
+> - The pre-loaded exit on a position is a **fat-finger guard** and he rates it
+>   highly: under pressure people hit buy again instead of sell and end up
+>   double-stuffed. _"This is fantastic for teaching how to trade."_
+>
+> **⚠ Bug (Jared, 29-07): the buy and sell arrows on the open-order screen point
+> the wrong way** relative to every other trading app. Troy's rule: buying means
+> you want the market up, selling means you want it down, so the arrows follow
+> the market, not the asset. Agreed to flip. Lands in
+> [[trading/sub-components/order-status/order-status]].
+>
+> **Short rule confirmed (Troy, 29-07): you cannot short a stock you are long.**
+> You must sell your existing inventory and be **flat** first. tZERO track
+> shorts not as a separate short coin but in **separate wallets** recording the
+> outstanding borrowed shares. Edwin: _"you don't get short if you're already
+> long. You've got to exit… and then to be short, you've got to be flat."_
+> Constraint on [[trading/sub-components/order-entry/order-entry]].
+>
+> **Test access is gated.** Users must be added as approved test traders, and
+> becoming one carries an extra step that allocates a wallet and onboards them
+> to tZERO. Cody is assembling a test group of incoming interns — the
+> out-of-the-gate target demographic — to work through every page. Edwin's
+> instruction on 27-07: the InPlay team holds off until Hasan gives a green
+> light.
+>
+> **QA data is real, not random** (29-07). Prices come from tZERO's market data,
+> and tZERO run **replay of genuine historical games** through Sport Radar. Troy:
+> _"it's all replay data."_ Cody's clarification matters for interpreting test
+> results: real games, real stats, historically dated. InPlay makes the prices;
+> tZERO does not.
+>
+> _Sources: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]],
+> [[03-08-2026-touchdown]]._
+
+> ### ⚠ Update (14-08): the first live night, and what it said about this component
+>
+> The morning after the first live game night produced the sharpest feedback this
+> component has had, and the most useful diagnosis. Full record in
+> [[14-08-2026-touchdown]]; the requirement set it generated is in
+> [[one-click-trading-requirements-aug-2026]].
+>
+> **The venue was not the problem.** tZERO confirmed their side operated as it
+> should: **3 million orders, 1 millisecond average latency**, no degradation of
+> the matching engine. Troy's conclusion, and he has the most venue experience in
+> the room: the harder part is already working, and what remains is the interface
+> and the data ingestion. George's version, that the work sits on the tip of the
+> iceberg rather than beneath it, is the reframing that turned the call around.
+>
+> **The component was built for the wrong user.** Not through carelessness: it
+> was built to protect people from mistakes, with a confirmation step, a
+> persistent bar and page transitions that each cost about a second. The people
+> testing it were trading at speed, and a trader who loses a second loses the
+> market. Troy reported repeatedly _"missing the market"_ because by the time he
+> had navigated, the price had gone.
+>
+> **Three defects, in priority order.**
+>
+> 1. **Confirming a trade navigates away from the game.** Sometimes to the
+>    portfolio, sometimes to the IPO tiles. Cody counted **five screens** to get
+>    back to the game he was trading. This alone made fast trading impossible.
+> 2. **The order book and the order ticket disagreed.** Users read one price and
+>    were offered another, so orders missed. Independently reported by Troy,
+>    Jared and Edwin on the same call, and already written up in
+>    [[jared-trading-feedback-aug-2026]]. This is the same root cause as the app
+>    inventing an order book when it had no data.
+> 3. **No market order, so some trades could not be placed at all.** Troy set out
+>    why it has to be synthetic: tZERO does not support market orders, equity
+>    markets do not, they live on the broker side. See
+>    [[market-maker/systems/synthetic-market-order]]. It exists in the trading
+>    service but is switched off.
+>
+> Also reported: screens freezing, partly caused by fixes being pushed during the
+> game; two app versions in circulation confusing testers; and lag with six
+> concurrent games because the app loaded everything at once.
+>
+> _Sources: [[14-08-2026-touchdown]], [[one-click-trading-requirements-aug-2026]]._
+
+> ### ⚠ Update (14-08): Jared's trading test-run feedback
+>
+> Fourteen items from Jared Sapirman, recorded in full at
+> [[jared-trading-feedback-aug-2026]]. His second written round after
+> [[jared-app-feedback-jul-2026]] in July, and he is the one person testing the
+> app the way a trader would rather than demonstrating it.
+> Three of them are the same underlying problem and it is the serious one.
+>
+> **The displayed price is not the transactable price.** The price at the top of
+> the team page contradicts the order book, so profit and loss is permanently
+> wrong, the chart moves independently of the book, and the price offered when a
+> user tries to buy is not the price they can transact at. On a product whose
+> premise is that a price is the thing you own, a price the user cannot trust is
+> a defect in the proposition rather than in a screen.
+>
+> **It makes the market order more necessary, not less.** The reporter's own
+> conclusion: with a mismatched price, limit orders will frequently fail to fill
+> and a retail user will not diagnose why. This is the strongest argument yet
+> for the synthetic market order landing before real users arrive, see
+> [[market-maker/systems/synthetic-market-order]].
+>
+> **Max buy is rejected when buying power is sufficient**, and still fails
+> around $1,000 below the limit. Edwin asked for a max-quantity control on
+> 27 July; this is that behaviour failing before the control exists.
+>
+> Also raised: open orders are hard to find, there is no default order size, an
+> open order can only be cancelled rather than modified, positions are hard to
+> locate, and bid and ask sometimes render blank. One crash: rotating to
+> landscape and back left the tab bar unresponsive, with videos promised.
+>
+> _Source: [[jared-trading-feedback-aug-2026]]._
+
+> ### Update (27-07): team naming and tickers
+>
+> Team companies cannot carry the real franchise name. Edwin does not want
+> _"an unnecessary legal thing I've got to defend"_ or users thinking they are
+> literally buying the New York Jets. Options weighed: prefixing with "InPlay"
+> (rejected as too long), or Troy's proposal, **Kalshi-style acronyms** —
+> `NYJ`, with an InPlay-style prefix pattern such as `IPG` available if needed.
+> Edwin: _"I think that's perfect, Troy."_ Final form to be played with
+> aesthetically and run past Marlin.
+>
+> The change itself is cheap: a **config update** that propagates across the app
+> for all users (Hasan). The constraint is recorded as C6 in
+> [[compliance/compliance]]. Tickers are also the current hard blocker on
+> market-maker order testing (T13 in [[market-maker/open-questions]]).
+> _Source: [[27-07-2026-touchdown]]._
 
 **Personas:**
 
@@ -74,7 +226,7 @@ _Portfolio & Position Management (from vision -- not discussed in detail this se
 **Business rules and constraints:**
 
 - Only limit orders for MVP -- tZERO does not support native market orders (Troy confirmed)
-- Synthetic market order is a post-MVP feature -- George proposed setting a limit order at a percentage above/below current price, executing one side and cancelling the other. Troy confirmed this is standard broker practice (brokers populate best bid/offer in the UI). George flagged it as a heavy lift for MVP. Troy also noted CME Globex adds collars/"no bust ranges" to market orders, useful precedent for any tolerance-band implementation. **⚠ 20-07: moved up — Edwin wants it "before our first game or at least before the first NFL game."** Approach settled: **price-through** — take the current best bid/ask and cross N price levels through it, guaranteeing a fill at the best available prices (how CME / equity brokers implement market orders; Troy offered to help write the logic). George's time-bounded cancel-and-reprice idea superseded. Related control: fills outside the **price band** (~30% correction, TBD) can be **quote-busted** by the exchange with T0 — see [[market-maker/market-maker]]. (Source: standup 2026-07-20)
+- Synthetic market order is a post-MVP feature -- George proposed setting a limit order at a percentage above/below current price, executing one side and cancelling the other. Troy confirmed this is standard broker practice (brokers populate best bid/offer in the UI). George flagged it as a heavy lift for MVP. Troy also noted CME Globex adds collars/"no bust ranges" to market orders, useful precedent for any tolerance-band implementation. **⚠ 20-07: moved up — Edwin wants it "before our first game or at least before the first NFL game."** Approach settled: **price-through** — take the current best bid/ask and cross N price levels through it, guaranteeing a fill at the best available prices (how CME / equity brokers implement market orders; Troy offered to help write the logic). George's time-bounded cancel-and-reprice idea superseded. Related control: fills outside the **price band** (~30% correction, TBD) can be **quote-busted** by the exchange with tZERO — see [[market-maker/market-maker]]. (Source: standup 2026-07-20)
 - Only onboarded users can trade (Cody confirmed: "onboarded and signed up"). KYC requirement from vision session
 - All language must use "earn" not "win" throughout -- regulatory requirement to position as skill-based competition, not chance-based (from vision session)
 - Buy always left, sell always right -- industry convention (Edwin confirmed)
@@ -149,7 +301,7 @@ Button placement is bottom of screen, optimised for thumb reach when holding a p
 | Best bid/offer (live) | In | tZERO FIX Market Data feed | Displayed above buy/sell buttons in the trade modal. Updates in real time. Troy: showing best bid/offer is how users make quick trading decisions without needing market orders |
 | Order book depth | In | tZERO IOI + FIX Market Data feeds | For users who want to see beyond top-of-book before placing an order. Depth of display TBD |
 | Order submission | Out | tZERO via FIX 4.2 Order Entry | NewOrderSingle (MsgType=D). Limit orders only (OrdType=2). ClOrdID max 20 chars, no leading zeroes |
-| Execution reports | In | tZERO via FIX 4.2 Order Entry | Covers the full order lifecycle: acceptance, fills (partial/full), cancellations, replacements, rejects, busts, corrections, and end-of-day expiry. See `architecture/integrations/t0.md` for full ExecType mapping. Proposed -- pending tZERO integration sessions to confirm |
+| Execution reports | In | tZERO via FIX 4.2 Order Entry | Covers the full order lifecycle: acceptance, fills (partial/full), cancellations, replacements, rejects, busts, corrections, and end-of-day expiry. See `architecture/integrations/tzero.md` for full ExecType mapping. Proposed -- pending tZERO integration sessions to confirm |
 | Cancel/replace requests | Out | tZERO via FIX 4.2 Order Entry | OrderCancelRequest (MsgType=F) and OrderCancelReplace (MsgType=G). Proposed -- pending tZERO integration sessions to confirm |
 | Position data (size, cost, P&L) | In | tZERO execution reports | PosSIZ (9383), PosCOST (9384), PosRpnl (9385), PosUpnl (9389) -- recalculated by tZERO on every fill, bust, correction. Proposed -- pending tZERO integration sessions to confirm |
 | Wallet balances | Stored | InPlay internal (PostgreSQL + Redis cache) | Trading wallet (100K cap) and referral wallet. Redis for fast reads on order validation, PostgreSQL as source of truth |
@@ -282,23 +434,25 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 | Portfolio View | Current positions across all teams, unrealised P&L, total portfolio value | Collecting | [[sub-components/portfolio-view/portfolio-view]] |
 | Trade History | Past trades -- what was bought/sold, when, at what price, realised P&L | Collecting | [[sub-components/trade-history/trade-history]] |
 | Wallet Management | Trading wallet (100K cap), referral wallet, reload mechanism (below 25K trigger), balance display | Collecting | [[sub-components/wallet-management/wallet-management]] |
-| Trading-Engine Simulation / Admin Panel _(internal tooling)_ | **Internal, not user-facing.** Simulation harness with example traders ("Contrarian Carol", "Panic Pete") to stress-test order fulfilment, per-trade speed, latency, and bid-ask spread under bursts (~100k users) before T0 integration. Intended to grow into an admin/monitoring panel. _Confirmed internal tooling (29-05/19-05)_ | Collecting | [[sub-components/trading-engine-sim/trading-engine-sim]] |
+| Trading-Engine Simulation / Admin Panel _(internal tooling)_ | **Internal, not user-facing.** Simulation harness with example traders ("Contrarian Carol", "Panic Pete") to stress-test order fulfilment, per-trade speed, latency, and bid-ask spread under bursts (~100k users) before tZERO integration. Intended to grow into an admin/monitoring panel. _Confirmed internal tooling (29-05/19-05)_ | Collecting | [[sub-components/trading-engine-sim/trading-engine-sim]] |
 
 ---
 
-> **Architecture note (from May touchdowns):** **T0 (tZERO) confirmed as the ATS/settlement partner** — FINRA-approved, first US ATS for tokenized assets; scale validated (~1M trades/sec, 3M wallets, no queueing). Backend uses a **FIX gateway** (built) + messaging bus + websocket connections; whitelisted IP sent to T0 for parallel testing, pursuing GCP-to-GCP direct connect. Weekly Friday T0 sync. _Sources: [[15-05-2026-touchdown]], [[18-05-2026-touchdown]], [[28-05-2026-touchdown]]._
+> **Architecture note (from May touchdowns):** **tZERO confirmed as the ATS/settlement partner** — FINRA-approved, first US ATS for tokenized assets; scale validated (~1M trades/sec, 3M wallets, no queueing). Backend uses a **FIX gateway** (built) + messaging bus + websocket connections; whitelisted IP sent to tZERO for parallel testing, pursuing GCP-to-GCP direct connect. Weekly Friday tZERO sync. _Sources: [[15-05-2026-touchdown]], [[18-05-2026-touchdown]], [[28-05-2026-touchdown]]._
 >
-> **Update (1–8 June touchdowns):** **VPC stood up** — locked down, secure, and connected to T0. The **FIX gateway was rebuilt** to handle very high concurrent request volume; **load testing (Hassan) is fast** ("room for improvement, but a really good starting point"). The **T0 integration is working** with backend dashboards and a scale-test harness ready to push the integration. The good T0 call (05-06) moved into edge cases / test scenarios. **Open homework (→ [[architecture/open-questions]]):** define how **buying power and the referral wallet** operate and look/feel, and **which parts NOVO builds vs T0** — refines the still-blocking "what does tZERO manage?" question. _Sources: [[03-06-2026-touchdown]], [[05-06-2026-touchdown]]._
+> **Update (1–8 June touchdowns):** **VPC stood up** — locked down, secure, and connected to tZERO. The **FIX gateway was rebuilt** to handle very high concurrent request volume; **load testing (Hassan) is fast** ("room for improvement, but a really good starting point"). The **tZERO integration is working** with backend dashboards and a scale-test harness ready to push the integration. The good tZERO call (05-06) moved into edge cases / test scenarios. **Open homework (→ [[architecture/open-questions]]):** define how **buying power and the referral wallet** operate and look/feel, and **which parts NOVO builds vs tZERO** — refines the still-blocking "what does tZERO manage?" question. _Sources: [[03-06-2026-touchdown]], [[05-06-2026-touchdown]]._
 >
-> **Update (10 June — wallet / buying-power ownership RESOLVED):** **T0 owns and manages the trading wallet** (tied to the digital wallet). **InPlay tracks the referral wallet** and builds the **<25K reload mechanism** (referral → trading). **Cash wallet host = still TBD** (T0 vs third party). Critically, **T0 does *not* calculate buying power** — they only do that in production *as the broker*; **InPlay must build an "InPlay market synthetic broker" element that tracks buying power** (a new InPlay-side responsibility). ⚠️ Business requirements for the synthetic broker are **not yet written** — flagged for the **Friday T0 session** (IPO/primary-offering BRs are done). **Shorting mechanics:** a short *increases* buying power — short 100K → receive 100K in funds → need 200K buying power to close (buy back); a drawdown to ~100K triggers return of the shares. Hard on-chain — tokenization lacks the locates/reserve mechanisms traditional markets use; Troy is writing the **shorting business requirements** (also Friday). _Source: [[10-06-2026-Touchdown]]._
+> **Update (10 June — wallet / buying-power ownership RESOLVED):** **tZERO owns and manages the trading wallet** (tied to the digital wallet). **InPlay tracks the referral wallet** and builds the **<25K reload mechanism** (referral → trading). **Cash wallet host = still TBD** (tZERO vs third party). Critically, **tZERO does *not* calculate buying power** — they only do that in production *as the broker*; **InPlay must build an "InPlay market synthetic broker" element that tracks buying power** (a new InPlay-side responsibility). ⚠️ Business requirements for the synthetic broker are **not yet written** — flagged for the **Friday tZERO session** (IPO/primary-offering BRs are done). **Shorting mechanics:** a short *increases* buying power — short 100K → receive 100K in funds → need 200K buying power to close (buy back); a drawdown to ~100K triggers return of the shares. Hard on-chain — tokenization lacks the locates/reserve mechanisms traditional markets use; Troy is writing the **shorting business requirements** (also Friday). _Source: [[10-06-2026-Touchdown]]._
 >
-> **Update (12–17 June touchdowns):** **Market maker resurfaces across all three calls.** **Kevin Murray (Head Execution Trader)** is leading the market-making algorithm work with George, deliberately **position-based rather than high-frequency** ("reflective of opinion in the market that day"), possibly with a data-science intern. Separately, Edwin flags the need to **build an internal market maker** (likely T0-integrated) to guarantee **IPO fill and ongoing liquidity**, and wants at least one **dummy IPO plus simulated events** to test before launch (see the inventory-visibility / straw-buyer note in [[ipo-module/ipo-module]]). Brett proposed a focused **Mon–Tue ~90-minute session**; logged in [[architecture/open-questions]] and a candidate **new `trading/market-maker` sub-component** once scoped. **T0 real-time P&L confirmed (12-06):** the T0 call resolved a buying-power concern, T0 will handle **real-time P&L calculations** on user holdings (unrealised gains/losses recalculate dynamically). _Sources: [[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
+> **Update (12–17 June touchdowns):** **Market maker resurfaces across all three calls.** **Kevin Murray (Head Execution Trader)** is leading the market-making algorithm work with George, deliberately **position-based rather than high-frequency** ("reflective of opinion in the market that day"), possibly with a data-science intern. Separately, Edwin flags the need to **build an internal market maker** (likely tZERO-integrated) to guarantee **IPO fill and ongoing liquidity**, and wants at least one **dummy IPO plus simulated events** to test before launch (see the inventory-visibility / straw-buyer note in [[ipo-module/ipo-module]]). Brett proposed a focused **Mon–Tue ~90-minute session**; logged in [[architecture/open-questions]] and a candidate **new `trading/market-maker` sub-component** once scoped. **tZERO real-time P&L confirmed (12-06):** the tZERO call resolved a buying-power concern, tZERO will handle **real-time P&L calculations** on user holdings (unrealised gains/losses recalculate dynamically). _Sources: [[12-06-2026-touchdown]], [[15-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
 >
-> **Update (18–29 June touchdowns):** **Buying-power → T0 mechanism (24-06, 26-06).** To let a user move funds from the **referral wallet into the trading wallet**, InPlay must give T0 each account's **buying power** — initially a **start-of-day file** (decision: **no intraday wallet rebalancing**, to avoid complexity; T0 calculates buying power intraday). George proposed a more **elegant API mechanism** — an API call that **increases the user's T0 wallet buying power while InPlay consumes the referral** on its side (so it can't be reused) — instead of an FTP file load; Troy endorsed it and George is **drafting it to T0**. Reinforced framing: **buying power = "trading power"** (covers selling/shorting, not just buying); the **ledger = the clearing/settlement custodial record**; the **simulator uses a synthetic wallet**, production a **real digital wallet** (broker / stablecoin funded). **Market-maker session reconfirmed (24-06, 26-06, 29-06):** Edwin will **co-build the market-making algo with George** (he has the parameters from a prior "Xperry" algo; the hard part is API-connecting the **T0 feeds**) — a separate session is needed. The session should also **capture market data for production market makers** to model on, and feeds **academic white papers** (Jim Angel; Josh's, scope TBD) on how the market behaves when an outcome is a foregone conclusion. _Sources: [[24-06-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[29-06-2026-touchdown]]. See [[digests/touchdowns-18-29-jun-2026]]._
+> **Update (18–29 June touchdowns):** **Buying-power → tZERO mechanism (24-06, 26-06).** To let a user move funds from the **referral wallet into the trading wallet**, InPlay must give tZERO each account's **buying power** — initially a **start-of-day file** (decision: **no intraday wallet rebalancing**, to avoid complexity; tZERO calculates buying power intraday). George proposed a more **elegant API mechanism** — an API call that **increases the user's tZERO wallet buying power while InPlay consumes the referral** on its side (so it can't be reused) — instead of an FTP file load; Troy endorsed it and George is **drafting it to tZERO**. Reinforced framing: **buying power = "trading power"** (covers selling/shorting, not just buying); the **ledger = the clearing/settlement custodial record**; the **simulator uses a synthetic wallet**, production a **real digital wallet** (broker / stablecoin funded). **Market-maker session reconfirmed (24-06, 26-06, 29-06):** Edwin will **co-build the market-making algo with George** (he has the parameters from a prior "Xperry" algo; the hard part is API-connecting the **tZERO feeds**) — a separate session is needed. The session should also **capture market data for production market makers** to model on, and feeds **academic white papers** (Jim Angel; Josh's, scope TBD) on how the market behaves when an outcome is a foregone conclusion. _Sources: [[24-06-2026-touchdown]], [[26-06-2026-ai-agent-research-component]], [[29-06-2026-touchdown]]. See [[digests/touchdowns-18-29-jun-2026]]._
 >
-> **Update (20 July — Market Maker promoted to its own component):** the 20-07 mechanics session with Edwin and Troy resolved enough of the market-maker picture that it is now a **standalone component — see [[market-maker/market-maker]]** (the earlier "candidate `trading/market-maker` sub-component" framing is superseded). Headlines for Trading: the MM is a **synthetic T0 entity** (unlimited buying power, short-locate exemption) posting resting liquidity — **user orders can match each other directly**, the MM is not a required counterparty; **everything stays limit orders** (crossing limit orders replace market orders); **cancel-replace quoting ~5–10×/sec**; **InPlay builds CTS1/CTS2** (the price engines — not consumed from T0); markets are **truly isolated per team** (pairs-trading frame — no cross-game or rankings effects intra-game). **T0 tech calls now 2×/week (Tue/Thu)** alongside Mon/Wed/Fri touchdowns; T0 asked to stand up the synthetic MM entity in QA. **MM ops UI = desktop version of this app**, built for the MM first (params, order lookup, positions/P&L — Kevin likely operator). MM deep-dive **Thu 23-07, 3–4pm London**. _Source: [[20-07-2026-touchdown]]._
+> **Update (20 July — Market Maker promoted to its own component):** the 20-07 mechanics session with Edwin and Troy resolved enough of the market-maker picture that it is now a **standalone component — see [[market-maker/market-maker]]** (the earlier "candidate `trading/market-maker` sub-component" framing is superseded). Headlines for Trading: the MM is a **synthetic tZERO entity** (unlimited buying power, short-locate exemption) posting resting liquidity — **user orders can match each other directly**, the MM is not a required counterparty; **everything stays limit orders** (crossing limit orders replace market orders); **cancel-replace quoting ~5–10×/sec**; **InPlay builds CTS1/CTS2** (the price engines — not consumed from tZERO); markets are **truly isolated per team** (pairs-trading frame — no cross-game or rankings effects intra-game). **tZERO tech calls now 2×/week (Tue/Thu)** alongside Mon/Wed/Fri touchdowns; tZERO asked to stand up the synthetic MM entity in QA. **MM ops UI = desktop version of this app**, built for the MM first (params, order lookup, positions/P&L — Kevin likely operator). MM deep-dive **Thu 23-07, 3–4pm London**. _Source: [[20-07-2026-touchdown]]._
 
-> **Update (24 July, trading infra mapped, small items remain, sim testing route):** the team **mapped out every component of the trading infrastructure yesterday** (23-07), where each stands and what remains. Launch-readiness is **non-negotiable** ("it's going to be ready for launch"). What is left is **small and well-understood**: adding the **cancel feature** and a **cancel-and-request feature**, both tightly integrated with the market maker (the thing being traded against). Some items had been waiting on **T0** (one API linking to another). **Testing does not need a live game:** pick a **historical game** (Chiefs vs Ravens was used), **run a simulation** off it on a test version of the app, and **repeat multiple times a day**, verifying both the user-side experience and the market-maker side. Edwin also asked for a **read-only monitoring dashboard** over the market maker (inventory / shares held per market / bills) so an InPlay operator can watch it near-production; George notes the MM **is just another user**, so the **same inventory APIs** that show a user their positions serve the MM view, phased (backend-working, then data representation, then later variable control). MM specifics belong to [[market-maker/market-maker]]; not restated here. _Source: [[24-07-2026-touchdown]]._
+> **Update (24 July, trading infra mapped, small items remain, sim testing route):** the team **mapped out every component of the trading infrastructure yesterday** (23-07), where each stands and what remains. Launch-readiness is **non-negotiable** ("it's going to be ready for launch"). What is left is **small and well-understood**: adding the **cancel feature** and a **cancel-and-request feature**, both tightly integrated with the market maker (the thing being traded against). Some items had been waiting on **tZERO** (one API linking to another). **Testing does not need a live game:** pick a **historical game** (Chiefs vs Ravens was used), **run a simulation** off it on a test version of the app, and **repeat multiple times a day**, verifying both the user-side experience and the market-maker side. Edwin also asked for a **read-only monitoring dashboard** over the market maker (inventory / shares held per market / bills) so an InPlay operator can watch it near-production; George notes the MM **is just another user**, so the **same inventory APIs** that show a user their positions serve the MM view, phased (backend-working, then data representation, then later variable control). MM specifics belong to [[market-maker/market-maker]]; not restated here. _Source: [[24-07-2026-touchdown]]._
+>
+> **Update (24 July touchdown):** **Trading is launch non-negotiable — target live for ~Aug 22** (Troy: "we need to get this live for the 22nd"; Edwin: "less than a month before this is all going to happen"). The full trading-infrastructure component map was completed 23-07 — "every single component… where are we at with all of it" — leaving a to-do list of small items (e.g. the **cancel feature** and **cancel-and-replace**), tightly integrated with the [[market-maker/market-maker|Market Maker]] ("the market maker is going to be the thing trading"). **Testing doesn't wait for live games:** SR simulation replays of past games (e.g. Chiefs–Ravens) can run multiple times a day, checked from both the user's perspective and the MM's side. **Launch-scope remainder named:** notifications, tax forms, payouts — payouts are the blind spot (payment-provider deal unsigned; worst case users see amounts owed and payouts are delayed a couple of weeks; Edwin fine with an interim manual rail — Zelle/wire). Cody's roadmap/bandwidth-visibility ask → Brett + George building a vault dashboard for release cadence. _Source: [[24-07-2026-touchdown]]._
 
 ## Gaps and Questions for Next Call
 

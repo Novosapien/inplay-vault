@@ -1,3 +1,7 @@
+---
+description: "Leaderboard Service spec — event-driven P&L recalculation from NATS price/fill events into Redis sorted sets, plus the open Python vs Bun runtime question"
+---
+
 # Leaderboard Service
 
 > **Architecture:** [[architecture]]

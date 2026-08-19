@@ -1,3 +1,7 @@
+---
+description: "Transcript of the 2026-05-22 advertising call — Skye, Brett and George on the nine sponsor ownership spaces, impression-math rework and ad-serving tech options"
+---
+
 **
 
 May 22, 2026

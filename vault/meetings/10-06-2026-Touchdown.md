@@ -9,6 +9,7 @@ extracted-to:
   - "[[inplay-global-website/inplay-global-website]]"
   - "[[customer-onboarding/customer-onboarding]]"
   - "[[components/components]]"
+description: "Transcript of the 2026-06-10 InPlay touchdown — guaranteed-prize-money compliance incident, website go-live review, Persona KYC demo, and tZERO wallet split"
 ---
 
 ## Post-Call Analysis
@@ -19,7 +20,7 @@ extracted-to:
 |---------|-------------|--------|
 | **Compliance incident** — AI agent put "guaranteed prize money up to $25M" in the site legal footer; rule is "up to $25M", never "guaranteed" | [[inplay-global-website/inplay-global-website]] | Update block added |
 | **Pre-deploy copy-review agent + counsel disclaimer review** (Marlin) | [[components/components]] (Cybersecurity & Data-Handling) | Control added |
-| **T0 wallet/buying-power split RESOLVED** — T0 = trading wallet; InPlay = referral tracker + reload + **synthetic broker** for buying power; cash wallet TBD | [[architecture/open-questions]] / [[trading/trading]] | Q resolved + Trading note |
+| **tZERO wallet/buying-power split RESOLVED** — tZERO = trading wallet; InPlay = referral tracker + reload + **synthetic broker** for buying power; cash wallet TBD | [[architecture/open-questions]] / [[trading/trading]] | Q resolved + Trading note |
 | **InPlay synthetic broker** (buying-power tracker) — BRs being written | [[architecture/open-questions]] / [[trading/trading]] | Row added; flagged for Friday |
 | **Shorting mechanics** — short increases buying power; close-out/share-return triggers; hard on-chain | [[trading/trading]] / [[architecture/open-questions]] | Note + row added; Friday |
 | Persona onboarding flow demoed — signup→KYC→pass/reject; ~2–3s face-scan callback; impl engineer ~8 weeks | [[customer-onboarding/customer-onboarding]] | Delivery note extended |
@@ -1172,7 +1173,7 @@ George Westbrook: It
 
 Skye Capazorio: The stacking
 
-George Westbrook: does. Oh, yeah. Yeah. Okay. Yeah. Yeah. the 3D the 3Dness. Okay. Yeah, I'll do that. Um, okay. So, yeah, that the other pages make that look a bit better. Just tighten up the space. Okay. Um, right. Get that sorted hopefully within the next half an hour. Um, right. Is there anything else? I suppose main priorities website done on boarding sports radar data statics done the live data tested um and done we can run back the simulations. Um, I think the only thing that we one of the things that we do need to think about I think this is more more for you Troy is the um the the wallets with T0 in that who's holding the balance because in my opinion it it should definitely and I'm not sure if I misread what they were saying the other day. Um, I think I definitely think they should be holding the balance because just in terms of like obviously latency is key.
+George Westbrook: does. Oh, yeah. Yeah. Okay. Yeah. Yeah. the 3D the 3Dness. Okay. Yeah, I'll do that. Um, okay. So, yeah, that the other pages make that look a bit better. Just tighten up the space. Okay. Um, right. Get that sorted hopefully within the next half an hour. Um, right. Is there anything else? I suppose main priorities website done on boarding sports radar data statics done the live data tested um and done we can run back the simulations. Um, I think the only thing that we one of the things that we do need to think about I think this is more more for you Troy is the um the the wallets with tZERO in that who's holding the balance because in my opinion it it should definitely and I'm not sure if I misread what they were saying the other day. Um, I think I definitely think they should be holding the balance because just in terms of like obviously latency is key.
 
   
   

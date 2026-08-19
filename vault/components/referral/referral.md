@@ -1,3 +1,7 @@
+---
+description: "Component doc for the referral growth engine — code lifecycle, share surfaces, bonus campaign calendar, cash-eligibility rules, wallet mechanics and open gaps"
+---
+
 # InPlay Trading Challenge — Referral
 
 > **Vision:** [[vision]]
@@ -86,8 +90,29 @@ The base referral reward is 1,000 InPlay$; events apply a multiplier to it. Most
 | 4th of July | (event multiplier) | — | **Multi-day:** Fri 00:00 → Sun 23:59 |
 | Labor Day weekend | (event multiplier) | — | **Multi-day:** Fri 00:00 → Mon 23:59 |
 
+> **Update (03-08-2026): 5× for the whole of August.** Cody set a flat **5×
+> multiplier running for the rest of August**, superseding the per-event
+> calendar above for that period. Rationale is bluntly arithmetic — with ~118
+> signups the cost of a large multiplier is trivial and the upside is
+> acquisition: _"who cares? There's like a hundred people out there in the
+> ether."_ The change has to land in **two places**: the **website** (Max
+> sweeping every page for referral dates and multipliers) and the **internal
+> system** (George confirmed done). _Source: [[03-08-2026-touchdown]]._
+
+> **Note (29-07 / 31-07): the referral engine is not converting pre-launch.**
+> Edwin: _"the referrals aren't working the way that I thought they would…
+> no one's referring anyone to get more trading money."_ His own read is that
+> it is a timing artefact rather than a design fault — **nobody has lost any
+> trading money yet**, and the whole thing does not feel real weeks out.
+> Corroborated independently by an OSU candidate Troy interviewed, who thought
+> the model was smart and would be used **once the competition starts and people
+> draw down**, and would play well on campus. Recorded so the pre-launch numbers
+> are not misread as a failure of the mechanic. Sits alongside the general
+> signup problem (~100 on 27-07, 118 on 31-07, 2 more after the Android launch
+> blast on 03-08).
+
 - **Eligibility window:** a referral counts for a given day's multiplier only if the referee completes the **full process** (signup + KYC, through to the point the referral dollar is issued) by **23:59** of that day. A referee who registers at 23:58 but hasn't completed KYC does **not** qualify for that day.
-- **Counting/automation:** the system must **automate and track when each referral's signup completed** against these event windows, maintaining an automated **ledger**. Referral dollars are not paid into a wallet at the moment of qualification — the referral bank is a tracked side-record; wallets are **topped off** from the ledger once T0 wallets are created. (Consistent with the IPO-session note that the referral wallet is "a trackable side database," not a live wallet at signup.)
+- **Counting/automation:** the system must **automate and track when each referral's signup completed** against these event windows, maintaining an automated **ledger**. Referral dollars are not paid into a wallet at the moment of qualification — the referral bank is a tracked side-record; wallets are **topped off** from the ledger once tZERO wallets are created. (Consistent with the IPO-session note that the referral wallet is "a trackable side database," not a live wallet at signup.)
 - ⚠️ **Launch dependency (delivery):** the first 3× event is **21 June** — ahead of likely app-store approval. The fallback is a **PWA** (same React Native codebase, possibly re-rendered as server-side NextJS; Persona/KYC wired in, identical branding) so the referral programme can run without Apple/Android approval. This is owned by **[[customer-onboarding/customer-onboarding|Customer Onboarding]]** / delivery, but the referral calendar's launch date depends on it.
 
 ### Cash eligibility tracking
@@ -105,7 +130,7 @@ The base referral reward is 1,000 InPlay$; events apply a multiplier to it. Most
 - Referral wallet has **no cap** (vision rule — influencer with 1,000 referrals could legitimately hold $1M+ in referral wallet)
 - Referral wallet can only refill the trading wallet **back to 100K, when the trading wallet drops below 25K** (vision rule — safety net, not unfair edge)
 - Referral wallet **resets to zero at end of season** (vision rule)
-- All referral balances live on T0 wallets (decision from Onboarding extraction — wallets are on T0)
+- All referral balances live on tZERO wallets (decision from Onboarding extraction — wallets are on tZERO)
 
 ### Social engagement credits (expanded 27-05-2026)
 - Engagement with InPlay's materials earns InPlay$ credits into the referral wallet. Actions are **open-ended and adaptive** — whatever InPlay wants to push that week/month: **following / liking / sharing posts, completing education modules, surveys**, etc. (Cody: _"it could be anything… it needs to be adaptive"_)
@@ -182,8 +207,8 @@ Cash eligibility tracking is the counterweight: clean, honest, checklist-style. 
 
 | Capability | Build / Buy / Access | Provider | Rationale |
 |---|---|---|---|
-| Referral code generation + storage | Build | InPlay | Codes are lifetime-stable identifiers tied to T0 wallet identity. Custom because of multi-surface (link, QR, dot card, embedded post) integration. |
-| Referral wallet (balance + transfer) | Access | **T0** | All wallets live on T0 per Onboarding decision. Refill logic (referral → trading when trading <25K) implemented as T0 transfer rule. |
+| Referral code generation + storage | Build | InPlay | Codes are lifetime-stable identifiers tied to tZERO wallet identity. Custom because of multi-surface (link, QR, dot card, embedded post) integration. |
+| Referral wallet (balance + transfer) | Access | **tZERO** | All wallets live on tZERO per Onboarding decision. Refill logic (referral → trading when trading <25K) implemented as tZERO transfer rule. |
 | Bonus campaign engine | Build | InPlay (Rebel / Novosapien) | Time-bound multipliers, cross-product behavioural rules (follow X = bonus Y), admin tooling. Custom because campaigns blend with multiple components. |
 | QR generation | Build | InPlay | Standard library; unique per user. Embedded in shares, on dot cards. |
 | Dot cards | Buy | Third party (Troy's relationship) | ~$25/unit at low quantity; lower at scale. Carries unique QR + social links + data dump. |
@@ -202,7 +227,7 @@ Cash eligibility tracking is the counterweight: clean, honest, checklist-style. 
 | Referral code (per user) | Out (stored) | InPlay → user | Lifetime-stable. Generated on KYC pass. |
 | Referral code (entered by referee) | In (user input or deep link) | App → InPlay | Optional at signup. Validated against existing codes. |
 | Referrer ↔ referee link | Stored | InPlay | Audit trail of who referred whom. |
-| Referral wallet balance | Stored | T0 | Per user. No cap. Reset to zero at season end. |
+| Referral wallet balance | Stored | tZERO | Per user. No cap. Reset to zero at season end. |
 | Bonus campaign config | Stored | InPlay | Time window, multiplier, target action(s), conditions. |
 | Current active multipliers | Read | InPlay | Applied at reward-issuance time. |
 | Cash eligibility status per user | Stored | InPlay | Boolean per rule. Drives dashboard checklist + cash-out prompts. |
@@ -215,8 +240,8 @@ Cash eligibility tracking is the counterweight: clean, honest, checklist-style. 
 ```mermaid
 graph LR
     Onboarding[Customer Onboarding] -->|KYC pass event| ReferralEngine[Referral Engine]
-    ReferralEngine -->|Generate code| T0[T0 - wallet identity]
-    ReferralEngine -->|Issue rewards| T0
+    ReferralEngine -->|Generate code| tZERO[tZERO - wallet identity]
+    ReferralEngine -->|Issue rewards| tZERO
     Campaigns[Bonus Campaigns Admin] -->|Active multipliers| ReferralEngine
     Socials[InPlay socials - LinkedIn FB IG TikTok] -->|Engagement events via agent| ReferralEngine
     User[User] -->|Trade with location-on| ReferralEngine
@@ -263,7 +288,7 @@ graph LR
 | Depends on | What we need | Blocking? |
 |---|---|---|
 | **Customer Onboarding** | KYC pass event, registration-with-code event, deep-link handler at install | **Yes** — core path |
-| **T0** | Referral wallet, transfer rule (referral → trading when trading <25K), wallet reset at season end | **Yes** — core path |
+| **tZERO** | Referral wallet, transfer rule (referral → trading when trading <25K), wallet reset at season end | **Yes** — core path |
 | **Trading** | Trade-with-location event (for eligibility rule) | Partial — needed for cash payout, not for accumulating InPlay$ |
 | **Third Space** | Engagement events (if cross-product campaigns ride on third-space activity) | No for v1 |
 | **Push / CRM** | Notify users on campaign starts, eligibility reminders, share prompts | No for v1 (can defer push notifications) |
@@ -289,7 +314,7 @@ graph LR
 **Must-have at launch?** **Yes** — for the **summer pre-launch programme** specifically. The referral mechanic is the marketing engine for the August launch — users must be earning during summer.
 
 **Sequencing rationale:**
-- **Phase 1 (pre-launch — June/July):** code lifecycle, share surfaces (link + QR + dot card), bonus campaigns (Father's Day, July 4th, weekday multipliers), basic referral wallet on T0
+- **Phase 1 (pre-launch — June/July):** code lifecycle, share surfaces (link + QR + dot card), bonus campaigns (Father's Day, July 4th, weekday multipliers), basic referral wallet on tZERO
 - **Phase 2 (launch — August):** eligibility tracking + dashboard checklist, embedded-post QR, season-reset logic
 - **Phase 3 (post-launch):** social engagement credits, sponsor redemption, donor/group accounts (subject to securities review)
 

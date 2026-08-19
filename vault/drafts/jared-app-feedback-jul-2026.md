@@ -8,9 +8,12 @@ extracted-to:
   - "[[third-space]]"
   - "[[frontend-performance]]"
   - "[[trader-profile]]"
+description: "Jared Sapirman's Jul 2026 app feedback — six items from referral contact invites to groups, cold-start speed and public usernames, each routed to a vault doc"
 ---
 
 # Jared Sapirman, Additional App Feedback (Jul 2026)
+
+> **Follow-up round:** [[jared-trading-feedback-aug-2026]], fourteen items from a hands-on trading session, August 2026.
 
 > **Up:** [[components]] · [[index]]
 > **Type:** source-feedback

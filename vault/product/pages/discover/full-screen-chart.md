@@ -1,3 +1,7 @@
+---
+description: "Page spec for the full-screen candlestick chart modal — time-range selector, price axis, and game vs season timeframes"
+---
+
 # Full-Screen Chart
 
 > **Tab:** Discover

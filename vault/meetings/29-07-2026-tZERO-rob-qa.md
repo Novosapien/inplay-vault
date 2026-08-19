@@ -3,17 +3,18 @@ date: 2026-07-29
 type: general
 source: Written Q&A from Rob Colucci (tZERO), following a QA testing session with Novo (Hasan)
 scope:
-  - "[[t0]]"
+  - "[[tzero]]"
   - "[[tzero-oms-risk-settings]]"
   - "[[primary-offering-execution]]"
   - "[[market-maker/market-maker]]"
 status: extracted
 extracted-to:
-  - "[[t0]]"
+  - "[[tzero]]"
   - "[[tzero-oms-risk-settings]]"
   - "[[primary-offering-execution]]"
   - "[[integrations]]"
   - "[[open-questions]]"
+description: "Written Q&A from Rob Colucci (tZERO) after Hasan's QA session — primary issuance, overnight position carryover, account-scoping fixes, and OMS risk settings"
 ---
 
 ## Post-Call Analysis
@@ -26,7 +27,7 @@ Written answers from **Rob Colucci (tZERO)** after a QA testing session with Nov
 
 - **Question:** send IPO orders through the OMS, or issue directly to the cap table?
 - **Answer:** the OMS (secondary-trading environment) **can** set preliminary IPO prices by placing **BUY orders at set prices**; those orders rest on the book and become eligible for execution. The OMS **Previous Close Price** can be set as the **"IPO Reference Price"** for Market Data and Risk Management. **But** to track **primary-issuance metrics** (total capital raised, shares remaining available) the challenge should use a **dedicated cap-table management tech stack**.
-- **Reconciliation:** this is consistent with the 23-07 decision to **mint directly to investor wallets via the transfer-agent workspace** (see [[t0]] §10.6 and [[primary-offering-execution]]). The OMS seeds a reference price for market data and risk; the **cap table is the system of record for issuance metrics**. Selecting/building that cap-table stack is a new open item.
+- **Reconciliation:** this is consistent with the 23-07 decision to **mint directly to investor wallets via the transfer-agent workspace** (see [[tzero]] §10.6 and [[primary-offering-execution]]). The OMS seeds a reference price for market data and risk; the **cap table is the system of record for issuance metrics**. Selecting/building that cap-table stack is a new open item.
 
 ### Position carryover and risk settings
 

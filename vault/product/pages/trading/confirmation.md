@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Trade Confirmation review screen — order summary, wallet impact, market vs limit states, and the insufficient-balance disabled state"
+---
+
 # Trade Confirmation
 
 > **Tab:** Trade

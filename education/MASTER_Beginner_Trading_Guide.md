@@ -1,3 +1,7 @@
+---
+description: "16-module beginner trading guide — capital markets, Performance Securities, long/short, orders, risk, psychology, blockchain — with quizzes and glossary"
+---
+
 __INPLAY GLOBAL__
 
 __Complete Trading__

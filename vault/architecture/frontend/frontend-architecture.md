@@ -1,3 +1,7 @@
+---
+description: "How the React Native (Expo) app is structured — one codebase for iOS, Android and web, no frontend server, REST + Centrifugo connections, key libraries"
+---
+
 # Frontend Architecture
 
 > **Architecture:** [[architecture]]

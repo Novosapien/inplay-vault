@@ -1,3 +1,7 @@
+---
+description: "Async order-placement flow from user tap through NATS and the FIX Gateway to tZERO fill, with spike handling for ~250K orders and the cancel/replace path"
+---
+
 # Data Flow: Order Placement (User to tZERO)
 
 > **Architecture:** [[architecture]]

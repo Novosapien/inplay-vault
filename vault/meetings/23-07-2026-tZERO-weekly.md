@@ -2,17 +2,18 @@
 date: 2026-07-23
 type: general
 scope:
-  - "[[t0]]"
+  - "[[tzero]]"
   - "[[integrations]]"
   - "[[primary-offering-execution]]"
   - "[[customer-onboarding]]"
   - "[[market-maker/market-maker]]"
 status: extracted
 extracted-to:
-  - "[[t0]]"
+  - "[[tzero]]"
   - "[[integrations]]"
   - "[[primary-offering-execution]]"
   - "[[customer-onboarding]]"
+description: "Digest of the 2026-07-23 tZERO weekly tech sync — SIM/PROD split, production symbology, stock-loan fee, and the IPO direct-mint-to-wallet decision"
 ---
 
 ## Post-Call Analysis
@@ -21,21 +22,21 @@ Weekly tZERO tech sync the morning after the app landed on the Apple App Store (
 
 ### App Store & environments
 
-- **App released to the Apple App Store** the previous day as a **light beta** used to clear the initial approval. Troy: **future in-app trading will require a second, separate approval round**. Minor updates can be pushed OTA; major changes trigger additional review. Captured in [[t0]] deployment notes.
+- **App released to the Apple App Store** the previous day as a **light beta** used to clear the initial approval. Troy: **future in-app trading will require a second, separate approval round**. Minor updates can be pushed OTA; major changes trigger additional review. Captured in [[tzero]] deployment notes.
 - **Environment split locked:** the current environment **becomes SIM**; a **separate PROD environment will be stood up**. Test/dummy assets (named after non-existent teams) live **inside SIM** to allow market-maker and feature testing without new infrastructure. Rob cautioned that heavy testing strains shared resources and should be kept **off the customer-facing side** where possible.
 
 ### Symbology
 
-- **Production symbology strategy:** keep the current symbols for SIM but **truncate symbols for production** to meet standards. Front ends can reconfigure display symbols; the backend does not require a specific format. Use **system-generated IDs / descriptive IDs for back-end mapping**, **decoupled from team names** to avoid regulatory issues and naming conflicts across future seasons. A **background mapping is retained for auditing/historical purposes**. Goes to [[t0]].
+- **Production symbology strategy:** keep the current symbols for SIM but **truncate symbols for production** to meet standards. Front ends can reconfigure display symbols; the backend does not require a specific format. Use **system-generated IDs / descriptive IDs for back-end mapping**, **decoupled from team names** to avoid regulatory issues and naming conflicts across future seasons. A **background mapping is retained for auditing/historical purposes**. Goes to [[tzero]].
 
 ### Rate limiting & risk controls
 
-- **SIM rate limiting:** no throttles exist today; tZERO will implement **rate limiters on incoming traffic and order flow** on SIM (particularly for the internal test accounts) to prevent resource exhaustion. George proposed using **custom FIX fields to prioritise live-user orders over test orders** if resources get constrained. Goes to [[t0]].
+- **SIM rate limiting:** no throttles exist today; tZERO will implement **rate limiters on incoming traffic and order flow** on SIM (particularly for the internal test accounts) to prevent resource exhaustion. George proposed using **custom FIX fields to prioritise live-user orders over test orders** if resources get constrained. Goes to [[tzero]].
 - **Account risk parameters:** Rob to send a **list of relevant risk controls / default template settings** to apply to new accounts. Troy noted all users are treated equally with the **same initial capital of 100K**, and that high-frequency messaging is a lesser concern since most users won't have API access. Risk-template defaults are an open item (see below).
 
 ### Stock-loan (short) fee
 
-- **Development complete** and functioning in the **segregated environment**. Rate set at **$1.20/share (adjustable)**. **Novo to test:** verify the **FIX tags on the gateway** and confirm **data flows correctly to the blockchain**. Goes to [[t0]].
+- **Development complete** and functioning in the **segregated environment**. Rate set at **$1.20/share (adjustable)**. **Novo to test:** verify the **FIX tags on the gateway** and confirm **data flows correctly to the blockchain**. Goes to [[tzero]].
 
 ### Payments
 

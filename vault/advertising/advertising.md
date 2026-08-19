@@ -1,0 +1,70 @@
+---
+description: "The advertising section: the outbound onboarding artefacts the Cold Outreach Workforce grounds on, and the open items blocking their use"
+---
+
+# Advertising
+
+> **Vault:** [[index]]
+> **Status:** Collecting
+> **Date:** 2026-08-12
+> **Sources:** [[07-08-2026-touchdown]], Edwin's three reviews of the advertising forecasts (July 2026), [[messaging-house]], [[website-punch-list]]
+
+---
+
+## About This Section
+
+InPlay sells advertising and sponsorship inside The InPlay Challenge 2026. This section holds the three artefacts the Cold Outreach Workforce grounds on, authored 12 August 2026 in a working session with Edwin Johnson and Cody Haugen.
+
+They form a dependency chain. The **offer** says what may be claimed. The **ICPs** say which companies to claim it to, and their tier weights are literally the rubric the workforce grades every lead against. The **buyer personas** say which humans inside those companies the message must land with. None of them is a brochure and no advertiser ever reads one.
+
+**These are not yet loadable into the workforce.** Each document carries its own gaps list. The blocking items are collected below.
+
+## Documents
+
+| Document | Description | Status |
+|----------|------------|--------|
+| [[offer]] | The factual-claims universe. Seven sections, two component tracks, an honestly empty proof section | Draft v1 |
+| [[icps]] | Three tiered ICP definitions. The tier weights are the workforce's lead-grading rubric | Draft v1 |
+| [[buyer-personas]] | Six twelve-section personas, two per ICP, weighted to the economic buyer | Draft v1 |
+
+A readable HTML rendering in the InPlay corporate identity lives on the shared drive at `clients/inplay/outbound-campaigns/`, alongside the script that regenerates it from these three files. The markdown here is the source of truth.
+
+## What the session settled
+
+- The offer routes as **media**, with two component tracks: sponsorship, covering title, premium pages and Gamecast field naming, and programmatic, covering the header unit, volatility moments and video interstitials.
+- **Title sponsorship is not a separate mechanism.** The process is identical to premium pages, so it is the top scope of the sponsorship track rather than a track of its own.
+- **Volatility moments are filled programmatically**, not sold as premium placement. At 20 to 25 a game there is more inventory than direct sales can fill.
+- **2,200 games replaces 2,116.** Edwin confirmed the corrected count on 12 August. The old figure is still carried in [[vision]], the decks, the website copy and the media planner, and needs changing in all of them.
+- **Betting, daily fantasy, sportsbook and casino are declined outright**, on every path including programmatic. A direct-only carve-out was raised and rejected, because the brand-safety claim is worth more than the revenue.
+- **Audience is 18 to 55**, per [[audiences]]. No gender split is claimed in either direction, because none has been observed.
+- **No audience number goes in front of an advertiser.** Sponsorship commits an exposure quantity instead, which needs no projection to sell.
+- The [[messaging-house]] ban on "guaranteed" and "users" is scoped to prize and investor language. Advertiser-facing copy is exempt.
+
+## Three facts that were in no earlier document
+
+**The simulation multiplier.** The back test, simulation and strategy labs replay and simulate games, so an account holder may run one game many times before watching it live. Edwin's example was twenty simulations of a game before kickoff, giving twenty-one sessions rather than one. Inventory is therefore not bounded by the live-game count. Nothing in the media planner or in the advertising forecasts accounts for this, and it is the strongest claim in the offer. The multiplier itself is unmodelled.
+
+**Title sponsorship reaches outside the app**, into InPlay's own outreach, marketing and landing pages. Nothing in the mechanism produces that and nobody owns it, so agents may not promise it yet.
+
+**The Omnicom position.** The $60M expectation is not happening. The Omnicom and WPP relationships are live and real at $150K for a point of view and $250K to $500K for a full campaign, paused pending audience evidence. Those are two different facts and only the second one is usable.
+
+## Blocking items
+
+Nothing here may be loaded into the workforce until these close. Full per-document gaps lists sit at the foot of [[offer]], [[icps]] and [[buyer-personas]].
+
+| # | Ask | Owner |
+|---|-----|-------|
+| 1 | The launch inventory map: which surfaces have live ad unit IDs at kickoff, and whether the field brand, volatility moment and video interstitial units exist | Cody |
+| 2 | Is Open Measurement integrated, and which verification vendors will be accepted | Cody |
+| 3 | The declared refresh interval per unit, and whether the timer starts on viewability | Cody |
+| 4 | Definition of an exposure, served, viewable or completed, per format | Edwin and counsel |
+| 5 | Whose numbers settle a delivery dispute | Edwin and counsel |
+| 6 | Counsel sign-off on the makegood wording | Counsel |
+| 7 | The rest of the advertiser category list: crypto, alcohol, cannabis, telehealth, VPN | Edwin |
+| 8 | May agents state anything about legality. Default is silence | Edwin and counsel |
+| 9 | The internal delivery model, so committed quantities stay inside real inventory | Cody and Novosapien |
+| 10 | The simulation multiplier, modelled | Cody and Novosapien |
+
+## The one honest weakness
+
+Every first-person quote in [[buyer-personas]] was written by Novosapien, not captured from a real buyer. InPlay has closed no advertising deals, and Edwin and Cody asked for the personas to be built on assumptions so the session could finish. That is a legitimate starting point and it is stated at the top of the document rather than buried, but those quotes need replacing with real phrasing as soon as real calls happen. It is the one part that cannot be quietly corrected later.

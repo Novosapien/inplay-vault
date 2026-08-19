@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Wallet Details screen — trading wallet (100K cap) vs uncapped referral wallet, and the combined transaction history"
+---
+
 # Wallet Details
 
 > **Tab:** Trade

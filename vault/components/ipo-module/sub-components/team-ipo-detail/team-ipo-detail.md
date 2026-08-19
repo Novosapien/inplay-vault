@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the per-team IPO assessment page — expected wins, off-field value basis, stats, roster moves and schedule behind the buy decision"
+---
+
 # InPlay Trading Challenge — Team IPO Detail
 
 > **Component:** [[ipo-module]]
@@ -138,7 +142,7 @@ graph TD
 | Last-season per-game stats | Out | Historical form | Sport Radar |
 | Additions / departures | Out | Roster gains and losses | Sport Radar / roster data |
 | Schedule | Out | Upcoming games | Sport Radar |
-| Shares remaining / price | Out | Live offering state | T0 ledger / [[primary-offering-execution]] |
+| Shares remaining / price | Out | Live offering state | tZERO ledger / [[primary-offering-execution]] |
 
 ---
 

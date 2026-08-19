@@ -1,3 +1,7 @@
+---
+description: "Page spec for the Full Results screen — a team's complete season game list with scores and W/L indicators, reached from the Team Page"
+---
+
 # Full Results
 
 > **Tab:** Discover

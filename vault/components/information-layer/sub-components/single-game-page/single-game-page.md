@@ -1,3 +1,7 @@
+---
+description: "Sub-component spec for the Single Game Page — the core live-trading screen: journeys, data needs, dependencies, and the July Watch Mode (landscape) evolution"
+---
+
 # InPlay Trading Challenge -- Single Game Page
 
 > **Component:** [[information-layer]]
@@ -54,7 +58,7 @@ The page exists in three states: pre-game (stats, weather, venue, matchup contex
 **Edge cases:**
 
 - What happens when SR data feed goes down during a live game? -> Show last known state with timestamp and "delayed" indicator
-- What happens when T0 price feed is delayed? -> Disable buy/sell, show "trading paused" with explanation
+- What happens when tZERO price feed is delayed? -> Disable buy/sell, show "trading paused" with explanation
 - What if multiple volatility moments happen within seconds of each other? -> Group or stack annotations rather than overlapping
 - What if the user is viewing a pre-game page and the game starts? -> Page should transition to live state automatically
 - What if the user has no positions in either team? -> P&L section hidden or shows "no positions" rather than empty state
@@ -219,9 +223,9 @@ Data-dense but layered. The game page is the most information-rich screen in the
 | Live match tracker widget | In | Embedded HTML5 visualisation of the game. Pre/live/post states | Sport Radar hosted solution |
 | Win probabilities | In | Real-time probability calculations for both teams | Sport Radar |
 | Game metadata | In | Teams, venue, weather, game time, status (pre/live/post) | Sport Radar |
-| Current prices (bid/offer/last) | In | Real-time stock prices for both teams in this matchup | T0 ATS |
-| Order book depth | In | Number of orders at each price level for both teams | T0 ATS |
-| Price history for this game | In | Price movements since game start, for the chart timeline | T0 ATS |
+| Current prices (bid/offer/last) | In | Real-time stock prices for both teams in this matchup | tZERO ATS |
+| Order book depth | In | Number of orders at each price level for both teams | tZERO ATS |
+| Price history for this game | In | Price movements since game start, for the chart timeline | tZERO ATS |
 | Volatility moment annotations | In | Cross-correlated data: which SR event mapped to which price movement, with timestamps | InPlay internal store |
 | User's current positions | In | Whether the user holds shares in either team, quantity, average entry price | Trading component |
 | User's P&L | In | Current unrealised P&L for positions in this game | Trading component |
@@ -235,7 +239,7 @@ Data-dense but layered. The game page is the most information-rich screen in the
 | Depends on | What we need | Blocking for build? |
 |-----------|-------------|----------|
 | Sport Radar | Live data feeds, match tracker widget, game metadata | Yes -- no SR, no game page |
-| T0 ATS | Real-time prices, order book, price history | Yes -- no T0, no market data |
+| tZERO ATS | Real-time prices, order book, price history | Yes -- no tZERO, no market data |
 | Discovery / Home (sibling) | Navigation context -- which game was selected | No -- can load directly via deep link |
 | Leaderboard (sibling) | User's current rank and proximity data for mini widget | No -- can mock or hide widget |
 | Trading component | User positions, P&L, order entry widget | No -- can mock positions; order entry can be added later |
@@ -255,7 +259,7 @@ Data-dense but layered. The game page is the most information-rich screen in the
 **Specific risks:**
 
 - SR data delay (30-40 seconds from real-world events) means users watching live TV see events before the app -- creates information asymmetry between users with and without broadcast access
-- High-traffic moments (multiple touchdowns across games simultaneously) could cause T0 price feed latency or SR widget lag
+- High-traffic moments (multiple touchdowns across games simultaneously) could cause tZERO price feed latency or SR widget lag
 - Mobile screen real estate is tight -- if too many elements compete for space, the experience becomes cluttered and unusable
 - Chart annotations at mobile scale may be unreadable if too many volatility moments cluster in a short time window
 
@@ -263,7 +267,7 @@ Data-dense but layered. The game page is the most information-rich screen in the
 
 - Data freshness indicator -- if data is delayed beyond acceptable threshold, show a "delayed" label so users don't trade on stale information
 - Annotation density management -- if multiple events happen within seconds, group or stack annotations rather than overlapping
-- Graceful degradation -- if SR feed drops, show last known state with timestamp; if T0 drops, disable buy/sell and show "trading paused"
+- Graceful degradation -- if SR feed drops, show last known state with timestamp; if tZERO drops, disable buy/sell and show "trading paused"
 - Performance budget -- page must remain responsive even with all real-time elements updating simultaneously
 
 ---
@@ -315,7 +319,7 @@ Data-dense but layered. The game page is the most information-rich screen in the
 
 (Source: standup 2026-07-20)
 
-**Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **T0 price history + SR events + win probability onto the same timeline** — blocked on trading integration (T0 QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
+**Dependencies / sequencing:** the visual shell currently runs on placeholder data. The real unlock is mapping **tZERO price history + SR events + win probability onto the same timeline** — blocked on trading integration (tZERO QA environment + load testing first, then real data piped in). This is also what powers the Research Tab's cross-correlation reports.
 
 **Gamecast feed-source clarified (24-07):** the custom Gamecast runs on InPlay's licensed **Sport Radar media data feeds** (fetch pre-event history, then stream live events). The faster SR **betting feed** (which powers the licensed "ugly" match tracker) is **not accessible** to InPlay because it is not a licensed sports book. Decision: prioritise the **fastest feed available** so the visual and pricing signal stay TV-competitive; the real-world-to-delivery **delta is uncontrollable** (whenever SR sends). Full feed/probabilities detail in [[integrations]]; MM probability consumption in [[market-maker/market-maker]]. (Source: [[24-07-2026-touchdown]])
 

@@ -1,3 +1,7 @@
+---
+description: "Brett's operating model for InPlay programmatic ads — 18-SSP priority stack, MAX-as-ad-server architecture, 1-human + 9-AI-agent ops, KPIs and launch updates"
+---
+
 # InPlay Trading Challenge — Programmatic Media Playbook
 
 > **Component:** [[advertising]]

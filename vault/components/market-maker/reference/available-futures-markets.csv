@@ -1,0 +1,73 @@
+league,future_name,future_type,start_date,future_id
+NCAAF,Heisman Trophy Winner,PLAYER,2026-12-06T19:00:00Z,type_heisman_trophy_winner-sport_football-league_ncaaf
+NCAAF,Regular Season Passing Touchdowns,PLAYER,2026-10-14T09:18:05.796516Z,type_regular_season_passing_touchdowns-sport_football-league_ncaaf
+NCAAF,Regular Season Passing Yards,PLAYER,2026-10-14T09:18:04.525857Z,type_regular_season_passing_yards-sport_football-league_ncaaf
+NCAAF,Regular Season Receiving Touchdowns,PLAYER,2026-10-14T09:17:19.692244Z,type_regular_season_receiving_touchdowns-sport_football-league_ncaaf
+NCAAF,Regular Season Rushing Touchdowns,PLAYER,2026-10-14T09:17:49.82411Z,type_regular_season_rushing_touchdowns-sport_football-league_ncaaf
+NCAAF,Regular Season Rushing Yards,PLAYER,2026-10-14T09:17:16.194934Z,type_regular_season_rushing_yards-sport_football-league_ncaaf
+NCAAF,AAC Conference Championship Winner,TEAM,2027-01-26T00:30:00Z,type_aac_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,ACC Conference Championship Winner,TEAM,2027-01-04T00:00:00Z,type_acc_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Big 10 Conference Championship Winner,TEAM,2026-08-29T16:00:00Z,type_big_10_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Big 12 Conference Championship Winner,TEAM,2027-01-26T00:00:00Z,type_big_12_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Championship Winner,TEAM,2026-08-29T16:00:00Z,type_championship_winner-sport_football-league_ncaaf
+NCAAF,Conference USA Championship Winner,TEAM,2027-01-26T00:30:00Z,type_conference_usa_championship_winner-sport_football-league_ncaaf
+NCAAF,MAC Conference Championship Winner,TEAM,2027-01-26T00:30:00Z,type_mac_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Mountain West Conference Championship Winner,TEAM,2026-12-05T01:00:00Z,type_mountain_west_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,PAC 12 Conference Championship Winner,TEAM,2026-08-29T16:00:00Z,type_pac_12_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Regular Season Wins,TEAM,2026-12-07T16:00:00Z,type_regular_season_wins-sport_football-league_ncaaf
+NCAAF,SEC Conference Championship Winner,TEAM,2027-01-26T00:30:00Z,type_sec_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,Sun Belt Conference Championship Winner,TEAM,2027-01-26T00:30:00Z,type_sun_belt_conference_championship_winner-sport_football-league_ncaaf
+NCAAF,To Have An Undefeated Season,TEAM,2026-08-29T20:00:00Z,type_to_have_an_undefeated_season-sport_football-league_ncaaf
+NCAAF,To Make The Finals,TEAM,2027-01-26T00:30:00Z,type_to_make_the_finals-sport_football-league_ncaaf
+NCAAF,To Make The Playoffs,TEAM,2027-01-26T00:00:00Z,type_to_make_the_playoffs-sport_football-league_ncaaf
+NCAAF,To Make The Quarterfinals,TEAM,2027-01-26T00:30:00Z,type_to_make_the_quarterfinals-sport_football-league_ncaaf
+NCAAF,To Make The Semifinals,TEAM,2027-01-26T00:30:00Z,type_to_make_the_semifinals-sport_football-league_ncaaf
+NFL,1st Overall Pick 2026,PLAYER,2026-10-13T21:17:57.814636Z,type_1st_overall_pick_2026-sport_football-league_nfl
+NFL,Comeback Player Of The Year Winner,PLAYER,2027-01-10T12:45:00Z,type_comeback_player_of_the_year_winner-sport_football-league_nfl
+NFL,Defensive Player Of The Year Winner,PLAYER,2027-01-10T12:30:00Z,type_defensive_player_of_the_year_winner-sport_football-league_nfl
+NFL,Defensive Rookie Of The Year Winner,PLAYER,2026-09-01T18:54:03.062278Z,type_defensive_rookie_of_the_year_winner-sport_football-league_nfl
+NFL,MVP Winner,PLAYER,2027-01-10T18:00:00Z,type_mvp_winner-sport_football-league_nfl
+NFL,Offensive Player Of The Year Winner,PLAYER,2027-01-10T12:00:00Z,type_offensive_player_of_the_year_winner-sport_football-league_nfl
+NFL,Offensive Rookie Of The Year Winner,PLAYER,2027-01-10T12:35:00Z,type_offensive_rookie_of_the_year_winner-sport_football-league_nfl
+NFL,Passing Touchdowns Leader,PLAYER,2026-09-09T17:00:00Z,type_passing_touchdowns_leader-sport_football-league_nfl
+NFL,Passing Yards Leader,PLAYER,2027-01-10T13:30:00Z,type_passing_yards_leader-sport_football-league_nfl
+NFL,Receiving Touchdowns Leader,PLAYER,2026-09-09T17:00:00Z,type_receiving_touchdowns_leader-sport_football-league_nfl
+NFL,Receiving Yards Leader,PLAYER,2027-01-10T13:45:00Z,type_receiving_yards_leader-sport_football-league_nfl
+NFL,Regular Season Defensive Interceptions,PLAYER,2026-10-14T07:06:00.083678Z,type_regular_season_defensive_interceptions-sport_football-league_nfl
+NFL,Regular Season Games Started,PLAYER,2026-10-14T07:06:00.458516Z,type_regular_season_games_started-sport_football-league_nfl
+NFL,Regular Season Passing Touchdowns,PLAYER,2026-09-13T17:00:00Z,type_regular_season_passing_touchdowns-sport_football-league_nfl
+NFL,Regular Season Passing Yards,PLAYER,2026-10-14T09:17:59.928406Z,type_regular_season_passing_yards-sport_football-league_nfl
+NFL,Regular Season Receiving Touchdowns,PLAYER,2026-10-14T07:05:58.731627Z,type_regular_season_receiving_touchdowns-sport_football-league_nfl
+NFL,Regular Season Receiving Yards,PLAYER,2026-09-10T00:20:00Z,type_regular_season_receiving_yards-sport_football-league_nfl
+NFL,Regular Season Rushing Touchdowns,PLAYER,2026-10-14T09:17:56.824167Z,type_regular_season_rushing_touchdowns-sport_football-league_nfl
+NFL,Regular Season Rushing Yards,PLAYER,2026-09-13T18:00:00Z,type_regular_season_rushing_yards-sport_football-league_nfl
+NFL,Regular Season Sacks,PLAYER,2026-10-14T07:05:59.786925Z,type_regular_season_sacks-sport_football-league_nfl
+NFL,Rookie Receiving Yards Leader,PLAYER,2026-09-13T17:00:00Z,type_rookie_receiving_yards_leader-sport_football-league_nfl
+NFL,Rushing Touchdowns Leader,PLAYER,2027-01-10T00:00:00Z,type_rushing_touchdowns_leader-sport_football-league_nfl
+NFL,Rushing Yards Leader,PLAYER,2027-01-10T13:40:00Z,type_rushing_yards_leader-sport_football-league_nfl
+NFL,AFC Conference Winner,TEAM,2027-01-10T11:00:00Z,type_afc_conference_winner-sport_football-league_nfl
+NFL,AFC East Winner,TEAM,2027-01-10T11:30:00Z,type_afc_east_winner-sport_football-league_nfl
+NFL,AFC North Winner,TEAM,2027-01-10T11:30:00Z,type_afc_north_winner-sport_football-league_nfl
+NFL,AFC South Winner,TEAM,2027-01-10T11:30:00Z,type_afc_south_winner-sport_football-league_nfl
+NFL,AFC Top Seed,TEAM,2026-09-10T00:20:00Z,type_afc_top_seed-sport_football-league_nfl
+NFL,AFC West Winner,TEAM,2027-01-10T11:30:00Z,type_afc_west_winner-sport_football-league_nfl
+NFL,Best Regular Season Record,TEAM,2027-01-10T18:00:00Z,type_best_regular_season_record-sport_football-league_nfl
+NFL,Fewest Regular Season Wins,TEAM,2027-02-14T23:15:00Z,type_fewest_regular_season_wins-sport_football-league_nfl
+NFL,Most Regular Season Wins,TEAM,2027-02-14T23:15:00Z,type_most_regular_season_wins-sport_football-league_nfl
+NFL,NFC Conference Winner,TEAM,2027-01-10T11:00:00Z,type_nfc_conference_winner-sport_football-league_nfl
+NFL,NFC East Winner,TEAM,2027-01-10T11:30:00Z,type_nfc_east_winner-sport_football-league_nfl
+NFL,NFC North Winner,TEAM,2027-01-10T11:30:00Z,type_nfc_north_winner-sport_football-league_nfl
+NFL,NFC South Winner,TEAM,2027-02-14T23:30:00Z,type_nfc_south_winner-sport_football-league_nfl
+NFL,NFC Top Seed,TEAM,2026-09-06T17:00:00Z,type_nfc_top_seed-sport_football-league_nfl
+NFL,NFC West Winner,TEAM,2027-01-10T11:30:00Z,type_nfc_west_winner-sport_football-league_nfl
+NFL,Regular Season Division Wins,TEAM,2027-01-10T18:00:00Z,type_regular_season_division_wins-sport_football-league_nfl
+NFL,Regular Season Team Points,TEAM,2027-01-04T16:00:00Z,type_regular_season_team_points-sport_football-league_nfl
+NFL,Regular Season Wins,TEAM,2027-02-14T23:31:00Z,type_regular_season_wins-sport_football-league_nfl
+NFL,Super Bowl Exacta,TEAM,2026-09-10T00:20:00Z,type_super_bowl_exacta-sport_football-league_nfl
+NFL,Super Bowl Matchup,TEAM,2026-09-10T00:20:00Z,type_super_bowl_matchup-sport_football-league_nfl
+NFL,Super Bowl Winner,TEAM,2027-02-14T23:00:00Z,type_super_bowl_winner-sport_football-league_nfl
+NFL,To Make The Playoffs,TEAM,2027-01-10T18:00:00Z,type_to_make_the_playoffs-sport_football-league_nfl
+NFL,Worst Regular Season Record,TEAM,2027-01-10T18:00:00Z,type_worst_regular_season_record-sport_football-league_nfl
+NFL,Coach Of The Year Winner,UNKNOWN,2027-01-10T13:00:00Z,type_coach_of_the_year_winner-sport_football-league_nfl
+NFL,Super Bowl Winning Conference,UNKNOWN,2027-02-14T23:18:00Z,type_super_bowl_winning_conference-sport_football-league_nfl
+NFL,Super Bowl Winning Division,UNKNOWN,2027-02-14T23:30:00Z,type_super_bowl_winning_division-sport_football-league_nfl
