@@ -14,6 +14,45 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
+
+Go repo PR #17 · [[market-maker/go-port-findings|GP-12]] · `N52`
+
+Phase 3 of the Go port has five chunks. Four are complete. Gate 0-b ran for the
+first time. It compares all eighteen subtrees of the canonical state.
+
+- 🔴 **The `apd` library cannot hold Python's number.** Its exponent limit is
+  ±100000. Python's limit is ±999999. On the a2 corpus Python stores a
+  `variance_rate` of `4.385597164977966123725114636E-916199`. ⚠ That field is a
+  **checkpointed string**, so the value reaches the saved state directly. No
+  wrapper closes this gap. **George must rule.** Three options are in `N52`. The
+  cheap option is to rebuild the a2 corpus on one timeline.
+- ⚠ **The a2 corpus spans nearly two years.** Its probability readings carry the
+  2024 game's timestamps. Its venue events carry the 2026 replay's timestamps.
+  The gap is 60,871,126 seconds. A live engine never sees such a gap, because
+  real events arrive seconds apart. The gap is a fault in the corpus, not in the
+  engine.
+- ⭐ **A second `apd` defect is FIXED.** `Exp` returns ZERO when `|x|` is above
+  22,977, where Python returns the true value. This is a wrong answer, not a
+  rounding difference, and it sits in the numeric core. The fix splits the
+  calculation: `exp(x) = exp(r) × 10ⁿ`. The second part moves the exponent only,
+  so it adds no rounding. 4,000 values from the pin now match Python exactly.
+  2,495 of them are above the old limit.
+- ⚠ **`ConditionInputs` must be built through its constructor.** Two of its
+  fields belong to unbuilt chapters. Their healthy values are `true` and
+  `Normal`, not Go's zero values. A struct literal made every book read as "not
+  trading". All 4,756 cycles suspended.
+- ⚠ **The config version seeds every §5.7.3 draw.** A fold under the wrong
+  version reproduces every price that needs no draw. It gets every drawn price
+  wrong. The result looks nearly correct, which is the worst shape for a defect.
+  The fold now takes the version as a required setting, like the universe.
+- ✅ **A gate lists what it PROVES, never what currently passes.** 13 of the 18
+  subtrees match. The other 5 stay outside the `built` list, with the real fault
+  named against each. `-gate full` still refuses. A test fails if any subtree
+  leaves both lists.
+
+---
+
 ## 2026-08-19c — ✅ the IPO test rig: the maker sells the primary, and the gateway gets a house read path
 
 Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] ·
