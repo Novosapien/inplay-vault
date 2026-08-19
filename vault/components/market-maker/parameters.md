@@ -467,7 +467,8 @@ reasoning in [[market-maker/decisions]] 2026-08-19e.
 | UEPR entitlement | **LIVE — `UEPRa` in 8 ms** | ✅ 19-08 | ✂ supersedes the 28-07 "not enabled". Earlier probes sent `Qto=0` on a ZERO-opening account, a genuine no-op, so silence proved nothing |
 | UEPR idempotency | **Safe to retry** (absolute, not additive) | ✅ 19-08 | The opposite of UPT |
 | Negative UPT | **Accepted (`UPTa`) and DISCARDED** — position unmoved | ✅ re-confirmed 19-08 | 9 before, 9 after. UEPR is the undo, not this |
-| **`9387 TxfrCost` unit** | **PRICE PER SHARE** per the venue · **TOTAL** per the spec | 🔴 **CONFLICT — N53** | 7 sh @ 7.00 → basis 49.00; 2 sh @ 3.00 → basis +6.00. ⚠ Measured on **IPLY**; UNCONFIRMED on **IPLM**. At 900,000 shares the wrong reading is wrong by a factor of 900,000 |
+| **`9387 TxfrCost` unit** | **PRICE PER SHARE** | ✅ **measured on BOTH MPIDs 19-08 — N53 closed** | On the maker itself: 6 sh @ 11.00 (a quantity where the readings differ by 55.00) moved `9384` by exactly **+66.00**. ⚠ The SPEC still reads as a total (`TxfrCost / TxfrQty = averagePrx`); the venue disagrees and the venue wins |
+| `9382 Eto` / cost basis | **An INSTRUCTION the venue may re-derive** | 🔴 **N54** | A measured reversal (`Qto=-6, Eto=-66`) returned the quantity exactly but left the basis **$317.05** off, marking the shares at **63.842451** — near the last traded price of 63.88, not the value sent. Seen twice. **Plan on the quantity, read the basis back** |
 | Position read path | **Tags 9383/9384 on ANY execution report**, plain `39=0` accept included | ✅ 19-08 | ✂ supersedes "only on a fill". One 1-share GTD order priced to rest reads any account |
 | Request For Positions (35=AN) | **Does not exist** in Account & Position v3 or OE v2.2 | ✅ 19-08 | Nothing to entitle or build our side. The order IS the read |
 

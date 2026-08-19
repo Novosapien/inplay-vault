@@ -233,11 +233,36 @@ spec and the venue disagree and one of them is wrong.** Both
 [[market-maker/reference/claude-trading-ops-guide-hasan-2026-08-07|the ops guide]]
 and the MM build guide say "total" and are now flagged in place.
 
-⚠ **Still unconfirmed on IPLM**, where the maker lives — the probes ran on an
-IPLY account. One transfer of a distinctive quantity at a distinctive price into
-a throwaway symbol settles it in under a minute, and must happen **before** the
-real seed: at 900,000 shares the wrong reading is wrong by a factor of 900,000,
-and UPT cannot be undone.
+✅ **SETTLED the same day on the MAKER itself** (IPLM, `1797733477`), so the
+IPLY caveat is closed. 6 shares at `txfrCost=11.00` — a quantity chosen because
+the two readings differ by 55.00 there:
+
+| | `9384` |
+|---|---|
+| baseline | 131,429.863104 |
+| after `UPT 6 @ 11.00` | **131,495.863104** (+66.00 = 6 × 11) |
+| per-share predicts | 131,495.863104 — **exact** |
+| total predicts | 131,440.863104 — out by 55.00 |
+
+**PER-SHARE on both MPIDs.** `scripts/ipo/allocate.py` now defaults
+`--cost-unit=per-share`; `total` stays selectable only because the spec still
+says total. **The seed arithmetic is unblocked.**
+
+### ⚠ But the cost basis is an INSTRUCTION, not a setting (N54)
+
+Reversing that test with `Qto=-6, Eto=-66` returned the **quantity** exactly
+(2002) and left the basis at **131,112.808396**, where pure Eto arithmetic
+predicts **131,429.863104** — **$317.05 low**. The 6 shares came off at
+**63.842451** each: not the 11.00 sent, not the 65.49 book average, but close to
+the instrument's **last traded price of 63.88**. Second sighting — an earlier
+sign-flip on the probe account also re-derived the basis as `Qt × prior average
+price`.
+
+- ✅ **The rule, now in the scripts: plan on the QUANTITY, read the BASIS back.**
+  `9381 Qto` is exact and idempotent. `9382 Eto` and `9387 TxfrCost` are
+  instructions the venue may mark its own way.
+- ⚠ Consequence for the offering: the basis we intend is not the basis we get,
+  so every P&L figure derived from it is the venue's number, not ours.
 
 ### ✅ Two accounts, one MPID — N49 answered
 
@@ -270,8 +295,11 @@ dark since its dead-man latched at 13:35.
 
 ### Owed to tZERO
 
-1. Confirm **9387 is per-share**. The spec reads as a total; the venue behaves
-   as a price. 166.8 M shares ride on it.
+1. ~~Confirm **9387 is per-share**~~ — ✅ answered by our own measurement on both
+   MPIDs. Still worth telling them **the spec is wrong**, or that we are reading
+   it wrong.
+1b. **Why does `9382 Eto` not apply as sent, and what price is it marking at?**
+   (N54) It looks like the last traded price.
 2. Why is a **negative UPT accepted and then discarded**? A `UPTx` with a reason
    in tag 58 would be correct behaviour.
 3. **Was UEPR entitlement changed on our session, and when?** Provably silent
