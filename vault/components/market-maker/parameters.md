@@ -32,7 +32,7 @@ pending InPlay approval (spec Ch 14-A) · 🔴 = no default, external closure
 | Material IA change · material qty change | $0.005 · 500 sh | ✅ | 5.8 |
 | Public deviation threshold | max($0.50, 10% × RP) | 🟡 ▸ | 5.5 |
 | Price bounds | min $0.01 · max = MEV (season-open NFL $127.50) | ✅ | 5.4 |
-| Valuation sweep · max interval | 2.0 s · 2.5 s | ✅ **E18** | 3.1.4 |
+| ~~Valuation sweep · max interval~~ | ~~2.0 s · 2.5 s~~ | ✂ **RETIRED — the spec-era pair.** Superseded by the built rows: `sweep_cadence_s` = **0.5 s** (George 08-11) and `sweep_max_interval_s` = **2.0 s** (George 14-08). Both are in the Configuration Dictionary at the pin; this row's ✅ was E18's approval of the ORIGINAL spec numbers and it outlived them | 3.1.4 |
 | Live freshness bands | 5 / 10 / 20 s | ✅ **E18** | 3.3.1 |
 | Pregame freshness bands | 24 h / 6 h / 60 min / 15 min | ✅ | 3.3.2 |
 | Status + Market-State promotion dwells | 10 s each | 🟡 ▸ | 3.4.1, 6.4.1 |
