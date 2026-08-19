@@ -14,6 +14,454 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
+
+Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
+Go repo PR #17 · [[market-maker/go-port-findings|GP-12]] · `N52`
+
+Phase 3 of the Go port has five chunks. Four are complete. Gate 0-b ran for the
+first time. It compares all eighteen subtrees of the canonical state.
+
+- 🔴 **The `apd` library cannot hold Python's number.** Its exponent limit is
+  ±100000. Python's limit is ±999999. On the a2 corpus Python stores a
+  `variance_rate` of `4.385597164977966123725114636E-916199`. ⚠ That field is a
+  **checkpointed string**, so the value reaches the saved state directly. No
+  wrapper closes this gap. **George must rule.** Three options are in `N52`. The
+  cheap option is to rebuild the a2 corpus on one timeline.
+- ⚠ **The a2 corpus spans nearly two years.** Its probability readings carry the
+  2024 game's timestamps. Its venue events carry the 2026 replay's timestamps.
+  The gap is 60,871,126 seconds. A live engine never sees such a gap, because
+  real events arrive seconds apart. The gap is a fault in the corpus, not in the
+  engine.
+- ⭐ **A second `apd` defect is FIXED.** `Exp` returns ZERO when `|x|` is above
+  22,977, where Python returns the true value. This is a wrong answer, not a
+  rounding difference, and it sits in the numeric core. The fix splits the
+  calculation: `exp(x) = exp(r) × 10ⁿ`. The second part moves the exponent only,
+  so it adds no rounding. 4,000 values from the pin now match Python exactly.
+  2,495 of them are above the old limit.
+- ⚠ **`ConditionInputs` must be built through its constructor.** Two of its
+  fields belong to unbuilt chapters. Their healthy values are `true` and
+  `Normal`, not Go's zero values. A struct literal made every book read as "not
+  trading". All 4,756 cycles suspended.
+- ⚠ **The config version seeds every §5.7.3 draw.** A fold under the wrong
+  version reproduces every price that needs no draw. It gets every drawn price
+  wrong. The result looks nearly correct, which is the worst shape for a defect.
+  The fold now takes the version as a required setting, like the universe.
+- ✅ **A gate lists what it PROVES, never what currently passes.** 13 of the 18
+  subtrees match. The other 5 stay outside the `built` list, with the real fault
+  named against each. `-gate full` still refuses. A test fails if any subtree
+  leaves both lists.
+
+---
+
+## 2026-08-19c — ✅ the IPO test rig: the maker sells the primary, and the gateway gets a house read path
+
+Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] ·
+gateway **PR #20** (deployed) · panel **PR #32**
+
+George is testing the IPO process. The shape he set, and the rulings it needed.
+
+### The test's shape
+
+- ✅ **The maker account sells the primary — for this TEST.** A deliberate
+  substitution for the broker-dealer MPID, which T16 has not stood up. ⚠ It
+  reverses Edwin's 31-07 ruling (*"the market maker is not going to open up and
+  sell"*) **for the test only**; the primary/secondary separation is unchanged as
+  a design.
+- ✅ **900,000 NFL · 1,000,000 NCAA.** George reaffirmed after the 03-08 record
+  (1,000,000 for both leagues) was put to him. The built systems already agree:
+  `mm/config/dictionary.py:96` and the trading service's `FLOAT_BY_LEAGUE`, both
+  sourced to **IPO Draft Requirements v3 §1.2/§3.1**, which post-dates 03-08.
+  ✂ **Supersedes the 03-08 "1M for both" line.**
+- ✅ **No rounds.** One open window with resting sell orders; users subscribe
+  against them. ✂ Supersedes v2's 18 × 50,000 round structure for this run, and
+  moots **E24**'s round-count conflict for it.
+- ✅ **The matching engine carries the venue leg**, not the 23-07 direct-mint
+  path.
+- ✅ **Edwin buys on behalf of the taker from the admin panel.** The taker engine
+  therefore runs **halted, not stopped** — `halted` gates only the automatic loop,
+  never the manual path, and the code names this case (*"a halted bot keeps
+  publishing — the IPO cockpit case"*).
+- ✅ **The taker's manual-order guards are raised for the window by env**
+  (`SNT_MANUAL_MAX_QTY`, `SNT_MANUAL_MAX_NOTIONAL`) — Hasan, no rebuild. At the
+  built 10,000-share / $500,000 caps, buying 600,000 of one team is 60–100
+  tickets, and 170 teams is over ten thousand.
+
+### The two legs never meet
+
+- ⭐ **The IPO already has an execution path and it is NOT the venue.**
+  `ipo_engine.execute_ipo_buy` decrements a sharded float, debits the wallet and
+  writes a fill marked `settlement_status="simulated"`. It never calls tZERO, and
+  `trading.py:879` refuses venue placement unless the phase is `LIVE`.
+- ✅ **That gate cannot see the taker.** Manual orders travel
+  panel → proxy → NATS → taker engine → gateway; the trading service is not in
+  that path. So the app leg and the venue leg run independently and the test
+  shape stands. ⚠ If both run, the venue ask and `assets.ipo_ask_price` must be
+  the same number, or one share is on sale at two prices.
+
+### Venue facts that constrain the run
+
+- ⚠⚠ **The dead-man switch has no off flag.** `DeadManTimeout <= 0` falls back to
+  10s in `oe_adapter.go`. It arms on a heartbeat OR on a gateway restart that
+  rehydrates resting MM orders, and then sweeps **every** resting MM order. Both
+  can happen inside an offering window by accident. Before a window: raise
+  `MM_DEADMAN_TIMEOUT_MS` and `MM_DEADMAN_BOOT_GRACE_MS` past its length, and
+  freeze gateway deploys.
+- ⚠⚠ **A position transfer cannot be undone.** 35=UPT applies a signed delta and
+  is not idempotent; measured 05-08, **negative transfers are accepted (UPTa) and
+  never move the position**, with or without ConfirmTyp. Its reply reaches only
+  the gateway's FIX log, so a caller timeout proves nothing. Seeding is one-way
+  until **UEPR is re-probed** (E27 already says to).
+- ⭐ **The venue reports a position only ON A FILL.** Tag 9383 rides the execution
+  report and this session has no Request For Positions, so before the first trade
+  the venue has said nothing. Every surface renders that as unknown, never zero.
+
+### The panel
+
+- ✅ **The IPO view is its own page** (`/ipo`), **admin-only**. Every other maker
+  surface reads `mm.state`, which is silent while the maker engine is stopped —
+  the whole window. The page reads the gateway's order tracker instead.
+- ✅ **`GET /positions/house` on the gateway** is the read path, `X-Ops-Key`
+  gated, with `botId` separating the two bots.
+
+### Live coordinates that contradict the record
+
+- ⚠ **The maker's bot id is `mm-1`, not `sdmm-1`** (the taker env example's value).
+- ⚠ **The maker and taker are on SEPARATE venue accounts** — `1797733477` and
+  `4963224393`. The 03-08 decision records *"one wallet, one MPID, one inventory,
+  two execution styles"*. Read off the gateway's own book 19-08. **Unresolved —
+  and 166.8 M shares get seeded into one of them.**
+
+---
+
+## 2026-08-19b — ✅ Go port Phase 2 complete, and the gate's own corpus never moved the price
+
+Session: [[market-maker/sessions/2026-08-19-b-go-port-phase-2]] ·
+Go repo PRs #12–#15
+
+The four numeric engines and R13's decay cache are ported. Phase 2's gate holds
+over four arms × 2,178 cycles; **AC5 and AC23a are closed**.
+
+- ⚠⚠ **THE PHASE-2 GATE'S OWN CORPUS CANNOT MOVE A PRICE.** On `pure.jsonl`
+  every game kicked off BEFORE T was published, so none is in G and RP is
+  `77.500` on all 1,089 readings. A gate over a constant price never exercises
+  the ladder's outward rounding or the position-side modifier — **three planted
+  defects survived it untouched**. A fourth arm moves T's effective time before
+  the 2024 kickoff so the games enter G: **685 distinct Reference Prices**.
+  ⭐ The evidence was on the page from Phase 0 — the corpus's manifest says
+  `publishes_during_replay: 0` and its `last_rp` is constant.
+- ⭐ **The spec's five comparator clauses cannot see a checkpointed exponent.**
+  They all end in whole ticks and whole shares; `variance_rate` is a
+  checkpointed STRING. The gate now compares the canonical state hash too.
+- ⚠⚠ **Δt passes through a FLOAT in Python and the exponent survives into
+  state.** `Decimal(str(timedelta.total_seconds()))`, then `observed_rate`
+  divides by it and division carries the ideal exponent. The rule is reproduced
+  and verified against CPython over 160,000 microsecond values.
+- ⚠ **The committed corpora hold ZERO official results, ZERO anchor seeds and
+  ZERO executions.** Each chunk ships its own differential fuzz, and the diff
+  harness now prints what a run did NOT drive.
+- ✅ **Package filing may differ from Python's where Go's import graph forces
+  it** — second instance. `venue → quotes → position → venue` is a cycle in Go
+  and not in Python; cut with a five-field view of a venue order.
+
+---
+
+## 2026-08-19 — ⚠⚠ §3.2.1's tolerance band and the pair-identity guard contradict each other
+
+Session: [[market-maker/sessions/2026-08-19-go-port-valuation]] ·
+Go repo PR #12
+
+The Go port's valuation chunk found a third live defect in the Python
+reference, and this one is a disagreement between two rules that are both
+written down.
+
+- ⚠⚠ 🔴 **§3.2.1 ACCEPTS a triple whose sum is within a millionth of 1 and uses
+  the numbers UNTOUCHED. The `[pairs]` guard then requires
+  `GEV(home) + GEV(away) = $5.00` EXACTLY — and `$5.00 × 1.0000005` is not
+  `$5.00`.** So a reading the gate deliberately tolerated **raises out of
+  `process()`**, and `cycle()` has no `except` to catch it.
+  Measured at the pin: **100%** of the accept band's non-exact sums, and
+  **2.7%** of §3.2.1 REPAIRS (their own precision-28 residue).
+  ⚠ **Latent only by luck.** SR's two percentages sum to exactly 100 on all
+  1,089 readings of the captured game — a property of the PROVIDER, not of the
+  code, and nothing checks it. `adapters/sportradar.py:93-94` reads SR's two
+  numbers rather than deriving one from the other, so a provider that rounds
+  differently one day starts raising.
+  ✅ **Not fixed in Python** — Phases 0–4 are a faithful port and any change
+  breaks the zero-diff mandate. Reproduced exactly in Go, pinned by test,
+  driven by the fuzz every 77 steps. **Open question N47 carries the ruling.**
+- ✅ **The sorted walk over a security's games is LOAD-BEARING, and the
+  `[exact-sum]` note is wrong where a §3.2.1 repair is involved.** The note
+  reasons that Decimal addition at these magnitudes is exact, so order cannot
+  matter. True while the terms are short — a repair produces a
+  28-significant-digit probability, and two of those round as soon as the
+  running total reaches 1. A real window gives
+  `68.50635988904318442204161368` sorted and `…367` on four of the six
+  orderings. [[market-maker/build/valuation|build/valuation]] corrected.
+- ✅ **Package filing may differ from Python's where Go's import graph forces
+  it.** Python imports by MODULE, so `events/business_validation.py` →
+  `valuation/probability_validation.py` and `valuation/engine.py` →
+  `events/envelope.py` are not a cycle; Go imports by PACKAGE, where they are.
+  The §3.2 gate moved down to the event door and `PythonISOFormat` to the
+  codec. No rule changed, and the Python source is named in both files.
+- ⚠ **The committed corpora drive TWO of the valuation engine's five entry
+  points.** Zero `OFFICIAL_RESULT` and zero `ANCHOR_SEED` in either, and
+  `ingest_reference_numbers` is a method rather than an event (N23), so no
+  journal can ever drive it. Settlement, `[settled]`, `[correction]`,
+  `[unseen]` and the whole F2 anchor seed are certified by a differential fuzz
+  instead, and the diff harness now prints what a run did not drive.
+
+---
+
+## 2026-08-18 — ✅ Go port Phase 1 complete, and Python's stop() hangs for ever after a dead writer
+
+Session: [[market-maker/sessions/2026-08-18-go-port-phase-1]] ·
+Go repo PRs #10, #11
+
+The venue leg is ported: the record, the reconciler, the boot healer and the
+transport. The phase gate holds — 4 seeds, 304–312 order lifecycles and 445–469
+events per seed, `canonical(state())` compared at EVERY step, **25 planted
+defects all caught**.
+
+- ⚠⚠ 🔴 **A LIVE PYTHON DEFECT: `NATSGatewayTransport.stop()` HANGS FOR EVER
+  after the writer task dies.** `flush()` is `asyncio.Queue.join()`, which waits
+  for one `task_done()` per item; when the writer dies mid-queue the remaining
+  items never get one. **Confirmed by running it against the pinned
+  interpreter**, not reasoned about. A torn-down connection mid-publish is
+  exactly when this happens, and it is exactly when shutdown matters. The Go
+  port returns the writer's death reason with the unsent count instead — a
+  deliberate, recorded divergence, because a hang is strictly worse than an
+  error and nothing about it is observable in canonical state.
+- ⚠⚠ ⭐ **THE WIRE'S JSON IS NOT THE JOURNAL'S JSON.** `json.dumps` defaults to
+  `ensure_ascii=TRUE` on the gateway payloads, and the canonical encoder that
+  writes the journal uses `ensure_ascii=FALSE`. One library, two call sites, two
+  spellings. ⚠ The venue account, bot id and user id all reach the wire from the
+  ENVIRONMENT, so a non-ASCII value is a deployment away — and it would be
+  spelled differently in a payload log than in a journal line.
+- ⭐ **Three byte-level wire divergences between Python and Go, all of which
+  BEHAVE IDENTICALLY at the gateway** — an integral price (`100.0` against
+  `100`), key order (insertion against sorted), and the escaping above. Caught
+  only because the fuzz compares BYTES; no functional test could see them.
+- ⚠ **The phase gate did not meet its own written floor and nobody had
+  re-checked it.** The spec asks ≥400 events per seed; the fuzz was driving
+  ~328, because only ~41% of steps are events. ⭐ **Every floor in a gate is now
+  an ASSERTION in the generator.** A floor written into a spec and never turned
+  into a check is not a floor.
+- ⚠ **Six times in this phase the random fuzz could not reach a defect this
+  vault already records** — including the 08-08 in-flight-replace destination
+  that put 19 doubled levels across the six QA books live. Each was found by
+  planting the defect and watching the fuzz pass. The defect list is the
+  coverage checklist.
+
+---
+
+## 2026-08-18 — ⚠ A random fuzz missed four known defects, including the one that doubled 19 live levels
+
+Session: [[market-maker/sessions/2026-08-18-go-port-reconciler]] ·
+Go repo PR #9
+
+The Go reconciler and boot healer are ported and certified against Python at
+the pin — **nineteen planted defects, all caught**.
+
+- ⚠⚠ ⭐ **FOUR of those nineteen were MISSED by the fuzz on the first attempt.**
+  Each was planted, watched to pass over **4 seeds × 800 steps**, and only then
+  closed. The second one is **the 08-08 defect** — an in-flight replace not
+  occupying its destination, which put **19 doubled levels** across the six QA
+  books live. The fuzz was already driving replaces and reading `pending_price`
+  back; it still could not see it, because the target ladder had no reason to
+  ask for that particular price.
+  **The rule: a random fuzz is not automatically a covering fuzz. The only way
+  to know is to plant each known defect and watch whether the fuzz passes.**
+  ⭐ **This vault already holds the defect list. Nobody had turned it into a
+  coverage checklist** — and that is now the bar before any chunk's gate is
+  called clean.
+- ⚠ **A BAD PROBE PASSED AND LOOKED LIKE COVERAGE.** A first attempt at testing
+  send order reordered three independent statements and changed nothing, so it
+  "passed". **A probe that passes is only evidence if the probe is known to
+  bite.**
+- ✅ **Post-first belongs in the DATA, not in a convention.** Python returns one
+  ordered tuple, so N12's ordering is carried by the value. The Go version had
+  three separate lists, which moved the contract into the caller's head; it now
+  exposes the ordered sequence and the fuzz compares it.
+- ✅ **A reject QUEUES the reconcile that must observe its suppression.** The
+  backoff's two tables are only exercised if something asks again while the
+  window is open, and randomness does not reliably arrange that.
+
+---
+
+## 2026-08-18 — ✅ AC2 is closed on the real corpus, and CB4's shape had a third member
+
+Session: [[market-maker/sessions/2026-08-18-go-port-ac2-rig]] ·
+Go repo PR #8 · `docs/ac2-gate.md` · closes **N46**
+
+The rig session was taken on George's ruling. `cb1-profile-clone` was stopped,
+not deleted, and still held the 16-08 GATE journal — 548,523,635 B, 555,710
+lines, **551,939 events**, sha256 `b187ae6d…55ed3959`.
+
+- ✅ ⭐ **AC2 PASSES.** Python's fold **at the pin** was run on BOTH the rig
+  (linux-x86_64) and the dev Mac (darwin-arm64) and the two agree **byte for
+  byte** — 102,953,252 canonical bytes, `c9220465…3df6a6b`, **zero publishes**.
+  R2a's two-independent-folds rule, satisfied across two ARCHITECTURES rather
+  than twice on one box. Go's `acceptor` and `venue` match it on both machines
+  at one state hash, at GOMAXPROCS 1/2/8. Phase 0's AC set is complete.
+  ⚠ **1,505 s (Python, rig) against ~107 s (Go, rig) is NOT a speedup** —
+  Python folds all eighteen subtrees, Go folds two.
+  ⚠ **The corpus is NOT committed** (548 MB). AC2 is certified ONCE, with
+  hashes standing in for reproducibility — unlike every other target in the Go
+  repo, which regenerates at the pin.
+- ✅ ⭐ **THE RIG IS 2.5× SLOWER THAN THE DEV MAC, and it was measured twice
+  independently** — 2.49× on Python's whole-engine fold, 2.5× on Go's
+  acceptor+venue fold. Two workloads, two languages, one factor. Every Mac
+  number in the port can be read against `n2-standard-2` through it.
+  ⚠ An estimate, not a licence: a capacity claim is still re-taken on the rig.
+  ⚠ It does not contradict "this rig drifts ~31% within a day" — that governs
+  comparing rig arms to each other, which is why only adjacent arms pair.
+- ⚠ ⭐⭐ **CB4's SHAPE HAS A THIRD MEMBER, and only rig scale could see it.**
+  `_record` takes its open-order count from `len(open_orders(...))`, and
+  `open_orders` **sorts every ClOrdID in the book on every venue event** — for a
+  number that cannot depend on the order. Profiled at **50.6% of the entire
+  venue fold** over 551,939 real events. The Go port takes the count without the
+  sort (identical by construction): **161.81 s → 36.32 s, 4.45×**.
+  ⚠ **The Python engine still has this.** It is a live performance item for the
+  maker, not only a port note — and the reason nobody saw it is that the two
+  committed corpora hold 8,090 and 2,931 orders while the rig corpus holds
+  **45,381**.
+  ⚠ **Sweep the CLASS, not its members.** Three instances of one scan shape have
+  now been found (`_stamp_and_prune`, `RejectBackoff.suppression`, this) and the
+  third needed rig scale. Ask of every hot function: what does it walk, and how
+  often?
+- ⚠ **91% of the remaining venue fold is two full-book walks per event**
+  (`pending_exposure`, the open-order count) and **Python does both too**.
+  Deliberately NOT fixed: `len(sorted(x))` → `count(x)` adds no state, while
+  running per-security sums are new derived state with a maintenance obligation
+  on every mutation path. That is a design change with its own review.
+- 🔴 **`gcloud compute scp` silently truncated a 548 MB file to 93,480,960 bytes
+  and exited 0.** Only the SHA-256 caught it. Gzip first (46 MB) and verify both
+  hashes. **"Silence is ambiguous" now has a fourth recorded disguise.**
+- **The rig's idle watchdog works.** `~/watchdog.sh` powers the box off after 30
+  idle minutes and fired mid-session; nothing was lost. `touch ~/cb4-hold` holds
+  it awake — **remove it before leaving**.
+
+---
+
+## 2026-08-18 — ✅ The Go venue record is built, and a map's iteration order was hiding in it
+
+Session: [[market-maker/sessions/2026-08-18-go-port-venue-record]] ·
+repo **`Novosapien/inplay-market-maker-go`** PR #7 ·
+`specs/2026-08-18-mm-go-port/`
+
+The Venue State Record is ported and the `venue` subtree of the canonical state
+is **byte-identical to Python's on both reference corpora** — 8,090 orders over
+170 books, and 2,931 over two. Phase 1's gate, the Go↔Python differential fuzz,
+is built: **four seeds × 800 steps**, `canonical(state())` compared at every
+step, six planted defects all caught.
+
+- ✅ ⭐ **The venue record's checkpoint snapshot is a PLAIN DEEP COPY, not the
+  chunked structure A2 chose for the acceptor.** Measured against the 500 ms
+  tick budget: **83.7 ms** at 750,000 orders held (2,500 acks/s × the 300 s
+  retention window) where the acceptor's 380 MB tree took **792 ms**. The
+  difference is structural — a venue order is an immutable value struct, so a
+  copy allocates nothing per order.
+  ⚠ **The same measurement bars `state()` from the tick: 516 ms, over the whole
+  budget by itself.** The tick hands over the raw record; the writer renders it.
+  ⚠ The cost is linear in `instruction rate × venue_terminal_retention_s` and
+  reaches the budget at ~4.5M orders held, ~6× the NCAA target. **That retention
+  window is the one dial that can move this decision.**
+- ⚠ ⭐ **`Suppression`'s price set dedupes by NUMERIC VALUE, and the backoff's
+  table keys on the STRING.** `Decimal("77.4")` and `Decimal("77.40")` are two
+  rows of the table and one member of the set. Which spelling survives is
+  decided by the table's ITERATION ORDER — deterministic in Python because
+  CPython dicts iterate in insertion order, and non-deterministic in a Go map.
+  Both spellings are reachable on the real machine: a registered price is
+  quantised to two places, an **admitted** order's price is whatever the gateway
+  sent, and the six-game corpus carries `"price": "77.4"`. The Go table now
+  keeps insertion order; a restore re-inserts in the checkpoint's sorted key
+  order, which is what `json.loads` gives Python. **This is a fact about the
+  Python machine that [[market-maker/build/venue]] did not record.**
+- ⚠ **The two committed corpora drive almost none of the venue record** —
+  **0** `EXECUTION` events in either, 0 `ORDER_REJECTED`, 0
+  `ORDER_DONE_FOR_DAY`, and **0 terminal prunes**, because both runs are shorter
+  than the 300 s retention window. `pending_submit` / `pending_replace` /
+  `pending_cancel` are unreachable by **any** fold, whatever the corpus: converge
+  is edge-only and the registration is never journalled (N45 again). The Go
+  harness now PRINTS what a run did not drive, so a byte-identical subtree can
+  never read as coverage it did not have.
+- ⚠ **A random fuzz is not automatically a covering fuzz.** With the
+  string-keyed price set planted as a defect, **4 seeds × 800 random steps
+  missed it every time**; the case needs two orders on one security and side
+  with numerically equal, differently spelled prices, both rejected, both still
+  suppressed at one read. It is now a scripted probe every 61 steps. Invariant 6,
+  paid for rather than quoted.
+- ⚠ **Python's `datetime.fromisoformat` truncates to microseconds; Go's
+  RFC3339Nano does not.** Latent today — the runtime mints 3 decimal places and
+  the gateway 6 — and the Go parse truncates to match anyway.
+- ⚠ **The venue engine's four counters (`terminal_prunes`, `gone_retires`,
+  `unknown_cancel_rejects`, `unknown_terminal_acks`) are NOT in `state()`, so a
+  checkpoint restore resets them.** Correct in both languages — they are
+  diagnostics, not state — but an operator reading them after a restore is
+  reading a partial count.
+
+---
+
+## 2026-08-18 — ✅ Go port Phase 0 is built, and three things measurement overturned
+
+Session: [[market-maker/sessions/2026-08-18-go-port-phase-0]] ·
+repo **`Novosapien/inplay-market-maker-go`** PRs #1–#6 ·
+`specs/2026-08-18-mm-go-port/`
+
+The event core is built and **byte-identical to Python on both reference
+corpora** — 22,471 journal lines re-emitted byte-identically, 22,471 payload
+hashes matched, the acceptor's fold identical on both, and a
+checkpoint-resume reaching the same bytes as the never-stopped fold.
+
+- ✂ ⭐ **`cockroachdb/apd`'s `Ln` and `Exp` are NOT correctly rounded, and
+  the spike's "221/221 numeric parity, including every transcendental" is
+  withdrawn as a SAMPLING ARTEFACT.** It rested on one `ln` vector and 28
+  `exp` vectors. A 100,000-draw sweep of each function's real engine domain
+  gives **`ln` 1.480%** and **`exp` 0.056%** last-digit disagreement with
+  libmpdec. Fixed with guard digits and a boundary escalation;
+  200,000/200,000 now match. **apd is the right library only BEHIND
+  `internal/decimal`'s wrapper — never raw.**
+  ⚠ The guard costs ~15% on `exp`, so **R13's decay-cache economics need
+  re-deriving on Go's own numbers**. The cache is more load-bearing than
+  modelled, not less.
+- ✂ ⭐ **`scripts/a2-run/state-replay.json` (1,903,026 B) is RETIRED as a
+  certification target.** It was committed at `29ae86d` on 11-08;
+  `terminal_at`, `pending_quantity` and `settled_game_id` (schema 7) all
+  landed after it, and the quoting engine moved. Folding the same journal at
+  the pin correctly yields **2,091,275 B**. ⚠ **`state-live.json` is NOT
+  retired** — R2b's three byte-legs (`acceptor`, `valuation`, `position`)
+  still hold at the pin, verified.
+- ✅ ⭐ **A2 is decided by measurement: a DEEP COPY of the state is also too
+  slow.** At 380 MB, on-tick costs against the 500 ms budget are: deep copy
+  **792 ms**, canonical encode 1,964 ms, chunked snapshot **1.6 µs**. So
+  there is no "copy on the tick, serialise later" option, and **every
+  engine's checkpointed state in Phases 1–3 must be either small enough to
+  deep-copy well inside the budget or hold an O(1) snapshot**. Written up in
+  the Go repo's `docs/checkpoint-design.md`.
+  ⚠ The constraint that runs the other way still stands: **no TOB quantity
+  may enter checkpointed state** (invariant 3b).
+- ✅ **The Phase-0 gate is split into 0-a and 0-b.** It required byte-identity
+  on the FULL canonical state, which has eighteen subtrees, while Phase 0
+  builds ONE. 0-a is every subtree the phase owns — **it holds**. 0-b is the
+  full state at the end of **Phase 3**, the first boundary where it can be
+  evaluated at all. **Nothing is relaxed: the tolerance list is still empty.**
+- ✅ **Repo: `Novosapien/inplay-market-maker-go`, private, module path
+  `github.com/Novosapien/inplay-market-maker-go`.** ⚠ The gateway's
+  `github.com/InPlaySports/…` module path points at an organisation that
+  returns 404 — it never resolved, so it was not copied.
+- ⚠ **`inplay-fix-contracts` stays deferred** (spec Q4). The structs are
+  vendored by hand, exactly as Python does today; the drift risk is recorded,
+  not closed.
+- 🔴 **OPEN, needs George: AC2 requires a rig session.** The 548.5 MB /
+  551,939-event GATE corpus is a rig artefact, in neither repo, and one
+  session drives the VM. The harness half is proved locally — a synthesised,
+  structurally-real 544.4 MB journal folds in **4.25 s**, 239 MB heap, **0.6%
+  of wall clock in GC**, so the "tune `GOGC`" worry is answered. Only the
+  corpus is missing.
+
+---
+
 ## 2026-08-17b — ✅ Halt alerting for BOTH bots · ⚠ the maker runs with no supervisor
 
 Session: [[market-maker/sessions/2026-08-17-c-halt-alerting]].

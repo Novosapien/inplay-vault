@@ -59,13 +59,33 @@ per-fixture breakdown cancels — 170 numbers replace ~2,400 per-game
 probabilities. The subtraction removes what T assumed about a kicked-off
 game; the addition puts back what the game is actually doing.
 
+⚠ **The fold's ORDER is load-bearing, and the code's own `[exact-sum]` note
+said otherwise until 19-08.** The note reasoned that Decimal addition at
+these magnitudes is exact, so the order cannot change the answer. That
+holds while the terms are short — and a §3.2.1 repair produces a
+**28-significant-digit** probability, so two such terms round as soon as
+the running total reaches 1. A real window: the sorted order gives
+`68.50635988904318442204161368` and **four of the six orderings give
+…367**. Both implementations walk the games in sorted id order; a Go map
+range was planted as a defect and moves the last digit.
+
 **Mechanics that were bugs once (regression-guarded):**
 
 - A new T reaches the book on ITS OWN event, never one event late
   (`[no-smoothing]` — "do not smooth the mid" is Edwin's own rule).
 - The pair invariant: one reading prices BOTH teams, and the two on-field
   adjustments cancel — the pair's game values always sum to the game's
-  full $5.00.
+  full $5.00. The check runs BEFORE any state is written, so a failure
+  cannot leave half-updated securities behind.
+  ⚠⚠ **It requires the triple to sum to EXACTLY 1, and §3.2.1 does not
+  (N47, found 19-08 by the Go port).** The gate ACCEPTS a sum within a
+  millionth of 1 and uses the numbers untouched; the guard then demands
+  `$5.00` exactly, which `$5.00 × 1.0000005` is not — so a reading the gate
+  deliberately tolerated **raises out of `process()`**, uncaught. Measured
+  at the pin: **100%** of the accept band's non-exact sums, and **2.7%** of
+  §3.2.1 REPAIRS. Latent only because SR's two percentages sum to exactly
+  100 on the whole 1,089-reading capture — a property of the PROVIDER, and
+  nothing checks it.
 
 ## The anchor seed (F2 — `mm/events/anchor_seed.py`)
 
