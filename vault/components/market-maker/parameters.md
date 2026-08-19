@@ -451,6 +451,26 @@ ruling. Code: `inplay-market-maker/src/snt/config.py`.
 | **T-F07 LIVE staleness bound** | **10 min of feed silence** | 🟡 | ours, 11-08 — LIVE (×75) needs a fresh feed; silence past the bound decays the book to OVERNIGHT (err-quiet). ~20× the worst observed live reading gap (30 s) |
 | **T-F07 file-game length** | **4 h from kickoff** | 🟡 | ours, 11-08 — the fallback file source learns no finals, so LIVE ends on this timer (long game + overtime), then the POST window. `schedule_file_game_s` |
 
+## Venue identity + position mechanics — measured 19-08
+
+Read off the session wire log (`FHINPLAY01→TZFIXORDQA`), not inferred. Full
+reasoning in [[market-maker/decisions]] 2026-08-19e.
+
+| Parameter | Value | Status | Notes |
+|---|---|---|---|
+| Maker venue account | **1797733477** | ✅ measured 19-08 | FIX tag 1 on its orders; 4,464 orders that day |
+| Taker venue account | **4963224393** | ✅ measured 19-08 | 2,654 orders that day |
+| House MPID | **IPLM** (retail is **IPLY**) | ✅ measured 19-08 | tag 115 on execution reports |
+| Inventory scope | **PER ACCOUNT** — two separate inventories under one MPID | ✅ measured 19-08 | ✂ corrects the 03-08 *"one wallet, one MPID, one inventory"*: right about the MPID, wrong about the inventory. **Seeding the maker gives the taker nothing** |
+| Maker bot id | **`mm-1`** | ✅ 19-08 | ✂ not `sdmm-1`, which is the loopback/example value |
+| `9381 Qto` (UEPR) | **ABSOLUTE opening quantity**; `Qt` current = opening + intraday | ✅ measured 19-08 | Four sends, four exact hits: 0→9, 3→12, −12→−3, −9→0 |
+| UEPR entitlement | **LIVE — `UEPRa` in 8 ms** | ✅ 19-08 | ✂ supersedes the 28-07 "not enabled". Earlier probes sent `Qto=0` on a ZERO-opening account, a genuine no-op, so silence proved nothing |
+| UEPR idempotency | **Safe to retry** (absolute, not additive) | ✅ 19-08 | The opposite of UPT |
+| Negative UPT | **Accepted (`UPTa`) and DISCARDED** — position unmoved | ✅ re-confirmed 19-08 | 9 before, 9 after. UEPR is the undo, not this |
+| **`9387 TxfrCost` unit** | **PRICE PER SHARE** per the venue · **TOTAL** per the spec | 🔴 **CONFLICT — N53** | 7 sh @ 7.00 → basis 49.00; 2 sh @ 3.00 → basis +6.00. ⚠ Measured on **IPLY**; UNCONFIRMED on **IPLM**. At 900,000 shares the wrong reading is wrong by a factor of 900,000 |
+| Position read path | **Tags 9383/9384 on ANY execution report**, plain `39=0` accept included | ✅ 19-08 | ✂ supersedes "only on a fill". One 1-share GTD order priced to rest reads any account |
+| Request For Positions (35=AN) | **Does not exist** in Account & Position v3 or OE v2.2 | ✅ 19-08 | Nothing to entitle or build our side. The order IS the read |
+
 ## Venue risk + price bands — live-verified 08-09
 
 Measured from reject texts on the real venue (decisions `2026-08-09`).

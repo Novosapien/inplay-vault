@@ -1,5 +1,5 @@
 ---
-description: "Building the IPO test rig: three venue scripts, a gateway house-positions endpoint deployed live, and an admin-panel IPO book page"
+description: "Building the IPO test rig, and the afternoon that overturned three recorded tZERO facts and destroyed 99,663 maker shares"
 ---
 
 # 2026-08-19 — the IPO test rig: scripts, a gateway read path, a panel page
@@ -152,3 +152,78 @@ Read off the gateway's own book, 19-08:
 - Probe UEPR (`POST /position`). It decides whether the allocation is reversible,
   and therefore whether the first run may use real books or must use the ten
   `.TEST` twins.
+
+
+---
+
+# Addendum — the afternoon: what the venue actually does
+
+> Hasan measured tZERO's position mechanics against the session wire log
+> 17:20–17:42 UTC. **Three things this vault recorded were wrong**, and one
+> probe from this session turns out to have destroyed real stock.
+> Decisions: [[market-maker/decisions]] 2026-08-19e.
+
+## ⚠⚠ The incident — a "no-op" probe cost the maker 99,663 shares
+
+At 16:24:35Z I sent `POST /position {"account":"1797733477",
+"symbol":"IPTCJAGU.TEST","qto":0,"eto":0}` to test whether UEPR was alive. The
+route's own documentation calls that a no-op — but the full sentence is *"a
+no-op — qto=0, eto=0 **on a symbol the account has never traded**"*. The maker
+had traded it and held **101,665 shares**. `Qto` is an absolute opening
+quantity, so the probe set the opening balance to zero: `9383` read **2,002** at
+17:40Z. **99,663 shares gone.**
+
+Trading did not do it — exactly one execution report exists on that
+account+symbol in the window, and it is the probe order itself; the MM had been
+dark since its dead-man latched at 13:35.
+
+⭐ **What actually went wrong, and it is not "UEPR is dangerous":**
+
+1. The no-op was **conditional** and I treated the condition as scenery.
+2. I picked `IPTCJAGU.TEST` as "least likely to matter" — a guess standing in
+   for a check.
+3. I had spent the previous hour concluding **a position could not be read**,
+   and acted on an account whose contents I had just declared unknowable. The
+   right move at that moment was to stop, not to probe.
+4. The read path existed the whole time.
+
+## What was wrong in the record
+
+| The record said | Measured 19-08 |
+|---|---|
+| UEPR is not enabled (28-07, and re-probed by me the same afternoon) | **`UEPRa` in 8 ms.** Every earlier probe sent `Qto=0` on a **zero-opening** account — a genuine no-op, so silence proved nothing either way |
+| There is no undo for a seeded position | **UEPR is the undo.** `9381 Qto` is ABSOLUTE (four sends, four exact hits: 0→9, 3→12, −12→−3, −9→0), so it is idempotent and safe to retry |
+| Tag 9383 arrives only on a fill | **It rides ANY execution report**, plain `39=0` accept included. One 1-share GTD order priced to rest reads any account |
+| (mine, twice) Request For Positions either isn't on this session, or we simply never built it | **It exists in NEITHER spec.** Nothing to entitle, nothing to build our side. The order IS the read |
+| `9387 TxfrCost` is a total | **The venue behaves as a PRICE PER SHARE** — 7 sh @ 7.00 → basis 49.00; 2 sh @ 3.00 → basis +6.00 |
+| One wallet, one MPID, one inventory (03-08) | **Two accounts, one MPID.** Maker `1797733477`, taker `4963224393`, both IPLM. Positions are **per account** |
+
+## ⚠⚠ The one that would have been worse than the incident
+
+`scripts/ipo/allocate.py` was sending `txfrCost = quantity × price` — the total.
+If 9387 is a per-share price, the Eagles line alone books a basis of
+900,000 × $65,592,000, across all 170 lines, and **UPT cannot be undone**. The
+05-08 probe used 1 share at 1.00, the single quantity where a total and a price
+are the same number, which is why it stood for two weeks.
+
+`--cost-unit` is now **required with no default**. The unit is measured on IPLY
+and **unconfirmed on IPLM**, where the maker lives.
+
+## What this unblocks
+
+- **N49 closed** — two accounts, so the maker at `1797733477` is the seed target
+  and the taker gets nothing from it.
+- **N50 closed** — the seed IS reversible, via UEPR.
+- **N53 opened** — the TxfrCost unit, which blocks the real seed.
+- **E27's read side** — a position can be read on demand for the cost of one
+  resting order. The `IPO_ALLOCATION` publisher is still missing.
+
+## Next
+
+1. **George's call on the 99,663 shares:** restore exactly, re-seed at a
+   defensible basis, or leave flat. The old basis was $2.5 M/share on an
+   instrument that last traded at $63.88 — almost certainly N53's unit error at
+   an earlier seed, so an exact restore restores nonsense.
+2. **Settle N53 on IPLM** — one transfer, distinctive quantity, distinctive
+   price, throwaway symbol, read back with a 1-share resting order.
+3. **Seed ONE team and verify** count and basis before the other 169.

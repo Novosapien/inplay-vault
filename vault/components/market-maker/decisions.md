@@ -187,6 +187,100 @@ first time. It compares all eighteen subtrees of the canonical state.
 
 ---
 
+## 2026-08-19e — ⚠ tZERO position mechanics, measured: UEPR is alive, TxfrCost is a PRICE, and a "no-op" probe destroyed 99,663 shares
+
+Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] · Hasan, measured
+against `FHINPLAY01→TZFIXORDQA` 17:20–17:42 UTC off the session wire log ·
+full write-up `docs/trading/tzero-position-mechanics-verification.html`
+
+Five answers. **Three overturn what this vault recorded**, and one earlier probe
+turns out to have cost the maker real stock.
+
+### What was wrong
+
+- ✂ **UEPR is NOT disabled.** `UEPRa` came back in **8ms**. Every earlier probe
+  sent `Qto=0 / Eto=0` on a **zero-opening** account, which is a genuine no-op —
+  so silence proved nothing either way. ✂ Supersedes the 28-07 finding and the
+  `tags.go` comment built on it, and closes **E27**'s "re-probe UEPR".
+- ✅ **`9381 Qto` is an ABSOLUTE opening quantity**, and `Qt` (current) =
+  opening + intraday activity. Four sends, four exact hits: `Qto` 0→`Qt` 9,
+  3→12, −12→−3, −9→0. Absolute means **idempotent**, so a retry after a timeout
+  is safe — the opposite of UPT.
+- ✅ **UEPR is therefore the UNDO that UPT does not have.** A position was
+  returned to exactly `9383=0` that way.
+- ✂ **A position can be read WITHOUT a fill.** Tags 9383/9384 ride **any**
+  execution report, the plain `39=0` accept included. One 1-share GTD order
+  priced to rest reads any account's position. ✂ Supersedes "9383 only arrives
+  on a fill", which was recorded in the gateway handler, the panel and this log
+  earlier the same day.
+- ✂ **Request For Positions (35=AN → 35=AP) does not exist** in the Account &
+  Position spec OR OE v2.2. Nothing to entitle and nothing to build on our side;
+  it would be a tZERO build. The order IS the read. ✂ Supersedes both of the
+  day's earlier claims — first that the session lacked it, then that we simply
+  had not built it.
+- ✅ **Negative UPT is still one-way.** Re-confirmed: `9386=-4` accepted, `UPTa`
+  echoed the delta, position unmoved (9 before, 9 after).
+
+### ⚠⚠ 9387 TxfrCost is a PRICE PER SHARE, not a total
+
+Measured: **7 shares at `TxfrCost=7.00` booked a basis of 49.00**; a second
+transfer of 2 shares at 3.00 moved the basis by exactly **6.00**. The 05-08
+probe used **1 share at 1.00** — the one quantity where a total and a per-share
+price are the same number, which is why this stood for two weeks.
+
+The spec writes `(TxfrCost / TxfrQty) = averagePrx`, which reads as a total. **The
+spec and the venue disagree and one of them is wrong.** Both
+[[market-maker/reference/claude-trading-ops-guide-hasan-2026-08-07|the ops guide]]
+and the MM build guide say "total" and are now flagged in place.
+
+⚠ **Still unconfirmed on IPLM**, where the maker lives — the probes ran on an
+IPLY account. One transfer of a distinctive quantity at a distinctive price into
+a throwaway symbol settles it in under a minute, and must happen **before** the
+real seed: at 900,000 shares the wrong reading is wrong by a factor of 900,000,
+and UPT cannot be undone.
+
+### ✅ Two accounts, one MPID — N49 answered
+
+Maker **1797733477** (4,464 orders that day) and taker **4963224393** (2,654)
+both trade as **IPLM**; retail is **IPLY**. **Positions are per-account**, so
+they are two separate inventories under one MPID. ✂ The 03-08 note's *"one
+wallet, one MPID, one inventory"* is right about the MPID and **wrong about the
+inventory**. Consequence: **seeding the maker gives the taker nothing.**
+
+### ⚠⚠ The incident: a "no-op" probe destroyed 99,663 shares
+
+At **16:24:35** a `UEPR {qto:0, eto:0}` went to the **maker** account on
+`IPTCJAGU.TEST`, sent by Claude as a harmless entitlement probe on the strength
+of the route's own doc ("the intended first use is a no-op — qto=0, eto=0 on a
+symbol the account has never traded"). **The maker had traded it.** The account
+went from `9383=101665` (11:20:36) to `9383=2002` (17:40) — **99,663 shares
+gone**. Trading did not do it: exactly one execution report exists on that
+account+symbol in the window, and it is the probe order itself. The MM had been
+dark since its dead-man latched at 13:35.
+
+- ⚠ **The lesson, and it is not subtle:** the no-op qualifier was *"on a symbol
+  the account has never traded"*, and nobody established that it held. The read
+  path to check existed the whole time and was believed not to.
+- ✅ **Recoverable in one message** precisely because `Qto` is absolute:
+  `POST /position {"account":"1797733477","symbol":"IPTCJAGU.TEST","secTyp":"EQT","qto":99663,"eto":254196920954.06}`
+- ⚠ But that basis is **$2.5m per share on an instrument that last traded at
+  $63.88** — almost certainly the per-share/total unit error applied at an
+  earlier seed. Restoring it faithfully restores nonsense. **George's call:**
+  restore exactly, re-seed at a defensible basis, or leave it flat.
+
+### Owed to tZERO
+
+1. Confirm **9387 is per-share**. The spec reads as a total; the venue behaves
+   as a price. 166.8 M shares ride on it.
+2. Why is a **negative UPT accepted and then discarded**? A `UPTx` with a reason
+   in tag 58 would be correct behaviour.
+3. **Was UEPR entitlement changed on our session, and when?** Provably silent
+   07-28, provably answering 19-08.
+4. Why does **`UEPRa` carry none of the `Qt`/`Et`/`Rpnl`/`Upnl` fields** the spec
+   lists for it? Those would remove the need to place an order to read a position.
+
+---
+
 ## 2026-08-19c — ✅ the IPO test rig: the maker sells the primary, and the gateway gets a house read path
 
 Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] ·
@@ -3291,7 +3385,8 @@ facts are gospel (22-07 filter). What it changes:
 - ⭐ **The seeding dependency on Hasan DISSOLVES.** `POST
   /position-transfer` (35=UPT) is on the gateway VM's own HTTP server,
   reachable by IAP SSH — the same access we already use. Rules
-  restated: `txfrQty` signed delta · `txfrCost` = TOTAL cost (not
+  restated: `txfrQty` signed delta · `txfrCost` = TOTAL cost — ⚠⚠ **WRONG,
+  see 2026-08-19e: the venue behaves as PRICE PER SHARE** — (not
   price), same sign, avg > 0 · replies `UPTa`/`UPTx` land in the
   journal, the 202 is only "sent" · **one-way** (negatives accepted
   then ignored) · **not idempotent** (a retry double-seeds) → keep a
