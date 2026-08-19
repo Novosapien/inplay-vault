@@ -133,6 +133,34 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### Update (17-08-2026): the first screen is a choice of three competitions
+>
+> Edwin's simplest statement yet of what first open has to do, and it is a
+> requirement for the 22nd rather than a direction of travel. When someone
+> downloads the app they choose between **three** things, and it has to be
+> immediately legible:
+>
+> 1. **The free competition**, 13 plus, no cash prizes
+> 2. **Private competitions**, the group and campus challenges
+> 3. **The prize competition**, the verified cash-eligible one
+>
+> His words: _"we have to have the three items there to choose from. It's got to
+> be really simple. Choose your competition."_ This is the fork screen from
+> 07-08, now with three doors rather than two, and it is where the three account
+> tiers become a user-facing choice rather than an internal model.
+>
+> Note what it depends on: **private competitions are one of the three doors**,
+> which pulls the group and micro-challenge work forward from a Q1 item into the
+> first screen of the app. The backend for it largely exists (see
+> [[information-layer/sub-components/leaderboard/leaderboard]]), but the join
+> mechanics do not.
+>
+> Also agreed on the same call: the **testing-the-waters disclosure** appears on
+> this selection screen and behind an info button elsewhere, rather than on every
+> surface as Edwin's prototype had it. See [[compliance/regulatory-positioning]].
+>
+> _Source: [[17-08-2026-touchdown]]._
+
 > ### ⚠ Update (12-08-2026): the sign-up wall is now the headline commercial risk
 >
 > Edwin, having done demos and watched real people try to join: **he expects to

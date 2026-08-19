@@ -16,6 +16,7 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
+Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
 Go repo PR #17 · [[market-maker/go-port-findings|GP-12]] · `N52`
 
 Phase 3 of the Go port has five chunks. Four are complete. Gate 0-b ran for the
@@ -461,6 +462,101 @@ checkpoint-resume reaching the same bytes as the never-stopped fold.
 
 ---
 
+## 2026-08-17b — ✅ Halt alerting for BOTH bots · ⚠ the maker runs with no supervisor
+
+Session: [[market-maker/sessions/2026-08-17-c-halt-alerting]].
+
+**1. ✅ Both bots are monitored, not just the taker** (George: "I swear the
+maker and the taker are on the same VM"). They are. `snt-halt-check` runs
+every 60 s on the market-maker VM, reads `snt.state.snt-1` and `mm.state`,
+and writes five gauges to Cloud Monitoring. Three policies email George and
+Hasan. The two liveness policies treat MISSING DATA as firing, so silence
+pages — the failure being fixed here is silence, and a checker that fails
+quietly would rebuild the same trap.
+
+**2. ✅ A monitor gets its own read-only identity.** New NATS user
+`mm-monitor`, `publish: []`, `subscribe: ["mm.state", "snt.state.>"]`.
+An earlier attempt widened `snt-taker`'s own subscribe list and was
+REVERTED in the same session: a monitor should not hold a trading identity,
+and it must survive the taker's env being rewritten during a ceremony.
+
+**3. ⚠ THE MAKER HAS NO SUPERVISOR — the biggest operational risk found
+today.** `python -m mm.runtime` is a bare process with PPID 1, started by
+hand from a `screen` session and orphaned to init. No systemd unit, so no
+`Restart=`, no start on boot, no `systemctl status`. A crash or a VM reboot
+takes the market maker away and nothing brings it back. The taker has a
+unit; the maker never got one. The new alert DETECTS this within 5 minutes
+but cannot fix it. Giving it a unit means a restart, and the engine is
+event-sourced — the restart must carry journal, checkpoint and the
+`ANCHOR_SEED` chain or it erases live games' kickoff probabilities.
+**A scheduled cutover ceremony, owed before the 29-08 slate.**
+
+**4. ⚠ An alert policy's NAME is not coverage.** `VM root disk > 80% used
+(fix-gateway, market-maker, nats)` filters on `agent.googleapis.com/*`
+metrics, and the market-maker VM had no ops agent installed at all. It has
+claimed that VM since it was written and never watched it — including
+through the 15-08 full-disk incident that took both FIX sessions down. The
+agent is now installed (side-loaded `.deb`: the VM has no internet egress,
+and opening egress on a trading VM is a security decision, not an install
+step).
+
+---
+
+## 2026-08-17 — ✅ The 40 s overnight rate is CLEARED · the 33-hour halt was a FIX session break, not congestion
+
+Session: [[market-maker/sessions/2026-08-17-b-recovery-and-the-40s-verdict]]
+· taker live on `SNT-CFG-0027` / journal `snt24`.
+
+**1. ✅ `SNT_INTERVAL_OVERNIGHT_S` stays 40 s** (George, on the
+measurement). He refused to accept 120 s as a guess and asked for the
+reason 40 s "did not work". It did work. A per-minute pass over the full
+4.6 GB FIX wire log (15-08 16:19 → 17-08 10:45) measures inbound lag
+(gateway log time − tag 52 `SendingTime`):
+
+- **0.02–0.04 s mean inbound lag in every hour** at the 40 s rate;
+- **286 msg/s at 0.04 s mean, 1.2 s max** in the busiest hour (Sunday
+  slate, 15-08 21:00) — the highest load of the weekend;
+- **230,841 of 230,847 taker fills received — 0.0026% loss**, and four
+  of the six losses fall inside one four-minute event.
+
+**2. ✂ The 17-08 root cause is superseded.** The diagnostics doc's
+"gateway 17–27 s behind because of the rate change" is a sampling
+artefact — 18 samples taken inside a minute that carried 36 messages
+because the FIX session was down. The real chain: the FIX session to
+tZERO broke at ~08:13 on 16-08, recovered at 08:17:16 with a
+`ResendRequest`, and fills flushing in that recovery were discarded by
+the gateway while their 1.5 s IOC cancels were registered. **The halt at
+08:17:13 was a TRUE positive** — the 28 HOUC shares were genuinely gone,
+and the halt fired three seconds before the resend completed.
+
+**3. ⛔ `oe_adapter.go:474` is RULED OUT, and the queued Go fix is
+withdrawn.** That the fill reached the gateway and never reached the
+taker is proven on the wire. That `:474` discarded it is now disproven by
+reading the registry key: `GetByReq` reads only `byReq[reqClOrdID]`,
+`ReqClOrdID` is the cancel's own id, and the taker mints a fresh id per
+cancel (`snt/runtime.py::cancel_payload`). A fill carries the ORDER's id,
+so the lookup returns nil and the report falls through to the tracker.
+Independently corroborated: no `35=F` was ever sent for that order, so no
+pending request was ever registered. The branch only fires on a REPLACE,
+where the new order's id IS the request id. **The Go work now leads with
+a counter on every one of the five discard paths** (`inplay-fix-gateway-go`
+PR #8, observability only, no behaviour change) — the remaining
+candidates are the tracker refusal path and the two dedup paths, and a
+resend window is where the dedup paths get exercised.
+
+**4. ✂ The "session-gap grace" proposal is dropped the same day it was
+raised.** The idea was to suppress reconcile halts while the FIX session
+is recovering. It does not apply: the fill was not late in transit, it
+was discarded, so no taker-side wait recovers it. Recorded because it
+was proposed to George before it was checked.
+
+**5. ⚠ The boot rebase count is not a damage figure.** All 177 `BOOT
+REBASE` lines on 17-08 printed `journal=` exactly equal to that book's
+`SNT_FLOAT_OVERRIDES` value — the stale 15-08 seed. On a fresh journal
+the taker starts from that seed and adopts the venue's current position.
+This session misread the count as evidence of widespread lost fills
+before testing it.
+
 ## 2026-08-18 — ✅ The Go port is UNPARKED: maker + taker, starting now
 
 Session: [[market-maker/sessions/2026-08-18-go-port-discovery]] ·
@@ -543,6 +639,60 @@ venue book **value**-identical.
 ⚠ **The taker re-enters Phase 1 isolation.** Its own test plan's standing
 rule — isolation is per capability, not per calendar — makes a Go taker a
 new capability. TT1–TT9 and TJ1–TJ4 run again.
+
+---
+## 2026-08-18 — ✅ The gospel commit is `fd193a4` · journal size is a pre-flight gate · the order book's asymmetry is by design
+
+Session: [[market-maker/sessions/2026-08-18-the-cutover-and-the-vm-hang]].
+
+✅ **`MM-PYTHON-FIX-SET-COMPLETE` emitted. The gospel commit is
+`fd193a4`**, tagged `mm-python-fix-set-complete` and pushed. That tag is
+the reference commit the Go port certifies against. Deployed the same day:
+engine `supervised41` / CFG-0038, maker and taker both live on it.
+
+✅ **JOURNAL SIZE IS A PRE-FLIGHT GATE ON EVERY CUTOVER.** Learned the
+expensive way: keeping a **3.5 GB** journal on the cutover drove RSS to
+3.9 GB on a 2-vCPU / 8 GB box, starved systemd itself, and required an
+instance reset. The boot healer retires the fresh-journal *ceremony*, so
+keeping a journal is **safe** — it says nothing about whether replaying it
+**fits**. Check size against the box before choosing keep-vs-fresh.
+⭐ And the cost of a fresh journal is now near zero: `ANCHOR_SEED` carried
+14 kickoff anchors forward regardless, so keeping the journal bought
+*nothing*. The bar for keeping one should be high.
+
+⭐ **No exposure during the incident** — the dead-man swept the book from
+1,588 orders to 10 the instant the old engine stopped. The failure mode
+was "not quoting", never "quoting wrongly".
+
+✅ **The order book's asymmetry is BY DESIGN, not a defect.**
+`min_levels=3, max_levels=6`, drawn per side per book — so a book showing
+6 bid levels and 3 ask levels is in spec. Empty or thin books are CHURN:
+the taker takes ~3.4 levels/s portfolio-wide against a 500 ms maker pulse,
+so any snapshot catches half-rebuilt ladders (IPTCBENG went 0 bids → 2
+bids in 45 s while being watched).
+
+⚠ **But the steady state is a permanently half-empty book**, because the
+taker consumes faster than the maker rebuilds. That is a RATE mismatch,
+not a defect in either component. The lever is `SNT_INTERVAL_LIVE_S` and
+it is a deploy decision. 🔴 Open.
+
+✅ **W2's ask cap is CLEARED as a cause of one-sided books.** Measured
+live: venue positions are 96,679–104,320 shares on every book, and
+`IPTCBEAR` — which showed no asks — holds **103,595**. Zero books under
+1,000 shares; every `ASK_CAP_*` alarm zero. The cap is not binding
+anywhere. 🔴 Eight persistently one-sided books remain UNEXPLAINED.
+
+⚠ **A torn final journal line permanently bricks the taker.** One
+incomplete write (of 587,722 lines) crash-looped it for ~2.7 h until the
+file was hand-repaired. A torn tail is the normal consequence of any hard
+kill, so the replay must tolerate and truncate a torn FINAL line while
+still raising on mid-file corruption. **The Go port inherits the same
+replay design.**
+
+⚠ **The launch mechanism changed and the docs were stale:** the engine is
+`mm-1.service` with `/etc/mm-1/env`, not a bare `setsid nohup`. Its boot
+log is `journalctl -u mm-1`. The taker is `snt-1.service`, and its NATS
+variable is `SNT_NATS_URL`, not `NATS_URL`.
 
 ---
 
@@ -2529,6 +2679,108 @@ and deployed (engine `dfa87f9`, CFG-0004, journal `supervised5`).
   takes a fresh journal dir until the boot-reconcile healer exists
   (dead-man sweeps while the engine is down never journal — an old
   journal replays phantom ACTIVE orders).
+
+## 2026-08-17 — Edwin retunes the book, and adds score-based interim pricing — [[17-08-2026-touchdown]]
+
+> The most specific parameter direction Edwin has given. His diagnosis of the
+> weekend: the book was **"like cement"**, too tight to the win probability, with
+> no room for a two-way market. He compared it to trading the ten-year note,
+> where an edge is a miracle and you do not want it when you get one.
+
+### The retune
+
+- ✅ **Widen the spread to 8 to 12 ticks.** The book was too tight for anyone to
+  trade around.
+- ✅ **Shrink the maker's resting size to 500 to 3,000** per level, down from
+  around 10,000. The book is too thick.
+- ✅ **Increase the taker's size to up to 5,000, and let it cross multiple price
+  levels** rather than one, like a market order. Currently it randomises roughly
+  3 to 400, which Edwin considers negligible against a 10,000 book.
+- ✅ **The logic, in his words, and it is worth keeping:** _"reduce market maker,
+  increase taker, because otherwise the effect of the taker is very minimal. If
+  you buy 30 into an 11,000 lot it doesn't mean anything. But if you bought
+  11,000 into a 30 lot, the market's going to be crazy."_ The purpose is to
+  **knock out the touch** so real users resting at or near top of book actually
+  get filled.
+- ✅ **Target intra-game price movement: roughly $1.50 to $8 per share.** The
+  weekend produced only a couple of dollars of swing. On pure arithmetic a win
+  might be worth about $4.80, but he wants market sentiment to swing wider than
+  the maths so there is something to trade.
+- ✅ **Accuracy is explicitly subordinate to movement for this run.** Edwin:
+  _"movement's okay because this is a simulation. We want the prices to move.
+  That's all I care about."_ Relatively close is sufficient; dollar-for-dollar is
+  not required.
+
+### Score-based interim pricing (new)
+
+- ✅ **The problem.** Sportradar's win probability lags the score, because it has
+  to be computed. After a touchdown it can take around ten seconds. That is an
+  exploitable asymmetry: users see the score before the market does. Edwin:
+  _"stale data is a death knell. We can't have the market maker sit and wait
+  because everyone can buy on scores and then they'll have an unfair advantage."_
+- ✅ **The fix.** Sample **both** the probability and the score. The decision
+  becomes: probability unchanged and score unchanged, quote as now; probability
+  unchanged but score changed, **apply a per-point dollar offset immediately** and
+  move the reference price. It is a **placeholder that survives only until the
+  next live probability arrives**, at which point the probability is gospel again.
+- ✅ **Deliberately imprecise, and he likes the consequence.** _"We don't need to
+  be accurate for more than 10 seconds."_ A visible mispricing is itself a
+  trading event: _"the market mispriced this."_
+- ✅ **Edwin owes the numbers.** He is deriving per-point values from the NFLverse
+  dataset, which carries win probabilities back to 1999, and will supply them
+  this week. He was clear this must not become a model of injuries and form:
+  _"we don't have to do that. Not for this."_ A point-differential offset, and no
+  more.
+- ⚠ **Scope consequence for us: the market maker must now consume play-by-play
+  data**, specifically the quarter and the score, not just probabilities. It does
+  not affect the taker, which is random.
+- ⚠ **Post-game oscillation, raised by George and accepted as tolerable.** If
+  expected wins do not update promptly after a game, the price falls back toward
+  its pre-game level and oscillates when the new figure lands. Edwin walked
+  through the arithmetic: a team 80% to win carries 0.8 x $5 = $4 in its price, so
+  winning adds the remaining $1 and losing costs $4.80. Movement on the correction
+  is acceptable for this run.
+
+### Production, and a number that changes the conversation
+
+- ⚠ **Production needs committed external market makers, or Edwin's own capital.**
+  Without them he would make markets himself on roughly **14 teams**, at a capital
+  requirement he put at **$25 to $30 million**, which he described as outside his
+  zone at present. This is the first time the production market-making
+  requirement has been quantified, and it belongs in the commercial plan rather
+  than the build plan.
+
+### Testing
+
+- ✅ **Continuous simulation games on the test tickers**, in a surface only the
+  team can see, so live trading can be exercised at any time instead of waiting
+  for a real fixture (George). The weekend exposed why this matters: the games
+  were blowouts, so there was almost no price action to trade.
+
+## 2026-08-14 — The venue is not the bottleneck — [[14-08-2026-touchdown]]
+
+> Recorded because it settles where the remaining work is, and it came from
+> tZERO's own instrumentation rather than ours.
+
+- ✅ **The venue side operated cleanly through the first live night.** tZERO
+  confirmed **3 million orders sent** with an **average latency of 1
+  millisecond** and **no degradation of the matching engine** under that load.
+  Troy: _"everything on their end operated that should have with no issue."_
+- ✅ **Consequence, and it is the useful one:** the poor trading experience on 13
+  August was not a venue, throughput or market-maker-capacity problem. Troy
+  placed the remaining work on **the interface and the data ingestion**, and
+  named the back end as _"in my opinion the harder part"_ that is already
+  working.
+- ⚠ **One market-maker item did surface as a tuning question:** spread width.
+  George noted that adjusting it is not a live fix, because it costs roughly ten
+  minutes of downtime to change during a game, so it trades against UX testing
+  time on the same night. Sequence the two deliberately rather than discovering
+  the conflict again.
+- ✅ **The synthetic market order is confirmed as unavoidable, not optional.**
+  Troy, closing the question for good: tZERO does not support market orders,
+  equity markets do not support market orders, they exist on the broker side.
+  Anything the user experiences as "market" has to be constructed by us. See
+  [[market-maker/systems/synthetic-market-order]].
 
 ## 2026-08-12 — The maker and taker run live across every book — [[12-08-2026-touchdown]]
 
