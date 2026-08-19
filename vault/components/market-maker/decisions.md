@@ -14,6 +14,38 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19b — ✅ Go port Phase 2 complete, and the gate's own corpus never moved the price
+
+Session: [[market-maker/sessions/2026-08-19-b-go-port-phase-2]] ·
+Go repo PRs #12–#15
+
+The four numeric engines and R13's decay cache are ported. Phase 2's gate holds
+over four arms × 2,178 cycles; **AC5 and AC23a are closed**.
+
+- ⚠⚠ **THE PHASE-2 GATE'S OWN CORPUS CANNOT MOVE A PRICE.** On `pure.jsonl`
+  every game kicked off BEFORE T was published, so none is in G and RP is
+  `77.500` on all 1,089 readings. A gate over a constant price never exercises
+  the ladder's outward rounding or the position-side modifier — **three planted
+  defects survived it untouched**. A fourth arm moves T's effective time before
+  the 2024 kickoff so the games enter G: **685 distinct Reference Prices**.
+  ⭐ The evidence was on the page from Phase 0 — the corpus's manifest says
+  `publishes_during_replay: 0` and its `last_rp` is constant.
+- ⭐ **The spec's five comparator clauses cannot see a checkpointed exponent.**
+  They all end in whole ticks and whole shares; `variance_rate` is a
+  checkpointed STRING. The gate now compares the canonical state hash too.
+- ⚠⚠ **Δt passes through a FLOAT in Python and the exponent survives into
+  state.** `Decimal(str(timedelta.total_seconds()))`, then `observed_rate`
+  divides by it and division carries the ideal exponent. The rule is reproduced
+  and verified against CPython over 160,000 microsecond values.
+- ⚠ **The committed corpora hold ZERO official results, ZERO anchor seeds and
+  ZERO executions.** Each chunk ships its own differential fuzz, and the diff
+  harness now prints what a run did NOT drive.
+- ✅ **Package filing may differ from Python's where Go's import graph forces
+  it** — second instance. `venue → quotes → position → venue` is a cycle in Go
+  and not in Python; cut with a five-field view of a venue order.
+
+---
+
 ## 2026-08-19 — ⚠⚠ §3.2.1's tolerance band and the pair-identity guard contradict each other
 
 Session: [[market-maker/sessions/2026-08-19-go-port-valuation]] ·
