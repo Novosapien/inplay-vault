@@ -9,6 +9,9 @@ description: "The 22 app change requests received from InPlay on 18 August 2026,
 > and Cody's; attribution to be confirmed on the next call.
 > **Context:** the build definition was frozen on 17 August. This list arrived
 > the following day, four days before the NCAA offering opens on the 22nd.
+> ✅ **Graded and dated on the 18 August call:** [[18-08-2026-requirements-review]].
+> The classification below stands. The decisions and dates from that call are
+> recorded at the foot of this document and outrank the recommendation section.
 
 Numbering below is InPlay's own. The original list skips 8, 10, 12 and 15, and
 several items were sent twice; duplicates are merged rather than counted twice.
@@ -107,3 +110,58 @@ and there is one live game left before real users trade.
 The freeze is not a refusal. It is the difference between shipping these
 deliberately and shipping them untested into the one window that cannot be
 repeated.
+
+---
+
+## Decided on the call, 18 August
+
+The list was graded live, item by item, on Brett's scale: **1 = go, 2 = look at
+it first, 3 = worried**. Items that simplify by removing something were called
+"negative one". Full record in [[18-08-2026-requirements-review]].
+
+### The three dates
+
+| Date | What lands |
+|------|-----------|
+| **22 August**, the offering | 1, 3, 4, 5, 6, 7, 9, 11, 16 and 17 merged, 18, 23, 24, 25, 26 |
+| **29 August**, secondary opens | 13 and 14 (needs tZERO), 21 flatten and flatten all, 22 the reserve top-up, 2 the three login paths, the maker's wider quotes |
+| **9 September**, first NFL game | The in-break video ad over the live match tracker |
+
+### Corrections to this document, from the call
+
+- **19 is scrapped.** Target selection already exists as the swipe on the trade
+  bar, ordered last-traded, then watch list, then alphabetical. Keep as designed.
+  The problem is that nobody knows it is there, which is discoverability rather
+  than a build.
+- **11 does not get bigger buttons.** Edwin was explicit: the tap target in the
+  middle opens the order ticket, and a larger button eats it. Only Home and Ranks
+  are missing the bar. Separate ask from the same item: the control should read
+  **Order** rather than quantity and price, so it is obvious it opens a ticket.
+- **16 and 17 merge into one change.** The order-book tile sits directly under
+  the field and shows bid, ask, last and **net change in place of spread**, as a
+  number rather than a percentage, derived from the daily settlement price tZERO
+  returns with every order. Top of book only, with quantities. Below it: open
+  orders, recent fills, in-game moments, then market and game.
+- **22 retires the 25,000 threshold.** The top-up is **instant, up to 100,000,
+  never above**, from referral dollars, with no position open.
+- **24 is a bug, not a change.** The fixtures do populate: opening the team and
+  returning to games shows them. The direct click is broken.
+- **1 removes the screen rather than the spinner.**
+
+### Added on the call, not on the original list
+
+| Item | Position |
+|------|----------|
+| **Watch mode needs buy and sell** | The horizontal watch surface carries a trade button that routes the user away and back. It needs the same controls as everywhere else. Troy rated the surface highly on an iPad; this is what holds it back |
+| **A tradable team playing an untradeable opponent** | Roughly 22 games this season, possibly one in week zero. George: not negotiable, one and a half to two |
+| **The maker quotes too tightly** | Top of book only and wider spreads, with a tolerated distance from fair value of roughly 20 to 25 cents before the maker resets, possibly gated on win probability moving a further five percent. George: anything touching the maker is a two at minimum. He sends the current parameters, Edwin sets the new base spread |
+| **In-app demo or an animated nudge** | Raised twice. The app is more capable than it is discoverable, and Edwin reports that 80 percent of the people he demonstrates to do not know what to do |
+
+### The risk position, agreed rather than assumed
+
+Brett set out why late change costs more near a launch. Edwin accepted it and
+chose to proceed anyway, and Cody supplied the number that makes that reasonable:
+**about 160 verified users, of whom roughly 100 are friends and family**, so real
+exposure is about 60 people, and the window to 5 September is the lowest-risk
+period the product will ever have. Agreed mitigation: tell those users what is
+changing, by push and newsletter, as pioneer users.

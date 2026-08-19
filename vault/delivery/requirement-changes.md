@@ -42,13 +42,16 @@ changed.
 | Reversal | **13** |
 | Re-reversal | **1** |
 | Descope | **1** |
-| Late parameter change | **4** |
+| Late parameter change | **6** |
 | Late scope addition | **8** |
-| **Total recorded changes to settled requirements** | **27** |
+| **Total recorded changes to settled requirements** | **29** |
 
-All twenty-seven fall inside roughly **four weeks**, between 20 July and 18
-August. The last six days carry **thirteen** of them, including seven that
-arrived on 18 August, the day after the build definition was frozen. For
+All twenty-nine fall inside roughly **four weeks**, between 20 July and 18
+August. The last six days carry **fifteen** of them, including nine that
+arrived on 18 August, the day after the build definition was frozen. Two of the
+eight additions were withdrawn on the 18-08 review call, one because the feature
+already existed and one because it turned out to be a bug rather than a change,
+which is the review working as intended. For
 context, the offering opens on 22 August and trading starts on 29 August.
 
 ---
@@ -99,6 +102,8 @@ offering.
 | P2 | Maker resting size | Around 10,000 per level | **500 to 3,000** | [[17-08-2026-touchdown]] |
 | P3 | Taker size | SNT-1 v1.0 reference: 5 to 400, median about 30 (30-07). Re-cut to 20/400/20 on 15-08 | **Up to 5,000, crossing multiple price levels** | [[17-08-2026-touchdown]] |
 | P4 | Target intra-game price swing | Not previously specified; observed at a couple of dollars | **Roughly $1.50 to $8 per share** | [[17-08-2026-touchdown]] |
+| P5 | Maker quote depth and width | Quotes multiple levels at a tight spread, described by Edwin as cement | **Top of book only, wider spreads**, with a tolerated distance from fair value of roughly 20 to 25 cents before the maker resets | [[18-08-2026-requirements-review]] |
+| P6 | Reserve top-up threshold | A user could draw on referral dollars at 25,000 | **At any time while flat, instant, up to 100,000 and never above** | [[18-08-2026-requirements-review]] |
 
 ## Late scope additions
 
@@ -114,8 +119,10 @@ grievances.
 | A4 | **Pre-offering indication of interest**, queued orders against a shares-remaining bar | [[31-07-2026-touchdown]] | Scoping owed, never started |
 | A5 | **Flatten all**: one control that exits every open position across every team | [[change-requests-2026-08-18]] #21 | Per-team flatten was already in the 14-08 model. Flatten all is a multi-symbol liquidation path with its own partial-fill and reject behaviour. The largest item on the 18-08 list |
 | A6 | **Move money into the trading reserve at any time while flat** | [[change-requests-2026-08-18]] #22 | Needs the flat test, the accounting entry and a mid-game rule. Shares the reserve with the 100 IPD advertising reward |
-| A7 | **Trade-target selection from the Live Games surface** sets what the persistent buy and sell controls trade | [[change-requests-2026-08-18]] #19 | The target half of the one-click model, unresolved in A2 |
-| A8 | **Every NCAAFB season game populated** in the Markets games tab | [[change-requests-2026-08-18]] #24 | Data is available. Staying correct across season types is the part that failed twice in live running |
+| ~~A7~~ | ~~Trade-target selection from the Live Games surface~~ | Withdrawn on the 18-08 call: it already exists as the swipe on the trade bar. The problem is discoverability, not capability | Not counted |
+| ~~A8~~ | ~~Every NCAAFB season game populated~~ | Reclassified on the 18-08 call as a **bug**, not a change: the fixtures do populate when the team page is opened and games re-entered. Not counted |
+| A9 | **A tradable team playing an untradeable opponent** | [[18-08-2026-requirements-review]] | Roughly 22 such games this season, possibly one in week zero. Raised by George, confirmed by Edwin, and called non-negotiable rather than optional. Genuinely new: no prior requirement covers a game with only one listed side |
+| A10 | **Buy and sell controls on the horizontal watch surface** | [[18-08-2026-requirements-review]] | Today it carries a trade button that routes the user away and back. Small, and it is what stands between the watch surface and being usable |
 
 ---
 
@@ -158,4 +165,10 @@ layout, naming, copy or a defect, and carry no settled requirement behind them.
 
 Two items on that list, #13 and #14, are recorded there rather than here because
 they are not InPlay's to change: they ask for the venue's share-locate rule to
-be removed, which needs a ruling from tZERO rather than a ticket.
+be removed, which needs a ruling from tZERO rather than a ticket. Edwin has taken
+that up with Troy directly and wants all shares treated as always available to
+borrow for the simulation.
+
+**Graded on 18 August.** Every item was scored on the call and given a date:
+[[18-08-2026-requirements-review]]. Fourteen land by 22 August, five by 29 August
+including both tZERO items, and the in-break video by 9 September.
