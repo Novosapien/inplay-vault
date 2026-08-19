@@ -1,5 +1,5 @@
 ---
-description: "Weekly engineering record for the Sportradar service, 09-16 August 2026: 82 commits, six publisher fixes, and the first two live game nights"
+description: "Weekly engineering record for the Sportradar service, 09-16 August 2026: 82 commits, six publisher fixes, and three live game nights"
 service: inplay-sportradar-service
 window: 2026-08-09 .. 2026-08-16
 commits: 82
@@ -17,7 +17,8 @@ branches: { touched: 32, merged: 24, open: 5 }
 
 - This service is the only part of InPlay that talks to Sportradar
 - This week it started to feed the market maker for real
-- It survived the first live NFL preseason games on 13 and 15 August
+- It survived the first live NFL preseason games — Thursday 13, Friday 14 and
+  Saturday 15 August
 - Ten separate faults were found on real game nights. Each was fixed the same night or
   the next day.
 - The service also learned to find live games by itself, instead of a hand-typed game id
@@ -46,7 +47,7 @@ branches: { touched: 32, merged: 24, open: 5 }
 - `origin/main` has not moved since 11 August. Its tip is `f8c8aef`.
 - Everything after that date sits on `origin/dev` and `origin/testing`, which are both at
   `f822ced`
-- The 13 and 15 August game nights ran entirely in the testing environment, by George's
+- The 13, 14 and 15 August game nights ran entirely in the testing environment, by George's
   decision (`3acf734`)
 - So "merged" in the table below almost always means `origin/dev` and `origin/testing`,
   not production

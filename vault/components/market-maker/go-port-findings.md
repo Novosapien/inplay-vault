@@ -9,8 +9,8 @@ description: "The register of defects and gaps the Go port has found in the Pyth
 > **Python reference implementation**, so the list survives the port and can be
 > worked through deliberately at the end rather than reconstructed from session
 > notes.
-> **Status:** open. Phases 0, 1 and part of 2 are ported; the register grows as
-> the port continues.
+> **Status:** open. Phases 0, 1 and 2 are ported and reviewed; Phase 3 is in
+> progress. The register grows as the port continues.
 
 ---
 
@@ -125,6 +125,20 @@ what a requirement asks, and the port cannot fix them either.
 | **Severity** | 🟠 It is not a defect, but any claim of the form *"the corpora prove X"* has to be checked against this. |
 | **Mitigation** | `tools/diffreplay` now **prints, per run**, what the journal did not drive, per subtree. Each chunk ships its own Go↔Python differential fuzz driving the API. |
 | **Owner** | Closed on the Go side; the Python side would benefit from the same coverage report |
+
+---
+
+### GP-11 · The journal's retention is shorter than its own input file's
+
+| | |
+|---|---|
+| **What** | The journal is the system of record — §10.3 rebuilds all memory from it, and it is the record of every price the maker published. It lives on a separate `pd-ssd` (`inplay-market-maker-journal`, mounted `/var/lib/mm`) with an hourly snapshot schedule at **7-day retention**. Nothing carries it off the box: `grep -rn -i 'gcs|google.cloud|gs://' src/mm/` returns **nothing**. |
+| **The inversion** | George's retention ruling for **Edwin's daily file** is *keep everything in perpetuity* (N19), stored bucket-first as evidence. The journal — the output that file feeds — has a **7-day horizon**. The record of what we quoted is kept for less time than the input that produced it, and §10.4 wants an audit trail of exactly the former. |
+| **Also** | Up to one hour is unprotected against a disk-level loss. And the F2 anchor seed reads a LOCAL path (`prior_run_dir`, `runtime/compose.py:278-280`), so the kickoff-freeze carry depends on the prior run's directory still being on that disk — restoring a snapshot to read one directory is heavy for a boot-path dependency, and the seed is what stops a fresh-journal boot erasing an in-game move ($0.685/share on the BENG case). |
+| **Severity** | 🟠 **Latent.** The separate-disk-plus-snapshot design is sound as far as it goes, and a VM rebuild does not lose the journal. This is a retention and reachability gap, not a data-loss bug. |
+| **Port impact** | ⚠ **None, and deliberately none.** The Go port inherits this unchanged; reproducing it is CORRECT under the zero-diff mandate. Nothing here may be built into the Go runtime while the differential replay is the certification — see the register's rule 5 below. |
+| **Fix** | Three options, in `N48`. Cheapest and most consistent with the 03-08 bucket/database split: ship each **closed** run directory to a bucket at rotation. ⚠ Whatever is chosen must not touch the fsync path — the N31 group commit is 2.4 ms and the venue drain is already 98% of the tick. |
+| **Owner** | `N48` in [[market-maker/open-questions]] — George's ruling · found 19-08 during Go port Phase-3 preparation |
 
 ---
 
