@@ -1,3 +1,7 @@
+---
+description: "Distillation of the tZERO Account & Position FIX spec v3 — the message families, tags and risk toggles behind MM account, inventory and cash mechanics"
+---
+
 # tZERO Account & Position FIX Spec (v3)
 
 > **Integration:** [[t0]] · [[integrations]]

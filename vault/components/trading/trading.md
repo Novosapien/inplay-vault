@@ -6,9 +6,10 @@ description: "Trading component doc — the execution engine: limit orders via t
 
 > **Vision:** [[vision]]
 > **Date:** 2026-05-11
-> **Status:** Collecting
+> **Status:** Collecting — **end-to-end working in QA as of 29-07-2026**
 > **Owner:** George Westbrook (engineering) / Brett StClair (client-facing)
-> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[08-05-2026-component-1-simulation-app]], [[11-05-2026-trading-component]]_
+> **Sources:** _[[meetings/06-05-2026-vision-workshop]], [[08-05-2026-component-1-simulation-app]], [[11-05-2026-trading-component]], [[27-07-2026-touchdown]], [[29-07-2026-touchdown]], [[03-08-2026-touchdown]]_
+> **Updated:** 2026-08-10 — full order loop working into tZERO, short-while-long prohibited, arrow-direction bug logged, team naming moves to acronym tickers.
 
 ---
 
@@ -21,6 +22,153 @@ The Trading component is the execution engine of the InPlay app -- where users a
 The component is designed to be accessible from anywhere in the app, not confined to a single page. A persistent trade capability follows the user across screens -- team pages, game day pages, leaderboard, and beyond. The core design principle is context-aware trading: the system infers which team(s) the user is most likely to want to trade based on where they are in the app, while always providing search as a fallback.
 
 Trading must be fast. The target is 3 clicks or fewer from any page to a submitted order. A modal/overlay approach keeps users in context rather than navigating to a separate page.
+
+> ### Update (27-07 → 03-08 touchdowns): trading is end-to-end working
+>
+> **Status change.** As of 29-07 the full loop runs: order placed in the app →
+> tZERO → execution returned → handled and displayed in the app. George, after
+> testing it with Hasan against Rob at tZERO: _"trading is pretty much there."_
+> By 03-08 it was _"pretty much all there,"_ with the remaining gap being the
+> things testing surfaces rather than anything known-missing. This is the
+> component's first working end-to-end state.
+>
+> **What Hasan demoed** (27-07 and 29-07): buy and sell with quantity presets
+> (25 / 100 / 250) plus free entry, expiry choice (day, 3 days, a week, or until
+> explicitly closed), order preview, order-placed confirmation, partial fills
+> shown correctly, cancel of a resting order, shorting with an explanatory
+> message, and an automatic **sell/exit action pre-loaded on an open position**.
+> Executions and full trade history surface at the bottom of the wallet screen.
+> Ads are already placed in the same views.
+>
+> **Edwin's trading-desk feedback**, all of it recognisable market-maker
+> instinct:
+> - **Add a "max" quantity button** computed from buying power. _"Sometimes when
+>   I'm trading quickly and I want to get an edge… I don't want to do the math in
+>   my head or get out a calculator."_ Hasan can add it under the quantity
+>   field.
+> - The pre-loaded exit on a position is a **fat-finger guard** and he rates it
+>   highly: under pressure people hit buy again instead of sell and end up
+>   double-stuffed. _"This is fantastic for teaching how to trade."_
+>
+> **⚠ Bug (Jared, 29-07): the buy and sell arrows on the open-order screen point
+> the wrong way** relative to every other trading app. Troy's rule: buying means
+> you want the market up, selling means you want it down, so the arrows follow
+> the market, not the asset. Agreed to flip. Lands in
+> [[trading/sub-components/order-status/order-status]].
+>
+> **Short rule confirmed (Troy, 29-07): you cannot short a stock you are long.**
+> You must sell your existing inventory and be **flat** first. tZERO track
+> shorts not as a separate short coin but in **separate wallets** recording the
+> outstanding borrowed shares. Edwin: _"you don't get short if you're already
+> long. You've got to exit… and then to be short, you've got to be flat."_
+> Constraint on [[trading/sub-components/order-entry/order-entry]].
+>
+> **Test access is gated.** Users must be added as approved test traders, and
+> becoming one carries an extra step that allocates a wallet and onboards them
+> to tZERO. Cody is assembling a test group of incoming interns — the
+> out-of-the-gate target demographic — to work through every page. Edwin's
+> instruction on 27-07: the InPlay team holds off until Hasan gives a green
+> light.
+>
+> **QA data is real, not random** (29-07). Prices come from tZERO's market data,
+> and tZERO run **replay of genuine historical games** through Sport Radar. Troy:
+> _"it's all replay data."_ Cody's clarification matters for interpreting test
+> results: real games, real stats, historically dated. InPlay makes the prices;
+> tZERO does not.
+>
+> _Sources: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]],
+> [[03-08-2026-touchdown]]._
+
+> ### ⚠ Update (14-08): the first live night, and what it said about this component
+>
+> The morning after the first live game night produced the sharpest feedback this
+> component has had, and the most useful diagnosis. Full record in
+> [[14-08-2026-touchdown]]; the requirement set it generated is in
+> [[one-click-trading-requirements-aug-2026]].
+>
+> **The venue was not the problem.** tZERO confirmed their side operated as it
+> should: **3 million orders, 1 millisecond average latency**, no degradation of
+> the matching engine. Troy's conclusion, and he has the most venue experience in
+> the room: the harder part is already working, and what remains is the interface
+> and the data ingestion. George's version, that the work sits on the tip of the
+> iceberg rather than beneath it, is the reframing that turned the call around.
+>
+> **The component was built for the wrong user.** Not through carelessness: it
+> was built to protect people from mistakes, with a confirmation step, a
+> persistent bar and page transitions that each cost about a second. The people
+> testing it were trading at speed, and a trader who loses a second loses the
+> market. Troy reported repeatedly _"missing the market"_ because by the time he
+> had navigated, the price had gone.
+>
+> **Three defects, in priority order.**
+>
+> 1. **Confirming a trade navigates away from the game.** Sometimes to the
+>    portfolio, sometimes to the IPO tiles. Cody counted **five screens** to get
+>    back to the game he was trading. This alone made fast trading impossible.
+> 2. **The order book and the order ticket disagreed.** Users read one price and
+>    were offered another, so orders missed. Independently reported by Troy,
+>    Jared and Edwin on the same call, and already written up in
+>    [[jared-trading-feedback-aug-2026]]. This is the same root cause as the app
+>    inventing an order book when it had no data.
+> 3. **No market order, so some trades could not be placed at all.** Troy set out
+>    why it has to be synthetic: tZERO does not support market orders, equity
+>    markets do not, they live on the broker side. See
+>    [[market-maker/systems/synthetic-market-order]]. It exists in the trading
+>    service but is switched off.
+>
+> Also reported: screens freezing, partly caused by fixes being pushed during the
+> game; two app versions in circulation confusing testers; and lag with six
+> concurrent games because the app loaded everything at once.
+>
+> _Sources: [[14-08-2026-touchdown]], [[one-click-trading-requirements-aug-2026]]._
+
+> ### ⚠ Update (14-08): Jared's trading test-run feedback
+>
+> Fourteen items from Jared Sapirman, recorded in full at
+> [[jared-trading-feedback-aug-2026]]. His second written round after
+> [[jared-app-feedback-jul-2026]] in July, and he is the one person testing the
+> app the way a trader would rather than demonstrating it.
+> Three of them are the same underlying problem and it is the serious one.
+>
+> **The displayed price is not the transactable price.** The price at the top of
+> the team page contradicts the order book, so profit and loss is permanently
+> wrong, the chart moves independently of the book, and the price offered when a
+> user tries to buy is not the price they can transact at. On a product whose
+> premise is that a price is the thing you own, a price the user cannot trust is
+> a defect in the proposition rather than in a screen.
+>
+> **It makes the market order more necessary, not less.** The reporter's own
+> conclusion: with a mismatched price, limit orders will frequently fail to fill
+> and a retail user will not diagnose why. This is the strongest argument yet
+> for the synthetic market order landing before real users arrive, see
+> [[market-maker/systems/synthetic-market-order]].
+>
+> **Max buy is rejected when buying power is sufficient**, and still fails
+> around $1,000 below the limit. Edwin asked for a max-quantity control on
+> 27 July; this is that behaviour failing before the control exists.
+>
+> Also raised: open orders are hard to find, there is no default order size, an
+> open order can only be cancelled rather than modified, positions are hard to
+> locate, and bid and ask sometimes render blank. One crash: rotating to
+> landscape and back left the tab bar unresponsive, with videos promised.
+>
+> _Source: [[jared-trading-feedback-aug-2026]]._
+
+> ### Update (27-07): team naming and tickers
+>
+> Team companies cannot carry the real franchise name. Edwin does not want
+> _"an unnecessary legal thing I've got to defend"_ or users thinking they are
+> literally buying the New York Jets. Options weighed: prefixing with "InPlay"
+> (rejected as too long), or Troy's proposal, **Kalshi-style acronyms** —
+> `NYJ`, with an InPlay-style prefix pattern such as `IPG` available if needed.
+> Edwin: _"I think that's perfect, Troy."_ Final form to be played with
+> aesthetically and run past Marlin.
+>
+> The change itself is cheap: a **config update** that propagates across the app
+> for all users (Hasan). The constraint is recorded as C6 in
+> [[compliance/compliance]]. Tickers are also the current hard blocker on
+> market-maker order testing (T13 in [[market-maker/open-questions]]).
+> _Source: [[27-07-2026-touchdown]]._
 
 **Personas:**
 
@@ -303,6 +451,8 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 > **Update (20 July — Market Maker promoted to its own component):** the 20-07 mechanics session with Edwin and Troy resolved enough of the market-maker picture that it is now a **standalone component — see [[market-maker/market-maker]]** (the earlier "candidate `trading/market-maker` sub-component" framing is superseded). Headlines for Trading: the MM is a **synthetic tZERO entity** (unlimited buying power, short-locate exemption) posting resting liquidity — **user orders can match each other directly**, the MM is not a required counterparty; **everything stays limit orders** (crossing limit orders replace market orders); **cancel-replace quoting ~5–10×/sec**; **InPlay builds CTS1/CTS2** (the price engines — not consumed from tZERO); markets are **truly isolated per team** (pairs-trading frame — no cross-game or rankings effects intra-game). **tZERO tech calls now 2×/week (Tue/Thu)** alongside Mon/Wed/Fri touchdowns; tZERO asked to stand up the synthetic MM entity in QA. **MM ops UI = desktop version of this app**, built for the MM first (params, order lookup, positions/P&L — Kevin likely operator). MM deep-dive **Thu 23-07, 3–4pm London**. _Source: [[20-07-2026-touchdown]]._
 
 > **Update (24 July, trading infra mapped, small items remain, sim testing route):** the team **mapped out every component of the trading infrastructure yesterday** (23-07), where each stands and what remains. Launch-readiness is **non-negotiable** ("it's going to be ready for launch"). What is left is **small and well-understood**: adding the **cancel feature** and a **cancel-and-request feature**, both tightly integrated with the market maker (the thing being traded against). Some items had been waiting on **tZERO** (one API linking to another). **Testing does not need a live game:** pick a **historical game** (Chiefs vs Ravens was used), **run a simulation** off it on a test version of the app, and **repeat multiple times a day**, verifying both the user-side experience and the market-maker side. Edwin also asked for a **read-only monitoring dashboard** over the market maker (inventory / shares held per market / bills) so an InPlay operator can watch it near-production; George notes the MM **is just another user**, so the **same inventory APIs** that show a user their positions serve the MM view, phased (backend-working, then data representation, then later variable control). MM specifics belong to [[market-maker/market-maker]]; not restated here. _Source: [[24-07-2026-touchdown]]._
+>
+> **Update (24 July touchdown):** **Trading is launch non-negotiable — target live for ~Aug 22** (Troy: "we need to get this live for the 22nd"; Edwin: "less than a month before this is all going to happen"). The full trading-infrastructure component map was completed 23-07 — "every single component… where are we at with all of it" — leaving a to-do list of small items (e.g. the **cancel feature** and **cancel-and-replace**), tightly integrated with the [[market-maker/market-maker|Market Maker]] ("the market maker is going to be the thing trading"). **Testing doesn't wait for live games:** SR simulation replays of past games (e.g. Chiefs–Ravens) can run multiple times a day, checked from both the user's perspective and the MM's side. **Launch-scope remainder named:** notifications, tax forms, payouts — payouts are the blind spot (payment-provider deal unsigned; worst case users see amounts owed and payouts are delayed a couple of weeks; Edwin fine with an interim manual rail — Zelle/wire). Cody's roadmap/bandwidth-visibility ask → Brett + George building a vault dashboard for release cadence. _Source: [[24-07-2026-touchdown]]._
 
 ## Gaps and Questions for Next Call
 

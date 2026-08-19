@@ -90,6 +90,27 @@ The base referral reward is 1,000 InPlay$; events apply a multiplier to it. Most
 | 4th of July | (event multiplier) | — | **Multi-day:** Fri 00:00 → Sun 23:59 |
 | Labor Day weekend | (event multiplier) | — | **Multi-day:** Fri 00:00 → Mon 23:59 |
 
+> **Update (03-08-2026): 5× for the whole of August.** Cody set a flat **5×
+> multiplier running for the rest of August**, superseding the per-event
+> calendar above for that period. Rationale is bluntly arithmetic — with ~118
+> signups the cost of a large multiplier is trivial and the upside is
+> acquisition: _"who cares? There's like a hundred people out there in the
+> ether."_ The change has to land in **two places**: the **website** (Max
+> sweeping every page for referral dates and multipliers) and the **internal
+> system** (George confirmed done). _Source: [[03-08-2026-touchdown]]._
+
+> **Note (29-07 / 31-07): the referral engine is not converting pre-launch.**
+> Edwin: _"the referrals aren't working the way that I thought they would…
+> no one's referring anyone to get more trading money."_ His own read is that
+> it is a timing artefact rather than a design fault — **nobody has lost any
+> trading money yet**, and the whole thing does not feel real weeks out.
+> Corroborated independently by an OSU candidate Troy interviewed, who thought
+> the model was smart and would be used **once the competition starts and people
+> draw down**, and would play well on campus. Recorded so the pre-launch numbers
+> are not misread as a failure of the mechanic. Sits alongside the general
+> signup problem (~100 on 27-07, 118 on 31-07, 2 more after the Android launch
+> blast on 03-08).
+
 - **Eligibility window:** a referral counts for a given day's multiplier only if the referee completes the **full process** (signup + KYC, through to the point the referral dollar is issued) by **23:59** of that day. A referee who registers at 23:58 but hasn't completed KYC does **not** qualify for that day.
 - **Counting/automation:** the system must **automate and track when each referral's signup completed** against these event windows, maintaining an automated **ledger**. Referral dollars are not paid into a wallet at the moment of qualification — the referral bank is a tracked side-record; wallets are **topped off** from the ledger once tZERO wallets are created. (Consistent with the IPO-session note that the referral wallet is "a trackable side database," not a live wallet at signup.)
 - ⚠️ **Launch dependency (delivery):** the first 3× event is **21 June** — ahead of likely app-store approval. The fallback is a **PWA** (same React Native codebase, possibly re-rendered as server-side NextJS; Persona/KYC wired in, identical branding) so the referral programme can run without Apple/Android approval. This is owned by **[[customer-onboarding/customer-onboarding|Customer Onboarding]]** / delivery, but the referral calendar's launch date depends on it.

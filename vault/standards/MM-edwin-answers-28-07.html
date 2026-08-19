@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edwin · Complete package — all six answers, IPO methodology, code · 28 Jul 2026</title>
+<style>
+  :root{
+    --paper:#f6f2e8; --paper-deep:#efe9da; --ink:#211f18; --ink-soft:#5b5749;
+    --rule:#d9d1bc; --rule-strong:#b8ad8f;
+    --bid:#0e6a4c; --bid-deep:#0a4f39; --bid-soft:#e0eee5; --bid-ghost:#eef5ef;
+    --offer:#a83a2c; --offer-deep:#7f2b20; --offer-soft:#f5e4df; --offer-ghost:#f9efec;
+    --amber:#8f6a14; --amber-soft:#f4ecd6;
+    --serif:'Charter','Bitstream Charter','Sitka Text',Cambria,Georgia,serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,105,70,.025) 2px 3px);
+    color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.68;
+  }
+  .stripe{
+    background:var(--ink); color:var(--paper); font-family:var(--mono);
+    font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+    text-align:center; padding:.5rem 1rem;
+  }
+  .stripe b{color:#e8b7ad;font-weight:600}
+  .topnav{
+    position:sticky;top:0;z-index:10;background:var(--paper-deep);
+    border-bottom:1px solid var(--rule-strong);
+    padding:.5rem 1rem;display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;
+    box-shadow:0 2px 8px rgba(60,50,25,.08);
+  }
+  .topnav a{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-decoration:none;
+    color:var(--ink-soft);border:1px solid var(--rule);background:rgba(255,255,255,.5);
+    padding:.24rem .55rem;border-radius:99px;white-space:nowrap;transition:all .15s;
+  }
+  .topnav a:hover{border-color:var(--bid);color:var(--bid-deep);background:var(--bid-ghost)}
+  .topnav a.home{border-color:var(--ink);color:var(--ink);font-weight:700}
+  .wrap{max-width:47.5rem;margin:0 auto;padding:0 1.4rem 5rem}
+  .masthead{padding:3.6rem 0 2.2rem;border-bottom:3px double var(--rule-strong)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--bid);margin-bottom:1rem}
+  h1{font-size:clamp(1.9rem,4.8vw,2.9rem);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+  h1 .thin{font-weight:400;font-style:italic;color:var(--ink-soft)}
+  .deck{margin-top:1.1rem;font-size:1.1rem;font-style:italic;color:var(--ink-soft);max-width:38rem}
+  .meta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.45rem}
+  .meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;padding:.26rem .68rem;border:1px solid var(--rule-strong);border-radius:99px;color:var(--ink-soft)}
+  .meta span.hot{border-color:var(--offer);color:var(--offer)}
+  .sectionhead{padding:2.8rem 0 1.2rem;border-bottom:3px double var(--rule-strong);margin-bottom:.6rem;scroll-margin-top:4rem}
+  .sectionhead h2{font-size:clamp(1.5rem,4vw,2.15rem);line-height:1.12;font-weight:700;letter-spacing:-.012em}
+  .sectionhead h2 .n{font-family:var(--mono);font-size:.72rem;color:var(--bid);letter-spacing:.16em;display:block;margin-bottom:.5rem}
+  h3{font-size:1.16rem;font-weight:700;margin-top:2.2rem}
+  h4{font-size:1rem;font-weight:700;margin-top:1.7rem}
+  p{margin-top:.95rem}
+  p.lede{font-size:1.06rem}
+  a{color:var(--bid-deep)}
+  ul,ol{margin:.9rem 0 0 1.35rem}
+  li{margin-top:.4rem}
+  li::marker{color:var(--bid);font-family:var(--mono);font-size:.85em}
+  code{font-family:var(--mono);font-size:.84em;background:var(--paper-deep);padding:.1em .35em;border-radius:3px}
+  .math{
+    margin:1.2rem 0 0;background:rgba(255,255,255,.6);
+    border:1px solid var(--rule-strong);border-left:4px solid var(--bid);
+    padding:1.3rem 1.5rem;overflow-x:auto;
+  }
+  .math + .math{margin-top:.85rem}
+  .math .eq{
+    font-family:var(--serif);font-size:1.18rem;line-height:1.9;white-space:nowrap;
+    text-align:center;letter-spacing:.01em;
+  }
+  .math .eq + .eq{margin-top:.9rem}
+  .math .note{display:block;font-size:.8rem;font-style:italic;color:var(--ink-soft);text-align:center;margin-top:.5rem;letter-spacing:0;white-space:normal;line-height:1.5}
+  var{font-style:italic;font-weight:500}
+  .math sub,.where sub{font-size:.66em;font-style:normal}
+  .math sup{font-size:.66em}
+  .math .fn{font-style:normal}
+  .math .sum{font-size:1.35em;font-style:normal;vertical-align:-.08em;padding-right:.06em}
+  .frac{display:inline-block;vertical-align:middle;text-align:center;line-height:1.2;margin:0 .18em}
+  .frac .top{display:block;padding:0 .35em .1em;border-bottom:1.4px solid var(--ink)}
+  .frac .bot{display:block;padding:.1em .35em 0}
+  .where{
+    display:grid;grid-template-columns:auto 1fr;gap:.55rem 1.1rem;
+    margin:.85rem 0 0;padding:1.1rem 1.3rem;font-size:.9rem;
+    border:1px dashed var(--rule-strong);background:rgba(255,255,255,.35);
+  }
+  .where dt{font-family:var(--serif);white-space:nowrap;text-align:right;font-weight:600}
+  .where dd{color:var(--ink-soft);margin:0}
+  ol.steps{
+    list-style:none;margin:1.4rem 0 0;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.45rem;counter-reset:s;
+  }
+  ol.steps li{
+    counter-increment:s;margin:0;display:flex;gap:.65rem;align-items:baseline;
+    border:1px solid var(--rule);background:rgba(255,255,255,.45);
+    padding:.5rem .7rem;font-size:.88rem;
+  }
+  ol.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.78rem;color:var(--bid);flex:none}
+  table{width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:.9rem}
+  th{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    text-align:left;color:var(--ink-soft);padding:.5rem .7rem;border-bottom:2px solid var(--rule-strong);
+  }
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .num{font-family:var(--mono);font-size:.82rem;text-align:right}
+  td.mono{font-family:var(--mono);font-size:.8rem}
+  .callout{margin:1.4rem 0 0;padding:1rem 1.25rem;border:1px solid;border-left-width:4px;font-size:.94rem;background:rgba(255,255,255,.4)}
+  .callout .tag{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.45rem}
+  .callout.note{border-color:var(--bid)}         .callout.note .tag{color:var(--bid)}
+  .callout.warn{border-color:var(--amber);background:var(--amber-soft)} .callout.warn .tag{color:var(--amber)}
+  .callout.danger{border-color:var(--offer);background:var(--offer-ghost)} .callout.danger .tag{color:var(--offer)}
+  .rulebanner{
+    margin:1.6rem 0 0;text-align:center;padding:1.3rem 1.2rem;
+    border-top:3px double var(--rule-strong);border-bottom:3px double var(--rule-strong);
+    font-size:1.12rem;font-style:italic;
+  }
+  .rulebanner b{color:var(--bid-deep);font-style:normal}
+  .attach{list-style:none;margin:1.2rem 0 0;display:grid;gap:.4rem}
+  .attach li{margin:0;display:flex;gap:.7rem;align-items:baseline;border:1px solid var(--rule);background:rgba(255,255,255,.45);padding:.55rem .8rem;font-size:.88rem}
+  .attach .f{font-family:var(--mono);font-size:.74rem;color:var(--bid-deep);flex:none}
+  footer{margin-top:3.5rem;padding-top:1.3rem;border-top:1px solid var(--rule-strong);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--ink-soft);text-align:center;line-height:2}
+  em{font-style:italic}
+  @media (max-width:640px){ .where{grid-template-columns:auto 1fr} }
+  @media print{
+    body{background:#fff;font-size:11pt}
+    .stripe,.topnav{display:none}
+    .sectionhead{page-break-before:always}
+  }
+</style>
+</head>
+<body>
+
+<div class="stripe"><b>Edwin · InPlay</b> &nbsp;·&nbsp; verbatim rendering of the email of 28 Jul 2026 — the source message is authoritative &nbsp;·&nbsp; equations typeset, dashed panels restate Edwin's own definitions under each formula &nbsp;·&nbsp; internal use only</div>
+
+<nav class="topnav" aria-label="Sections">
+  <a class="home" href="#top">☰ Top</a>
+  <a href="#definitions">Definitions</a>
+  <a href="#s1">1 Method</a>
+  <a href="#s2">2 Double count</a>
+  <a href="#s3">3 College</a>
+  <a href="#s4">4 Spec of the number</a>
+  <a href="#s5">5 Ties</a>
+  <a href="#s6">6 IPO prices</a>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead" id="top">
+  <div class="eyebrow">Correspondence · answers to the six questions of 28 Jul</div>
+  <h1>Market Maker / Sports Radar<br><span class="thin">complete package: all six answers, IPO methodology, code</span></h1>
+  <p class="deck">Answers in your order.</p>
+  <div class="meta">
+    <span>From · Edwin</span>
+    <span>To · George</span>
+    <span>28 July 2026</span>
+    <span class="hot">Re: the six questions</span>
+  </div>
+</header>
+
+<h3>Attachments</h3>
+<ul class="attach">
+  <li><span class="f">inplay_reference_feed.zip</span> the complete engine as running, tested code — 31 tests, stdlib only — covering the win-total math, the double-count-safe pricing, the college ratings feed, and the IPO formula</li>
+  <li><span class="f">sample_reference_feed_2026-08-29.json</span> a valid sample file in the exact production feed schema</li>
+  <li><span class="f">InPlay_IPO_Pricing.xlsx</span> · <span class="f">engine.py</span> the original IPO pricing workbook and computation — Parameters tab is the single source of tunable values</li>
+</ul>
+
+<p>The README in the zip maps every module to the numbered items below. Where something is a spec decision rather than math, I've said so and made the call. We need this live as fast as you can get there — sequencing is yours; everything you need is below or attached.</p>
+
+<!-- ==================== DEFINITIONS ==================== -->
+<section class="sectionhead" id="definitions">
+  <h2><span class="n">Governing</span>Definitions</h2>
+</section>
+
+<p class="lede">Every symbol means exactly this, everywhere in this email, the code, and the workbook:</p>
+
+<dl class="where">
+  <dt><var>T</var></dt>
+  <dd>expected total season wins for a team: banked wins plus expected remaining wins, as of the publication timestamp. Whole-season basis — it includes banked wins, which is why the formula in item 2 subtracts. Computed as the de-vigged mean per item 1.</dd>
+
+  <dt><var>G</var></dt>
+  <dd>the set of the team's games that have kicked off since <var>T</var>'s publication timestamp, whether in progress or final.</dd>
+
+  <dt><var>p<sub>ref</sub></var>(<var>g</var>)</dt>
+  <dd>the pregame win probability for game <var>g</var>, frozen at the moment <var>T</var> was ingested. If no pregame number existed at ingestion, the closing pregame probability.</dd>
+
+  <dt><var>x<sub>g</sub></var></dt>
+  <dd>game <var>g</var>'s current state: <var>x<sub>g</sub></var> in [0,1], the live win probability, while in play; <var>x<sub>g</sub></var> in {0, 0.5, 1} once final (0.5 = tie, see item 5).</dd>
+
+  <dt><var>σ<sub>mkt</sub></var></dt>
+  <dd>the market-implied dispersion of season wins, a league constant: 2.7 for NFL, 2.2 for NCAA (the workbook's Parameters tab). This is the ONLY sigma ever used to extract a mean from a posted line.</dd>
+
+  <dt><var>σ</var> <span style="font-weight:400">(feed field)</span></dt>
+  <dd>a different object: the binomial dispersion of a team's remaining schedule, sqrt of the sum of <var>p</var> × (1−<var>p</var>) over remaining games. It never enters the de-vig step. The code enforces the separation; do not interchange them.</dd>
+</dl>
+
+<div class="math">
+  <div class="eq"><var>σ</var><span class="fn"> (feed)</span> &nbsp;=&nbsp; √<span style="border-top:1.4px solid var(--ink);padding:0 .3em">&nbsp;<span class="sum">Σ</span> <var>p</var> × (1 − <var>p</var>)&nbsp;</span></div>
+  <span class="note">over remaining games — the binomial dispersion of the schedule, never the de-vig sigma</span>
+</div>
+
+<dl class="where">
+  <dt><var>σ</var> <span style="font-weight:400">(feed)</span></dt>
+  <dd>the binomial dispersion of a team's remaining schedule. <b>Never enters the de-vig step</b> — the code enforces the separation; do not interchange with <var>σ<sub>mkt</sub></var></dd>
+  <dt><var>p</var></dt>
+  <dd>the win probability of one remaining game</dd>
+</dl>
+
+<!-- ==================== 1 ==================== -->
+<section class="sectionhead" id="s1">
+  <h2><span class="n">Item 1</span>Method — yes, but don't use the posted line raw.</h2>
+</section>
+
+<p><b>Plain English:</b> the posted total is the median — where the money splits — with the bookmaker's margin baked into the prices on each side. The odds on Over vs Under tell us which side of the line the true average sits on, and by how much. So: turn both sides' odds into probabilities, strip the margin, and shift the line toward whichever side the fair probability favors, scaled by <var>σ<sub>mkt</sub></var>.</p>
+
+<p>Four steps:</p>
+
+<ol class="steps">
+  <li>convert the American odds on Over and Under to implied probabilities</li>
+  <li>de-vig — divide each by their sum so they add to exactly 1</li>
+  <li>take <var>σ<sub>mkt</sub></var> for the league (2.7 NFL, 2.2 NCAA)</li>
+  <li>mean = line + <var>σ<sub>mkt</sub></var> × inverse_normal_cdf(fair over probability)</li>
+</ol>
+
+<div class="math">
+  <div class="eq"><span class="fn">mean</span> &nbsp;=&nbsp; <span class="fn">line</span> &nbsp;+&nbsp; <var>σ<sub>mkt</sub></var> × <span class="fn">InvNormCDF</span>( <var>P<sub>over</sub></var><sup>&nbsp;fair</sup> )</div>
+  <span class="note">the only place <var>σ<sub>mkt</sub></var> is ever used — 2.7 NFL, 2.2 NCAA</span>
+</div>
+
+<dl class="where">
+  <dt><span class="fn">mean</span></dt>
+  <dd>expected total season wins — the value <var>T</var> takes</dd>
+  <dt><span class="fn">line</span></dt>
+  <dd>the posted total: the median, where the money splits</dd>
+  <dt><var>σ<sub>mkt</sub></var></dt>
+  <dd>the market-implied dispersion of season wins, a league constant: <b>2.7 for NFL, 2.2 for NCAA</b>. The ONLY sigma ever used to extract a mean from a posted line</dd>
+  <dt><var>P<sub>over</sub></var><sup>&nbsp;fair</sup></dt>
+  <dd>the fair over probability — implied probability of the Over, divided by the sum of both sides so they add to exactly 1</dd>
+</dl>
+
+<p>The exact implementation is <code>inplay_feed/devig.py</code> — port it or import it. Worked example to check your port against:</p>
+
+<table>
+  <thead><tr><th>Input</th><th class="num">Value</th><th>Result</th><th class="num">Value</th></tr></thead>
+  <tbody>
+    <tr><td>line</td><td class="num">9.5</td><td>de-vigged fair Over</td><td class="num">0.532468</td></tr>
+    <tr><td>Over</td><td class="num">−125</td><td><var>z</var></td><td class="num">0.081474</td></tr>
+    <tr><td>Under</td><td class="num">+105</td><td>mean, <var>σ<sub>mkt</sub></var> = 2.7 (NFL)</td><td class="num">9.7200 wins</td></tr>
+    <tr><td></td><td class="num"></td><td>mean, <var>σ<sub>mkt</sub></var> = 2.2 (NCAA)</td><td class="num">9.6792 wins</td></tr>
+  </tbody>
+</table>
+
+<p>&hellip; a mean of 9.7200 wins — <b>$48.60 a share instead of the naive $47.50</b>. The same odds under NCAA <var>σ<sub>mkt</sub></var> 2.2 give 9.6792 wins; both are unit tests in the suite. Two more tests that must pass: symmetric −110/−110 juice returns exactly the line; heavier Over juice returns a mean above the line.</p>
+
+<div class="callout warn">
+  <span class="tag">One caveat</span>
+  This assumes half-point lines (9.5, 10.5), which is what books almost always post. If you ever see a whole-number line, pushes muddy the math — flag it to me rather than special-casing it.
+</div>
+
+<p><b>Favorite-longshot bias:</b> park it for v1; we calibrate against history in-season. Staleness is handled structurally by item 2: the only thing we need live is the game in play, and the live feed gives us that.</p>
+
+<!-- ==================== 2 ==================== -->
+<section class="sectionhead" id="s2">
+  <h2><span class="n">Item 2</span>The double count — your fix is right.</h2>
+</section>
+
+<p>The convention, using the definitions above:</p>
+
+<div class="math">
+  <div class="eq"><span class="fn">On-field value per share</span> &nbsp;=&nbsp; $5 × ( <var>T</var> &nbsp;−&nbsp; <span class="sum">Σ</span><sub><var>g</var>∈<var>G</var></sub> <var>p<sub>ref</sub></var>(<var>g</var>) &nbsp;+&nbsp; <span class="sum">Σ</span><sub><var>g</var>∈<var>G</var></sub> <var>x<sub>g</sub></var> )</div>
+  <span class="note">subtract what <var>T</var> assumed for each kicked-off game, add what it is actually doing</span>
+</div>
+
+<dl class="where">
+  <dt><var>T</var></dt>
+  <dd>expected total season wins: banked wins plus expected remaining wins, as of the publication timestamp. <b>Whole-season basis</b> — it includes banked wins, which is why this formula subtracts</dd>
+  <dt><var>G</var></dt>
+  <dd>the set of the team's games that have kicked off since <var>T</var>'s publication timestamp, whether in progress or final</dd>
+  <dt><var>p<sub>ref</sub></var>(<var>g</var>)</dt>
+  <dd>the pregame win probability for game <var>g</var>, <b>frozen</b> at the moment <var>T</var> was ingested. If no pregame number existed at ingestion, the closing pregame probability</dd>
+  <dt><var>x<sub>g</sub></var></dt>
+  <dd>game <var>g</var>'s current state: in [0,1], the live win probability, while in play; in {0, 0.5, 1} once final (0.5 = tie)</dd>
+</dl>
+
+<div class="callout note">
+  <span class="tag">Scope note</span>
+  So this formula isn't misread as the whole price: this is the <b>ON-FIELD LEG</b> of the security. Per the build spec, the full share value is the retained-earnings composite — known Retained Earnings Balance already banked, plus this on-field leg, plus expected ad-revenue accrual from the $2.50-per-game commercial pool. The ad leg stacks on top of this formula exactly as the build spec already describes; nothing here changes it.
+</div>
+
+<h3>Implementation</h3>
+
+<ul>
+  <li><b>Unit test (a):</b> the on-field leg equals $5 × <var>T</var> at the first kickoff after a fresh <var>T</var>.</li>
+  <li><b>Unit test (b):</b> during a game, it moves $5 per unit of live probability — nothing frozen.</li>
+  <li><b>Unit test (c):</b> after the final whistle, it holds at banked-plus-expected until the next <var>T</var> arrives.</li>
+  <li>Build <var>G</var> as a <b>set</b> and the adjustment as a <b>sum</b> from day one — on college Saturdays, or any week the total lags, you'll be netting out two or more games.</li>
+  <li>When a new <var>T</var> lands, <b>do not smooth the mid.</b> Widen quotes around publication windows if you want cover.</li>
+</ul>
+
+<div class="rulebanner">
+  The price change when a new <var>T</var> arrives is a discontinuous repricing reflecting newly available information, not market-maker behavior. <b>Smoothing it would mean quoting a price you know is wrong.</b>
+</div>
+
+<p>All three tests — plus one proving your $63 example cannot happen — are in the suite, against <code>inplay_feed/pricing.py</code>. <code>TeamPricer</code> in that module is a reference implementation of the full on-field lifecycle; lift it verbatim if you want.</p>
+
+<!-- ==================== 3 ==================== -->
+<section class="sectionhead" id="s3">
+  <h2><span class="n">Item 3</span>College — the number comes from the attached engine.</h2>
+</section>
+
+<div class="callout danger">
+  <span class="tag">Complete</span>
+  This section is the complete spec; nothing further is coming for this item except S3 credentials.
+</div>
+
+<h3>How it's computed — all in the zip, module by module</h3>
+
+<ul>
+  <li>Every team carries a <b>power rating</b>, updated after each result — think chess Elo (<code>inplay_feed/elo.py</code>). Margin of victory counts but is capped, so a blowout of a weak opponent doesn't distort. Home field is a fixed bump. Preseason ratings start from last season, pulled back toward the conference average.</li>
+  <li>A rating gap converts to a win probability through a <b>logistic curve</b>, calibrated weekly against Sportradar's own posted pregame probabilities where both exist (<code>inplay_feed/calibration.py</code>) — so the published numbers and your live feed cannot drift apart systematically.</li>
+  <li><b>NFL only:</b> remaining-game probabilities are rescaled so they sum exactly to the de-vigged sportsbook total from item 1 (<code>inplay_feed/rake.py</code>). For the NFL, the published number IS the sportsbook number — ratings only supply the game-by-game shape.</li>
+  <li><b>Expected remaining wins</b> = the sum of those probabilities over the remaining schedule; the feed's <var>σ</var> field is the schedule dispersion off the same probabilities.</li>
+</ul>
+
+<h3>Seeding</h3>
+
+<p>Seeding the ratings needs only one to two seasons of final scores — nflverse for NFL, the collegefootballdata.com API for college, both free, no odds needed — loaded into the row format in <code>backtest.py</code> (<code>{season, home, away, home_score, away_score, neutral}</code>), replayed chronologically through <code>EloEngine</code>, then <code>preseason_reset</code>. Ship on the default parameters in the code (K 24, HFA 55, MOV cap 28 — standard football-Elo values); the grid search is confirmation, not a blocker.</p>
+
+<h3>The feed</h3>
+
+<p>One JSON file per day, <b>06:00 ET</b>, all 170 teams in every file, published even when nothing changed — <b>a missing file is an alarm, never a shrug.</b> Fields per record:</p>
+
+<table>
+  <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">team_id</td><td>Sportradar's competitor ID — joins your feed with no mapping table</td></tr>
+    <tr><td class="mono">league</td><td>"NFL" / "NCAA"</td></tr>
+    <tr><td class="mono">effective_time</td><td>ISO-8601 UTC</td></tr>
+    <tr><td class="mono">revision</td><td></td></tr>
+    <tr><td class="mono">is_correction</td><td></td></tr>
+    <tr><td class="mono">expected_remaining_wins</td><td>full precision, remaining games only, never includes banked wins</td></tr>
+    <tr><td class="mono">sigma</td><td></td></tr>
+    <tr><td class="mono">games_remaining</td><td></td></tr>
+    <tr><td class="mono">methodology_version</td><td></td></tr>
+  </tbody>
+</table>
+
+<p>The attached sample file is the schema, live — its numbers are <b>synthetic</b> (the engine was demonstrated on simulated seasons); test ingestion against it, calibrate nothing against it.</p>
+
+<h3>Consumption rules — deliberately identical to item 4</h3>
+
+<ul>
+  <li>hold last value until a new record arrives</li>
+  <li>on <code>is_correction = true</code>, replace the record with the same <code>effective_time</code> and lower <code>revision</code></li>
+  <li>validate on ingest (0 ≤ <code>expected_remaining_wins</code> ≤ <code>games_remaining</code>; <code>sigma</code> &gt; 0 whenever <code>games_remaining</code> &gt; 0; all 170 teams present — any failure: <b>reject, alarm, keep previous values</b>)</li>
+</ul>
+
+<p><code>inplay_feed/feed.py</code> has <code>validate_records()</code> — run the same function on your end and bad files get caught on both sides of the pipe.</p>
+
+<!-- ==================== 4 ==================== -->
+<section class="sectionhead" id="s4">
+  <h2><span class="n">Item 4</span>Spec of the number.</h2>
+</section>
+
+<p><b>Remaining games only</b> — banked wins never appear in it. (Deliberate contrast with <var>T</var>, which is whole-season; the definitions block governs.) Daily 06:00 ET, heartbeat even when unchanged, hold last value. Corrections: reissued with the original effective timestamp, a bumped revision, and the <code>is_correction</code> flag — <b>never fixed silently in the next publish.</b> The publisher module enforces all of this, including refusing to write a file that fails validation.</p>
+
+<!-- ==================== 5 ==================== -->
+<section class="sectionhead" id="s5">
+  <h2><span class="n">Item 5</span>Ties.</h2>
+</section>
+
+<p>Settlement rule first, pricing follows: SDMM-1 settles a tie as <var>x<sub>g</sub></var> = 0.5 — <b>$2.50 a share</b> against the $5.00 win — mirroring NFL standings and matching the IPO tie leg. Price the two-way market exactly as you proposed. NFL ties run about 0.4% of games; the expected drag is on the order of half a cent a share — carry it as a small reserve, don't model it. College can't tie.</p>
+
+<!-- ==================== 6 ==================== -->
+<section class="sectionhead" id="s6">
+  <h2><span class="n">Item 6</span>IPO prices — the complete methodology.</h2>
+</section>
+
+<p>With the computation attached twice over: <code>engine.py</code> (the original) and <code>inplay_feed/ipo.py</code> in the zip (the same methodology as an importable module with its own tests).</p>
+
+<div class="rulebanner">
+  The listing price of every one of the 170 Team Company securities follows one principle: <b>expected terminal liquidating distribution per share, less a small rule-based primary-market concession.</b> No discretionary input anywhere.
+</div>
+
+<div class="math">
+  <div class="eq"><span class="fn">IPO price</span> &nbsp;=&nbsp; <span class="fn">EV</span> &nbsp;−&nbsp; <span class="fn">discount</span></div>
+  <span class="note">the concession is a primary-market device, not a valuation statement</span>
+</div>
+
+<div class="math">
+  <div class="eq"><span class="fn">EV</span> &nbsp;=&nbsp; $5.00 × <span class="fn">E</span>[Wins] &nbsp;+&nbsp; $2.50 × <span class="fn">E</span>[Ties]<sup>&nbsp;NFL only</sup> &nbsp;+&nbsp; $2.50<span class="fn">/game</span> × <span class="fn">E</span>[Volume Capture Share]</div>
+  <span class="note">expected terminal liquidating distribution per share</span>
+</div>
+
+<dl class="where">
+  <dt><span class="fn">EV</span></dt>
+  <dd>expected terminal liquidating distribution per share</dd>
+  <dt><span class="fn">discount</span></dt>
+  <dd>a small rule-based primary-market concession — 1% to 3%, scaled by the contested share of off-field value (see below)</dd>
+  <dt><span class="fn">E</span>[Wins]</dt>
+  <dd>from single-book BetMGM season win-total prices at the freeze, de-vigged proportionally, mapped through the item&nbsp;1 formula with the same constants</dd>
+  <dt><span class="fn">E</span>[Ties]</dt>
+  <dd>NFL only; a tie settles at <var>x<sub>g</sub></var> = 0.5, i.e. $2.50 a share against the $5.00 win</dd>
+  <dt><span class="fn">E</span>[Volume&nbsp;Capture&nbsp;Share]</dt>
+  <dd>expected share of each game's $2.50 commercial pool, from the deterministic Popularity Index below</dd>
+</dl>
+
+<h3>On-field leg</h3>
+
+<p><span class="fn">E</span>[Wins] from single-book <b>BetMGM</b> season win-total prices at the freeze, de-vigged proportionally, mapped through <var>μ</var> = line + <var>σ<sub>mkt</sub></var> × InvNorm(<var>P<sub>over</sub></var>) — the exact item 1 math with the exact same constants, so your in-season <var>T</var> and the IPO on-field leg are <b>the same computation by construction</b>.</p>
+
+<h3>Off-field leg</h3>
+
+<p>No realized volume exists before trading opens, so expected capture comes from a deterministic <b>Popularity Index</b>:</p>
+
+<div class="math">
+  <div class="eq"><span class="fn">Popularity Index</span> &nbsp;=&nbsp; 0.6 × <span class="fn">Brand</span> &nbsp;+&nbsp; 0.4 × <span class="fn">PerfIndex</span></div>
+  <span class="note">Brand: a fixed hand-assigned 0–100 tier, supplied with the workbook</span>
+</div>
+
+<div class="math">
+  <div class="eq"><span class="fn">PerfIndex</span> &nbsp;=&nbsp; 100 × <span class="frac"><span class="top"><span class="fn">E</span>[Wins]</span><span class="bot"><span class="fn">Games</span></span></span></div>
+</div>
+
+<div class="math">
+  <div class="eq"><span class="fn">Capture</span>(<var>i</var>, <var>j</var>) &nbsp;=&nbsp; <span class="fn">Clamp</span>( <span class="frac"><span class="top"><span class="fn">Pop</span><sub><var>i</var></sub></span><span class="bot"><span class="fn">Pop</span><sub><var>i</var></sub> + <span class="fn">Pop</span><sub><var>j</var></sub></span></span>, &nbsp;0.20, &nbsp;0.80 )</div>
+  <span class="note">per-game capture against opponent <var>j</var> — Bradley-Terry</span>
+</div>
+
+<dl class="where">
+  <dt><span class="fn">Brand</span></dt>
+  <dd>a fixed hand-assigned 0–100 tier, supplied with the workbook</dd>
+  <dt><span class="fn">PerfIndex</span></dt>
+  <dd>100 × <span class="fn">E</span>[Wins] ÷ Games</dd>
+  <dt><span class="fn">Games</span></dt>
+  <dd>the team's scheduled games</dd>
+  <dt><span class="fn">Pop</span><sub><var>i</var></sub>, <span class="fn">Pop</span><sub><var>j</var></sub></dt>
+  <dd>the Popularity Index of the team and of its opponent in that game</dd>
+  <dt>0.20, 0.80</dt>
+  <dd>the clamp — no single game's expected allocation may fall outside this band</dd>
+</dl>
+
+<p>Opponents outside the 170-team universe are not contested: the universe team accrues the <b>full $2.50</b>.</p>
+
+
+<h3>Discount</h3>
+
+<p><b>1% to 3%</b>, scaled within each league by the <b>CONTESTED</b> share of the name's off-field value. On-field value is already market-priced and carries no concession. Names whose <b>uncontested accrual exceeds 20% of EV carry no discount</b> and list at full EV. <code>engine.py</code> is authoritative on the exact scaling map; <code>ipo.py</code> flags the one line to reconcile against it before the freeze.</p>
+
+<h3>Mechanics for the build</h3>
+
+<p>Prices are computed <b>once</b> from the odds snapshot <b>three days before the offering opens</b>, at full precision — no rounding anywhere — and <b>never revised</b>: not for injuries, not for line moves, not for anything between freeze and close.</p>
+
+<div class="callout note">
+  <span class="tag">Day one</span>
+  The <b>Reference Price seeds at IPO EV, not at the listed price</b> — the discount is a primary-market concession, not a valuation statement — so your day-one mid starts at EV. Acceptance test for day-one agreement: run the engine on the freeze snapshot and match its output; <b>there is nothing to reverse-engineer.</b>
+</div>
+
+<p><b>Float:</b> a fixed, identical share count per team; the count follows separately — nothing on your side waits for it.</p>
+
+<div class="rulebanner">
+  Send me anything that doesn't survive contact with the code.
+  <br><b>— Edwin</b>
+</div>
+
+<footer>
+  Verbatim rendering · source message from Edwin, 28 July 2026 · the email and its attachments are authoritative<br>
+  InPlay Vault · vault/standards/MM-edwin-answers-28-07.html
+</footer>
+
+</div>
+</body>
+</html>

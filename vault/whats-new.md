@@ -6,6 +6,193 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-17: The weekend was better, and the economics got sharper
+
+Digested [[17-08-2026-touchdown]], five days before the offering. Calmer than
+Friday and considerably more useful: Edwin spent most of it specifying fixes
+rather than questioning the enterprise.
+
+**He separated the two dates, and the second one is the real bar.** The offering
+on the 22nd is survivable. Trading starts on the **29th**, and _"we still need
+quite a bit of ground to cover before the 29th"_. Plan the polish against that.
+
+**The commercial position, stated soberly rather than angrily.** Signups at 154,
+fewer than a simulation he ran himself two years ago on a $25,000 spend. The venue
+has moved from free to $20,000 a month for the simulation and $150,000 for
+production, and the original deal gave them a share of advertising revenue that no
+longer exists. He expects 5,000 to 10,000 users at best, a couple of hundred of
+whom might convert, which puts acquisition near $4,000 a head. His conclusion:
+this iteration is a loss.
+
+**Two structural points worth more than the numbers.** More users currently makes
+the economics worse, not better, because there is no way to monetise them and
+every additional user is another person to pay out. And production needs
+committed external market makers, or it needs $25 to $30 million of Edwin's own
+capital across roughly fourteen teams, which he described as outside his zone.
+
+**The market-maker retune is the most specific direction he has ever given.** His
+diagnosis of the weekend was that the book was "like cement", too tight to the win
+probability for anyone to trade around. The prescription: widen the spread to
+eight to twelve ticks, cut the maker's resting size from around ten thousand to
+between five hundred and three thousand, and let the taker cross with up to five
+thousand through multiple price levels. The point is to knock out the touch so
+real users resting near the top of book actually get filled.
+
+**The subtlest request is the best one.** Sportradar's win probability lags the
+score by up to ten seconds after a touchdown, which is an exploitable asymmetry:
+users can see the score before the market does. His fix is to sample the score as
+well, apply a dollar value per point, and move the price immediately as a
+placeholder that lasts only until the next probability arrives. He is deriving the
+per-point values from data going back to 1999 and will supply them this week. It
+means the market maker now has to consume play-by-play, not just probabilities.
+
+**Three things before Saturday:** a three-way competition choice on first open, a
+deliberately thin buy-only offering page with the sell control locked and
+explained, and a surface reduction across the app. On that last one Edwin was fair
+about how the clutter arose: the app was built with many surfaces because the plan
+assumed advertising inventory needing places to live, and with no advertisers that
+rationale has gone.
+
+## 2026-08-17: The night that nearly ended it, and the diagnosis that did not
+
+Digested [[14-08-2026-touchdown]], the morning after the first live game night
+and the most consequential call in the record.
+
+**Edwin questioned whether the product can launch.** His words: the worst trading
+experience he has had, a failure at every touch point. He is due to commit
+$800,000 to $1,000,000 to marketing and said he cannot do it against what he saw.
+He put his position at $6.6 million and said he believes it is impossible to be
+ready for the football season. He was clear this is not quitting and equally
+clear he has to decide what more he funds. **Two more live runs were agreed
+before any decision. The funding question is deferred, not resolved**, and it
+stays live at every weekly review until he closes it.
+
+**The diagnosis is the part worth holding on to.** Troy placed the fault away
+from the back end and had the venue's own numbers behind him: **3 million orders,
+1 millisecond average latency, no degradation of the matching engine**. His
+conclusion was that the harder part already works and what is left is the
+interface and the data ingestion. George's framing, that the work sits on the tip
+of the iceberg rather than beneath it, is what turned an existential question into
+a defined front-end workload. Those are very different things to manage.
+
+**What actually went wrong is coherent.** The app was built to protect people
+from mistakes, with a confirmation step and page transitions that each cost about
+a second. The people testing it were trading at speed, and a trader who loses a
+second loses the market. Confirming a trade navigated away from the game, five
+screens deep in Cody's case. The order book disagreed with the order ticket, so
+Troy kept missing the market. And no market order existed, so some trades could
+not be placed at all.
+
+**Edwin then specified the fix rather than describing it.** He walked through his
+own prototype's trading model while trading a real market on another monitor: a
+one-click toggle on the trading surface itself and explicitly not in settings,
+buy and sell on every page with position and P&L carried across, one-click
+flatten, market and join-bid and mid and ask as one-tap choices, and a hover
+confirmation rather than a screen takeover. Captured in
+[[one-click-trading-requirements-aug-2026]], including the tension it creates with
+the fat-finger guard he praised five weeks earlier.
+
+**Two reversals.** **Gamecast was downgraded by its own strongest advocate**:
+informative, but not an edge you can trade on. And with no advertisers signed,
+**the subscription is now the only revenue path**, which makes the strategy lab
+the product rather than a feature. He demonstrated it returning about $1.1 million
+across 138 teams on a single rule, profitable on 129 of them, with one parameter
+change moving the result from $93,000 to $1.3 million.
+
+## 2026-08-14: The engine runs, and the front door is the problem
+
+Digested the [[12-08-2026-touchdown]], filed the [[11-08-2026-icp-offer-workshop]]
+as the source record for the advertising pack, and captured written
+[[jared-trading-feedback-aug-2026|Jared's feedback from a real trading test run]].
+
+**The market maker and taker are running continuously.** Twenty-four hours
+across all 180 books, two-sided quotes on every one, roughly 1.2 million orders
+in a day. The guard rails are working in live conditions: the venue's price band
+rejects anything 30% out, and a journal divergence on one book quarantines that
+book alone. One irritation to fix at source, the venue seeds stale resting
+orders each morning and we currently walk the price up to clear them.
+
+**The front door is now the risk, not the engine.** Edwin expects to lose half
+or more of downloads at the sign-up wall and has watched family members refuse
+outright. Part of that fear turned out to be a version confusion, since the
+store build already starts with an email address and gates verification to cash
+prizes, but the underlying point stands and was backed independently by Jared:
+people download the app and do not know what they have downloaded. Edwin's four
+questions for the first screen are recorded in
+[[customer-onboarding/customer-onboarding]]. tZERO have also said the 18-plus
+requirement can come off.
+
+**Advertising works and Edwin does not like it.** The units serve in the store
+build and are deliberately off in TestFlight so nobody clicks one by accident.
+His reaction to the creative was that it would turn him off the app, so the
+direction moves to a top or bottom video unit rather than in-content banners. A
+former FIFA commercial lawyer is being engaged for direct brand deals, and
+Edwin would rather run no advertising than fight ugly programmatic inventory.
+The volatility-moment unit is now settled as direct-buy only, because a custom
+unit of that shape cannot be filled programmatically.
+
+**A date correction that changes the plan.** College football starts on 29
+August, but no media outlet covers college football. The date that matters for
+coverage and first impressions is **9 September**, the NFL opener.
+
+**And one defect worth the attention.** A real trading session produced fourteen
+items, three of which are the same problem: the price shown is not the price you
+can transact at. P&L is permanently wrong, the chart drifts from the book, and
+limit orders will fail in ways a retail user cannot diagnose. It is the
+strongest argument yet for the market order landing before real users arrive.
+
+## 2026-08-10: Five touchdowns digested, and a new Compliance section
+
+Processed the 27 July → 7 August touchdown block ([[27-07-2026-touchdown]],
+[[29-07-2026-touchdown]], [[31-07-2026-touchdown]], [[03-08-2026-touchdown]],
+[[07-08-2026-touchdown]]). Three weeks of calls, two weeks from the IPO.
+
+**A new [[compliance/compliance|Compliance]] section.** The regulatory
+constraints had been scattered through meeting notes; they now have a home, with
+[[compliance/regulatory-positioning]] (the securities-not-gambling argument, the
+SEC filing and gun-jumping risk, Rule 255, the Kalshi litigation, state-by-state
+exposure) and [[compliance/eligibility-and-age-gating]] (who may hold which
+account and what they may win). Eight live build constraints are listed, from
+"never say regulated by the SEC" to "non-KYC users only see under-18-safe ads".
+
+**Onboarding is now three tiers, not one.** KYC was killing the funnel, and
+international students can never qualify for cash anyway, so
+[[customer-onboarding/customer-onboarding]] splits into **Trader Full** (US tax
+resident, 18+, full KYC, cash prizes), **Trader Medium** (international, KYC'd,
+no cash) and **Trader Light** (email only, 13+, no cash). Everyone can trade —
+it is a simulator. One hard blocker: tZERO's onboarding API still demands a
+DOB of 18+, so Trader Light cannot be allocated a wallet until they relax it.
+Ahead of all three sits Edwin's non-negotiable **first-open explainer and fork
+screen**, because today a referred user's first sight of the app is a stadium
+picture that explains nothing.
+
+**The IPO's market structure is settled.** [[ipo-module/ipo-module]] and
+[[market-maker/market-maker]] both re-based: a **broker-dealer MPID** holds and
+sells the whole **1,000,000-share-per-team** issuance, and the **taker algo
+buys ≥600,000** of it with randomised sizing and timing, purely so that no team
+visibly fails to sell. The maker never touches the primary. NCAA opens for five
+days, NFL for two, and the load-balancing algo is dropped until the NBA in
+October. Prices publish early via OTA and **freeze three days out**.
+
+**The valuation chain is confirmed end to end.** The Sport Radar probabilities
+contract amendment is signed at no extra cost and live in production, closing
+the S1 blocker that had no input at all. We poll at **500ms in-game**; the RP
+formula gained its missing term (the in-game leg is a **delta from the kickoff
+probability**, not the raw probability). Edwin also settled a real design worry:
+the MM dragging price back toward the reference price is not a bug, it is how
+every market works.
+
+**Trading works end to end** into tZERO, with fills, partial fills, shorts and
+notifications ([[trading/trading]]). The **Android app is live**. AdMob is
+serving, with an SSP ladder capped at three networks and **Kochava** picked as
+the MMP. **Avalara** is chosen for W-9 handling; the payout processor is still
+the open gap. The app has been restructured into Teams / League / Schedule /
+Games tabs with a live order book on the team page.
+
+**Flagged for focused sessions, not written here:** micro-challenges and private
+leaderboards for universities and frats; the strategy **back-test lab**; and the
+**analyst portal** that the empty Analyst tab needs.
+
 ## 2026-07-30: SNT-1 Synthetic Noise Taker
 
 Edwin introduced a **second house agent** for the Challenge and sent a spec-quality reference implementation, now processed into the market-maker component: [[market-maker/systems/synthetic-noise-taker]] (code safe-copied to `sources/snt1_noise_taker.py`).

@@ -12,6 +12,7 @@ description: "IPO Module component doc — the Trading Challenge Draft: draft bo
 > **Updated:** 2026-07-17 — scope confirmed (all ~138 D1 schools), market-maker warehousing resolves unsold-share handling, timeline pinned (IPO deadline ~Aug 22, secondary trading Aug 29). From [[15-07-2026-touchdown]] / [[17-07-2026-touchdown]]
 > **Updated:** 2026-07-29, Edwin delivered the **IPO pricing model v1.0** with listed prices for all 32 NFL + 138 NCAA team companies. Captured in [[ipo-pricing-2026]] (source workbook safe-copied to `sources/`).
 > **Pricing (authoritative):** [[ipo-pricing-2026]] holds the latest listed IPO prices, parameters, and methodology.
+> **Updated:** 2026-08-10 — **primary market structure settled** (broker-dealer MPID holds and sells 1,000,000 shares/team; the taker buys ≥600,000 of them). NCAA window 5 days, NFL 2 days, load-balancing algo dropped. Prices publish early and **freeze 3 days pre-IPO**. Language is now **"simulated IPO"** by legal instruction. From [[31-07-2026-touchdown]] / [[03-08-2026-touchdown]] / [[07-08-2026-touchdown]].
 > **Sources:** _[[meetings/26-05-2026-component-IPO-touchdown]], [[06-05-2026-vision-workshop]], [[meetings/15-07-2026-touchdown]], [[meetings/17-07-2026-touchdown]], [[ipo-pricing-2026]]_
 
 ---
@@ -57,6 +58,143 @@ IPO Module ("Trading Challenge Draft")
     ├── Shorts force-closed (debited difference)
     └── Final leaderboard run
 ```
+
+> ### ⚠ Update (31-07 / 03-08 touchdowns): the primary's market structure is settled
+>
+> Several things above are now superseded. The mechanics live here; the
+> market-maker side is in [[market-maker/decisions]] (27-07 → 07-08 block).
+>
+> **Two entities, two MPIDs, two wallets** (Troy):
+> - **InPlay Markets, the broker dealer** — client-facing. Holds the **entire
+>   primary issuance** and posts it for sale. tZERO preloads **1,000,000 shares
+>   per team company** plus effectively unlimited buying power, so there are no
+>   rejects. Troy's analogy: the designated market maker on the NYSE holding
+>   shares to be sold to the public. **This is the seller**, standing in for
+>   each team company as issuer.
+> - **InPlay Markets, the principal trading arm** — non-client-facing, runs the
+>   maker and taker algos off one wallet. Buys in the primary; makes and takes
+>   in secondary.
+>
+> Edwin's framing, cutting George off mid-sentence: _"the market maker is not
+> going to open up and sell."_ The first sale is always the company raising the
+> money, via the broker dealer.
+>
+> **Issuance: 1,000,000 shares per team, both leagues.** Edwin overrode the
+> earlier 900k NFL / 1M NCAA split — _"we're going to make it a million on both
+> and then we're just not going to sell all of them."_ ⚠ Supersedes the **5M
+> float** and **20% short holdback** figures above. A **treasury holdback**
+> retains the unsold remainder, exactly as in production: float and public
+> offering are two different numbers, modelled against a ~**$75M** cap.
+>
+> **Windows: NCAA five days, all teams at once. NFL two days.** ⚠ Supersedes
+> the 72-hour window above. The **load-balancing algo is dropped** for season 1
+> — one application for both leagues, deferred to the **NBA in October**.
+>
+> **The taker is the biggest buyer of every IPO**, targeting **≥600,000 of the
+> 1,000,000** shares per team, with randomised size and randomised heartbeat
+> inside Edwin-supplied ranges and time blocks. Deliberately **not**
+> participation-weighted in v1: George asked whether a heavily traded team
+> should get more bought for liquidity, and Edwin said no, keep it simple.
+> Rebalancing happens afterwards through **market operations once secondary
+> opens**, itself intended as a tradeable information event.
+>
+> The reason is failure avoidance, not liquidity optimisation. Edwin, 03-08,
+> with signups at ~118: _"we need to have something that comes in and buys
+> during the IPO. Otherwise, there'll be teams that don't sell any shares
+> whatsoever at an IPO. A complete failure of the IPO. We cannot have that for
+> the simulation."_
+>
+> _Sources: [[31-07-2026-touchdown]], [[03-08-2026-touchdown]]._
+
+> ### Update (31-07): price publication, the 3-day freeze, and pre-IPO demand
+>
+> **The problem.** tZERO make a team's price **static once the IPO price is
+> set** — there is a lock on it — which blocks the simulated trading the team
+> needs to run before launch. So prices could not simply be published early.
+>
+> **The resolution (Edwin).** Publish the prices now via an **OTA push**, and
+> **freeze only three days before the IPO**. The gap matters: _"from now until
+> IPO, you could have a lot of roster changes. Kids could get arrested and
+> banned and hurt and coaches get fired. All kinds of s\*\*\* can go down, which
+> would materially affect that stock price."_ Confirming tZERO can hold prices
+> unlocked until then is an open item (T14 in
+> [[market-maker/open-questions]]).
+>
+> Context: prices had not been published yet because the team wants to **pull
+> them from tZERO** rather than hard-code the numbers, which is what triggered
+> the lock problem.
+>
+> **New want — pre-IPO indication of interest.** Edwin wants users able to
+> queue orders **before the window opens**: _"they can pre[-order], say oh I
+> want to buy a 100 shares of X and they can hit a button, and then we can start
+> to develop… oh, 48,000 shares already looking to be bought of Chicago
+> Bears."_ Surfaced as a **shares-remaining / shares-spoken-for bar**, so a
+> million-share issuance with 500,000 spoken for visibly has 500,000 left. The
+> **market maker can pre-place IPO buy orders** into the same queue.
+>
+> The motivation is engagement, not price discovery: there is nothing to do in
+> the app right now beyond news and research, and Edwin wants something
+> trading-shaped for users and for sales demos. _"Anything to do with trading
+> that's going to get their mindset focused on that, that would be helpful."_
+> George took it away to scope. Touches
+> [[ipo-module/sub-components/announcement-countdown/announcement-countdown|Announcement & Countdown]]
+> and
+> [[ipo-module/sub-components/draft-board/draft-board|Draft Board]].
+>
+> _Source: [[31-07-2026-touchdown]]._
+
+> ### Update (17-08): the offering page, deliberately thin
+>
+> Five days out, Edwin reduced the requirement to its simplest form: a page per
+> team showing **the shares available and a buy control, and nothing else.** His
+> words: _"the IPO has to just be an offer, where there's a million shares
+> available and that's it. It's just selling. Because you can't sell them, you
+> can only buy them."_
+>
+> **The sell control during the offering.** George offered two options, remove it
+> or show it locked with a popup explaining that selling begins when the secondary
+> market opens. Edwin chose the second, for a reason worth recording: _"I don't
+> want to get a bunch of calls. Out of this 150 people, a hundred are friends and
+> family. I'm going to be getting calls from Kevin's uncle saying I can't sell my
+> shares."_ Explaining a constraint in place is cheaper than fielding the
+> confusion it causes.
+>
+> **Edwin will manually buy the majority of each team's shares** at the offering,
+> with the secondary market opening the following weekend. That confirms the
+> desktop execution interface below is not a convenience: it is how the offering
+> gets absorbed at all.
+>
+> _Source: [[17-08-2026-touchdown]]._
+
+> ### Update (12-08): Edwin needs a desktop execution interface for the offering
+>
+> A requirement that had not surfaced before, and it is dated. Edwin has to
+> place orders across **170 team companies** during the offering, and the only
+> route today is the phone app: _"logging in and out of 170 teams on the phone
+> is going to be cumbersome."_ He wants **something he can click many times with
+> a mouse**.
+>
+> George's read is that this is configuration rather than a new build, because
+> it runs on exactly the same infrastructure as the app, with the likely
+> wrinkles being journal-related. It attaches to the market-maker admin panel
+> that Edwin is already getting a login to.
+>
+> **Needed before the offering opens on 22 August, with a couple of test orders
+> put through first** so it is not being used for the first time on the day.
+>
+> _Source: [[12-08-2026-touchdown]]._
+
+> ### ⚠ Update (07-08): mandatory language change
+>
+> Legal has ruled on how the offering may be described. **Always "simulated
+> IPO", never a bare "IPO"**, and **nothing may claim SEC regulation** — _"all
+> that has to come down"_ (Edwin). Kevin is credited with the phrasing. The
+> route through is **Rule 255** testing-the-waters, which requires prescribed
+> disclosures ahead of time; a Regulation A disclaimer is now in the app.
+>
+> This applies to every surface that names the event: this component, the app,
+> the website and all outbound copy. Rules and reasoning in
+> [[compliance/regulatory-positioning]]. _Source: [[07-08-2026-touchdown]]._
 
 **Personas:**
 

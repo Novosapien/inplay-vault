@@ -13,6 +13,8 @@ description: "Jared Sapirman's Jul 2026 app feedback — six items from referral
 
 # Jared Sapirman, Additional App Feedback (Jul 2026)
 
+> **Follow-up round:** [[jared-trading-feedback-aug-2026]], fourteen items from a hands-on trading session, August 2026.
+
 > **Up:** [[components]] · [[index]]
 > **Type:** source-feedback
 > **Received:** 2026-07-24 from Jared Sapirman

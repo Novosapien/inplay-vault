@@ -1,6 +1,12 @@
-# 2026-08-05 — OMS entitlement probes: UEAR and UPT are live
+---
+description: "Session note, 05-08 first probe stream: live probes proved UEAR and UPT are entitled on the tZERO OE session, and the account spec PDF landed in the repo"
+---
 
-> **Who:** Hasan + Claude (build/probe session)
+# 2026-08-05c — OMS entitlement probes: UEAR and UPT are live
+
+> **Who:** Hasan + Claude (build/probe session — first of the probe stream)
+> **Re-labelled on merge:** filed on its own branch with no suffix. Main had
+> already used the bare `2026-08-05` and `-b` slots, so this note takes `-c`.
 > **Type:** build / research — live probes against the tZERO OE session
 > **Refs:** `tZERO_FIX_AccountPosition_20251015.pdf` (obtained today) ·
 > [[tzero-account-position-fix]] · [[tzero-oms-entitlement-probes]] ·

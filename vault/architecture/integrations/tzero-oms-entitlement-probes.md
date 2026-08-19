@@ -1,3 +1,7 @@
+---
+description: "The live probe log for tZERO OMS account-management messages — which MsgTypes the OE session is entitled to, proven one probe at a time"
+---
+
 # tZERO OMS message entitlement — probe log
 
 > **Integration:** [[t0]] · [[integrations]] · spec: [[tzero-account-position-fix]]

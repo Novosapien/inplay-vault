@@ -1,7 +1,14 @@
-# 2026-08-05b — Full book: is depth available, and does the MM need IOI?
+---
+description: "Session note, 05-08 second probe stream: depth of book is available on the FIX v8 session we already run, so the MM never needs the IOI feed"
+---
 
-> **Who:** Hasan + Claude (build / probe session — second of the day, follows
-> `2026-08-05-oms-entitlement-probes`)
+# 2026-08-05d — Full book: is depth available, and does the MM need IOI?
+
+> **Who:** Hasan + Claude (build / probe session — second of the probe stream,
+> follows `2026-08-05-c-oms-entitlement-probes`)
+> **Re-labelled on merge:** filed on its own branch as `2026-08-05b`. Main had
+> already used the `-b` slot for the live-source-bindings session, so this note
+> takes `-d`. The order inside the probe stream is unchanged.
 > **Type:** build / research — live probes against the tZERO MD session
 > **Refs:** `inplay-fix-gateway-go` branch `feat/md-full-book` (`e742d7a`,
 > `5f3fd7a`, `f231cde`) · tZERO FIX Market Data Spec v8 · tZERO IOI Market Data
@@ -91,7 +98,7 @@
 
 ## Questions opened / closed *(mirror into [[market-maker/open-questions]])*
 
-- **Opened T12** — does tZERO permit TWO concurrent subscriptions per symbol
+- **Opened T21** _(filed as T12; re-filed on merge)_ — does tZERO permit TWO concurrent subscriptions per symbol
   on one session (depth-1 + depth-0, distinguished only by MDReqID)? Decides
   whether full book is additive or a switch-over. The Phase-0 probe used
   `SubscriptionRequestType=0` (snapshot-only) deliberately, so it created no
@@ -133,7 +140,7 @@
   action would have been dropped and the rest shifted by one, so both deletes
   would have applied as New/Change and the consumed offers would still be
   sitting in the book. The ladder is correct *because* of that fix.
-- **T12 is effectively answered.** Both subscriptions coexisted through a live
+- **T21 is effectively answered.** Both subscriptions coexisted through a live
   trade: depth-0 delivered the incrementals above while depth-1 kept the price
   board current in the same window. tZERO adds rather than replaces.
 - ⚠ **Own goal worth remembering:** the first probe reply was folded like an
@@ -146,13 +153,13 @@
 
 ## Next
 
-- Answer **T12** with one more probe: `SubscriptionRequestType=1` at depth 0
+- Answer **T21** with one more probe: `SubscriptionRequestType=1` at depth 0
   alongside the live depth-1 subscription, then unsubscribe with `263=2`. It
   is safe to run now that the fold guard exists.
 - Then **Phase 1**: rewrite `book_builder.go` for the v8 aggregated model —
   keyed by (side, price) with `MDUpdateAction` 0/1/2 — plus `LastFragment`
   reassembly and parser capture of `346`/`299`. Phase 1 does not depend on
-  T12; only the Phase-2 wiring does.
+  T21; only the Phase-2 wiring does.
 - Delete `POST /md/probe` in the same change that lands Phase 2's real
   routing. It is localhost-only on a VM with no public IP, but it is a
   diagnostic and should not outlive its questions.

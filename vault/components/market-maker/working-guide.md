@@ -27,18 +27,23 @@ Absorb these, in this order, before touching anything:
 4. **[[market-maker/parameters]]** — every number and its status
    (✅ confirmed · 🟡 proposed · 🔴 TBD). No number gets used in code or specs
    without a row here.
+4b. **[[market-maker/requirements]]** — the normative list: what MUST be
+   true to go live, each with a source and a status. Change it only
+   through its dated addendum, never silently.
 5. **[[market-maker/plan]]** — phases, dependencies, timeline anchors.
 6. **The latest note in `sessions/`** — what happened last time, what was
    left dangling.
 
-Deep reference when needed: the systems docs
-([[market-maker/systems/valuation-engine|valuation]] ·
-[[market-maker/systems/market-state|market state]] ·
-[[market-maker/systems/quoting-engine|quoting]] ·
-[[market-maker/systems/decision-cycle-reference|decision-cycle pseudocode]] ·
-[[market-maker/systems/market-supervision|supervision]] ·
+Deep reference when needed: **[[market-maker/build/index|build/]]** — the
+as-built SOURCE OF TRUTH, one page per part of the machine (key equations
+as implemented, the module map; read the page you are about to touch
+before touching code you have not read), the systems docs for the four
+UNBUILT systems only
+([[market-maker/systems/market-supervision|supervision]] ·
 [[market-maker/systems/synthetic-market-order|synthetic MO]] ·
-[[market-maker/systems/mm-ops-ui|ops UI]]), the
+[[market-maker/systems/mm-ops-ui|ops UI]] ·
+[[market-maker/systems/snt-1-noise-taker|SNT-1]] — the built systems'
+design narratives are archived; build/ is their truth), the
 [[market-maker/glossary]], and the plain-English guides in
 [[standards/README|standards/]] (+ `standards/sdmm-machine.html` for the
 interactive equation map).
@@ -77,6 +82,13 @@ END     1. write a session note in sessions/ (format below)
            · question answered/raised?→ open-questions.md
            · number learned/proposed? → parameters.md (with status)
            · plan shifted?            → plan.md
+           · machine changed?         → build/ (the as-built pages —
+                                        update the page you changed;
+                                        keep them TRUE)
+           · built/merged/deployed?   → build-deploy-log.md (the
+                                        cross-session pipeline state —
+                                        update the row IN the session,
+                                        and CHECK it before deploying)
         3. leave a clear "next" line — the next session starts there
 ```
 
@@ -104,11 +116,15 @@ honest and fast — 10 minutes max:
 |---|---|
 | What the MM is + system map | [[market-maker/market-maker]] |
 | Per-system design | `systems/` |
-| Concrete function bodies + proposed defaults | [[market-maker/systems/decision-cycle-reference]] |
+| Concrete function bodies | the code (`inplay-market-maker/src/mm/`) + [[market-maker/build/index\|build/]] (the pre-spec pseudocode is archived) |
 | Decisions (outranks standards) | [[market-maker/decisions]] |
 | Live blockers by owner | [[market-maker/open-questions]] |
 | Every tunable number + status | [[market-maker/parameters]] |
 | Build phases + dependencies | [[market-maker/plan]] |
+| **What MUST be true to go live — the MM** | [[market-maker/requirements]] |
+| **What MUST be true to go live — the taker** | [[market-maker/market-taker-requirements]] |
+| Live test cases + statuses | [[market-maker/test-plan]] |
+| **In-flight changes: built / merged / deployed / verified** | [[market-maker/build-deploy-log]] |
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
 | Session-by-session narrative | `sessions/` |
