@@ -33,6 +33,12 @@ reproducing a hang. That divergence is deliberate and recorded in code.
 operating the maker — N40's game-end lifecycle, N41's phantom touch, N43's ask
 cap — live in [[market-maker/open-questions]] and are not repeated here.
 
+⚠⚠ **And it records defects in PYTHON, not defects in the Go port.** The port
+finds plenty of its own — a mis-transcribed literal, a name doing two jobs, a
+`select` that races where Python's sequential checks could not. Those belong in
+the port's Drift Log, and putting one here would wrongly accuse the reference.
+Before adding an entry, confirm the pinned Python actually has the defect.
+
 ---
 
 ## A · Defects in the Python reference
@@ -97,6 +103,34 @@ cap — live in [[market-maker/open-questions]] and are not repeated here.
 | **In Go** | `TestTheWindowIsSummedInSortedGameOrder` pins the real order-sensitive window. [[market-maker/build/valuation]] is corrected. |
 | **Fix** | Correct the note in the Python source. |
 | **Owner** | Maker team · found Go port PR #12 |
+
+---
+
+### GP-15 · 🔴 `anchor_seed.py`'s reader RAISES, against its own "NEVER raises" docstring
+
+| | |
+|---|---|
+| **What** | `read_prior_anchors` exists so that a boot **cannot** die because a prior run left a bad file. Its docstring says it never raises. It does. `_accepted_lines` catches `(JSONDecodeError, KeyError, TypeError)` — but a prior journal line whose `record` is a **string** makes `dict(record["record"])` a **`ValueError`**, which is not in that tuple. The exception escapes `read_prior_anchors` entirely and **kills the boot**. |
+| **⚠ Why this one is worse than its severity suggests** | It is the exact failure the module was written to prevent. Every other failure path in the reader returns "no seed" and logs loudly; this one takes the process down. And the input that triggers it is **a file the reader itself declares untrusted** — the whole reason it hash-verifies a checkpoint and constructs the real typed value before believing anything. |
+| **Reachability** | One malformed line in one prior run's journal. The reader runs on **every** boot that finds a prior run directory. |
+| **Evidence** | `internal/runtime/anchor_seed.go` + `testdata/anchor-seed/` in the Go port. ⭐ The raise is recorded **IN the artefact** as `python_raised`, not in a code comment, and the raise **count is asserted as a floor AND a ceiling** — so a NEW hole in the reference fails the Go gate rather than passing unnoticed. 43 prior-run directories, each itself a planted defect, including a checkpoint that is a directory, three where the newest must win, a corrupt newest that must fall back, a torn crash tail, a tampered payload, and a chain (a prior run that was itself seeded). |
+| **Severity** | 🔴 **Boot-fatal, live.** |
+| **Fix** | Add `ValueError` to the caught tuple — or catch `Exception` in a reader whose contract is that it never raises. ⚠ Go is **deliberately lenient** here rather than bug-compatible, because the spec's wording specifies the contract (*"every failure path returns 'no seed', loudly logged"*) rather than the implementation. That divergence is recorded in the code. |
+| **Owner** | 🔵 **Ours** · found 19-08, Go port Phase 4's `boot-features` chunk |
+
+---
+
+### GP-16 · 🔴 A large journal walks the boot past the gateway's 30 s dead-man grace
+
+| | |
+|---|---|
+| **What** | The maker sends its **first heartbeat before it builds anything**, so the beat itself is fast. But between that beat and the run loop starting the beat task, **exactly one heartbeat has gone out** — and the work in between is a full journal replay. On a **1,073,742,282-byte** journal (1,093,132 lines, 1,090,732 events) the whole boot takes **1 m 03.334 s**. The gateway's grace is **30 s**. |
+| **The numbers** | First heartbeat **+8.157 ms** — the AC8 clause passes by four orders of magnitude. Whole boot **1 m 03.334 s** on the dev Mac, which runs ~2.5× faster than `n2-standard-2`, so the rig reads **≈ 2 m 38 s**. |
+| **⚠ Why it is reachable rather than theoretical** | A checkpoint boot is fast, so this looks like an edge case. It is not: **R-D06 bumps `MM_CONFIG_VERSION` on every deploy**, and `LoadLatest` only accepts a checkpoint of the running version — **so a deploy always boots on a FULL replay.** That is precisely when the journal is largest. `build/runtime.md` puts growth at ~70–90 MB/h at 180 books, which makes 1 GB a **12–14 hour game day**. |
+| **Evidence** | Measured in the Go port's `boot-features` chunk on a synthesised 1 GB journal. The test **logs the number rather than asserting a pass**, so the exposure is visible on every run instead of being encoded as acceptable. ⭐ A design correction came out of the same work: `Boot` first took a ready-made stack, which would have spent the entire grace inside `build()` — it now takes a `Build func()` and the ordering test asserts `beat` → `build` → `replay`. |
+| **Severity** | 🔴 **Live in the running Python bot.** The Go port reproduces the shape faithfully; Python's entry point has the identical ordering. This is not a port defect. |
+| **Fix** | ⚠ **Not available inside a zero-diff phase** — any change to the boot ordering is a behaviour change. Options for Phase 5 or for ops: beat during the replay rather than only before it; widen the grace; or make a deploy able to load the prior version's checkpoint. **George's to route.** |
+| **Owner** | 🔴 **George's** · found 19-08, Go port Phase 4's `boot-features` chunk |
 
 ---
 
