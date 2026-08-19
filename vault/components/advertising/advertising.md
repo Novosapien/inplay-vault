@@ -71,6 +71,42 @@ volume.
 AdMob reads it as fraud, and the account gets banned. Standing instruction
 while test units are live.
 
+## Update (17-08): no advertisers, and the one format Edwin actually wants
+
+**The commercial position, stated plainly.** No advertisers have signed. Edwin's
+assessment of why the whole plan is where it is: the advertising revenue that
+justified building at this pace _"at best was totally misunderstood, at worst it
+was duplicitous information"_, and he is _"pretty furious about it"_. He also
+named the consequence for outbound: getting users is hard to justify when there
+is nothing to monetise them with, and _"the more people that sign up is the more
+people I have to pay"_.
+
+One relationship illustrates the problem better than any figure: InPlay has a
+billionaire investor who owns a candy company, and the candy company will not
+advertise.
+
+**The programmatic creative got worse, not better.** Edwin's second look
+produced plus-sized clothing models on his feed, which he attributed drily to
+his own search history. It reinforces rather than changes the 12-08 position:
+run it open to gather data, then tighten.
+
+**The one format he has asked for rather than tolerated.** Video advertising
+**over the field during breaks in play**: timeouts, television timeouts,
+injuries, end of quarter, pre-game and post-game, with the buy and sell controls
+still live underneath. He raised it himself, having floated it a couple of months
+ago. It works because it **occupies dead time instead of competing with the
+game**, which is the exact objection he had to in-content banners. If any
+advertising format is worth designing properly for this product, it is this one.
+
+⚠ **A structural note worth carrying.** Edwin was fair about how the app came to
+have so many surfaces: it was built with plenty of them precisely because the
+plan assumed advertising inventory needing places to live. With no advertisers,
+that rationale has gone, and the surfaces became cost without benefit. The
+17-08 surface reduction is the direct consequence. See
+[[information-layer/sub-components/discovery-home/discovery-home]].
+
+_Source: [[17-08-2026-touchdown]]._
+
 ## Update (12-08): serving in the store build, and Edwin does not like what he sees
 
 **Where the units are.** The AdMob units are **live in the App Store build**,

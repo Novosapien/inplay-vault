@@ -132,7 +132,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
 <hr>
 </div></section>
 <section class="sec"><h2 class="sech" id="the-week-in-five-lines"><span class="tw-caret">▾</span>The week in five lines</h2><div class="secb">
-<p><strong>InPlay ran its first live NFL preseason games on 13 and 15 August. Everything else follows from that.</strong></p>
+<p><strong>InPlay ran its first live NFL preseason games on 13, 14 and 15 August, three consecutive nights. Everything else follows from that.</strong></p>
 <ul>
 <li>The engines had run against a synthetic feed for weeks</li>
 <li>Real games broke them in ways a synthetic feed never could</li>
@@ -143,7 +143,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
 <hr>
 </div></section>
 <section class="sec"><h2 class="sech" id="where-the-work-went"><span class="tw-caret">▾</span>Where the work went</h2><div class="secb">
-<div class="tw"><table><thead><tr><th>Service</th><th>Commits</th><th>westy412</th><th>Hxsan</th><th>Branches</th><th>Open</th><th>The week in one line</th></tr></thead><tbody><tr><td><a href="#inplay-app" data-nav="inplay-app">inplay-app</a></td><td>292</td><td>109</td><td>181</td><td>21</td><td>1</td><td>Stopped showing invented numbers</td></tr><tr><td><a href="#inplay-market-maker" data-nav="inplay-market-maker">inplay-market-maker</a></td><td>147</td><td>147</td><td>0</td><td>43</td><td>3</td><td>The CA/CB fix set closed the live defects</td></tr><tr><td><a href="#inplay-admin-panel-trading" data-nav="inplay-admin-panel-trading">inplay-admin-panel-trading</a></td><td>117</td><td>117</td><td>0</td><td>27</td><td>0</td><td>The operator got a live window on both engines</td></tr><tr><td><a href="#inplay-sportradar-service" data-nav="inplay-sportradar-service">inplay-sportradar-service</a></td><td>82</td><td>80</td><td>2</td><td>32</td><td>5</td><td>The data feed survived two live game nights</td></tr><tr><td><a href="#inplay-trading-service" data-nav="inplay-trading-service">inplay-trading-service</a></td><td>56</td><td>7</td><td>49</td><td>15</td><td>0</td><td>From a nine-person pilot to store scale</td></tr><tr><td><a href="#inplay-fix-gateway-go" data-nav="inplay-fix-gateway-go">inplay-fix-gateway-go</a></td><td>17</td><td>15</td><td>2</td><td>8</td><td>1</td><td>Four permanent-wrong states removed, one outage</td></tr><tr><td><a href="#supporting" data-nav="supporting">supporting</a> — vault, specs, website</td><td>45</td><td>43</td><td>0</td><td>4</td><td>1</td><td>The written record caught up</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Service</th><th>Commits</th><th>westy412</th><th>Hxsan</th><th>Branches</th><th>Open</th><th>The week in one line</th></tr></thead><tbody><tr><td><a href="#inplay-app" data-nav="inplay-app">inplay-app</a></td><td>292</td><td>109</td><td>181</td><td>21</td><td>1</td><td>Stopped showing invented numbers</td></tr><tr><td><a href="#inplay-market-maker" data-nav="inplay-market-maker">inplay-market-maker</a></td><td>147</td><td>147</td><td>0</td><td>43</td><td>3</td><td>The CA/CB fix set closed the live defects</td></tr><tr><td><a href="#inplay-admin-panel-trading" data-nav="inplay-admin-panel-trading">inplay-admin-panel-trading</a></td><td>117</td><td>117</td><td>0</td><td>27</td><td>0</td><td>The operator got a live window on both engines</td></tr><tr><td><a href="#inplay-sportradar-service" data-nav="inplay-sportradar-service">inplay-sportradar-service</a></td><td>82</td><td>80</td><td>2</td><td>32</td><td>5</td><td>The data feed survived three live game nights</td></tr><tr><td><a href="#inplay-trading-service" data-nav="inplay-trading-service">inplay-trading-service</a></td><td>56</td><td>7</td><td>49</td><td>15</td><td>0</td><td>From a nine-person pilot to store scale</td></tr><tr><td><a href="#inplay-fix-gateway-go" data-nav="inplay-fix-gateway-go">inplay-fix-gateway-go</a></td><td>17</td><td>15</td><td>2</td><td>8</td><td>1</td><td>Four permanent-wrong states removed, one outage</td></tr><tr><td><a href="#supporting" data-nav="supporting">supporting</a> — vault, specs, website</td><td>45</td><td>43</td><td>0</td><td>4</td><td>1</td><td>The written record caught up</td></tr></tbody></table></div>
 <p><strong>How the two of you split the week</strong></p>
 <ul>
 <li class="lead"><strong>George</strong> wrote the trading stack — the market maker, the admin panel, the Sportradar service, the gateway, and the written record</li>
@@ -274,6 +274,13 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
 <li>Merge state per branch, against that repository's own mainline branches</li>
 <li>The repository's own documents, for the reasons the commits omit</li>
 <li>Nothing was written to any service repository</li>
+</ul>
+<p><strong>Correction applied 17-08 (Brett).</strong></p>
+<ul>
+<li>This roll-up originally said the games ran on 13 and 15 August</li>
+<li>There were <strong>three</strong> nights: 13, 14 and 15</li>
+<li>The per-service files were right throughout. They refer to "the 13/14 August live games" and record live books filled on the 14th.</li>
+<li>Only this summary undercounted</li>
 </ul>
 <p><strong>Two corrections were applied during the run.</strong></p>
 <ul>
@@ -1934,7 +1941,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
 <ul>
 <li>This service is the only part of InPlay that talks to Sportradar</li>
 <li>This week it started to feed the market maker for real</li>
-<li>It survived the first live NFL preseason games on 13 and 15 August</li>
+<li>It survived the first live NFL preseason games on 13, 14 and 15 August</li>
 <li>Ten separate faults were found on real game nights. Each was fixed the same night or the next day.</li>
 <li>The service also learned to find live games by itself, instead of a hand-typed game id</li>
 </ul>
@@ -1960,7 +1967,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
 <ul>
 <li><code>origin/main</code> has not moved since 11 August. Its tip is <code>f8c8aef</code>.</li>
 <li>Everything after that date sits on <code>origin/dev</code> and <code>origin/testing</code>, which are both at <code>f822ced</code></li>
-<li>The 13 and 15 August game nights ran entirely in the testing environment, by George's decision (<code>3acf734</code>)</li>
+<li>The 13, 14 and 15 August game nights ran entirely in the testing environment, by George's decision (<code>3acf734</code>)</li>
 <li>So "merged" in the table below almost always means <code>origin/dev</code> and <code>origin/testing</code>, not production</li>
 </ul>
 <p><strong>A note on remotes.</strong></p>

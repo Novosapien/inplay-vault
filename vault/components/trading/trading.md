@@ -79,6 +79,49 @@ Trading must be fast. The target is 3 clicks or fewer from any page to a submitt
 > _Sources: [[27-07-2026-touchdown]], [[29-07-2026-touchdown]],
 > [[03-08-2026-touchdown]]._
 
+> ### ⚠ Update (14-08): the first live night, and what it said about this component
+>
+> The morning after the first live game night produced the sharpest feedback this
+> component has had, and the most useful diagnosis. Full record in
+> [[14-08-2026-touchdown]]; the requirement set it generated is in
+> [[one-click-trading-requirements-aug-2026]].
+>
+> **The venue was not the problem.** tZERO confirmed their side operated as it
+> should: **3 million orders, 1 millisecond average latency**, no degradation of
+> the matching engine. Troy's conclusion, and he has the most venue experience in
+> the room: the harder part is already working, and what remains is the interface
+> and the data ingestion. George's version, that the work sits on the tip of the
+> iceberg rather than beneath it, is the reframing that turned the call around.
+>
+> **The component was built for the wrong user.** Not through carelessness: it
+> was built to protect people from mistakes, with a confirmation step, a
+> persistent bar and page transitions that each cost about a second. The people
+> testing it were trading at speed, and a trader who loses a second loses the
+> market. Troy reported repeatedly _"missing the market"_ because by the time he
+> had navigated, the price had gone.
+>
+> **Three defects, in priority order.**
+>
+> 1. **Confirming a trade navigates away from the game.** Sometimes to the
+>    portfolio, sometimes to the IPO tiles. Cody counted **five screens** to get
+>    back to the game he was trading. This alone made fast trading impossible.
+> 2. **The order book and the order ticket disagreed.** Users read one price and
+>    were offered another, so orders missed. Independently reported by Troy,
+>    Jared and Edwin on the same call, and already written up in
+>    [[jared-trading-feedback-aug-2026]]. This is the same root cause as the app
+>    inventing an order book when it had no data.
+> 3. **No market order, so some trades could not be placed at all.** Troy set out
+>    why it has to be synthetic: tZERO does not support market orders, equity
+>    markets do not, they live on the broker side. See
+>    [[market-maker/systems/synthetic-market-order]]. It exists in the trading
+>    service but is switched off.
+>
+> Also reported: screens freezing, partly caused by fixes being pushed during the
+> game; two app versions in circulation confusing testers; and lag with six
+> concurrent games because the app loaded everything at once.
+>
+> _Sources: [[14-08-2026-touchdown]], [[one-click-trading-requirements-aug-2026]]._
+
 > ### ⚠ Update (14-08): Jared's trading test-run feedback
 >
 > Fourteen items from Jared Sapirman, recorded in full at

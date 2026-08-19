@@ -173,7 +173,7 @@ version, never an automatic overwrite.
 
 | Tier | When | Cadence |
 |---|---|---|
-| LIVE | kickoff passed, no final | **500 ms** — ✂ George 08-11 (was ~2 s, the median-gap evidence); the deployed PUBLISHER runs 500 ms; ⚠ the in-engine poller still carries 2 s until it retires |
+| LIVE | kickoff passed, no final | ✎ **~2 s per pool as deployed** (measured 15-08: `poll_live_s = 2.0` in `config.py`; bus arrivals ~1.2 s per game = TWO pools at 2 s out of phase). The standing "the deployed PUBLISHER runs 500 ms" line was WRONG — George's 08-11 500 ms ruling never reached the publisher's config. ⚠ the in-engine poller also carries 2 s until it retires |
 | PRE_KICKOFF | within 1 h of kickoff | **15 s** (interim — George's 10–30 range) |
 | OVERNIGHT | kickoff > 1 h away | **30 min** (doubles as the N24 pregame-movement watch) |
 | POST_GAME | final seen, ≤ 1 h | **10 min** (the correction watch), then never |
@@ -183,11 +183,23 @@ re-stamps and reschedules at once. Kickoffs are converted to the
 scheduler's monotonic clock ONCE, at the composition edge — a wall-clock
 jump can never mis-tier a game mid-run.
 
-⚠ **The game-end lifecycle hole (N40, forensics 14-08):** the publisher
-retires a game ~1 h after SR flips it ended/closed, so its liveness
-confirmations STOP; an engine book still in the live-freshness regime
-then goes RP Invalid at +20 s and §6.3 SUSPENDS it — permanently, with
-no re-open path. Ten books went dark this way overnight 13/14-08; two
+⚠ **The game-end lifecycle hole (N40, forensics 14-08):** on MAIN's
+code the publisher drops from the live rate to **600 s immediately at
+the final** (`poll_post_game_s`), then retires the game for good after
+the 1 h window. ✎ **The deployed TESTING pool (952d8be, the #38-family
+values) differs: 2 s settle watch for 2 h, then 1,800 s forever —
+verified against the 15-08 timings (finals 20:01–20:04Z, last bus
+messages 22:01–22:05Z = final + exactly 2 h).** Either way the
+confirmations eventually space out past 20 s; an engine book still in
+the live-freshness regime then goes RP Invalid and §6.3 SUSPENDS it —
+permanently, with no re-open path. ⚠ **Keep-polling alone is PROVEN
+insufficient (15-08): the testing pool ran it all night and the six
+books died anyway at the window's edge.** ➕ **15-08: WHY the
+book is still in the live regime is found and fixed (MM PR #45,
+unmerged)** — the engine's `OFFICIAL_RESULT` correctly de-arms it, then
+SR's post-final SETTLED readings (p=1/0, minutes after the whistle)
+re-arm it through `_note_freshness`; the `[settled-freshness]` guard
+closes that. See the N40 row's 15-08 addendum. Ten books went dark this way overnight 13/14-08; two
 (PATR/COLT) escaped the suspension by minutes and kept quoting
 PRE-FINAL prices — live exposure. Worse, journal-verified: within the
 old 600 s correction watch, every finished book FLAPPED

@@ -92,6 +92,28 @@ for ~$1.2bn, evidence of how the category is being valued.
 
 Kevin is credited with the "simulated IPO" phrasing.
 
+## Where the testing-the-waters disclosure actually goes (17-08-2026)
+
+Settled on the 17 August call, because Edwin's prototype had put it on almost
+every screen and Jared asked whether that was necessary.
+
+Edwin's answer: _"yes, but not in its current form."_ The agreed shape:
+
+- **An info button** carrying the full disclosure, which expands on demand rather
+  than occupying every surface.
+- **On the competition-selection screen** at first open, so it is demonstrably in
+  front of every user before they choose anything. Edwin's reasoning was
+  evidential rather than cosmetic: _"I may want to also have it there just to say
+  it was there."_
+- **Not on every surface.** Troy proposed relying on the terms and conditions
+  alone, on the basis that nobody reads them. Edwin accepted that as part of the
+  answer but not the whole of it, hence the selection screen.
+
+The distinction matters: relief under Rule 255 depends on the prescribed
+disclosures being made **ahead of time**, so the point of placing it on the
+selection screen is to be able to show it was unavoidable, not to satisfy a
+design preference.
+
 ## State-by-state exposure
 
 - Legal is working through **47 states** of registrations and bonds, with Edwin
