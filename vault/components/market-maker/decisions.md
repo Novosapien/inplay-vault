@@ -14,6 +14,66 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19f — ✅ N47 ruled: a price may be a millionth off, so the pair guard relaxes to the band
+
+**Who:** George, 19-08. **"Price is being a millionth off is fine."**
+
+### The contradiction
+
+Two rules in one code path disagreed.
+
+- **§3.2.1's accept band** takes a win/tie/loss triple whose sum is within a
+  millionth of 1 and says: use these numbers **untouched**.
+  (`sum_accept_tolerance = 0.000001`.)
+- **The `[pairs]` guard** then asserts `GEV(home) + GEV(away) == $5.00`
+  **exactly** (`valuation/engine.py:395`).
+
+A triple a millionth off produces prices a millionth off, so the guard raises —
+out of `process()`, with no `except` in `cycle()`. The book stops quoting.
+
+Measured at the pin: **100%** of the accept band's non-exact sums raise, and
+**2.7%** of §3.2.1 repairs raise too, from the repair's own precision-28 residue
+(`0.49/0.99 + 0.4/0.99` does not return to exactly 1).
+
+⚠ **Latent only by luck.** Sportradar's two percentages sum to exactly 100 on
+all 1,089 readings of the captured game — a property of the PROVIDER, not of our
+code, and nothing checks it. `adapters/sportradar.py:93-94` reads SR's two
+numbers rather than deriving one from the other, so a provider that rounds
+differently, a schema change, or a second feed makes it live.
+
+### The ruling — option (b), relax the guard
+
+    pair_total != WIN_VALUE
+      becomes
+    abs(pair_total − WIN_VALUE) > WIN_VALUE × sum_accept_tolerance
+
+A tolerance of **$5.00 × 1e-6 = $0.000005** — half a thousandth of a cent.
+
+⭐ **It changes no stated behaviour, only an over-tight assertion.** The guard's
+job is catching a swapped home/away pair and a badly broken repair. Neither can
+hide inside a millionth, so nothing is given up. The other two options both cost
+something real: tightening the band would refuse readings §3.2.1 says to keep,
+and normalising inside the band would change what §3.2.1 means by *accepted*.
+
+⚠ **Edwin was not consulted, and did not need to be.** The open question framed
+this as needing his number. On the ruling it is a tolerance decision rather than
+a modelling one — how much slop a cross-check may allow — and that is George's.
+
+### ⚠⚠ It is NOT implemented yet, and that is the point
+
+Phases 0–4 of the Go port are a **faithful** port, certified by differential
+replay against the pin. Changing either engine now breaks the zero-diff mandate:
+Go would stop raising where Python raises, and the valuation fuzz drives that
+exact case **every 77 steps**.
+
+**The change lands at Phase 5, in BOTH engines together.** Until then Go
+reproduces the raise exactly and
+`TestTheAcceptBandContradictsThePairGuard` pins it.
+
+Full entry: [[market-maker/go-port-findings|GP-3]] · question: `N47`.
+
+---
+
 ## 2026-08-19e — ✅ N52 and N48 ruled, gate 0-b passes, and a setting must be enforced rather than documented
 
 **Who:** George (both rulings), during the Go port's Phase-3 session.
