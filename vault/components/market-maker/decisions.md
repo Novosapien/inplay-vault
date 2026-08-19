@@ -3270,6 +3270,19 @@ account sits outside INPLAY_VENUE_PLACE_SUBS, no overlap.
   sheet → the reviewed supervised-inputs file, prices verified to the
   cent.
 
+## 2026-08-06e — Full book is live: a real trade proved the incremental path
+
+> Deployed and enabled for all 170 symbols. Session note addendum:
+> `sessions/2026-08-05-d-full-book-probe.md`. Filed on its own branch as
+> `2026-08-06`; re-labelled `2026-08-06e` on merge, after main's four 06-08
+> entries.
+
+- ✅ **T21 RESOLVED — tZERO ADDS, it does not replace.** _(opened as T12; re-filed as T21 on merge)_ Two subscriptions per symbol on one session coexisted through a live trade: the depth-0 one delivered the incrementals while the depth-1 one kept the app's price board current in the same window. The additive design stands; no switch-over needed.
+- ✅ **Depth-0 incrementals observed for the first time**, and they behave as built: a buy on IPTCGIAN produced two deletes (the consumed offers) and one New (the residual resting bid), with zero anomalies and zero crossed books.
+- ✂ **A depth-0 delete CARRIES its price** — `279=2` arrives with `270` populated. This supersedes the assumption the code was defensively written against: at `MarketDepth=1` the venue omits the price, and depth-0 was expected to possibly do the same. It does not. The refusal branch stays as a guard but never fires.
+- ⚠ **The 279-before-269 parser fix is load-bearing.** Every real incremental puts `MDUpdateAction` first. Under the previous split-on-269 logic both deletes would have applied as New/Change and the consumed offers would still sit in the book. Depth-of-book was not possible without that fix, and nothing had exposed it because no consumer read the action.
+- ⚠ **A depth-0 reply on the top-of-book fold path CORRUPTS, it does not degrade.** Proven the hard way: the first probe wrote the outermost rungs of a depth-0 book to the live price board as best bid/offer. Routing by MDReqID is a prerequisite of the design, not a refinement of it.
+
 ## 2026-08-06d — the wire-contract fixes, the quarantine, §10.3 checkpoints BUILT
 
 Build session (MM `21dd7e1` → `43ba08d`, **534 → 561 tests**, ruff +
@@ -3430,6 +3443,23 @@ tests**; service `0b936c8`, **575 → 577**; all LOCAL). Full narrative:
   stamp is taken from `receive_time` BEFORE the accept verdict · the
   loopback team map is the real `TEAM_BINDINGS` now (synthetic `lb:*`
   retired) · `MM_SECURITIES` selects a drill's exact books.
+
+## 2026-08-05d — Full-book market data: depth is available on the session we already run
+
+> Live probes against the tZERO MD session. Session note:
+> `sessions/2026-08-05-d-full-book-probe.md`. Filed on its own branch as
+> `2026-08-05b`; re-labelled `2026-08-05d` on merge, because main had already
+> used `2026-08-05b` for the tiers/universe/composition session. It remains the
+> second session of the 05-08 probe stream.
+
+- ✅ **Depth of book is available and the MM does not need the IOI feed.** `MarketDepth=0` is accepted on the existing FIX v8 session; `IPTCGIAN` returned **8 price levels per side** in one fragment. We have only ever asked for `MarketDepth=1`, which is why the platform has never seen depth.
+- ✅ **Request `266=Y` (AggregatedBook) on any full-book subscription.** It is the switch that turns on **`346` NumberOfOrders** per level — per-level order counts are otherwise absent. With `266` the per-level `299` QuoteEntryID disappears; the two are alternatives, not both.
+- ✅ **Full book comes from the existing v8 session**, not IOI and not a second one. IOI's only real advantages are `9846` PreviousClosingPx and **`9848` InitPrx** (reference price for not-yet-tradeable assets — relevant to E3 / the NCAA symbols at TBA); everything else the MM needs is v8-only (trade IDs and DeleteReason for busts, halts, session status, imbalance). IOI also allows one client connection per session.
+- ✅ **Depth-0 and depth-1 traffic must be routed separately by MDReqID.** Not a nicety — measured. A depth-0 reply on the top-of-book fold path **corrupts** rather than degrades: `handleSnapshot` flattens entries by overwriting, so the outermost rung wins and the price board took best_bid 67.45 / best_offer 69.20 against a real 68.15 / 68.50.
+- ✅ **Book state is Redis + NATS only** — no Postgres migration. Depth is high-churn ephemeral state and nothing renders it.
+- ✅ **Previous close is derived from our own tape** (`venue_ticks`), not chased on the feed. `9846` is absent from v8 even when explicitly requested, so `venue_quotes.previous_close` can never populate from this session.
+- ⚠ **OHLC on v8 is partial.** Entry types 4/5/7/8 are accepted, but the venue answers High and Low with values, **Open with an empty entry** (`270=0.00`) and **Close not at all**. An empty Open is dangerous, not merely useless: it satisfies the gateway's `open != nil` publish gate and writes a real-looking `0.0000`.
+- ⚠ **Full book ships feature-flagged off**, with a symbol allow-list.
 
 ## 2026-08-05c — all 170 bindings verified · ⭐ George's ingestion ruling
 
