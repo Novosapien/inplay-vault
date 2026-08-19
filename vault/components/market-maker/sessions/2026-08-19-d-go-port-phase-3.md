@@ -2,7 +2,7 @@
 description: "Phase 3 of the Go port: four chunks land, gate 0-b runs for the first time, and the decimal library turns out unable to hold a number CPython stores"
 ---
 
-# 2026-08-19 — the Go port, Phase 3, and the limit of the decimal library
+# 2026-08-19d — the Go port, Phase 3, and the limit of the decimal library
 
 > **Who:** Claude (`/general-implementation-builder`) + George
 > **Type:** build
