@@ -14,6 +14,86 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-19c — ✅ the IPO test rig: the maker sells the primary, and the gateway gets a house read path
+
+Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] ·
+gateway **PR #20** (deployed) · panel **PR #32**
+
+George is testing the IPO process. The shape he set, and the rulings it needed.
+
+### The test's shape
+
+- ✅ **The maker account sells the primary — for this TEST.** A deliberate
+  substitution for the broker-dealer MPID, which T16 has not stood up. ⚠ It
+  reverses Edwin's 31-07 ruling (*"the market maker is not going to open up and
+  sell"*) **for the test only**; the primary/secondary separation is unchanged as
+  a design.
+- ✅ **900,000 NFL · 1,000,000 NCAA.** George reaffirmed after the 03-08 record
+  (1,000,000 for both leagues) was put to him. The built systems already agree:
+  `mm/config/dictionary.py:96` and the trading service's `FLOAT_BY_LEAGUE`, both
+  sourced to **IPO Draft Requirements v3 §1.2/§3.1**, which post-dates 03-08.
+  ✂ **Supersedes the 03-08 "1M for both" line.**
+- ✅ **No rounds.** One open window with resting sell orders; users subscribe
+  against them. ✂ Supersedes v2's 18 × 50,000 round structure for this run, and
+  moots **E24**'s round-count conflict for it.
+- ✅ **The matching engine carries the venue leg**, not the 23-07 direct-mint
+  path.
+- ✅ **Edwin buys on behalf of the taker from the admin panel.** The taker engine
+  therefore runs **halted, not stopped** — `halted` gates only the automatic loop,
+  never the manual path, and the code names this case (*"a halted bot keeps
+  publishing — the IPO cockpit case"*).
+- ✅ **The taker's manual-order guards are raised for the window by env**
+  (`SNT_MANUAL_MAX_QTY`, `SNT_MANUAL_MAX_NOTIONAL`) — Hasan, no rebuild. At the
+  built 10,000-share / $500,000 caps, buying 600,000 of one team is 60–100
+  tickets, and 170 teams is over ten thousand.
+
+### The two legs never meet
+
+- ⭐ **The IPO already has an execution path and it is NOT the venue.**
+  `ipo_engine.execute_ipo_buy` decrements a sharded float, debits the wallet and
+  writes a fill marked `settlement_status="simulated"`. It never calls tZERO, and
+  `trading.py:879` refuses venue placement unless the phase is `LIVE`.
+- ✅ **That gate cannot see the taker.** Manual orders travel
+  panel → proxy → NATS → taker engine → gateway; the trading service is not in
+  that path. So the app leg and the venue leg run independently and the test
+  shape stands. ⚠ If both run, the venue ask and `assets.ipo_ask_price` must be
+  the same number, or one share is on sale at two prices.
+
+### Venue facts that constrain the run
+
+- ⚠⚠ **The dead-man switch has no off flag.** `DeadManTimeout <= 0` falls back to
+  10s in `oe_adapter.go`. It arms on a heartbeat OR on a gateway restart that
+  rehydrates resting MM orders, and then sweeps **every** resting MM order. Both
+  can happen inside an offering window by accident. Before a window: raise
+  `MM_DEADMAN_TIMEOUT_MS` and `MM_DEADMAN_BOOT_GRACE_MS` past its length, and
+  freeze gateway deploys.
+- ⚠⚠ **A position transfer cannot be undone.** 35=UPT applies a signed delta and
+  is not idempotent; measured 05-08, **negative transfers are accepted (UPTa) and
+  never move the position**, with or without ConfirmTyp. Its reply reaches only
+  the gateway's FIX log, so a caller timeout proves nothing. Seeding is one-way
+  until **UEPR is re-probed** (E27 already says to).
+- ⭐ **The venue reports a position only ON A FILL.** Tag 9383 rides the execution
+  report and this session has no Request For Positions, so before the first trade
+  the venue has said nothing. Every surface renders that as unknown, never zero.
+
+### The panel
+
+- ✅ **The IPO view is its own page** (`/ipo`), **admin-only**. Every other maker
+  surface reads `mm.state`, which is silent while the maker engine is stopped —
+  the whole window. The page reads the gateway's order tracker instead.
+- ✅ **`GET /positions/house` on the gateway** is the read path, `X-Ops-Key`
+  gated, with `botId` separating the two bots.
+
+### Live coordinates that contradict the record
+
+- ⚠ **The maker's bot id is `mm-1`, not `sdmm-1`** (the taker env example's value).
+- ⚠ **The maker and taker are on SEPARATE venue accounts** — `1797733477` and
+  `4963224393`. The 03-08 decision records *"one wallet, one MPID, one inventory,
+  two execution styles"*. Read off the gateway's own book 19-08. **Unresolved —
+  and 166.8 M shares get seeded into one of them.**
+
+---
+
 ## 2026-08-19b — ✅ Go port Phase 2 complete, and the gate's own corpus never moved the price
 
 Session: [[market-maker/sessions/2026-08-19-b-go-port-phase-2]] ·
