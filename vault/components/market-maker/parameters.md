@@ -11,6 +11,71 @@ description: "Registry of every tunable MM number with value, status and source 
 
 ---
 
+## 🔴 PROPOSED — the 18-08 parameter round (sent to Edwin 20-08, E51)
+
+Nothing here is agreed. Every row is **🔴 pending Edwin**, and no row reaches
+`mm/config/dictionary.py` until he answers. Reasoning and the arithmetic:
+[[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]] ·
+[[market-maker/decisions]] 2026-08-20.
+
+| Parameter | Now | Proposed | Why | Status |
+|---|---|---|---|---|
+| `max_levels` · `min_levels` | 6 · 3 | **3 · 1** | Ask 1, **countered** — Edwin asked for one rung. George's call: 1–3 drawn. Three rungs at 550 hold 1,231 sh/side against 30,739 (−96%) vs 550 for one (−98%); 1–3 keeps §5.2's stress ladder | 🔴 counter sent |
+| `k_intensity` | 1.2 | **0.4** | Ask 2. `C ≈ 2 ÷ k`, so `k` alone sets the resting spread: 1.65 → 4.88 ticks. Calm spread $0.02 → $0.05–$0.08. ⚠ Do not tune below 0.3 — the response accelerates (0.3→0.2 adds 3.1 ticks; 0.2→0.1 adds 8.7) | 🔴 **E31** |
+| `min_width_ticks` | 1 | **5** | Ask 2. A guaranteed floor; `k` cannot give one because `width_extra` can draw 0 | 🔴 **E31** |
+| `base_size` | 10,000 | **550** | Ask 3 — the midpoint of his "500 or 600". ⚠ Re-opens why we set 10,000: the mandate is up to 85 M shares to distribute (N20, E27). Resting size falls from 12.3% of holding to ~0.5% | 🔴 |
+| `min_quantity` | 1,000 | **100** | **Required, or ask 3 is inert** — 550 clamps straight back to 1,000. Tightest case is rung 3 on a long book: 107 sh. ⚠ The 1,000 is §5.7.3, **ours**; no tZERO minimum appears in any venue document — confirm before relying on it | 🔴 |
+| `material_qty_change` | 500 | **50** | §5.8's publish trigger. Against sizes of 206–1,031 a 500-share threshold can never fire | 🔴 |
+| `skew_reference_shares` | 900,000 (the float) | **48,000** | Ask 5, **ours**. What §4.3's ratio divides by. Sets the shares needed to reach the ±$0.25 lean cap: **225,000 → 12,000** (~22 rungs swept). ⚠ **12,000 is the SATURATION point, not the denominator** (`M ÷ S × D` = 0.25 × D). ⚠ 12,000 is Edwin's `inv_ref` figure, fitted to his **250**-share book (48 rungs); at 550 a rung it is 22, so scale-matched it is nearer **26,400**. Put to him as *"how many rungs before we are fully leaned over?"* ⚠ Must apply to the **lean only** — feeding it to `EPR` would saturate the size modifier at 6,000 sh and take books one-sided | 🔴 **N20** |
+| `max_drift_ticks` | none | **25** | Ask 4. The furthest our quote may sit from fair value. ⚠ **A bound on a drift, NOT a deadband on RP**: `centre = RP + drift`, and drift is 0 when nobody trades, so we never quote stale | 🔴 **NEW** |
+| `drift_reset_prob_move` | none | **5%** | Ask 4. The win-probability move that clears the drift. ⚠ **A separate parameter from the 25 cents** — 25c bounds, 5% clears. The earlier claim that `5% × $5.00 = $0.25` made them one rule was coincidence | 🔴 **NEW** |
+| `flow_impact_ticks_per_1000` | none | **6 or 10** | Ask 4. How far 1,000 shares traded moves the drift. **Edwin's own RPV-2 number, and his documents disagree** — `RPV2Config` 6.0, `HANDOFF.md` §3 10. At 6 a 550-share fill moves 3.3 ticks and the limit arrives after ~7.6 rungs; at 10, after 4.5 | 🔴 **E30** |
+| `state_floor_ticks` | none | Edwin's | Per-state minimum width. The equation cannot exceed **$0.15** ever, against §5.2 Defensive $0.40 and overnight $2.50–$5.00 — and a stale feed produces LOW σ², so it quotes **tighter** into §2.3's danger case | 🔴 **E31** |
+
+**One combined bound, not two.** The lean and the drift both respond to our own
+fills, so a single sweep moves the quote twice. Two separate $0.25 limits would
+allow 50 cents of total gap where Edwin asked for 25. Proposed: **one $0.25 bound
+on the total gap from fair value**, covering both — his confirmation is question 6.
+
+**The drift reads EXECUTIONS only, never resting orders** (an order is free and
+§4.2 marks the leaderboard at RP, so an order-derived signal is spoofable).
+Our own fills are journalled; participant-to-participant trades are not visible
+to us today → **T23**.
+
+---
+
+## Off-field (§3.6) — the method is specified, the build is not
+
+⚠ Added 20-08. §3.6 is **fully specified in the v1.3 spec** (seven subsections)
+and **entirely unbuilt**. `realized_off_field` / `expected_off_field` are
+human-reviewed constants in `docs/supervised-inputs-2026-08-07.json`
+($18.31–$30.82 expected · **$0.00 realized**, all seven supervised tickers).
+No BDI, VMI, Popularity Index, capture share or weekly publication exists in code.
+
+| Parameter | Value | Status | Source |
+|---|---|---|---|
+| Per-game pool | **$2.50 per share**, split pro rata by counted share volume | ✅ | §3.6.1 |
+| Zero-volume split | **$1.25 / $1.25** | ✅ | §3.6.4 |
+| **Untradable opponent** | the universe team takes the **FULL $2.50** as both expected and realized; **no capture-share applies** | ✅ **spec — added to this registry 20-08** | §3.6.1. Edwin restated it 18-08 (North Dakota State; **~22 such games this season**, from week zero). It already drives his IPO prices. ⚠ The pair-identity guard is unaffected — gated on `len(sides) == 2` |
+| BDI clamp · blend horizon · capture clamp | 0.10–10.0 · 4 publications · 0.20–0.80 | 🟡 ▸ | §3.6.5 |
+| Publication cadence | post-MNF (NFL) · post-week-final (NCAA) | ✅ | §3.6.4 |
+| Off-field ceiling | `ScheduledGames × $2.50` — NFL $42.50 · NCAA $30.00 | ✅ | §3.6.7 — feeds MEV |
+| **`IPOEligibleOrderShares`** | fixes BDI at IPO completion | 🔴 **no publisher** | E27 family — the IPO runs on the primary plane and never touches us |
+| **Counted participant volume** | every execution with a participant side | 🔴 **not received** | §5.5 unbuilt. We get depth (`market.book`), not a tape → **T23** |
+
+⚠ **§3.6.6 is a Bounded Reflexivity Prohibition:** trading may influence **RP**
+only through §3.6 — capped at $2.50 a game, from counted volume, applied weekly.
+Any other path from order flow into RP is a **Critical defect**. E51's drift moves
+the **quote**, not RP, so it does not engage §3.6.6.
+
+**Not a day-one blocker** — the frozen values carry the right magnitude at
+listing, so RP matches the IPO EV. The error grows across the season: drift is
+`(realized capture − frozen capture) × $2.50` per game, so a team running 0.16
+above its frozen estimate drifts about **$6.85 a share over 17 games** (~14% on a
+$50 book). The §3.6.5 clamp bounds the worst case at $25.50.
+
+---
+
 ## ⭐ v1.3 Build Spec registry (24-07) — THE authoritative set
 
 The v1.3 spec's Configuration Dictionary (§12.2) supersedes the sections
@@ -225,7 +290,7 @@ reasoning: `sessions/2026-08-03-deployment-architecture.md`.
 | `converge_max_instructions_per_tick` | ⭐ Always-quoting step 4: the most venue instructions one converger PASS sends (suspends → LIVE → round-robin; books atomic) | ✂ **128** — the dictionary default since `g2-throttle` (was 256 at first deploy, halved 00:05Z 08-14 as the live-load lever) and baked into the deployed `feat/always-quoting-step4b`. Under phase B the budget is PER PASS at 0.25 s — outbound ceiling ~512 instr/s | 🟡 **OURS** — 256 (08-13, MM PR #30) → 128 (08-14, deployed in supervised28/CFG-0026) | `[converge]` in `mm/venue/sync.py` |
 | `converge_interval_s` | ⭐ Always-quoting step 4 phase B: the converger runs on its OWN task at this cadence — the tick stages, the task converges; 0 restores the phase-A in-tick pass (the rollback lever and the direct-drive test shape) | **0.25 s** — under the 0.5 s LIVE redraw floor, so a staged live book never waits a full redraw | 🟡 **OURS (08-14)** — **built, NOT deployed** (`feat/always-quoting-step4b` @ `912ba27`) | `[converge-task]` in `mm/runtime/loop.py` |
 | `converge_staleness_alarm_s` | Phase B's outbound staleness alarm: `CONVERGE_STALE` logs once per episode when dirty targets outwait this bound — the outbound DRAIN_CAPPED, an alarm not a mode | **2.0 s** — the step-4 design's §5 proposal | 🟡 **OURS (08-14)** — built, NOT deployed | same |
-| `MM_DEADMAN_TIMEOUT_MS` (gateway) | The dead-man window: MM heartbeat silence before the gateway sweeps the whole resting book | ✂ **10,000 ms since 00:19Z 08-14** (was 4,000 — swept a live book ~130 times on the 08-13 slate at silence 4.0–4.7 s; every observed gap fits under 6 s, 10 s adds margin) | ✅ **deployed** (env row on the gateway VM; default bump in gateway PR #4) — N15 retune after the jitter measurement stands | `/opt/fix-gateway/.env` · `internal/config/settings.go` |
+| `MM_DEADMAN_TIMEOUT_MS` (gateway) | The dead-man window: MM heartbeat silence before the gateway sweeps the whole resting book | ⚠ **THE VAULT WAS WRONG UNTIL 20-08.** Found at **604,800,000 ms (168 h) on BOTH gateways**, together with `MM_DEADMAN_BOOT_GRACE_MS=604800000` — a second variable this table never carried. Restored 20-08 to **10,000 ms timeout / 30,000 ms boot grace**. Was ✂ 10,000 ms since 00:19Z 08-14 (was 4,000 — swept a live book ~130 times on the 08-13 slate at silence 4.0–4.7 s; every observed gap fits under 6 s, 10 s adds margin) | ✅ **deployed** (env row on the gateway VM; default bump in gateway PR #4) — N15 retune after the jitter measurement stands | `/opt/fix-gateway/.env` · `internal/config/settings.go` |
 | `live_redraw_cadence_s` | The republish clock's FLOOR: threshold = max(drawn dwell, this) | **0.5 s** — "new orders every 500 ms, changed or not" in LIVE | ✅ ruled 08-11 · MM PR #16/#18 | `[live-timer]` in `mm/quotes/engine.py` |
 | `dwell table = republish clock` | ✂ Every mode republishes a re-rolled book when its drawn dwell expires, changed or not; materiality publishes sooner | **LIVE 0–0 (500 ms floor) · pre-game 5–20 s · post-game 5–20 s · overnight 20–40 s** — ✂ supersedes Edwin's ASMM-1 rows (3–12/8–30/10–40/20–90) and implements his 23-07 "non-live 30–60 s" | ✅ ruled 08-11b · MM PR #18 · deployed supervised11, live-verified | `mm/config/dictionary.py::dwell_ranges_s` — Edwin flag rides E31/E17 |
 | `poll tier — PRE_KICKOFF` | SR poll within 1 h of the scheduled kickoff | **15 s** — the midpoint of George's 10–30 s range; one dictionary value to change when he picks | 🟡 **interim, built 05-08** | `cf2bc10` |

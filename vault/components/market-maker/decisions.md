@@ -14,6 +14,106 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-20 — ✅ Edwin's maker asks become a parameter round: rungs countered at 1–3, the drift reads trades only, and one combined bound
+
+**Who:** George (the rulings) + AI session, 20-08.
+**Refs:** [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]] ·
+[[18-08-2026-requirements-session]] · E30 · E31 · E34 · E51 · T23.
+**Sent to Edwin 20-08.**
+
+Edwin asked for four maker changes on the 18-08 call: top of book only, wider
+quotes, ~550 shares instead of 11,000, and a *"distribution level away from fair
+value… around 20 cents 25 cents"*. This session turned them into a signed-off-able
+parameter set and sent it. **Nothing is built until he answers.**
+
+- ⭐ ✅ **Asks 1 to 3 are inert without a persistence mechanism — so a FIFTH ask
+  was added, ours.** Edwin's own example: a participant sells 1,000 into a
+  550-share bid, 550 fills. Next cycle RP has not moved, and 550 shares against a
+  900,000 float moves `IA` by **$0.0006** — six hundredths of one tick. We re-post
+  the same bid and buy the rest. Thinning and widening deliver nothing on their
+  own. The fifth ask raises the inventory lean back toward the scale Edwin
+  designed it for (his `inv_ref` saturated at 12,000 shares; ours at 225,000).
+
+- ✅ **George: rungs go to 1–3 DRAWN, not 1.** A counter to ask 1, sent as an
+  explicit counter rather than a silent change. The size cut does the work —
+  three rungs at 550 hold 1,231 shares a side against today's 30,739 (a 96% cut)
+  against 550 for one rung (98%); two percentage points does not change what
+  Edwin saw. Keeping 1–3 preserves §5.2's stress ladder (Stable 3 · Active 2 ·
+  Defensive 1), which one-rung-everywhere would spend for good given Active and
+  Defensive already quote identically. The document says *"if you still want one,
+  say so and we build one."*
+
+- ⭐ ✅ **The drift reads EXECUTIONS only, never resting orders.** A resting order
+  is free, and §4.2 marks every portfolio and the leaderboard at RP, so posting
+  and pulling a bid to move our quote has a direct payoff. A trade costs money,
+  so it is credible. This re-affirms the 30-07 withdrawal of the §5.5
+  book-derived blend, for the same reason. Our own fills are journalled, so ask 4
+  needs **no new data** to build.
+
+- ✅ **One combined $0.25 bound** on the total gap between our quote and fair
+  value, covering the lean and the drift together. Both respond to our fills, so
+  two separate bounds would let one sweep take us 50 cents from fair value when
+  Edwin asked for 25. Put to him for confirmation.
+
+- ⭐ ⚠ **RPV-2 is Edwin's own July design, and ask 4 is the one term of it we
+  could accept.** `rpv2_flow_responsive.py` already moves price with flow at
+  **6 ticks per 1,000 net shares** (`RPV2Config`) or **10** (`HANDOFF.md` §3) —
+  the E30 conflict, still open. The 30-07 ruling was *build none of it*: three of
+  its four terms invented movement, and the fourth moved **RP**, which SNT-1
+  would then drive. **Ask 4 is that fourth term alone, applied to the QUOTE
+  instead of RP**, which answers our own objection — RP, the settlement value and
+  the leaderboard are all untouched, and §3.6.6's Bounded Reflexivity Prohibition
+  (trading reaches RP only through §3.6, weekly and capped) is not engaged.
+  So the coefficient already exists; Edwin owes **6-vs-10**, not a new number.
+
+- ⚠ ✂ **Ask 4 is a bounded DRIFT, not a deadband on fair value — George's
+  correction.** The first reading was "stop following RP until it has moved 25
+  cents". George rejected it: that is a lag mechanism, so with no trading at all
+  we would quote stale prices while the game moved and be picked off by anyone
+  watching the win probability. Edwin's own word is *"reside"* — the distance is
+  between OUR QUOTE and CURRENT fair value:
+
+      centre = RP + drift          drift bounded to ±$0.25
+
+  We keep tracking fair value continuously and carry an offset on top. No trading
+  → drift zero → we quote at fair value.
+
+- ⚠ **His two numbers are NOT one rule.** The claim that 25 cents and "5% win
+  probability" were the same thing (5% × $5.00 = $0.25) was coincidence dressed
+  as a finding. **25 cents BOUNDS the drift; a 5% probability move CLEARS it.**
+  Two parameters, not one.
+
+- ⚠ **`skew_reference_shares` was first published in the wrong form.** 12,000 is
+  the **saturation point**, not the denominator: saturation is `M ÷ S × D`, so
+  D = **48,000**. The effect table was right throughout (550 sh → 1.1 ticks).
+  Also recorded: 12,000 was fitted to Edwin's 250-share book (48 rungs to
+  saturation); at 550 a rung it is 22, so scale-matched it is nearer 26,400.
+  Framed for him as *"how many rungs before we are fully leaned over?"*
+
+- ⚠ **The untradable-opponent rule is ALREADY SPEC, not a new fact.** §3.6.1: when
+  the opponent sits outside the universe, the universe team takes the **full
+  $2.50** as both expected and realized, and no capture-share applies. Edwin
+  restated it on the call (North Dakota State, ~22 such games this season). It
+  was missing from [[market-maker/parameters]] only. The pair-identity guard is
+  unaffected — it is gated on `len(sides) == 2`.
+
+- ⚠ **Off-field §3.6 is fully specified and entirely unbuilt.** RAV/EAV are
+  reviewed constants in `docs/supervised-inputs-2026-08-07.json` ($18.31–$30.82
+  expected, $0.00 realized). No BDI, VMI, capture share or weekly publication
+  exists. Two external inputs are missing: `IPOEligibleOrderShares` (no
+  publisher, E27 family) and counted participant volume (§5.5). Not a day-one
+  blocker — the frozen values carry the right magnitude at listing — but the
+  error grows across the season.
+
+- ⚠ **PROCESS, from the call (George, agreed by Edwin): anything touching the
+  maker takes two reviewers at minimum.** *"In terms of the market, like I think
+  anything touching the makers, two at minimum."*
+
+- ⚠ **The deploy window conflicts with R11.** Edwin said *"next Saturday"* —
+  29-08 — which is a live NCAA Saturday once secondary opens 26 or 27 Aug (E25).
+  **R11 forbids a maker cutover while games are live.** Ship before NCAA
+  secondary opens, or take a Sunday morning.
+
 ## 2026-08-19g — ✅ Go port Phase 4: AC13's named gaps, the boot sequence's wave, and where the anchor reader lives
 
 **Who:** George (AC13) and the Phase-4 team lead (the rest), 19-08.
@@ -551,6 +651,62 @@ defects all caught**.
   that put 19 doubled levels across the six QA books live. Each was found by
   planting the defect and watching the fuzz pass. The defect list is the
   coverage checklist.
+
+---
+
+## 2026-08-20 — The Go maker's first live venue run: four defects, and the market data feed dies under a sweep
+
+Session: [[market-maker/sessions/2026-08-20-b-first-live-venue-run]] ·
+Go repo `feat/phase-3-ingestion` · [[market-maker/go-port-findings|GP-17]]
+
+- ✅ **`gateway_ops` is ported and the boot healer works against a real venue.**
+  `HEALED — 1358 fetched · cancel-unknown 1358 · sent 1358 of 1358 · fetch 54.4 ms`,
+  and a correct zero-cancel read against an empty book earlier the same day.
+  ⚠ It only worked because Hasan fixed **egress rule 2087**, pinned to
+  `10.0.1.2/32` so packets to the new MM gateway were dropped with no RST.
+- ⭐ **The reconciler is certified live.** 82,195 execution reports across 180
+  books from the venue's own wire log: **zero doubled (price,side) levels, ever**,
+  every book inside `MinLevels 3 / MaxLevels 6`, and the wire log's 1,520 live
+  matched `/orders/mm` exactly. **The 08-08 doubled-levels defect does not recur.**
+- ⚠⚠ **Phase 4b's legs were wired at ONE END.** `compose.go` handed each leg's
+  DRAIN to `runtime.Options` but never assigned `inbound`, `readings` or
+  `venueSymbols` on the stack — three fields, zero assignments. The first real
+  gateway message SIGSEGV'd. ⭐ **No test in `cmd/mm` had ever called
+  `composition.build()`**; every test hand-builds a `&stack{}` literal, which can
+  never catch the composition failing to write one. `unwiredLegs()` had been
+  emptied on the strength of half a wiring.
+- ⚠⚠ **A FRESH JOURNAL DOES NOT PRODUCE FRESH ORDER IDS, and the rule was
+  already written down.** The mint is deterministic with no nonce and no run id,
+  so the only lever is `MM_CONFIG_VERSION`. Two duplicate-reject storms, the
+  second at **68%**, from redeploying three times without bumping the salt.
+  `deploy/OBSERVABILITY-REDEPLOY.md` §2.2 records exactly this as the **07-08
+  duplicate-reject deadlock**. Bumping to `CFG-0039-GO` took rejects to zero.
+  ⚠ The salt also re-seeds every DRAWN price, so a bumped engine is not
+  price-comparable to the one it replaced.
+- ⚠⚠ **A newly created JetStream durable replayed a week into a live engine.**
+  Deliver-all is safe only because §7.3 discards what the journal already holds —
+  and a fresh journal holds nothing. 28,592 six-day-old probability updates and
+  **6,636 historical `official_result` settlements** at ~500/s while it quoted a
+  real venue, with 494,228 still pending. Python never met it: `mm-engine` was
+  created months ago and every boot resumes from a cursor. The deliver policy is
+  now an explicit construction-time choice (`MM_READINGS_FROM_NEW`).
+- ⚠⚠ **THE DEAD-MAN WAS OFF, AND SO WAS ITS BOOT GRACE.** Both gateways carried
+  `MM_DEADMAN_TIMEOUT_MS=604800000` **and** `MM_DEADMAN_BOOT_GRACE_MS=604800000`
+  — seven days each; the grace had not been noticed at all. ⚠ The maker has **no
+  cancel-on-shutdown path**, so every stop left its whole book resting and
+  nothing swept it. That is the accumulation behind the thick books. Restored to
+  the 08-14 values (10 s / 30 s) and proven: 1,520 swept, 1,520 confirmed
+  cancelled, zero rejects.
+- ⚠⚠ **A 1,520-CANCEL SWEEP KILLED THE MARKET DATA FEED, AND IT IS STILL DOWN.**
+  `fix-md-v8` stopped at 17:12:20 — eight seconds into the sweep — and every book
+  froze at that instant. It keeps re-broadcasting the frozen frame, so the panel
+  shows **two-sided books that do not exist**. The panel is downstream via
+  `centrifugo-bridge.service`, so it shows the same frozen source. ⚠ For
+  Saturday: a dead-man fire on a full book takes the app's prices with it.
+- ⭐ **A method lesson, paid for repeatedly:** on a moving engine, two reads
+  seconds apart are not evidence. Quiesce the engine or read the wire log. Hours
+  went into reasoning about who owned frozen price levels without ever testing
+  whether the feed producing them was alive.
 
 ---
 

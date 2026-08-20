@@ -137,6 +137,22 @@ Before adding an entry, confirm the pinned Python actually has the defect.
 
 ---
 
+### GP-17 · 🟠 The port swapped a PUSH consumer for a PULL consumer, and nobody recorded it
+
+| | |
+|---|---|
+| **What** | Python binds the readings feed as a **push** consumer: `js.subscribe(READING_SUBJECT, durable=DURABLE_NAME, stream=STREAM_NAME, manual_ack=True, cb=_on_msg)` — `nats-py`'s `subscribe()` with a callback creates a push consumer, and the server delivers to an inbox. The Go port binds a **pull** consumer: `stream.CreateOrUpdateConsumer(...)` then `consumer.Consume(func(msg){...})`. Both take a per-message callback, so the two call sites READ the same. They are different delivery mechanisms. |
+| **⚠ Why it happened** | The modern `nats.go/jetstream` package is **pull-only** — NATS deprecated push consumers in that API. So the divergence is an artefact of the idiomatic Go client, not a choice anybody made. ⭐ **The words "push" and "pull" do not appear anywhere in `internal/bus/`.** It was never considered, never written down, and never flagged as a deviation. |
+| **Evidence** | Read live off the JetStream API on 2026-08-20: `mm-engine` carries `deliver_subject _INBOX.VbvcBcSFFnFJ5G1WY1ADFh` (push); `mm-engine-go` carries `deliver_subject <nil>` (pull). Confirmed independently by Hasan while he was fixing the NATS grants. |
+| **⚠ It has already cost an outage** | The `market-maker` NATS user was authorised for the push shape — `$JS.ACK.SR_PROBABILITIES.>` and the `mm-engine` consumer subjects — and had **no `$JS.API.CONSUMER.MSG.NEXT` grant for any stream or user**, because nothing had ever needed one. So the Go maker bound its durable successfully and then could not FETCH: `permissions violation … MSG.NEXT`. It ran **47 minutes with `readings 0 seen`** — fair value frozen on the reviewed numbers, no live probabilities — and the only symptom was one boot line. |
+| **What is NOT affected** | The CONTENT is identical: same stream, same filter subject, same explicit-ack policy, same durable cursor semantics. A restart resumes from the acks either way. So this does not move `make diff`, and the engine sees the same readings in the same order. |
+| **⚠ What IS unproven** | Pacing under load. Push has server-side flow control and idle heartbeats; pull has explicit batch sizing — the Go consumer ran with **`num_ack_pending: 1000`**, i.e. a thousand messages checked out at once. Nobody has measured how that behaves against AC9/AC10, and the performance gate has never been taken with the readings leg alive at all. |
+| **Severity** | 🟠 **A port divergence, not a Python defect.** Possibly the better mechanism — pull gives real backpressure — but the port's discipline is that a difference from the pin is either faithful or explicitly recorded as a deliberate deviation. This was neither. |
+| **Fix** | Decide and record: keep pull and write it up as a deliberate deviation with the permission requirement stated, or move to the legacy `nats.go` JetStream API for a faithful push consumer. ⚠ Whichever, the NATS grants must match the shape, and the perf gate must measure the readings leg under load before AC9/AC10 are called. |
+| **Owner** | 🟠 **George's to route** · found 20-08 during the first live-venue run |
+
+---
+
 ## B · Structural gaps the port inherits
 
 These are not defects in the code; they are places where the machine cannot do
