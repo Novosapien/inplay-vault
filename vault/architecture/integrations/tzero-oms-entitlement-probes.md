@@ -36,6 +36,8 @@ at session-level entitlement, not at our payload — no amount of tag-fixing hel
 | 2026-08-05 13:33:55 | `UEAR` | `5120866205` (George, with consent) | `1=5120866205 11=Bhl2820mc72 15=USD 8935=2500 9251=IPLY` — **MaxOrdRate 100 → 2500** | **`UEARa` in 13ms** — `35=UEARa 11=Bhl2820mc72 1=5120866205` | ✅ **Risk fields writable** |
 
 | 2026-08-05 14:32:47 | `UPT` | `5120866205` (George, with consent) | `1=5120866205 11=Thl29oexpa6 15=USD 55=IPTCCOWB 9386=1 9387=1 9551=1` — transfer 1 share @ $1.00, ConfirmTyp=1 (admin confirm, first step) | **`UPTa` in 12ms** — echoes `9386=1 9387=1.000000`, but **not** the Qto/Eto/Qt/Et/Rpnl/Upnl the spec says come back | ✅ **ENABLED — inventory seeding unblocked** |
+| 2026-08-20 17:43:53 | `UEPR` | `0531066687` | `1=0531066687 11=Phliybiqe7f 15=USD 55=IPTCBILL 9381=0 9382=0` (no SecTyp) — the same well-formed no-op as the 07-28 probe | **`UEPRa` in 10ms** — `35=UEPRa 11=Phliybiqe7f 1=0531066687 55=IPTCBILL` | ✅ **ENABLED — reverses the 07-28 verdict** |
+| 2026-08-20 17:47–17:52 | `UEPR` | 20 dry-run cohort accounts | 34 sends, `Qto=0 Eto=0` per held symbol — flattening the cohort's positions | **34 × `UEPRa`, 0 × `UEPRx`** | ✅ Confirmed at scale |
 
 ### What the 14:32 probe establishes — the important one
 
@@ -44,6 +46,11 @@ one is enabled. That is the third independent confirmation that entitlement is
 per-MsgType, and it removes the market maker's inventory blocker: offers require
 seeded sellable inventory per symbol, `UEPR` was the only known route, and it is
 dead. `UPT` is a live route.
+
+> **Superseded 2026-08-20:** the premise ("`UEPR` is not entitled") no longer
+> holds — `UEPR` now answers `UEPRa` in ~10ms. The conclusion about `UPT` being
+> live still stands, and so does the per-MsgType finding; only "`UEPR` is dead"
+> is now false. See the reversal section below.
 
 Consequence for the MM account question (open since 22-07 as T1): a **regular
 `INDIVIDUAL` account** configured via `UEAR` (`MaxOrdRate`, `DTBPo`, `CASHo`,
@@ -116,14 +123,39 @@ Payload verified against the spec after the fact: the `UEPR` probe was correctly
 formed (Account, Symbol, Qto, Eto, SecTyp all present and valid per
 [[tzero-account-position-fix]]). Its silence is genuinely entitlement.
 
+## ⚠️ `UEPR` was turned on — 2026-08-20 reverses the 07-28 verdict
+
+Re-probing the same well-formed no-op on 2026-08-20 drew **`UEPRa` in 10ms**, and
+34 real flattens that followed drew 34 accepts and zero rejects. Entitlement
+changed on tZERO's side at some point between the two probes; nothing changed in
+our payload (the 08-20 send omitted `SecTyp` entirely and was still accepted).
+
+**The operational lesson is bigger than the verdict:** entitlement is not only
+per-MsgType, it is **not static**. A ❌ here means "silent on the date in the
+row", never "permanently unavailable". Re-probe before designing around an
+absence — the 07-28 silence sent us to `UPT` for inventory seeding and stamped
+"dead" on a route that is now the cleanest way to zero a position.
+
+**Gotcha that made this look like silence again:** the gateway logs the outbound
+`sending EditPositionRequest` but **does not log the `UEPRa` accept**. Only the
+raw quickfix message log carries it:
+`/opt/fix-gateway/data/log/FIX.4.2-FHINPLAY01-TZFIXORDQA.messages.current.log`.
+Checking `journalctl` alone shows a send with no reply and reads exactly like the
+07-28 result. Grep the message log, not the journal.
+
+**What `UEPR` is now the right tool for:** setting a position to an absolute
+value, including **zero**. It is idempotent (absolute, not a delta), which is
+what makes it safe to retry — the opposite of `UPT`, which applies a signed delta
+and cannot reduce a position at all.
+
 ## Current picture
 
 | Message | Status |
 |---|---|
 | `UEAR` — Edit Account | ✅ Enabled, replies in ~16ms |
 | `UAAR` — Add Account | ❌ Silent |
-| `UEPR` — Edit Position | ❌ Silent |
-| `UPT` — Position Transfer | ⬜ Never probed — separate MsgType, may carry separate entitlement |
+| `UEPR` — Edit Position | ✅ **Enabled since some point between 2026-07-28 and 2026-08-20**, replies in ~10ms (was ❌ Silent) |
+| `UPT` — Position Transfer | ✅ Enabled, replies in ~12ms — but **one-way**: negative transfers are accepted and never move the position |
 | `UBT` — Balance Transfer | ⬜ Never probed — needs `BankIDN` from a `UABR` first |
 | `UABR` — Add Bank | ⬜ Never probed |
 | `UDAR` — Delete Account | ⬜ Never probed |
