@@ -14,6 +14,33 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-20 — ✅ The market data feed was alive; 868 stranded orders swept by seeding the index the LRU had eaten
+
+Session: [[market-maker/sessions/2026-08-20-c-stranded-book]] · N59 · N60 · N62
+
+- ✅ **N59 closed — the feed never died.** A `35=V` snapshot probe answered in ~25 ms;
+  all 180 books answered. The freeze at 17:12:20 was silence, not death. The
+  "phantom" two-sided books were **868 real orders** from the 13:30:02 SIGSEGV
+  boot, DAY, all on FHINPLAY02. **A full-book sweep does not blank market data**;
+  that Saturday risk is withdrawn in the form stated.
+- ⚠⚠ **Why no tracker knew them: Redis `allkeys-lru` evicted the order index.**
+  `inplay-redis` (1 GB) peaked at 1.02 GB ~14:00; 74,444 index writes failed
+  with OOM; resting-order hashes are the coldest keys. The MM gateway's 15:53
+  restart rehydrated **0**. The boot healer, the operator sweep and the dead-man
+  are all tracker-fed, so all three were blind. **N62, owner Hasan.**
+- ✅ **Clearance path chosen (George, ~17:55Z): seed the index, restart the MM
+  gateway, let the dead-man sweep.** The mint is deterministic, so the 13:38
+  boot's `Duplicate clOrdID` rejects named every stranded order. 867 rows
+  seeded, 868 rehydrated, dead-man fired at +30 s, **868 `35=F` → 868 `39=4`
+  → 0 `35=9`**. Venue re-snapshot: 3 retail orders, zero MM.
+- ✅ **N60 closed** — zero 900,000-share IPO orders at the venue.
+- ⭐ **Method:** a quiet feed and a dead feed look identical from timestamps.
+  Ask the venue (`35=V`). And before any gateway restart, compare
+  `SCARD fix:orders:open:mm` with `/orders/mm` — if they differ, the tracker's
+  memory is already gone.
+
+---
+
 ## 2026-08-20 — ✅ Edwin's maker asks become a parameter round: rungs countered at 1–3, the drift reads trades only, and one combined bound
 
 **Who:** George (the rulings) + AI session, 20-08.
