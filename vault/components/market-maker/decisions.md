@@ -14,6 +14,39 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-20 — ⚠ The ladder sizes are stale by design (N10), and two live fixes failed
+
+Session: [[market-maker/sessions/2026-08-20-d-ladder-shape-and-two-failed-fixes]] ·
+N10 · N63 · N64 · Go `2a55d74`, `fa3dfc2`
+
+- ⭐ **The level sizes do not decay outward because of N10, not because a cancel
+  failed.** The reconciler keeps a resting order at a still-wanted price at
+  whatever size it carries. Sizes are re-drawn every quote version. So a kept
+  order holds an older draw. Measured live: **197 of 360 ladders out of decay
+  order**, age spread inside one ladder median 39 s and max 277 s.
+  ⭐ The arithmetic settles the cause: one version can step UP by at most
+  `0.72 × 1.25/0.75 = 1.20`. Observed steps reached **2.16**.
+- ✅ **The Go port is faithful to the pin.** 960 quantity ladders byte-identical,
+  the venue differential fuzz passes fresh at every step, and the quoting gate
+  passes field for field over 1,089 readings. ⚠ Python's LIVE book could not be
+  measured: `mm-1` has been stopped since 19-08.
+- ✅ **George's ruling: clear the old quotes before publishing the new ones.**
+  This REVERSES N10 and Edwin must be told. It costs queue priority at every
+  level whose drawn size moved.
+- ⚠⚠ **The first implementation took the books dark and was reverted live.** It
+  cancelled a level and re-posted it on the next pass, so every book was empty
+  for a pass on every version: **72 to 97 of 180 books quoting**, 11 of 164
+  quoting in all ten samples. ⭐ The unit tests passed, because every one of them
+  asserted on a SINGLE reconcile call and none measured absence over time.
+- ✅ **The corrected design: resize in place.** A level whose price is still
+  wanted is REPLACED to the current draw, so one order holds it throughout.
+  ⚠ Built and gated, **NOT verified live** — the run was stopped first.
+- ⚠ **`base_size` is 10,000 in BOTH engines** (`quantity.go:29`,
+  `dictionary.py:129`). Edwin's agreed 500 to 3,000 (17-08) is in neither. N63.
+- ⚠ **The Go maker does not trade tonight.** The Python maker is the fallback.
+
+---
+
 ## 2026-08-20 — ✅ The market data feed was alive; 868 stranded orders swept by seeding the index the LRU had eaten
 
 Session: [[market-maker/sessions/2026-08-20-c-stranded-book]] · N59 · N60 · N62
