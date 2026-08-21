@@ -13,6 +13,35 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-08-19 — a library is an assumption, and a corpus can carry a fault
+
+Gate 0-b ran for the first time and found four defects. Three lessons transfer.
+
+**A library is an assumption until you test its edges.** We chose `apd` because
+it is Go's decimal library. We then found two defects in it. The first: `Exp`
+returns **zero** when `|x|` is above 22,977, where Python returns the true
+value. The second: `apd` cannot hold any exponent past ±100000, where Python
+reaches ±999999. Neither defect appears in normal use. Both appear on the real
+corpus. ⭐ The rule: test a library at the edge of the domain the work actually
+reaches, not at the middle.
+
+**A corpus can carry a fault that looks like an engine fault.** The a2 journal
+spans nearly two years, because its readings carry the 2024 game's timestamps
+and its venue events carry the 2026 replay's. That gap forced a number no live
+engine can produce. The port looked wrong. The corpus was wrong. ⭐ Ask of a
+failing comparison: can the live machine even reach this input?
+
+**A zero value is a decision you did not make.** `ConditionInputs` carries two
+fields for unbuilt chapters. Their healthy values are `true` and `Normal`. Go's
+zero values are `false` and empty. A struct literal chose the unhealthy values
+silently, and every book suspended. The constructor existed to prevent this.
+⭐ The rule: where a type has a constructor, the constructor is the contract.
+
+**A near-correct result is worse than a wrong one.** The fold hardcoded the
+config version, which seeds every §5.7.3 draw. Every price that needs no draw
+stayed right. Every drawn price went wrong. A result that is mostly right reads
+as a small bug and hides a systematic one.
+
 ## 2026-08-17b — what is running, and what is watching it, are both things you must check rather than assume
 
 - **⭐ `systemctl list-units` is not an inventory of what is running.** The

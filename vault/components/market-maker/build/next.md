@@ -155,3 +155,24 @@ mixed precision.
 [[market-maker/build-deploy-log]]'s Landed table and the dated entries
 in [[market-maker/decisions]] — this page stopped duplicating it on
 14-08.
+
+## ⭐ NEXT SESSION — the pre-port close (George, 16-08)
+
+Brief: `specs/2026-08-17-mm-pre-port-close/BRIEF.md`
+
+Four items, then the pin:
+
+1. **W1 — switch the boot healer ON.** No code: set
+   `MM_GATEWAY_OPS_URL` + `MM_GATEWAY_OPS_KEY`, restart. Run the AC8 rig
+   drill FIRST. Closes AC8 and retires R-D06's fresh-journal ceremony.
+2. **W2 — the ask cap reads its position FROM THE VENUE** (George's
+   ruling: do not wait for E27). Tag 9383 on exec reports, the taker's
+   boot-rebase shape. Closes AC7.
+3. **W3 — find the second drain cost.** Per-ack cost is still
+   superlinear (2.5x load -> 6.5x per ack), localised to the venue drain
+   stage. This is the number the Go decision rests on.
+4. **W4 — close the reject blind spot.** `RejectBackoff.suppression()`
+   is O(books x portfolio table) at 4 Hz and the rig CANNOT see it (the
+   synthetic venue never rejects).
+
+Then: completion promise -> pin the gospel -> hard freeze -> Go discovery.

@@ -1,5 +1,5 @@
 ---
-description: "Weekly engineering record for the trading admin panel, 09-16 August 2026 — 117 commits, the maker and taker pages, and the rule that a surface must never state more than it can prove"
+description: "Weekly engineering record for the trading admin panel, 09-16 August 2026: 117 commits, the maker and taker pages, and engine truth over schedule"
 service: inplay-admin-panel-trading
 window: 2026-08-09 .. 2026-08-16
 commits: 117
@@ -13,12 +13,14 @@ branches: { touched: 27, merged: 27, open: 0 }
 
 ## Headline
 
-The trading admin panel became the operator's live window onto both house engines. It gained
-a maker page, a taker page, a manual order ticket and a pinned book rail. A new
-NATS-to-Centrifugo pump inside the panel's own proxy feeds all four. Most of the week's effort
-went into one rule: a surface must never state more than it can prove. The panel now says "the
-engine is not publishing" instead of a confident zero. It also prefers the engine's own account
-of what is live over a stale sports schedule.
+**The trading admin panel became the operator's live window onto both house engines.**
+
+- It gained a maker page, a taker page, a manual order ticket and a pinned book rail
+- A new NATS-to-Centrifugo pump inside the panel's own proxy feeds all four
+- Most of the week's effort went into one rule: a surface must never state more than it
+  can prove
+- The panel now says "the engine is not publishing" instead of a confident zero
+- It prefers the engine's own account of what is live over a stale sports schedule
 
 ## Scope
 
@@ -26,161 +28,242 @@ of what is live over a stale sports schedule.
 - **Commits:** 117 (westy412 117)
 - **Branches touched:** 27 — 27 merged, 0 still open
 - **Busiest day:** 2026-08-12 (56 commits)
-
-Every commit in the window has the git author `westy412`. There are no `Hxsan` commits and no
-third-party commits. 89 of the 90 non-merge commits carry a `Co-Authored-By: Claude` trailer,
-so most of this work is agent-assisted. The remaining 27 commits are pull-request merges into
-`origin/main`.
+- **Authors** — every commit in the window has the git author `westy412`. There are no
+  `Hxsan` commits and no third-party commits
+- **Agent assistance** — 89 of the 90 non-merge commits carry a `Co-Authored-By: Claude`
+  trailer, so most of this work is agent-assisted
+- **Merges** — the remaining 27 commits are pull-request merges into `origin/main`
 
 ## Themes
 
 ### 1. Engine truth outranks the schedule cache
 
-The panel shows a Game chip beside each book. It answers one question: is this book's game
-overnight, pre-kickoff, live or finished. The chip first read only the SportRadar cache, and
-that source failed twice on consecutive nights.
+**Why it matters** — the Game chip beside each book says whether that book's game is
+overnight, pre-kickoff, live or finished. The chip first read only the SportRadar cache.
 
-On the night of 14 August the engine held game-bound books LIVE and filled orders on them.
-Every Game chip on the panel read OVERNIGHT. The cause was a flushed SportRadar Redis cache.
-The `21:16Z` and `20:45Z` redeploys removed `sr:{league}:teams:all` for both leagues, so the
-`/game/board` join returned an empty map. The absence of the board outranked the presence of
-the engine. `fix/game-chip-engine-truth` gave the chip an `engineState` prop from the taker's
-per-book activity ladder, used whenever the board holds nothing.
+**That source failed twice on consecutive nights.**
 
-The next day the same false OVERNIGHT returned on six live preseason books. The board had
-recovered, and it now returned each team's SEPTEMBER season opener, because the cached REG
-schedule holds no preseason games. A present-but-irrelevant fixture weeks away therefore beat
-live engine truth. `fix/engine-live-outranks-schedule` made the precedence explicit and
-commented. Board LIVE comes first. Engine LIVE or PRE_KICKOFF then outranks any board row,
-then board pre or final, then the idle label. The branch also moved the maker page's inline
-copy into a shared `useEngineActivity` hook, so the three surfaces that show a game phase agree.
+**`fix/game-chip-engine-truth`** · merged `origin/main`
+- **Symptom** — on the night of 14 August the engine held game-bound books LIVE and filled
+  orders on them. Every Game chip on the panel read OVERNIGHT
+- **Cause** — the `21:16Z` and `20:45Z` redeploys flushed the SportRadar Redis cache. They
+  removed `sr:{league}:teams:all` for both leagues
+- **Cause** — the `/game/board` join then returned an empty map. The absence of the board
+  outranked the presence of the engine
+- **Fix** — the chip takes an `engineState` prop from the taker's per-book activity ladder,
+  used whenever the board holds nothing
 
-Two earlier branches built this chip. `feat/game-status-board` added the Game column to the
-market-data board and the `/game/board` join. `fix/pre-kickoff-window` stopped the chip from
-styling any upcoming fixture as pre-game up to 45 days out. PRE-KICKOFF now applies only
-inside the engine's own 60-minute window (`schedule_pre_kickoff_s = 3600`).
-`feat/maker-game-phase` put the same chip on the maker's positions table. All four branches
-reached `origin/main`.
+**`fix/engine-live-outranks-schedule`** · merged `origin/main`
+- **Symptom** — the next day the same false OVERNIGHT returned on six live preseason books
+- **Cause** — the board had recovered. It now returned each team's SEPTEMBER season opener,
+  because the cached REG schedule holds no preseason games
+- **Cause** — a present-but-irrelevant fixture weeks away therefore beat live engine truth
+- **Fix** — the precedence is now explicit and commented, in this order:
+  - board LIVE
+  - engine LIVE or PRE_KICKOFF, which outranks any board row
+  - board pre or final
+  - the idle label
+- **Fix** — the maker page's inline copy moved into a shared `useEngineActivity` hook, so
+  the three surfaces that show a game phase agree
+
+**Two earlier branches built this chip.**
+
+**`feat/game-status-board`** · merged `origin/main`
+- **What** — the Game column on the market-data board, and the `/game/board` join
+
+**`fix/pre-kickoff-window`** · merged `origin/main`
+- **What** — the chip no longer styles any upcoming fixture as pre-game up to 45 days out
+- **Why** — PRE-KICKOFF now applies only inside the engine's own 60-minute window
+  (`schedule_pre_kickoff_s = 3600`)
+
+**`feat/maker-game-phase`** · merged `origin/main`
+- **What** — the same chip on the maker's positions table
+
+> All four branches reached `origin/main`.
 
 ### 2. The house cockpit — a live window on both engines
 
-Before this week the panel had no view of the house accounts. `feat/trading-observability`
-built one over 64 commits, and it is the largest branch of the week.
+**Why it matters** — before this week the panel had no view of the house accounts.
 
-The proxy gained a pump (`proxy/house_pump.py`) that relays `mm.state` to `house:mm`,
-`snt.state.>` to `house:snt.{botId}` and both accounts' order events to `house:fills`. The
-panel gained a live-data layer (`src/lib/realtime/`) with one shared `centrifuge-js` client
-and a ref-counted subscription registry keyed by channel. The house page opens exactly two
-subscriptions whatever the row count; mids come from one shared 10 s REST quote poll.
-
-The cockpit split into `/house/maker` and `/house/taker`, each with a health strip, metric
-tiles and tabs. The taker's P&L is priced on `pos` — traded drift — never on `holding`,
-because the float's cost basis is unknown. The commit records the worked example: pricing
-`holding` instead would have shown +$544.50 where the truth is -$12. Unrealized P&L renders
-"—" with a reason when there is no mid or the book is crossed, never NaN and never zero.
-
-`feat/trading-observability` merged to `origin/main` as pull request #5.
+**`feat/trading-observability`** · merged `origin/main` as pull request #5
+- **What** — 64 commits, and the largest branch of the week
+- **What** — the proxy gained a pump, `proxy/house_pump.py`, which relays three feeds:
+  - `mm.state` to `house:mm`
+  - `snt.state.>` to `house:snt.{botId}`
+  - both accounts' order events to `house:fills`
+- **What** — the panel gained a live-data layer, `src/lib/realtime/`, with one shared
+  `centrifuge-js` client and a ref-counted subscription registry keyed by channel
+- **What** — the cockpit split into `/house/maker` and `/house/taker`, each with a health
+  strip, metric tiles and tabs
+- **Why** — the house page opens exactly two subscriptions whatever the row count. Mids come
+  from one shared 10 s REST quote poll
+- **Why** — the taker's P&L is priced on `pos`, which is traded drift, never on `holding`,
+  because the float's cost basis is unknown
+- **Evidence** — the commit records the worked example. To price `holding` instead would
+  have shown +$544.50 where the truth is -$12
+- **What** — unrealized P&L renders "—" with a reason when there is no mid or the book is
+  crossed, never NaN and never zero
 
 ### 3. Surfaces that worked before the engines published
 
-The engines were under a deploy freeze all week, so `mm.state` and `snt.state` had no
-publisher. The panel had to be useful anyway, and it had to stay honest about the gap.
+**Why it matters** — the engines were under a deploy freeze all week, so `mm.state` and
+`snt.state` had no publisher. The panel had to be useful anyway, and stay honest about the gap.
 
-The first answer was a fixtures mode. George deleted it rather than switched it off. An env
-flag, a `NODE_ENV` check and a banner are all things that can be forgotten or mis-set. Invented
-positions at a 1 s cadence look exactly like live ones. The house pages now say the engine is
-not publishing and show nothing.
+**The first answer — delete the fixtures mode**
+- **What** — George deleted it rather than switched it off
+- **Why** — an env flag, a `NODE_ENV` check and a banner are all things that can be
+  forgotten or mis-set
+- **Why** — invented positions at a 1 s cadence look exactly like live ones
+- **Where it landed** — the house pages now say the engine is not publishing, and show nothing
 
-The second answer was to use the venue's own feeds. The pump replays the durable POSITIONS
-JetStream stream and keeps the latest position per symbol per account. Positions and Holdings
-therefore work with no engine change. The pump also accumulates a 500-event ring, a separate
-200-execution ring and a reduced resting book per account, which seeds a cold browser. The
-maker's Quotes tab rebuilds the resting ladder from accept, replace, cancel and execution
-events. The taker's fallback became an order log, because the taker rests almost nothing.
+**The second answer — use the venue's own feeds**
+- **What** — the pump replays the durable POSITIONS JetStream stream. It keeps the latest
+  position per symbol per account
+- **Where it landed** — Positions and Holdings therefore work with no engine change
+- **What** — the pump also accumulates three things per account, which seed a cold browser:
+  - a 500-event ring
+  - a separate 200-execution ring
+  - a reduced resting book
+- **What** — the maker's Quotes tab rebuilds the resting ladder from accept, replace, cancel
+  and execution events
+- **What** — the taker's fallback became an order log, because the taker rests almost nothing
 
-The metric tiles were reworked twice after operator review. The first set was trader shorthand
-and drew the response "I don't know what any of this is". Each tile now carries a plain-English
-definition, a visible window under the value ("since 00:00" or "right now") and an ⓘ. The ⓘ
-opens the full explanation inside the tile. `feat/maker-flow-tiles` later added the same daily
-flow tally to the engine-snapshot strip. Those numbers vanished at the moment the engine came
-alive and made them interesting. Branches: `feat/trading-observability`,
-`fix/engine-view-design`, `fix/engine-tiles-and-sort`, `feat/maker-flow-tiles`. All merged to
-`origin/main`.
+**The metric tiles, reworked twice after operator review**
+- **Symptom** — the first set was trader shorthand. It drew the response "I don't know what
+  any of this is"
+- **Fix** — each tile now carries a plain-English definition, a visible window under the
+  value ("since 00:00" or "right now") and an ⓘ
+- **Fix** — the ⓘ opens the full explanation inside the tile
+
+**`feat/maker-flow-tiles`** · merged `origin/main`
+- **What** — the same daily flow tally on the engine-snapshot strip
+- **Why** — those numbers vanished at the moment the engine came alive and made them
+  interesting
+
+> Branches in this theme: `feat/trading-observability`, `fix/engine-view-design`,
+> `fix/engine-tiles-and-sort`, `feat/maker-flow-tiles`. All merged to `origin/main`.
 
 ### 4. The manual order ticket for the taker
 
-`feat/trading-observability` added an admin-only `/manual-orders` page and the proxy routes
-behind it. The ticket publishes R3 commands on `snt.control.snt-1` and waits for the engine's
-reply. It never publishes on `gateway.orders.*`, because an order under an engine's userId
-from outside the engine caused an observed venue-side hijack.
+**Why it matters** — the operator needs to place a taker order by hand. The panel must then
+report the outcome exactly.
 
-Four outcomes render four ways: ack, reject with the engine's own sentence, indeterminate, and
-not-sent. Indeterminate blocks the resend until an `open_orders` snapshot stamped after the
-send settles it. A resend reuses the original ref, so engine dedup replays the first reply.
-The taker's `unknown` submission state is never folded into `working`.
+**`feat/trading-observability`** · merged `origin/main`
+- **What** — an admin-only `/manual-orders` page, and the proxy routes behind it
+- **What** — the ticket publishes R3 commands on `snt.control.snt-1`, then waits for the
+  engine's reply
+- **Why** — it never publishes on `gateway.orders.*`. An order under an engine's userId from
+  outside the engine caused an observed venue-side hijack
+- **What** — four outcomes render four ways: ack, reject with the engine's own sentence,
+  indeterminate, and not-sent
+- **What** — indeterminate blocks the resend until an `open_orders` snapshot stamped after
+  the send settles it
+- **What** — a resend reuses the original ref, so engine dedup replays the first reply
+- **What** — the taker's `unknown` submission state is never folded into `working`
 
-Three follow-up branches improved the ticket for the operator. `feat/ticket-ux` replaced a
-bare `<select>` of 180 tickers with a combobox that searches by team name. The same branch put
-the live venue book beside the price field, with click-to-fill levels. `feat/ticket-quick-chips`
-ported the app's quick-fill chips, where Max is `min(max_qty, floor(max_notional / px))` floored.
-`feat/manual-history` added a command history panel, fed by a bounded 200-entry ring in the
-proxy. The venue's order feed cannot say which taker orders were hand-placed, so the proxy is
-the honest source. All merged to `origin/main`.
+**Three follow-up branches improved the ticket for the operator.**
+
+**`feat/ticket-ux`** · merged `origin/main`
+- **What** — a combobox that searches by team name, in place of a bare `<select>` of
+  180 tickers
+- **What** — the live venue book beside the price field, with click-to-fill levels
+
+**`feat/ticket-quick-chips`** · merged `origin/main`
+- **What** — the app's quick-fill chips, where Max is `min(max_qty, floor(max_notional / px))`
+  floored
+
+**`feat/manual-history`** · merged `origin/main`
+- **What** — a command history panel, fed by a bounded 200-entry ring in the proxy
+- **Why** — the venue's order feed cannot say which taker orders were hand-placed, so the
+  proxy is the honest source
 
 ### 5. Maker and taker detail — pricing, liveness, flow and last trade
 
+**Why it matters** — the maker and taker pages must show what the engine does, not a guess.
 The engine team sent a brief on 13 August, and three branches implemented it display-only.
 
-`feat/pricing-vs-quoting` put PRICING and QUOTING side by side on the maker's Quotes tab.
-PRICING is the engine's own fair value, computed and invisible on the venue. QUOTING is that
-price turned into a resting ladder. The reference price value is not on the wire, so the cell
-says "not published" rather than improvising one from the order book.
+**`feat/pricing-vs-quoting`** · merged `origin/main`
+- **What** — PRICING and QUOTING side by side on the maker's Quotes tab
+- **What** — PRICING is the engine's own fair value. It is computed, and invisible on the
+  venue
+- **What** — QUOTING is that price turned into a resting ladder
+- **Why** — the reference price value is not on the wire. The cell says "not published"
+  rather than improvises one from the order book
 
-`feat/maker-liveness-recipe` put a MAKER LIVE / LAGGING / DOWN banner on every trading page.
-The verdict reads frame and tick clocks only, with the age computed server-side so browser
-clock skew never enters it. A new `/api/house/liveness` returns about 200 bytes on a 3 s poll,
-because the full frame is about 200 KB. The same branch fixed `/market/quotes` resilience. A
-failed fetch used to replace the board with an empty map. The last good board now stands under
-a "venue feed lagging" badge.
+**`feat/maker-liveness-recipe`** · merged `origin/main`
+- **What** — a MAKER LIVE / LAGGING / DOWN banner on every trading page
+- **Why** — the verdict reads frame and tick clocks only. The age is computed server-side,
+  so browser clock skew never enters it
+- **What** — a new `/api/house/liveness` returns about 200 bytes on a 3 s poll, because the
+  full frame is about 200 KB
+- **Fix** — the same branch fixed `/market/quotes` resilience. A failed fetch used to replace
+  the board with an empty map
+- **Fix** — the last good board now stands under a "venue feed lagging" badge
 
-`feat/taker-last-trade` added a "Last trade" column to the taker's Positions table. The
-execution ring could not serve it: 200 retained executions spanned six minutes across 66
-books. The pump keeps a per-symbol map instead, served by `/house/last-trades/{account}`.
-A book absent from the map reads "none in 42m", with the pump's watch horizon stated rather
-than hidden. `fix/taker-dead-sort-chip` hid the Spread sort on the taker. The taker takes
-liquidity and almost nothing rests, so the chip ranked nothing and fell through to book order.
-All merged to `origin/main`.
+**`feat/taker-last-trade`** · merged `origin/main`
+- **What** — a "Last trade" column on the taker's Positions table
+- **Why** — the execution ring could not serve it. 200 retained executions spanned six
+  minutes across 66 books
+- **Fix** — the pump keeps a per-symbol map instead, served by `/house/last-trades/{account}`
+- **What** — a book absent from the map reads "none in 42m". The pump's watch horizon is
+  stated rather than hidden
+
+**`fix/taker-dead-sort-chip`** · merged `origin/main`
+- **What** — the Spread sort is hidden on the taker
+- **Why** — the taker takes liquidity and almost nothing rests, so the chip ranked nothing
+  and fell through to book order
 
 ### 6. Reading a 180-row table — filters, colour, render cost and access
 
-`feat/positions-filters` added a control bar to both Positions tables: filters for league,
-market state, game phase and "with a position", plus five sorts. Two rules carried over from
-the week's defects. A filtered table says it is filtered, with a "showing 12 of 180 books"
-line and a clear-filters link. An unknown value is never defaulted into a filter bucket. A
-book with no activity reading is excluded from a phase filter rather than assumed OVERNIGHT.
+**Why it matters** — both Positions tables hold 180 rows. The operator must find one book,
+read its state, and not wait for the page.
 
-`fix/state-colour-semantics` gave both state ladders one colour vocabulary in
-`src/lib/state-style.ts`. A LIVE book was green on the maker and purple on the taker;
-defensive was orange in one cell and amber in another. Green now means healthy or happening
-now, amber approaching or mildly restricted, orange materially restricted, red stopped, muted
-quiet or unknown. `feat/market-state-column` had earlier given market state its own column
-with the engine's full cause ladder on click.
+**`feat/positions-filters`** · merged `origin/main`
+- **What** — a control bar on both Positions tables. It filters on league, market state,
+  game phase and "with a position", and offers five sorts
+- **Fix** — a filtered table says it is filtered, with a "showing 12 of 180 books" line and
+  a clear-filters link
+- **Fix** — an unknown value is never defaulted into a filter bucket. A book with no activity
+  reading is excluded from a phase filter rather than assumed OVERNIGHT
 
-`perf/house-render` fixed a slow page. The maker page re-rendered on the 1 s engine snapshot
-and on the 1 s clock tick. Each render rebuilt every row of two 180-row tables. Three changes
-fixed it. Each row is now a memoised component that takes primitive props. Row-level clocks
-arrive as a 5 s bucket. The Positions row shows the touch plus a resting count, instead of
-every rung as a chip. No data is hidden.
+> Both rules carried over from the week's defects.
 
-On access: `feat/viewer-house-readonly` opened the house pages to the `viewer` role on
-14 August, on George's instruction. Reads only — `/manual-orders` and every manual-order route
-stay admin-only. The panel's allowlist and the proxy's allowlist moved in step. A panel list
-wider than the proxy's turns a refusal into a mystery empty panel. The 12 August
-"house is admin-only" ruling by Hasan is recorded in the code comments as relaxed by George,
-so the comments cite both rulings. An earlier commit on `feat/trading-observability`
-(`47edc34`) had extracted the role rules into `src/lib/role-access.ts` with 45 assertions. It
-also made the sidebar read the same allowlists the middleware enforces. All merged to
-`origin/main`.
+**`fix/state-colour-semantics`** · merged `origin/main`
+- **Symptom** — a LIVE book was green on the maker and purple on the taker. Defensive was
+  orange in one cell and amber in another
+- **Fix** — one colour vocabulary for both state ladders, in `src/lib/state-style.ts`:
+  - green — healthy, or happening now
+  - amber — approaching, or mildly restricted
+  - orange — materially restricted
+  - red — stopped
+  - muted — quiet, or unknown
+
+**`feat/market-state-column`** · merged `origin/main`
+- **What** — market state had earlier gained its own column, with the engine's full cause
+  ladder on click
+
+**`perf/house-render`** · merged `origin/main`
+- **Symptom** — the maker page re-rendered on the 1 s engine snapshot and on the 1 s clock
+  tick. Each render rebuilt every row of two 180-row tables
+- **Fix** — each row is now a memoised component that takes primitive props
+- **Fix** — row-level clocks arrive as a 5 s bucket
+- **Fix** — the Positions row shows the touch plus a resting count, instead of every rung as
+  a chip. No data is hidden
+
+**`feat/viewer-house-readonly`** · merged `origin/main`
+- **What** — the house pages opened to the `viewer` role on 14 August, on George's instruction
+- **What** — reads only. `/manual-orders` and every manual-order route stay admin-only
+- **Why** — the panel's allowlist and the proxy's allowlist moved in step. A panel list wider
+  than the proxy's turns a refusal into a mystery empty panel
+- **Why** — the 12 August "house is admin-only" ruling by Hasan is recorded in the code
+  comments as relaxed by George, so the comments cite both rulings
+
+**`feat/trading-observability`** · `47edc34` · merged `origin/main`
+- **What** — an earlier commit extracted the role rules into `src/lib/role-access.ts` with
+  45 assertions
+- **What** — it also made the sidebar read the same allowlists the middleware enforces
+
+> Every branch in this theme merged to `origin/main`.
 
 ## Branches
 
@@ -214,123 +297,163 @@ also made the sidebar read the same allowlists the middleware enforces. All merg
 | `fix/book-test-symbols` | westy412 | 1 | `origin/main` (PR #4) | Accept `.TEST` symbols on `/market/book`. |
 | `feat/test-symbols` | westy412 | 1 | `origin/main` (PR #3) | Accept and display the 10 venue test symbols. |
 
-Every branch active in the window reached `origin/main`. This repo has one mainline branch and
-no promotion chain, so there is no testing or prerelease state to report.
-
-Three remote branches exist with no commits in the window and are already merged:
-`origin/feat/is-test-flag` (tip 2026-07-01), `origin/feat/push-notifications-admin` (tip
-2026-07-01) and `origin/scale-prep-auth-loadtest` (tip 2026-06-19).
+- **All merged** — every branch active in the window reached `origin/main`
+- **No promotion chain** — this repo has one mainline branch, so there is no testing or
+  prerelease state to report
+- **Three dormant remotes** — no commits in the window, and already merged:
+  - `origin/feat/is-test-flag` (tip 2026-07-01)
+  - `origin/feat/push-notifications-admin` (tip 2026-07-01)
+  - `origin/scale-prep-auth-loadtest` (tip 2026-06-19)
 
 ## Notable fixes and incidents
 
-**The proxy's NATS credentials had been wrong since 5 August** (`f9cf2e0`,
-`feat/trading-observability`). `proxy/deploy.sh` bound the old shared `inplay-nats-token` to
-both `NATS_PASSWORD` and `NATS_ADMIN_PASSWORD`. The 2026-08-05 rotation replaced that token
-with per-service secrets, and this file was never updated. Every NATS connection from the
-proxy failed with `Authorization Violation`, so `/orders/stream`, `/positions/stream`,
-`/nats/*` and `/orders` had been broken since the rotation. The co-located Centrifugo bridge
-was updated at the time; the proxy was missed. Verified on revision
-`inplay-admin-proxy-00042-rqc`: both connections up, `/nats/streams` returns 200. A later
-commit added `NATS_ROTATE_STAMP=20260805b`, which is the marker whose absence revealed the
-miss.
+**The proxy's NATS credentials had been wrong since 5 August** · `f9cf2e0` ·
+`feat/trading-observability`
+- **Symptom** — every NATS connection from the proxy failed with `Authorization Violation`
+- **Symptom** — `/orders/stream`, `/positions/stream`, `/nats/*` and `/orders` had been
+  broken since the rotation
+- **Cause** — `proxy/deploy.sh` bound the old shared `inplay-nats-token` to both
+  `NATS_PASSWORD` and `NATS_ADMIN_PASSWORD`
+- **Cause** — the 2026-08-05 rotation replaced that token with per-service secrets, and this
+  file was never updated
+- **Cause** — the co-located Centrifugo bridge was updated at the time. The proxy was missed
+- **Fix** — a later commit added `NATS_ROTATE_STAMP=20260805b`, which is the marker whose
+  absence revealed the miss
+- **Evidence** — verified on revision `inplay-admin-proxy-00042-rqc`: both connections up,
+  `/nats/streams` returns 200
 
-**The POSITIONS replay stalled and both position tables rendered empty** (`b0afeed`,
-`fix/positions-pull-consumer`). The consumer had delivered 2,824 messages and left 162,899
-unprocessed. `nats-py` answers JetStream flow-control frames only on the callback delivery
-path. The loop read through `next_msg()`, so the server paused at the flow-control window and
-waited for a reply that never came. The loop's 30-second quiet rule then reported the
-stall as "caught up". The first replay chunk was maker-heavy, which is why the maker page
-looked fine and masked the defect. Rewritten as a pull consumer with batches of 200 and
-`ack_policy none`. Verified on the deployed proxy: 165,828 messages replayed, 180 positions
-per account, `caught_up` true.
+**The POSITIONS replay stalled and both position tables rendered empty** · `b0afeed` ·
+`fix/positions-pull-consumer`
+- **Symptom** — the consumer had delivered 2,824 messages and left 162,899 unprocessed
+- **Cause** — `nats-py` answers JetStream flow-control frames only on the callback delivery
+  path
+- **Cause** — the loop read through `next_msg()`, so the server paused at the flow-control
+  window and waited for a reply that never came
+- **Cause** — the loop's 30-second quiet rule then reported the stall as "caught up"
+- **Cause** — the first replay chunk was maker-heavy, which is why the maker page looked fine
+  and masked the defect
+- **Fix** — rewritten as a pull consumer with batches of 200 and `ack_policy none`
+- **Evidence** — verified on the deployed proxy: 165,828 messages replayed, 180 positions per
+  account, `caught_up` true
 
-**The derived maker book was full of ghost orders** (`743e65f`,
-`feat/trading-observability`). Arizona Cardinals showed 15x17 levels against a 3-level venue
-book, with derived bids above the venue's best bid. The FIX gateway emits every replace twice.
-One copy goes on the new order's subject and one on the old one's. The payloads are identical
-and the order of arrival is not guaranteed. Both reducers inserted under the subject id, so an old-subject copy that
-landed second re-created the dead order at the new price. One ghost per replace, at about 50
-replaces a second. Both reducers now insert under `newClOrdId`. A replay of the same 90 s
-trace gave 4x5 and 3x2 levels, with the deepest book anywhere at 6x6.
+**The derived maker book was full of ghost orders** · `743e65f` ·
+`feat/trading-observability`
+- **Symptom** — Arizona Cardinals showed 15x17 levels against a 3-level venue book, with
+  derived bids above the venue's best bid
+- **Cause** — the FIX gateway emits every replace twice. One copy goes on the new order's
+  subject and one on the old one's
+- **Cause** — the payloads are identical and the order of arrival is not guaranteed
+- **Cause** — both reducers inserted under the subject id, so an old-subject copy that landed
+  second re-created the dead order at the new price
+- **Cause** — one ghost per replace, at about 50 replaces a second
+- **Fix** — both reducers now insert under `newClOrdId`
+- **Evidence** — a replay of the same 90 s trace gave 4x5 and 3x2 levels, with the deepest
+  book anywhere at 6x6
 
-**The mirrored collar guard was wrong by 100x** (`508c603`, `feat/trading-observability`).
-`collar_pct` on the wire is a fraction: the engine holds `Decimal("0.20")` for the ruled ±20%
-and publishes it unscaled. The panel divided by 100 again, giving a 0.2% threshold, so an
-ordinary order 0.59% off mid tripped a guard breach. The engine still enforced correctly, so
-nothing wrong reached the venue. The damage would have been operator trust. The panel would
-have taught an operator to ignore the control. The one order genuinely 25% off mid would then
-have looked like the fifty before it. The dev fixture carried the display form `20` and would
-have re-certified the bug, so `c46c219` corrected the fixture too.
+**The mirrored collar guard was wrong by 100x** · `508c603` · `feat/trading-observability`
+- **Symptom** — an ordinary order 0.59% off mid tripped a guard breach
+- **Cause** — `collar_pct` on the wire is a fraction. The engine holds `Decimal("0.20")` for
+  the ruled ±20% and publishes it unscaled
+- **Cause** — the panel divided by 100 again, which gave a 0.2% threshold
+- **Fix** — `c46c219` corrected the dev fixture too. The fixture carried the display form
+  `20` and would have re-certified the bug
 
-**A re-armed Send button placed a real duplicate order** (`24096f4`,
-`fix/ticket-double-send`). The busy guard covered only the in-flight window. On resolve the
-button re-enabled while the ticket still sat on the confirm step with the same draft. A second
-click then minted a fresh ref, which the engine correctly treated as a new order. The
-operator measured a real duplicate this way. The ticket now resets to the entry step on the
-busy true-to-false edge.
+> The engine still enforced correctly, so nothing wrong reached the venue. The damage would
+> have been operator trust. The panel would have taught an operator to ignore the control.
+> The one order genuinely 25% off mid would then have looked like the fifty before it.
 
-**A token refresh would have dropped the whole WSS connection every hour** (`41096fd` and
-`17fde29`, `feat/trading-observability`). Centrifugo requires a subscription token's `sub` to
-equal the connection's. The connection-token route minted a fresh random `sub` on every
-refresh. The failure is worse than a per-channel refusal: Centrifugo closes the whole
-connection with code 3500. Every 3600 s expiry would have taken the ladder, the tape, the rail
-and the house cockpit down together. It would have read as an unexplained transport
-failure. The route now accepts and reuses a presented `sub`. It also validates the role segment
-of that `sub` against the caller's server-side role.
+**A re-armed Send button placed a real duplicate order** · `24096f4` ·
+`fix/ticket-double-send`
+- **Symptom** — the operator measured a real duplicate this way
+- **Cause** — the busy guard covered only the in-flight window
+- **Cause** — on resolve the button re-enabled while the ticket still sat on the confirm step
+  with the same draft
+- **Cause** — a second click then minted a fresh ref, which the engine correctly treated as a
+  new order
+- **Fix** — the ticket now resets to the entry step on the busy true-to-false edge
 
-**The game board took 41 seconds per call and returned nothing** (`ea42188`,
-`fix/game-board-performance`). Redis SCAN walks the whole keyspace and the match pattern does
-not index. The board ran that walk once per league at `count=200`, against a Redis shared
-with production. One shared pass at `count=5000` plus a 20 s whole-body cache brought it to
-2.9 s cold and 0.12 s cached. The board also returned empty in August. The only cached
-schedule is the 2026 regular season, and its first game sat beyond the 14-day window.
-The window is 45 days now.
+**A token refresh would have dropped the whole WSS connection every hour** · `41096fd` and
+`17fde29` · `feat/trading-observability`
+- **Cause** — Centrifugo requires a subscription token's `sub` to equal the connection's
+- **Cause** — the connection-token route minted a fresh random `sub` on every refresh
+- **Cause** — the failure is worse than a per-channel refusal. Centrifugo closes the whole
+  connection with code 3500
+- **Fix** — the route now accepts and reuses a presented `sub`
+- **Fix** — it also validates the role segment of that `sub` against the caller's server-side
+  role
 
-**The pump-health parser had never matched the payload** (`6b87ba4`,
-`feat/trading-observability`). `usePumpHealth` looked for `house_pump.subjects` as a map of
-per-subject records. The proxy has never sent that; it sends two parallel maps keyed by
-subject. The parser produced an empty map, which is indistinguishable from a pump with no
-subscriptions. Every surface therefore fell through to a "cannot attribute" sentence, for the
-whole life of the feature. The parser now reads the real shape and warns if neither key is
-present.
+> Every 3600 s expiry would have taken the ladder, the tape, the rail and the house cockpit
+> down together. It would have read as an unexplained transport failure.
 
-**A one-sided quote update blanked the other side of a row** (`34683d0`,
-`feat/trading-observability`). `market.quote` is a partial-update contract where null means
-"no change". `coalesceQuote` honoured that across streamed messages, but it folded onto an
-empty quote. Before the first update on the other side it therefore held a legitimate null
-there. The page then wrote that whole object over the REST seed. Whichever side had not ticked
-yet went blank, which is why it hit some teams and not others.
+**The game board took 41 seconds per call and returned nothing** · `ea42188` ·
+`fix/game-board-performance`
+- **Cause** — Redis SCAN walks the whole keyspace, and the match pattern does not index
+- **Cause** — the board ran that walk once per league at `count=200`, against a Redis shared
+  with production
+- **Fix** — one shared pass at `count=5000`, plus a 20 s whole-body cache
+- **Evidence** — 2.9 s cold and 0.12 s cached
+- **Symptom** — the board also returned empty in August
+- **Cause** — the only cached schedule is the 2026 regular season, and its first game sat
+  beyond the 14-day window
+- **Fix** — the window is 45 days now
 
-**A dead book kept showing depth** (`11a6c5e`, `feat/trading-observability`). The engines were
-stopped and the venue books cleared, but pinned `.TEST` ladders still showed rungs. Centrifugo
-retains nothing and the derived resting book was empty, so the pipeline was clean. The
-mechanism is the gateway's skip rule: it never publishes an empty book, so a cleared book goes
-silent rather than saying it is empty. The open tab kept its last frame under a 6px staleness
-dot. A red book now fades to 35% and states that the rungs may no longer exist. A related
-branch, `fix/red-ladder-rescue`, added a rescue poll first, so a wedged tab heals itself
-before the panel blames the venue.
+**The pump-health parser had never matched the payload** · `6b87ba4` ·
+`feat/trading-observability`
+- **Symptom** — every surface fell through to a "cannot attribute" sentence, for the whole
+  life of the feature
+- **Cause** — `usePumpHealth` looked for `house_pump.subjects` as a map of per-subject records
+- **Cause** — the proxy has never sent that. It sends two parallel maps keyed by subject
+- **Cause** — the parser produced an empty map, which is indistinguishable from a pump with
+  no subscriptions
+- **Fix** — the parser now reads the real shape, and warns if neither key is present
 
-**Repeated defect, worth naming.** The false OVERNIGHT game chip was fixed on 14 August and
-returned on 15 August through a different path. The first fix used engine truth only when the
-board held nothing; the second made engine LIVE outrank any board row. The commit message for
-`28c2068` describes it as "the same precedence defect as the night before, wearing a different
-hat".
+**A one-sided quote update blanked the other side of a row** · `34683d0` ·
+`feat/trading-observability`
+- **Symptom** — whichever side had not ticked yet went blank, which is why it hit some teams
+  and not others
+- **Cause** — `market.quote` is a partial-update contract where null means "no change"
+- **Cause** — `coalesceQuote` honoured that across streamed messages, but it folded onto an
+  empty quote
+- **Cause** — before the first update on the other side it therefore held a legitimate null
+  there. The page then wrote that whole object over the REST seed
+
+**A dead book kept showing depth** · `11a6c5e` · `feat/trading-observability`
+- **Symptom** — the engines were stopped and the venue books cleared, but pinned `.TEST`
+  ladders still showed rungs
+- **Cause** — Centrifugo retains nothing and the derived resting book was empty, so the
+  pipeline was clean
+- **Cause** — the gateway's skip rule. It never publishes an empty book, so a cleared book
+  goes silent rather than says it is empty
+- **Cause** — the open tab kept its last frame under a 6px staleness dot
+- **Fix** — a red book now fades to 35%, and states that the rungs may no longer exist
+- **Fix** — a related branch, `fix/red-ladder-rescue`, added a rescue poll first, so a wedged
+  tab heals itself before the panel blames the venue
+
+**Repeated defect, worth naming**
+- **Timeline**
+  - the false OVERNIGHT game chip was fixed on 14 August
+  - it returned on 15 August through a different path
+- **First fix** — engine truth used only when the board held nothing
+- **Second fix** — engine LIVE outranks any board row
+- **Evidence** — the commit message for `28c2068` describes it as "the same precedence defect
+  as the night before, wearing a different hat"
 
 ## Still open
 
-Nothing. All 27 branches touched in the window merged into `origin/main`. There is no unmerged
-work in this repository for this week.
+- **Nothing open** — all 27 branches touched in the window merged into `origin/main`. There
+  is no unmerged work in this repository for this week
 
 Two things are finished in the panel but blocked outside it, and they are worth tracking:
 
-- **The manual order ticket cannot be used yet.** The deployed taker understands only halt,
-  resume and state on its control subject. The whole manual-order command family is engine
-  code in engine PR #23 and is undeployed. `1d01cab` changed the disabled ticket's message to
-  say exactly that. It also states what is not missing: the panel-side key is set and the bus
-  grants are in.
-- **Win probability is cut from this build.** The SportRadar Probabilities package is not
-  entitled, so the stream is not on the bus. `6f524e7` removed it with no placeholder and no
-  staleness badge, because a staleness badge implies a feed that runs late.
+- **Blocked outside the panel** — the manual order ticket cannot be used yet
+  - the deployed taker understands only halt, resume and state on its control subject
+  - the whole manual-order command family is engine code in engine PR #23, and is undeployed
+  - `1d01cab` changed the disabled ticket's message to say exactly that
+  - it also states what is not missing: the panel-side key is set and the bus grants are in
+- **Cut from this build** — win probability
+  - the SportRadar Probabilities package is not entitled, so the stream is not on the bus
+  - `6f524e7` removed it with no placeholder and no staleness badge, because a staleness
+    badge implies a feed that runs late
 
 ## Commit appendix
 

@@ -257,6 +257,20 @@ superseded 07-08h):
   delivery of cancel-rejects double-bumps a count — one extra rung,
   deterministic, accepted. ⚠ Live half of C4 (recreate a rejecting
   book, measure the rate) still owed.
+  ⚠⚠ **The two tables key on the price STRING; the set `suppression()`
+  returns dedupes by numeric VALUE** (a `frozenset[Decimal]`, and Decimal
+  hashes by value). So `Decimal("77.4")` and `Decimal("77.40")` are **two
+  rows** and **one member**, and which spelling survives into the set is
+  decided by the table's iteration order. Deterministic here only because
+  CPython dicts iterate in insertion order — and a restore re-inserts in
+  the checkpoint's sorted key order, so the surviving spelling can change
+  across a checkpoint. Both spellings are reachable: a registered price is
+  quantized to two places, an ADMITTED order's price is whatever the
+  gateway's payload said (the go-reference corpus carries `"price":
+  "77.4"`). The reconciler only ever tests membership, which is numeric,
+  so nothing downstream sees the difference — recorded 18-08 because the
+  Go port reproduced this shape with a map and got a non-deterministic
+  answer.
 
 ## ⭐ The boot healer (`venue/reconciler.py` + `adapters/gateway_ops.py`, built 15-08)
 

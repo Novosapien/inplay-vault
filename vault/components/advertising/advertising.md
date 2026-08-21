@@ -9,6 +9,7 @@ description: "Hub for advertising as a cross-cutting concern — the two revenue
 > **Date:** 2026-06-18
 > **Status:** Collecting
 > **Owner:** Edwin + Skye (commercial) + Brett (ad-tech / programmatic) + Max (creative units)
+> **ID registry:** [[ad-network-ids]] is the central place for all ad-network account IDs, publisher IDs, app IDs, and ad-unit IDs (AdMob captured; SSP IDs added as issued).
 > **Sources:** _[[meetings/22-05-2026-Advertising-first-meeting]], [[meetings/17-06-2026-touchdown]], [[27-07-2026-touchdown]], [[29-07-2026-touchdown]], [[31-07-2026-touchdown]], [[03-08-2026-touchdown]], [[07-08-2026-touchdown]]_
 > **Updated:** 2026-08-10 — AdMob live and serving, SSP ladder set (AdMob + AppLovin MAX + one more, capped at three), Kochava chosen as MMP, rewarded-video unit proposed, and ad inventory now has to be gated by user tier.
 

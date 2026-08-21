@@ -200,6 +200,12 @@ Edwin introduced a **second house agent** for the Challenge and sent a spec-qual
 SNT-1 is a **taker-only, non-participant house account** that crosses the bid/ask with random sizes at random times, so **every team book shows real trading from IPO onward, even with no games on**. It is deliberately a **controlled loser**: the spread it pays is the subsidy that seeds an active secondary market. It earns no leaderboard credit, and its prints against the Market Maker carry no participant side, so they fall outside the $2.50 off-field volume split automatically (no spec change needed). The realism layer mimics retail disposition-effect profit-taking, conditioning only on its own cost basis so the flow stays uninformed.
 
 Processed per the market-maker working guide: the [[market-maker/market-maker]] hub now lists two house agents (MM + SNT-1), with decisions, parameters (all proposed, two tuning levers flagged), open questions (E17/E18 for Edwin, N15/N16 for us: the ExchangeAdapter build and five production-hardening tasks), a session note, and glossary/learnings entries all updated. The main open item Edwin flagged is how SNT-1 interacts with the MM's quoting and inventory during the IPO Primary Mandate rounds.
+## 2026-07-29: AdMob Ad-Unit IDs + Central ID Registry
+
+Captured the AdMob ad-unit IDs and started a **central ID registry** for all ad-monetisation identifiers: [[ad-network-ids]] (source HTML safe-copied to `components/advertising/sources/`).
+
+AdMob is fully populated: publisher `pub-2057484236798641`, the iOS and Android app IDs, and all eight ad units (three Native-advanced sizes, inline / MREC / strip, plus an inline Banner, mirrored per platform), along with the app-ads.txt line. The registry is a living doc: as SSP seat IDs and further ad-unit IDs are issued, they get added here so there is one place to query every publisher, app, ad-unit and SSP ID. Linked from [[advertising]] and the [[programmatic-media-playbook]].
+
 ## 2026-07-29: IPO Pricing Model v1.0
 
 Edwin delivered the **IPO pricing model** for the 2026 season, now stored safely in the vault and processed: [[ipo-pricing-2026]] (source workbook safe-copied to `components/ipo-module/sources/`).
