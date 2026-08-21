@@ -10,6 +10,7 @@ description: "Delivery hub for the InPlay app flight plan, the Novosapien/InPlay
 > **Master:** `Programming/inplay/inplay-app-flight-plan/` (source + build script)
 > **Companion:** [[requirement-changes|Requirement change register]], the citable record of settled requirements later changed
 > **Latest change list:** [[change-requests-2026-08-18]], the 22 app requests received on 18 August, classified
+> **Last rehearsal:** [[friends-and-family-2026-08-21]], the overnight session before the offering
 
 The flight plan is the delivery working agreement between Novosapien and InPlay: what has shipped, what is committed, what capacity exists, and the live risks into each launch. It is produced with the `/novosapien-product-owner` skill from three reconciled sources: the build repositories, the partnership proposal, and this vault. This section holds the committed snapshots; each weekly review runs off the newest one.
 
