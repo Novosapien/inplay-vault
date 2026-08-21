@@ -5,8 +5,9 @@ description: "The overnight friends-and-family session of 21 August 2026: what i
 # Friends and family session, overnight 21 August 2026
 
 > **Delivery:** [[delivery]] · **Source:** the session's own message log, pasted by Brett
+> **This was live-game run 4, the dress rehearsal**, the last proving run before the offering.
 
-The last rehearsal before the NCAA offering. Edwin, Troy, Cody, George and Hasan
+The last rehearsal before the NCAA offering, and the fourth live night: 13, 14 and 15 August, then this one. Edwin, Troy, Cody, George and Hasan
 on the app together on a live game.
 
 ## What it proved
