@@ -39,14 +39,14 @@ changed.
 
 | Class | Count |
 |-------|------:|
-| Reversal | **13** |
+| Reversal | **14** |
 | Re-reversal | **1** |
 | Descope | **1** |
 | Late parameter change | **6** |
 | Late scope addition | **8** |
-| **Total recorded changes to settled requirements** | **29** |
+| **Total recorded changes to settled requirements** | **30** |
 
-All twenty-nine fall inside roughly **four weeks**, between 20 July and 18
+All thirty fall inside roughly **four weeks**, between 20 July and 19
 August. The last six days carry **fifteen** of them, including nine that
 arrived on 18 August, the day after the build definition was frozen. Two of the
 eight additions were withdrawn on the 18-08 review call, one because the feature
@@ -79,7 +79,9 @@ context, the offering opens on 22 August and trading starts on 29 August.
 | R16 | **Full order-book depth on the team page**, built once the gateway began publishing the whole book | Gateway order-book publishing, delivered before 10-08 | **Top of book only**, expandable on demand | [[change-requests-2026-08-18]] #17 | The depth work is finished and tested. It is now hidden rather than removed |
 | R17 | **Limit is the default order type**, with the synthetic market order built behind a flag that ships off | [[trading/sub-components/order-entry/order-entry]]; synthetic market order merged 15-08 | **Market becomes the default** | [[change-requests-2026-08-18]] #20 | Turns an unverified default on for every user four days before the offering |
 
-Rows R1 to R17 contain **14 distinct reversals** of settled requirements, one of
+| R18 | **Shares remaining stays hidden until near the close**, at Edwin's instruction, so the offering does not read as a race | Recorded in the 05-08 plan and carried since | **A public-facing display of remaining availability**, his example being 500,000 left of 1,000,000 | [[19-08-2026-touchdown-requirements-review]] | ⚠ The number has no obvious source any more: since 19 August the offering is venue-backed and the float's remaining counter was deliberately stopped from gating buys, because the maker's book is the inventory |
+
+Rows R1 to R18 contain **15 distinct reversals** of settled requirements, one of
 which (R6) is a re-reversal, plus two rows (R3 and R8) that are second changes to
 requirements already changed once.
 
