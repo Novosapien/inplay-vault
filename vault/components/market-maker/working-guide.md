@@ -129,6 +129,8 @@ honest and fast — 10 minutes max:
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
 | **Defects the Go port found in the Python engine** | [[market-maker/go-port-findings]] |
 | Session-by-session narrative | `sessions/` |
+| **How the IPO offering is seeded and rested at tZERO** | [[market-maker/reference/ipo-seeding-runbook]] |
+| Every position transfer, ever | [[market-maker/reference/position-transfer-ledger]] |
 | Source standards + plain-English guides | [[standards/README\|standards/]] |
 | Platform reality (venue facts, gateway, streams) | `trading-architecture.md` (platform team's doc — apply the 22-07 filter) |
 
