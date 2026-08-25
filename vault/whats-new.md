@@ -6,6 +6,56 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-24: The offering is live, and Thursday hangs on one piece of work
+
+Digested [[24-08-2026-touchdown]], eighteen minutes, the shortest touchdown in the
+record and deliberately so. Two days after the NCAA offering opened. **Edwin did
+not join**, which makes it the first post-offering call with no client-principal
+steer on it.
+
+**The dates, and the shape of the risk.** The IPO window closes Wednesday, secondary
+trading opens **Thursday 27 August**, and the first games are Saturday. The gap is
+deliberate, so that anything wrong is not visible to everyone at once. Thursday is
+gated on exactly one piece of work: **removing the KYC layer**, which Troy called
+the highest priority and George sized at a day or two. Worth sitting with: the
+thing standing between the product and its trading launch is not the market maker,
+the venue or the data feed. It is a single piece of onboarding work, plus an
+unverified question about whether tZERO have actually switched off their
+eighteen-plus date-of-birth check.
+
+**The headline defect was a build problem, and it carries a lesson.** Testers who
+could not buy from the IPO page were still on the TestFlight beta rather than the
+live App Store version. Jared reinstalled during the call and the problem vanished.
+Troy: "we should have made that more explicit." The first question on any tester's
+"the app is broken" report is now which build they are on. A separate buying-power
+failure survived the reinstall and is still open, with a useful error message: open
+orders and shorts are holding the play dollars, so the balance is held rather than
+absent.
+
+**A team sold out, and George already had the fix.** The Florida Atlantic Owls sold
+out, so the public holds the entire float and the market maker has nothing to offer
+in that book. Most of it was bought by the taker, so positions can be transferred
+back to the maker. He called it not a huge issue, and he is probably right, with two
+caveats: the transfer mechanism is one our own engineering log has questions about,
+and nobody has yet counted how many other books are close to selling out.
+
+**A correction worth having.** We had the shorting constraint backwards. Troy: there
+is no limit on shorts in the simulation, the limit is in production. An extra million
+shares per team is shortable and tZERO have turned the locate flag off. That takes
+the venue out of the picture for now and leaves Edwin's own rules as the only thing
+outstanding.
+
+**And a genuine unblock.** There are only ten test tickers today, which is why the
+market maker cannot be tested against live games. tZERO will supply a full replica of
+all of them, so a change such as quoting five price levels instead of three can be
+tried out during real games with no effect on users.
+
+**Still escalating:** the Sport Radar college-football futures endpoint is still
+broken, Cody has written twice with no reply, and his stand-in spreadsheet goes stale
+in about five days. Also agreed: a daily report of every account that bought IPO
+shares, and a freeze on app store listing changes until the app-store-optimisation
+kickoff.
+
 ## 2026-08-17: The weekend was better, and the economics got sharper
 
 Digested [[17-08-2026-touchdown]], five days before the offering. Calmer than

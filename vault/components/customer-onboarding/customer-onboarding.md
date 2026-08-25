@@ -133,6 +133,45 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### ⚠ Update (24-08-2026): removing the KYC layer is the single gate on Thursday
+>
+> Troy, on the 24-08 touchdown: _"Let's focus on removing the KYC layer right now.
+> That's the highest priority right now is to get that lifted as fast as
+> possible."_ George had already described the work as _"not a turn it on"_ job,
+> but committed to it _"over the next day or two"_.
+>
+> **The sequence Troy set out:**
+>
+> | When | What |
+> |---|---|
+> | Wednesday 26 August, evening | **IPO window closes** |
+> | **Thursday 27 August** | **Secondary trading opens.** The KYC layer needs to be gone by here |
+> | Saturday 29 August | First games |
+>
+> The two-day gap between trading opening and the first games is **deliberate**:
+> _"we wanted to have a couple days again just so that in case anything was wrong,
+> it wasn't fully visible to the whole universe yet."_
+>
+> This is the moment the three-tier decision of 03-08 / 07-08 stops being a model
+> and becomes the critical path. What was scoped on 24-07 as a KYC-less side door
+> for the academic programme, then promoted on 03-08 into the main funnel's first
+> stage, is now **the single piece of work standing between the product and its
+> trading launch**.
+>
+> Two things to hold on to while it lands:
+>
+> - **The gate being lifted is the trading gate, not the payout gate.** Cash
+>   prizes still require full Persona KYC and US tax residency. Nothing here
+>   touches [[compliance/eligibility-and-age-gating]]'s payout rules.
+> - **The tZERO date-of-birth blocker (G1) is the thing to verify.** As of 07-08,
+>   tZERO's onboarding API still required a date of birth of 18 plus, which meant
+>   a Trader Light user could not be allocated a wallet and therefore could not
+>   trade at all. 14-08 recorded that tZERO **will** remove the 18 plus
+>   requirement. ⚠ The 24-08 call never mentions it, so **confirm G1 is actually
+>   closed before treating Thursday as safe**.
+>
+> _Source: [[24-08-2026-touchdown]]._
+
 > ### Update (17-08-2026): the first screen is a choice of three competitions
 >
 > Edwin's simplest statement yet of what first open has to do, and it is a
