@@ -109,6 +109,62 @@ compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
 
+## 24 August: the offering is live, and Thursday hangs on one piece of work
+
+An 18-minute touchdown, the shortest in the record and deliberately so (Troy:
+Brett _"wants these to be 15 minutes, not 30"_), two days after the NCAA offering
+opened. **Edwin did not join**, which makes it the first post-offering call with
+no client-principal steer on it. Troy closed with _"there's a couple refinements
+we want to get done this week, but I think, you know, where we're at, we've come a
+long way."_
+
+**The dates, as Troy set them out.** The **IPO window closes Wednesday 26 August**.
+**Secondary trading opens Thursday 27 August.** The **first games are Saturday**.
+The two-day gap is deliberate: _"we wanted to have a couple days again just so
+that in case anything was wrong, it wasn't fully visible to the whole universe
+yet."_
+
+**Thursday is gated on exactly one piece of work: removing the KYC layer.** Troy
+called it _"the highest priority right now"_; George had already described it as
+_"not a turn it on"_ job but committed to _"the next day or two"_. Note the shape
+of that risk. The thing standing between the product and its trading launch is
+**not** the market maker, the venue or the data feed. It is a single piece of
+onboarding work, plus the unverified question of whether tZERO have actually
+switched off their 18-plus date-of-birth check (G1 in
+[[compliance/eligibility-and-age-gating]]).
+
+**The offering's headline defect was a build problem, and it is a lesson about
+testers.** People who could not buy from the IPO page were on the **TestFlight
+beta** rather than the **live App Store build**. Troy: _"we should have made that
+more explicit."_ Jared reinstalled during the call and the IPO page problem
+vanished. A **separate** buying-power failure survived the reinstall and is still
+open. The operational takeaway: **the first question on any tester report is which
+build they are on.**
+
+**New standing requirement: a daily IPO purchase report.** Every account that
+bought IPO shares, listed daily. George owns it. Small, but it is the first
+reporting obligation this delivery has taken on that is about **oversight** rather
+than product.
+
+**One live problem, with a fix already proposed.** The **Florida Atlantic Owls
+sold out**, so the market maker has no stock to offer in that book. George called
+it _"not a huge issue"_ because most of it was bought by the taker, so positions
+can be transferred back to the maker. Two things still to close: the transfer
+mechanism is one the engineering log already questions, and **nobody has counted
+how many other books are close to sold out**. See N53 in
+[[market-maker/open-questions]].
+
+**Still escalating, and this one is on a supplier.** The Sport Radar
+college-football futures endpoint remains broken. Cody was promised a fix by
+Thursday, wrote twice over the weekend and got **no reply either time**: _"it's a
+product that we're paying for."_ He is phoning Scott; George is re-checking the
+endpoint. The stand-in is a **CSV from a second provider through a contact**, and
+it **decays in about five days** because futures move with results.
+
+**Objectives as George listed them at the close:** the IPO is working for new
+users, NFL follows the same process, secondary opens Thursday, the Sport Radar
+dates land, and app iterations continue. _Source: [[24-08-2026-touchdown]]._
+
 ## 17 August: the commercial position, stated soberly
 
 The tone recovered ("the weekend was better") and the economics got sharper. This
@@ -302,7 +358,7 @@ sign of engagement rather than failure.
 
 ## Key dates it currently tracks
 
-- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · 26 to 27 Aug: NCAA secondary + market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement.
+- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · **26 Aug (Wed) IPO window closes · 27 Aug (Thu) NCAA secondary trading opens** (confirmed 24-08, gated on the KYC-layer removal) · 29 Aug first games · market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement.
 
 ## Delivery notes from the 27-07 → 07-08 touchdowns
 

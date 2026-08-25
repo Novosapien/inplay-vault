@@ -68,6 +68,24 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > record — the MM quoted live on the real venue from 07-08 (six books
 > two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
+> **Update 24-08 (Monday touchdown, [[24-08-2026-touchdown]], Edwin absent):** the
+> **test-ticker constraint is named and lifting**. There are **only ten test
+> tickers** today, which is enough for replay but means **no replica test can run
+> while live games are on**. tZERO will supply **a full replica of all the test
+> tickers**, so a change such as a maker quoting **five levels instead of three**
+> can be exercised **during live games with zero effect on users** (T17). That is
+> the missing half of the 17-08 continuous-simulation-games improvement.
+> **Dates from the call:** the **IPO window closes Wednesday 26 August**,
+> **secondary trading opens Thursday 27 August**, and there are **no games until
+> Saturday**: the gap is deliberate, so faults are not visible to everyone at
+> once. Thursday is gated on the **KYC-layer removal**, not on the MM.
+> **New live item for the open:** the Florida Atlantic Owls **sold out**, so the
+> maker has no float to offer in that book; the proposed fix is a **position
+> transfer from the taker back to the maker** (N53, and see N50 on whether that
+> transfer is reversible).
+> **Shorting is looser than assumed:** no limit in the simulation, locate flag off
+> (T16/E26).
+
 > **Update 06-08b (the ingestion move, MM side: the consumer BUILT +
 > DRILLED):** the MM consumes the bus end to end — reading + finals
 > adapters (structural parity with the file path, proven 1,089/1,089 on

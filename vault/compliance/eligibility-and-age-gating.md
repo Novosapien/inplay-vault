@@ -83,7 +83,7 @@ Tracked as an open tZERO item; raised in the InPlay/Novo Slack channel.
 
 | # | Question | Owner | Status |
 |---|----------|-------|--------|
-| G1 | Will tZERO relax the **18+ date-of-birth validation** on the onboarding API for the no-payout tiers? | tZERO | 🔴 Open, blocks Trader Light entirely |
+| G1 | Will tZERO relax the **18+ date-of-birth validation** on the onboarding API for the no-payout tiers? ➕ **14-08:** tZERO said they **will** remove the 18+ requirement. ➕ **24-08:** removing the KYC layer is now the **highest priority** (Troy), gating **secondary trading opening Thursday 27 August**; George sized it at one to two days. ⚠ The 24-08 call **never mentions the date-of-birth check**, so it stays open: **confirm it is actually switched off before treating Thursday as safe**. See [[24-08-2026-touchdown]] | tZERO | 🟡 **Agreed 14-08, removal unconfirmed; now on the Thursday critical path** |
 | G2 | Do **Trader Medium** and **Trader Light** appear on the main leaderboard, or only on micro-challenge leaderboards? | Edwin / Troy | 🔴 Open |
 | G3 | What exactly does the 13+ attestation look like, and is a bare checkbox sufficient in every state? | Edwin / legal | 🔴 Open |
 | G4 | How is the under-18-safe ad inventory actually enforced at the SSP level, per network? | Novosapien, Brett | 🔴 Open |
