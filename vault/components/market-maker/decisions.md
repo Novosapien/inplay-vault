@@ -14,6 +14,55 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-26 — ✂ the daily file retires: expected wins seed once, then fold
+
+Session: [[market-maker/sessions/2026-08-26-expected-wins-pipeline]] ·
+closes `N18` `N19` `N23` + N22's residual · opens `E51`
+
+Edwin cannot operate a daily 06:00 hand-off (George). The whole daily-file
+plan is replaced by an automated pipeline. This supersedes the 28-07
+file-transport plan and the N19 upload-page ruling.
+
+- ✅ **Seed once, then fold.** Expected wins per team seed ONE time from the
+  July season-win-totals snapshot (de-vig per Edwin's 28-07 method; σ_mkt
+  2.7 NFL / 2.2 NCAA, already ✅). After the seed, every change is the one
+  rule: `new expected wins = old + (result − kickoff probability)` — live
+  form replaces the result with the live probability. No external feed of
+  expected wins ever again.
+- ✅ **The absorber is exact.** Moving a finished game out of expected wins
+  and into banked changes the price by $0.00 — `contribution(g) = $5·x_g`
+  before and after. Proven; the four-row table is the regression test. The
+  06:00 sawtooth (`[t-is-not-the-field]`) can never occur.
+- ✅ **The one-basis rule.** A pregame game's entry in expected wins TRACKS
+  Sportradar's pregame number (the pregame poll tiers already fetch it),
+  freezes at kickoff as `p_ref`, and absorbs at that frozen value. The
+  subtracted number IS the carried number, so N22's basis drift is
+  structurally impossible.
+- ✅ **Flat split for unpriced games.** Games SR has not priced carry
+  `expected wins ÷ games remaining` as scaffolding; SR's number replaces
+  each share before kickoff. The shares sum to the seed, so expected wins
+  end the season at exactly zero. ⚠ The kickoff-window swap on a mismatch
+  game can move ~$1.25 in one step — real information, but lumpy.
+- ✅ **One new event type, dictionary payload.** `EXPECTED_WINS_SEED` — one
+  event, all 170 teams, keys sorted, decimals as strings (the `ANCHOR_SEED`
+  shape); payload carries the snapshot's path + sha256, the object itself
+  in the bucket per the 03-08 storage ruling. Everything AFTER the seed is
+  derived state: a fold over events the journal already records (readings,
+  kickoff freezes, `OFFICIAL_RESULT`). This answers N23.
+- 🟡 **Layer 3 (form re-rate of the far tail) deferred** behind Edwin's
+  one-time blessing (`E51`). Without it the tail holds the seed's view —
+  a quality gap, not a correctness gap. ⚠ T is book-visible under the
+  22-07 line and §1.5; the blessing converts Edwin from daily operator to
+  one-off approver.
+- 📝 **The Gamecast bundle (09-08) is not a new pricing model.** Expanded,
+  `seasonFair` is the 28-07 model as a delta from the IPO price; the live
+  leg is ours × the damping dial `M`. `M` is uncomputable anyway — the SR
+  probabilities feed carries no game clock (verified on the Chiefs–Ravens
+  capture). Its off-field method is the one new piece and fails pool
+  conservation as written (two elite teams claim $3.00 of a $2.50 pool) —
+  held as an ask in `E51`, not adopted. Its manufactured-variability
+  mechanisms are logged as third corroboration on `E34`.
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·

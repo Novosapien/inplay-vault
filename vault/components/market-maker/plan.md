@@ -349,6 +349,20 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > `effective_time`. **Chapter 4 follows.** It is not blocked either way — it
 > takes RP as an argument and never looks inside it.
 
+> **Update 26-08 (the daily file retires — [[market-maker/decisions]] 26-08):**
+> piece 3 above (the feed reader as live wiring) is dead. Edwin cannot operate
+> a daily hand-off, so T becomes the **expected-wins pipeline**: seed once
+> from the July win-totals snapshot (`EXPECTED_WINS_SEED`, one event, dict
+> payload), then maintain by the absorber — a fold over events the journal
+> already records. Build order, ⚠ before games go live Saturday 29-08:
+> **(1)** seed event + bucket write + the de-vig run on the July file ·
+> **(2)** the fold: seed + readings + results → expected wins ·
+> **(3)** rewire `stand_the_book` to the pipeline ·
+> **(4)** regression: the zero-jump table, restart replay equality, the
+> correction path. The reference-feed adapter survives as the door-validation
+> seam only. Session:
+> [[market-maker/sessions/2026-08-26-expected-wins-pipeline]].
+
 ## Phase 0 — Unblock (now, parallel)
 
 The build can't start in earnest until these move; none are code.
