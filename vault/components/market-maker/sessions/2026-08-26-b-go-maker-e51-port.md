@@ -309,3 +309,41 @@ with the prefix unset.
 after all — the day's "copy Python" ruling is narrowed to the inbound leg,
 where Python was right and Go was dropping acks. Go PR #21 (the boot line
 that described "no resize pass") is superseded and closed.
+
+### ✎ 22:19Z — the fast-dwell test reproduces the accumulation. This is the real defect.
+
+George asked for a faster cycle so re-spaces are watchable. Test build
+`test/old-ladder-shape-resize-fastdwell` (dwell 3–6 s in every non-live
+state; NEVER merge) deployed as `CFG-0052-GO-FASTDWELL`, `go-run15`.
+
+⭐⭐ **With a new version every 3–6 s the book over-fills, on the build that
+has the inbound-leg fix AND the resize:**
+
+| time | resting | wanted | max/side | dup prices | rungs at another rank's size |
+|---|---|---|---|---|---|
+| +40 s | 1,886 | 1,536 | **11** | 5 | 440 |
+| +70 s | 1,678 | | 9 | 0 | 203 |
+| +2–3 min | 1,686 → 1,773 → 1,769 | ~1,530 | 8–11 | 0–6 | ~250 |
+
+A steady FLOAT of ~15% extra orders and ~14% of rungs mid-move — not a
+climb, but the ">6 a side" and "wrong-size rung" shapes George saw on
+20/21-08, reproduced on demand.
+
+**Mechanism (from the code, both engines):** a version's replaces and
+cancels are still in flight when the next diff runs. An in-flight order is
+neither kept nor movable (one-in-flight), so the new rungs POST beside it
+(post-first, N12); the extra is cancelled only when its ack lands and the
+NEXT diff sees it. The float is cadence × in-flight time × books, and the
+converger's 128-instruction budget per 0.25 s pass lengthens the in-flight
+time when 170 books re-space together. ⚠ LIVE games redraw every 500 ms
+(George 08-11) — faster than this test.
+
+**So the inbound drops (26-08c) were real and are fixed, but they were not
+the whole cause.** The whole cause is that quote versions are allowed to
+OVERLAP on a book. The fix direction: a book whose last instructions are
+still in flight (sync state Synchronizing) does not publish a new version —
+versions never overlap, the resting book is always exactly one ladder. Both
+engines; Python at one rung simply had almost nothing in flight.
+
+⚠ Not built tonight. The test maker stays on the fast dwell for George to
+watch, or goes back to the normal dwell — his call.
