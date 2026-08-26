@@ -37,6 +37,11 @@ panel **PR #33** (merged, live)
   a dead production bot is still caught while a test bot lives. Rows with
   no `botId` fall to an unattributed bucket swept on global silence only.
   `cancel_all` stays global. Built as gateway PR #28.
+- ✅ **Isolation is enforced IN the Go maker, not at the venue** (George:
+  "we can just limit it on the market maker"; skip Rob's entitlement).
+  `MM_TEST_ONLY=on`: boot refuses any non-`.TEST` book or the production
+  account; the wire refuses any non-twin `mm.new`. Go only — the Python
+  maker stays as it is (production). Built as Go maker PR #18.
 - ⚠ **George's rule, restated after this session merged two PRs on a
   misread:** tell first, test locally, then deploy. No gateway restart
   while the NCAA asks rest (expire 2026-08-27 02:00Z).

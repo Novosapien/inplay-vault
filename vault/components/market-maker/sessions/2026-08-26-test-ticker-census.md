@@ -46,7 +46,14 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
    holds orders. `cancel_all` stays global. Adoption now carries `BotID`
    (it was dropped). `/health` `mm.deadman` keeps its keys and adds
    `bots`. 7 new tests; unit suite, vet and `-short` e2e green.
-6. **Test accounts** (Hasan): Market Maker (Test) **`2559580864`**, Market
+6. **`MM_TEST_ONLY` in the Go maker** ([#18](https://github.com/Novosapien/inplay-market-maker-go/pull/18),
+   open, base `feat/phase-3-ingestion`; George: Go only, Python untouched).
+   Boot half: `CheckTestOnly()` refuses an unnamed universe, the limit
+   knob, any non-`.TEST` symbol, and the production account
+   `1797733477`. Wire half: `venue.TestOnlyGuard` on the transport's one
+   publish seam refuses any `mm.new` for a non-twin before NATS. Off by
+   default. 9 new tests; full `-race` suite green.
+7. **Test accounts** (Hasan): Market Maker (Test) **`2559580864`**, Market
    Taker (Test) **`1216516809`** (app logins `hasan.ahmed+MMTest@` /
    `+MTTest@novosapien.ai`; auth subs `387984024250903551` /
    `387984286814333951`). Password held by George/Hasan, not in the vault.
@@ -100,3 +107,5 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
 3. Engines: `MM_BOT_ID=mm-test` / `SNT_BOT_ID=snt-test`, `MM_SECURITIES`
    = twins, own journals, on `inplay-market-maker-go` (idle).
 4. Panel: the global Production / Test switch.
+5. Review + merge Go maker #18 into `feat/phase-3-ingestion`; then the test
+   instance env (above) on `inplay-market-maker-go`.
