@@ -49,16 +49,28 @@ One exponentially-decayed variance rate per security:
   The odd tick's side is a stateless seeded 50/50 from the same draw.
 - ⚠ **The equation has no wide end**: the σ² ceiling caps width at
   ~10 ticks + the extra — about $0.13 on a $65 team, ever — against
-  §5.2 Defensive's $0.40 and the indicated overnight $2.50–$5.00. The
-  per-state width FLOOR slot exists (`state_floor_ticks`, one call-site
-  to wire) awaiting Edwin's E31 values.
+  §5.2 Defensive's $0.40 and the indicated overnight $2.50–$5.00.
+  ⭐ **Filled 20-08 (E51 answer 6):** `state_floor_ticks` is wired in
+  both engines — Defensive **50**, Overnight **100**, the WIDEST wins,
+  applied AFTER the extra so a floor is exact. 100 sits above
+  `max_width_ticks` 60 on purpose: the cap bounds what volatility may
+  justify; a floor is a refusal to be tight while blind.
+- ⭐ **`min_width_ticks` is 25 since 20-08** (E51 answer 1, was 1): a
+  $0.25 baseline that leaves 12 postable prices a side. It binds BEFORE
+  the extra, so the realised spread is 25–30 ticks. `k` untouched.
 
 ## 3 · The ladder (`ladder.py`)
 
-    levels = 3–6 · step = 1–4 ticks       drawn, seeded (two draws)
+    levels = 1–3 · step = 1–4 ticks       drawn, seeded (two draws)
     bid₁ = ⌊RM − bid_off·tick⌋            round DOWN (outward)
     ask₁ = ⌈RM + ask_off·tick⌉            round UP (outward)
     walk outward by step · every price in [$0.01, MEV] · dedupe
+
+- ✂ **1–3 rungs since 26-08** (George, Python `f9eec8b` · Go
+  `feat/e51-parameters`), superseding Edwin's 20-08 "one rung, do not
+  build the optionality": the live one-rung book showed a bitten rung
+  stays bitten (floor + N10 + unbuilt §5.9). Was 3–6 at the pin.
+  ⚠ Book-visible — Edwin to be told.
 
 Rounding is always OUTWARD — a rounding error may widen the book, never
 cross it. A book that cannot be two-sided inside the bounds returns
@@ -67,14 +79,24 @@ cycle handles).
 
 ## 4 · Quantities (`quantity.py` + `variation.py`)
 
-    base_i = 10,000 × 0.72^i              i = 0 at the inside
+    base_i = 550 × 0.72^i                 i = 0 at the inside
     buy    = base × (1 − EPR)             long → show less buying
     sell   = base × (1 + EPR)             long → show more selling
     pre    = round( base × modifier )     to the nearest share
-    final  = clamp( round( pre × VF ), 1,000, 15,000 )
+    final  = clamp( round( pre × VF ), 100, 15,000 )
 
-- The geometric ×0.72 decay is Edwin's (adopted); the 10,000 base is
-  ours (his 250 was 40× too small for the mandate's inventory).
+- ✂ **550 at the touch since 20-08** (E51 answer 3, was our 10,000): a
+  participant selling 1,000 into a 550 bid leaves 450 as their own
+  offer, so the market moves. The 100 minimum (George 20-08, was
+  §5.7.3's 1,000) is a backstop — the touch draws 412–688 and the old
+  floor clamped every draw straight back up. `material_qty_change` is
+  50 (was 500) for the same reason.
+- The geometric ×0.72 decay is Edwin's (adopted).
+- ⭐ **In Go these rows are a `Policy` read off the dictionary at
+  construction, not package literals** — because every corpus under
+  `testdata/` is Python@fd193a4's output and needs the pin's 10,000 /
+  3–6 / 1,000. `config.ReferencePin()` holds them; the differential
+  harness resolves the dictionary from the corpus manifest's commit.
   ✅ **The touch-heavy profile STANDS** (George, 08-11c, after his own
   challenge from the live books): fattest-at-the-touch is Edwin's
   deliberate design for a liquidity-first, non-profit-seeking maker.

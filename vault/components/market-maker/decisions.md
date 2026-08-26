@@ -14,6 +14,36 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-26b — ✅ The Go maker carries E51, and the corpora keep the pin
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] ·
+Go PR `feat/e51-parameters` · Python `main@f9eec8b` · N65 · N66
+
+- ✅ **The Go maker's shipped dictionary is Python `f9eec8b`'s:** Edwin's
+  20-08 answers (E51) — `min_width_ticks` 25, `base_size` 550,
+  `min_quantity` 100, `material_qty_change` 50, `skew_reference_shares`
+  48,000, width floors 50/100 — plus George's 26-08 rung ruling, **1–3
+  drawn**, not Edwin's 1/1. The behaviour rides with the numbers: the state
+  floor in the width, the lean's denominator off the float for the PRICE
+  skew only, the applied lean in the position record.
+- ✅ **The corpora fold under the dictionary their manifest's commit names.**
+  Every target under `testdata/` is Python@fd193a4's output under fd193a4's
+  numbers; a fold under the shipped dictionary diverges on every drawn size
+  (measured: three asks where the pin has five). `config.ReferencePin()`
+  carries fd193a4's rows, `config.DictionaryAtCommit` resolves a manifest's
+  commit, and an unknown commit is REFUSED, never guessed. ⚠ The pin is a
+  test target, not an operator option — it fails `Validate()` on purpose.
+- ✅ **`SkewReferenceShares` 0 means "§4.3's float"** — the pre-E51 rule —
+  and is reserved for the pin. A shipped dictionary must be positive.
+- ⚠ **N65 is NOT moot.** The 21-08 note expected `levels 1/1` to dissolve
+  the monotonicity question; the 26-08 ruling keeps depth, so the per-level
+  ±25% draw still inverts adjacent rungs.
+- ⚠ The gateway's per-bot dead-man (#28) is **deployed** (parallel session,
+  26-08 19:39Z). The Go maker still does not run without George's explicit
+  go — that rule is his, restated 26-08.
+
+---
+
 ## 2026-08-21 — ✅ Rank drift is the ladder defect, and the resize is behaviour not a flag
 
 Session: [[market-maker/sessions/2026-08-21-go-maker-ladder-shape]] ·

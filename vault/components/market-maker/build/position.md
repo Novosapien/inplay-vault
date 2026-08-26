@@ -16,8 +16,19 @@ book leans to shed it.
     PR  = NP ÷ ReferenceFloat                                   §4.3
     EP  = NP + pending buy exposure − pending sell exposure     §4.4
     EPR = clamp( EP ÷ ReferenceFloat, ±0.50 )                   §5.7.2
-    IA  = −Clamp( PR × S, −M, +M )      S = $1.00 · M = $0.25   §4.5
+    IA  = −Clamp( NP ÷ 48,000 × S, −M, +M )   S = $1.00 · M = $0.25   §4.5 ✂ E51
     RM  = RP + IA                                               §4.6
+
+- ✂ **The lean divides by `skew_reference_shares` = 48,000 since 20-08**
+  (E51 answer 5), NOT by the Reference Float — `[skew-not-float]` in
+  both engines. Against the float the skew saturated at 225,000 sh and
+  a 550-share fill moved the quote 0.06 ticks; against 48,000 it
+  saturates at 12,000 net (Edwin's own ASMM-1 figure) and a 550 fill
+  leans ~1 tick. ⚠ **EPR keeps the real float** — point it at 48,000 and
+  sizes saturate at 24,000 sh, taking books one-sided. The position
+  record reports BOTH: `position_ratio` against the float (§4.3's
+  concentration measure), `inventory_adjustment` as applied. In Go a
+  zero row selects the float — the fd193a4 pin — and cannot ship.
 
 - **Reference Float = issued − treasury**: 900,000 NFL · 1,000,000 NCAA
   (IPO Requirements v2, gospel). ⚠ N21: 18 rounds × 50,000 offers only
@@ -70,9 +81,12 @@ drives the Position Ratio, the Inventory Adjustment and therefore every
 RM and every price; the ask cap resizes QUANTITIES and must never move a
 price. `runtime/compose.py` builds `PositionEngine(floats)` with no
 opening positions, so there is nothing to double-count.
-- **N20 — the skew saturates before we start.** IA stops responding at
-  25 % of float (PR × $1.00 clamped at $0.25); post-offering we hold
-  50–100 %. Holding the whole float reads identically to holding a
+- **N20 — the skew saturates before we start.** ✎ 20-08: the
+  saturation point moved from 225,000 sh to **12,000** with E51's
+  `skew_reference_shares` (above), so the lean now responds inside a
+  game. The distribution half of N20 stands. Original: IA stops
+  responding at 25 % of float (PR × $1.00 clamped at $0.25);
+  post-offering we hold 50–100 %. Holding the whole float reads identically to holding a
   quarter of it — the skew is our only distribution tool and it is
   pinned. Reframed by George: distribution matters because a market with
   no shares in circulation is not a market, not because of risk.
