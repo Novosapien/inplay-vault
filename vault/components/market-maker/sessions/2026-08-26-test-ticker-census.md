@@ -5,7 +5,7 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
 # 2026-08-26 — The `.TEST` ticker census: 170 twins, and the dead-man goes per-bot
 
 > **Who:** George + AI session (+ Hasan for the test accounts).
-> **Type:** research + build. Nothing deployed to a VM.
+> **Type:** research + build + deploy (both gateways, 19:39–19:40Z, George's go).
 > **Refs:** [[market-maker/test-symbols]] · gateway
 > [#27](https://github.com/Novosapien/inplay-fix-gateway-go/pull/27) (merged, staged),
 > [#28](https://github.com/Novosapien/inplay-fix-gateway-go/pull/28) (open) ·
@@ -58,7 +58,22 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
    `+MTTest@novosapien.ai`; auth subs `387984024250903551` /
    `387984286814333951`). Password held by George/Hasan, not in the vault.
 
+8. **Gateway deploy, both VMs** (George's go: "fine restarting the gateways,
+   both the maker and the taker are halted, we just don't want to get rid
+   of the orders"). #28 merged 19:31Z → `main@0bd1782` → CI staged both
+   VMs by 19:37Z. MM gateway 19:39:55Z: backup
+   `gateway-go.bak-20260826-1939`, OE logon in 1 s, **138 orders
+   rehydrated, 0 cancels**, per-bot latches armed on the 7-day grace.
+   Retail 19:40:22Z: backup `gateway-go.bak-20260826-1940`, OE + MD logon
+   in 6 s, **340 subscribed, 0 × 35=Y**. Proxy `/market/quotes` = 340,
+   170 twins. Nothing swept, nothing lost (`lost_fills` 0).
+
 ## What we learned
+
+- **tZERO's MD session accepts 680 subscriptions** (340 top-of-book + 340
+  depth) — 0 rejects at logon. The open question closed itself.
+- `cp` over the running gateway binary fails `Text file busy`. Swap by
+  copying to a dotfile and `mv` — the runbook step should say so.
 
 - `POST /md/probe` is a clean, non-mutating "does this symbol exist at the
   venue" test. It should be the first step for any symbol change.
@@ -101,9 +116,7 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
 ## Next
 
 1. Rob: entitle `2559580864` and `1216516809` to `.TEST` only.
-2. Review + merge #28; deploy #27 + #28 together to both gateways in a
-   quiet window AFTER the NCAA asks expire, with the ceremony. Watch for
-   35=Y at MD logon.
+2. ~~Deploy #27 + #28~~ ✅ done 19:39–19:40Z, both VMs, 0 MD rejects.
 3. Engines: `MM_BOT_ID=mm-test` / `SNT_BOT_ID=snt-test`, `MM_SECURITIES`
    = twins, own journals, on `inplay-market-maker-go` (idle).
 4. Panel: the global Production / Test switch.
