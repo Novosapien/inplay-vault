@@ -527,6 +527,28 @@ now different from what the Go tree did before 26-08:
   skips alien fills loudly and halts on a `GatewayTranslationError` —
   `[inbound-poison]`, exactly as `compose.py`'s `InboundDrain`.
 
+## ⭐⭐ The venue's order rate — measured 27-08, and what it changes
+
+tZERO refuses **"Exceeds Max Order Rate"** past roughly 60–100 order
+messages a second per session (exactly 100–101 new orders accepted in
+every burst second; a paced 80 still refused 1.4%, cancels weighing more
+than replaces; 60 clean). Neither engine had a limiter: the converger's
+budget is 512/s and the gateway's governor 5,000/s. Every Go boot blew it
+(a third of the opening ladder refused) and the fast-dwell test refused
+29% of everything sent. A refused cancel rests on as an extra rung, a
+refused replace stays at its old price and size, a refused post is a
+missing rung — and the reject backoff (2, 4, 8 … 60 s per price) then
+makes each one rest longer. That was the wrong ladder.
+
+The Go maker (PR #23): the one wire writer paces order messages to
+`venue_message_rate_limit` (60/s) in any one-second window, heartbeat and
+kill switch on a priority lane; the converger budget is rate × interval
+(15 per 0.25 s pass), so the backlog lives at the stage where a stale
+version is superseded, not in the transport queue; and a book with orders
+in flight holds its next version (cap 30 s). ⚠ **The Python maker has none
+of this** and will meet the same wall the moment it quotes depth at game
+cadence. ⚠ Capacity: ~60 msg/s ÷ (2 × rungs) = book updates per second.
+
 ## What changes here next
 
 [[market-maker/build/next|Next]]: ~~the stale-book crossing guard

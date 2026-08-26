@@ -319,6 +319,10 @@ is in [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]]
 | `defensive_width_floor_ticks` · `overnight_width_floor_ticks` | **50 · 100** — applied AFTER the extra, widest wins; 100 sits above `max_width_ticks` 60 on purpose | none | 🟡 Edwin 20-08 (E51 answer 6) | "judgement, not derivation — bring the data" |
 | `k_intensity` · `size_decay` · `max_quantity` · `variation ±25%` | unchanged: 1.2 · 0.72 · 15,000 · 0.75–1.25 | same | as above | — |
 
+| `venue_message_rate_limit` | **60 msg/s** on the wire (new + cancel + replace; heartbeat exempt) | none (🔴 T2 unanswered) | 🟡 **MEASURED 27-08** — 100 → 5% refused, 80 → 1.4%, 60 → 0 | Go PR #23; Python has no limiter |
+| `converge_max_instructions_per_tick` | **15** = rate × 0.25 s interval (pinned by Validate) | 128 | ✂ George 26-08, derived | Go PR #23 |
+| `venue_sync_hold_max_s` | **30 s** — a book with orders in flight holds its next version; past the cap it publishes and says so | none | 🟡 ours, George 26-08 | Go PR #23 |
+
 ⚠ **The Go tree keeps BOTH sets.** `config.Default()` is this table;
 `config.ReferencePin()` is the "Was" column, because every corpus under
 `testdata/` is Python@fd193a4's output. The pin fails validation on purpose

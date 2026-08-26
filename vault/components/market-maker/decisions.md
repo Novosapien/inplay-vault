@@ -14,6 +14,37 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27a — ⭐⭐ tZERO's order rate is the ceiling: the wire is paced, the budget derived, versions never overlap
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 3) ·
+Go PR #23 · T2 · N65
+
+- ⭐⭐ **"Exceeds Max Order Rate."** The fast-dwell journal: 29% of everything
+  sent refused by tZERO; in every burst second exactly 100–101 new orders
+  accepted and the rest refused. Every boot blew it (a third of the opening
+  ladder). A refused cancel is an extra rung, a refused replace a wrong-size
+  rung, a refused post a missing one — the whole wrong ladder of 20/21-08
+  and 26-08 was this. Neither engine had a limiter; T2 had sat unanswered
+  since July.
+- ✅ **The wire is paced to the venue's rate**: `VenueMessageRateLimit` 60 🟡
+  MEASURED (100 → 5% refused, 80 → 1.4%, 60 → 0 of 23,619), on the one
+  writer every order crosses. Heartbeat and kill switch take a priority
+  lane — never paced, never behind an order.
+- ✅ **The converger budget is derived from the wire** —
+  `ConvergeMaxInstructionsPerTick` 15 = 60/s × 0.25 s, pinned by Validate
+  (was 128, and the transport queue was the backlog).
+- ✅ **No overlapping versions** — a book with orders in flight holds its
+  next quote; `VenueSyncHoldMaxS` 30 s caps a stuck pending.
+- ⭐ **Result:** at four times the normal cadence, on the old 3–6 × 10,000
+  shape, every side 3–6, none above, 0 duplicates, 0 rejects, resting =
+  wanted.
+- ⚠ **The weekend:** ~60 msg/s ÷ (2 × rungs) = books per second. 80 live
+  books at 500 ms and one rung need ~320/s. Activity tiers are a
+  requirement; T2 must be asked WITH the numbers; the Python maker needs
+  the same pacer before it quotes depth at game cadence.
+
+---
+
 ## 2026-08-26d — ✂ The resize pass returns — "copy Python" is narrowed to the inbound leg
 
 Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (23:00) ·

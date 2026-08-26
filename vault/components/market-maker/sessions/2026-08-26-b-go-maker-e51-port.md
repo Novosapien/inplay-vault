@@ -1,5 +1,5 @@
 ---
-description: "E51 ported to the Go maker with the corpora pinned, then the Go venue leg made Python's: the resize pass removed and the inbound leg's silent drops found and fixed"
+description: "The night the Go maker's ladder was found and fixed: E51 ported, the inbound leg's drops, the resize pass back, and tZERO's order-rate limit measured and paced"
 ---
 
 # 2026-08-26-b — The Go maker carries E51, and its venue leg becomes Python's
@@ -347,3 +347,118 @@ engines; Python at one rung simply had almost nothing in flight.
 
 ⚠ Not built tonight. The test maker stays on the fast dwell for George to
 watch, or goes back to the normal dwell — his call.
+
+---
+
+# Part 3 — "you build it now": the venue's order rate was the cause all along
+
+> **Refs:** Go PR #23 (`feat/no-overlapping-versions`, four commits) · #22 ·
+> test builds `test/fastdwell-nooverlap` (NEVER merge) · journals
+> `go-run12`…`go-run20` on `inplay-market-maker-go`.
+
+## What we did
+
+George, 23:30, on the fast-dwell run: asks with no bid beside them, sides
+of 7–9, "this would work fine on the Python one — it's not identical". And
+the side note that mattered: **90 games at the weekend**.
+
+1. **Built the no-overlap rule** (`quotes.Cycle` `venueBusy`, dictionary row
+   `VenueSyncHoldMaxS`): a book whose orders are in flight holds its next
+   version. Deployed on the fast dwell: **it did not fix it** — the hold cap
+   fired 354 times in 2½ min. Books were "in flight" for more than 5 s.
+2. **Measured instead of reasoning.** The engine ticks at 2/s and its inbound
+   queue was empty (24 of 46,821 at stop) — the acks were not late in the
+   engine. The gateway showed **245 orders PENDING_NEW** at one instant —
+   sent, not yet answered by tZERO — churning, none stale. Then the journal:
+   **"Exceeds Max Order Rate" — 6,005 new orders and 7,619 cancels/replaces
+   refused in 2½ minutes, 29% of everything sent.** In every burst second
+   the venue accepted exactly 100–101 new orders and refused the rest (358,
+   450, 415…). Every boot blew it too: standing 170 books fires ~1,500
+   instructions in 3 s, a third of the opening ladder was refused, and the
+   reject backoff then sat on those prices — the E51 run had 10% rejects,
+   the old-shape run 6%, ALL at boot; the books healed over the next passes,
+   which is why they looked right after a minute.
+3. ⭐ **This is the whole picture, and it is one cause with three faces.** A
+   refused cancel is an order that keeps resting (the extra rungs). A
+   refused replace is an order stuck at its old price and size (the
+   wrong-rank rungs). A refused post is a missing rung (asks with no bid).
+   Neither engine had an outbound limiter: the converger budget is 512/s,
+   the gateway's governor 5,000/s, and the dictionary's
+   `VenueMessageRateLimit` had sat 🔴 "T2 — ask tZERO" since July. Python at
+   one rung and a 20–40 s dwell never approached it.
+4. **Built the pacer** (`QueuedTransport.SetRateLimit`): order messages
+   (new/cancel/replace) capped in any one-second window on the one writer
+   every order crosses; the heartbeat and kill switch take a priority lane —
+   never paced, never behind an order (a paced queue 1,500 deep is 15 s, and
+   a heartbeat that waited that long is a dead-man sweep). Paced at 100:
+   rejects 29% → 5%, every one in a second at exactly 100 — the venue's
+   window is not ours. At 80: 1.4%, cancels weighing more than replaces. **At
+   60: zero** over 23,619 acks.
+5. **Derived the converger budget from the wire:** `ConvergeMaxInstructionsPerTick`
+   128 → 15 (60/s × 0.25 s), pinned by Validate. At 128 the transport queue
+   was ~15 s deep during a re-space wave, every pending "in flight" for the
+   queue wait, and a 30 s hold cap fired 1,338 times in four minutes. With
+   the budget at the wire's rate the backlog lives at the STAGE, where a
+   stale version is superseded by the next instead of sent late.
+   `VenueSyncHoldMaxS` 5 → 30 s.
+
+## The result (23:56–00:00Z, fast dwell 3–6 s, old shape 3–6 × 10,000)
+
+| sample | resting | wanted | per side | dups | rungs mid-move | rejects |
+|---|---|---|---|---|---|---|
+| +1 min (boot queue draining) | 1,667 | ~1,530 | 3–9 | 0 | 162 | |
+| +2 min → +4 min, every sample | 1,501–1,566 | ~1,530 | **3–6, none above** | **0** | **1–3** | **0 of 23,619** |
+
+Hold caps fired only in the boot minute. This is the shape George knows,
+at four times the normal cadence, holding.
+
+## What we learned
+
+- ⭐⭐ **The venue's order rate is the ceiling everything sits under.** tZERO
+  refuses past roughly 60–100 messages/s per session (rule not yet known:
+  100 exactly in burst seconds; still refusing at a paced 80; clean at 60;
+  cancels weigh more than replaces). This was open since July as T2 and
+  nobody had the number. Tonight's journals have it.
+- ⭐ **Every one of tonight's symptoms was downstream of it.** The inbound
+  drops (26-08c) were real and are fixed; the resize (26-08d) is right; the
+  no-overlap hold is right; none of them could hold a book clean while a
+  third of the cancels were being refused.
+- ⭐ **"Identical to Python" was true of the code and false of the load.**
+  Same reconciler, same converger, same state machine — and a Go maker at
+  six rungs on 170 books sends 6–10× what a Python maker at one rung did.
+  The Python maker will meet the same wall the moment it runs depth at
+  game cadence.
+- ⚠ **The weekend (George's side note, and the real finding):** 90 games.
+  At ~60 messages/s, a one-rung book costs ~2 messages per update; 80 live
+  books redrawing every 500 ms need ~320/s — five times the venue's limit —
+  before any depth. The plan's activity-tiered cadence is not a nice-to-have;
+  it is the only way the maker fits. And T2 must be asked WITH these numbers.
+- ⚠ Rate-limit rejects go through the reject backoff (2, 4, 8 … 60 s per
+  price), which is the wrong tool for a rate limit: it makes a refused
+  cancel rest longer. With pacing there are none; without it the backoff
+  amplifies the damage.
+
+## Decisions (George, 26-08 → 27-08)
+
+- ✅ **The wire is paced to the venue's order rate** — `VenueMessageRateLimit`
+  60 🟡 measured (was 🔴 T2), on the one writer; heartbeat and kill switch
+  never paced.
+- ✅ **The converger budget is derived**: rate × interval, pinned by Validate.
+- ✅ **No overlapping versions**, hold cap 30 s.
+- ✅ Go PR #22 (resize back) + #23 (the four commits) are the fix set, on
+  top of #19 + #20.
+
+## Next
+
+1. Merge #22 then #23 into `feat/phase-3-ingestion`; close #21.
+2. **Ask tZERO (T2) with the numbers**: 100/101 accepted in burst seconds,
+   refusals at a paced 80 (cancels), clean at 60. What is the rule?
+3. **The Python maker needs the same pacer** before it quotes depth at game
+   cadence — it has the same 512/s budget and no limiter.
+4. **Capacity plan for the weekend**: 60 msg/s ÷ (2 × rungs) books per
+   second. Activity tiers, or fewer live books, or one rung — arithmetic,
+   not judgement.
+5. The test maker stays on the fast-dwell test build for George to watch
+   (`CFG-0057-GO-PACED60`, `go-run20`). To return to a normal build: stop,
+   restore `mm-go.bak-154cf847-e51` (E51 shape) or build #22+#23 on the
+   phase branch, bump the version, fresh journal; the heal clears the book.
