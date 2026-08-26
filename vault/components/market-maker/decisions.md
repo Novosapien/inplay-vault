@@ -14,6 +14,40 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-21 — ✅ Rank drift is the ladder defect, and the resize is behaviour not a flag
+
+Session: [[market-maker/sessions/2026-08-21-go-maker-ladder-shape]] ·
+Go PR #17 `46c9538` `506216f` `8cebdde` `667b181` · N10 · N65 · N66
+
+- ⭐ **RANK DRIFT is why the Go ladders did not decay outward.** §8.1 pass 1
+  keeps a resting order whenever its PRICE is still wanted, so an order born at
+  rank 6 can sit at rank 3 still carrying its rank-6 size. Traced on
+  IPTCJAGU.TEST: a 2-cent grid became a 4-cent grid, three kept orders were left
+  untouched, and a 2,564 sat at rank 3 above a freshly posted 4,069.
+  ⭐ George described the mechanism from the panel before it was measured.
+- ⭐ **The proof it is version mixing:** inside ONE quote version a step can only
+  fall in `[0.432, 1.20]` (the 0.72 decay against the ±25% band). Live steps
+  reached **2.16**.
+- ✅ **The trigger is the RANK BASIS (`Level.PreVariation`), never the drawn
+  size.** The drawn size is re-drawn every version, so comparing against it
+  republished every level every cycle — 246 orders on 10 books, 389 new orders
+  and 550 cancels in three minutes. `quantity.go` already stated the rule:
+  materiality is judged BEFORE variation.
+- ✅ **The resize is the BEHAVIOUR, not an environment variable** (George,
+  21-08). `MM_REQUOTE_CLEAR_FIRST` removed; the parity harnesses pin the
+  reference lifecycle themselves and say why.
+- ✅ **`MMGO` + 14 hex is the Go maker's ClOrdID scheme.** It keeps the `MM` the
+  gateway's namespace check demands and fails the Python healer's `MM` + 16-hex
+  test on the `G`, so our book reads as FOREIGN to it. ⚠ A wholly non-MM prefix
+  is impossible — the gateway refuses it with `MM_PREFIX_REQUIRED`.
+- ⭐ **A test that asserts on ONE reconcile call cannot see churn.** Three live
+  failures passed the entire unit suite. The fix ships with a closed-loop churn
+  simulation; restoring the old trigger fails it by name.
+- ⚠ **tZERO was blameless.** 389 new orders, 157 replaces, 550 cancels, every
+  one acked, zero rejects. Every failure that night was ours.
+
+---
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
