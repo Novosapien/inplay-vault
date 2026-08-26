@@ -42,6 +42,7 @@ UNBUILT systems only
 ([[market-maker/systems/market-supervision|supervision]] ·
 [[market-maker/systems/synthetic-market-order|synthetic MO]] ·
 [[market-maker/systems/mm-ops-ui|ops UI]] ·
+[[market-maker/systems/expected-wins-pipeline|expected-wins pipeline]] ·
 [[market-maker/systems/snt-1-noise-taker|SNT-1]] — the built systems'
 design narratives are archived; build/ is their truth), the
 [[market-maker/glossary]], and the plain-English guides in

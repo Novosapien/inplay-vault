@@ -6,7 +6,9 @@ description: "SUPERSEDED 26-08 by the expected-wins pipeline — retained for it
 
 > ⚠️ **SUPERSEDED 2026-08-26.** George ruled Edwin cannot operate a daily
 > hand-off, so the daily file is retired entirely. Expected wins now seed
-> ONCE (`EXPECTED_WINS_SEED`) and are maintained by the absorber — see
+> ONCE (`EXPECTED_WINS_SEED`) and are maintained by the absorber — the
+> normative page is now
+> **[[market-maker/systems/expected-wins-pipeline]]**; see also
 > [[market-maker/decisions]] 26-08 and
 > [[market-maker/sessions/2026-08-26-expected-wins-pipeline]]. This page's
 > model analysis (§1) remains valid history; its transport and ingestion
