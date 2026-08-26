@@ -6,7 +6,7 @@ description: "Edwin's E51 parameter set and George's 26-08 rung range ported to 
 
 > **Who:** AI session (the Go side), resumed from the 21-08 handover.
 > **Type:** build, local only. Nothing deployed. No VM touched.
-> **Refs:** Go PR `feat/e51-parameters` → `feat/phase-3-ingestion` ·
+> **Refs:** Go PR [#19](https://github.com/Novosapien/inplay-market-maker-go/pull/19) `feat/e51-parameters` → `feat/phase-3-ingestion` ·
 > Python `main@f9eec8b` (the port target) ·
 > [[market-maker/sessions/2026-08-21-go-maker-ladder-shape]] (the handover) ·
 > [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]] (E51) ·
