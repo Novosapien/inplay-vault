@@ -272,7 +272,10 @@ Python process exactly.**
   before switching it on. Result: every old order gone (0 under 1,000), IPO
   asks 137 and snt-1 untouched, AFFC.TEST 8,309 / 7,435 / 7,402 decaying.
   ⚠ At 40 s four sides read 7–8 (post-first: new rungs land before the old
-  cancel); the settle count is in the deploy-log row.
+  cancel). **Settled by 21:58Z: three counts 20 s apart — 170 books, every
+  side 3–6, none above 6, 0 duplicate prices, 0 refusals, the order count
+  breathing 1,494–1,560 as ladders re-space.** The shape George knows, with
+  the lifecycle holding.
 
 **Decision (George, 26-08):** the TEST maker runs with the boot heal ON —
 scoped by the `MMGO` prefix, it clears its own book on every restart. Never
