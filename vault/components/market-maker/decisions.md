@@ -14,6 +14,35 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-26c — ✅ The Go maker follows Python's venue process — no resize, no dropped acks
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 2) ·
+Go PR `feat/python-lifecycle` `94a21b5` `86ec89e` · N10 · N65
+
+- ✅ **"Just use the same process as the Python one"** (George). The Go
+  maker, at the same 3–6 × 10,000 the Python maker ran supervised, left
+  MORE than six orders a side with a fat middle rung. The Go venue leg now
+  does exactly what Python's does.
+- ✂ **The 21-08 resize pass is REMOVED** — reverses "the resize is the
+  behaviour, not a flag". A kept order rests at its own size until it is
+  gone (N10), whatever rank it now occupies; rank drift is back exactly as
+  Python has it live, and at 1–3 rungs × 550 it costs 550-vs-285 at worst.
+- ⭐ **Three line-by-line comparisons against `f9eec8b`** found every engine
+  and the translator a faithful port. **The divergences that can leave an
+  order standing were all in Go's inbound wrapper**: messages dropped
+  through the boot window, a 4,096 queue that dropped on overflow, refusals
+  skipped where Python halts, poison printed once. A dropped ack is an
+  invisible resting order — a phantom PENDING occupies the price and is
+  never actionable while the real order rests unknown to the diff.
+- ✅ **The inbound leg is Python's**: unbounded, buffered from the
+  subscribe, translated on the tick, alien fills skipped loudly, poison
+  printed every time, a `GatewayTranslationError` halts the run.
+- ⚠ The parity harnesses could not see any of this: on a scripted timeline
+  every ack arrives. A port is proven when every message reaches the
+  engines, not only when the engines agree.
+
+---
+
 ## 2026-08-26b — ✅ The Go maker carries E51, and the corpora keep the pin
 
 Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] ·

@@ -504,6 +504,29 @@ Never deltas: there is no history to replay and no sequence to reconcile.
   rested unfilled). `POST /md/book-resubscribe` on the gateway is the
   feed's own heal for both.
 
+## ⭐ The Go maker's venue leg — Python's process, verbatim (26-08)
+
+The Go port (`inplay-market-maker-go/internal/venue`, `cmd/mm/legs.go`)
+was compared file by file against this page's code at `f9eec8b` on 26-08,
+after the live Go book left more than six orders a side. The record, the
+reconciler, the converger, the guard, the backoff and the translator are
+faithful ports — every transition and condition agreed. Two things are
+now different from what the Go tree did before 26-08:
+
+- **No resize pass.** Between 21-08 and 26-08 Go replaced a kept order
+  whose size belonged to another rank (rank drift). George 26-08: the Go
+  maker follows THIS page's lifecycle — rest-until-gone as ruled, the
+  kept order left alone whatever rank it now occupies.
+- **The inbound leg is Python's shape.** Go used to drop every gateway
+  message that arrived before `Build` finished, drop past a 4,096-deep
+  queue, and skip translation refusals with a counter. A dropped ack is
+  an invisible resting order: the record keeps a `PENDING_*` that occupies
+  the price and is never actionable while the real order rests at the
+  venue unknown to the diff. Go now buffers from the subscribe in an
+  unbounded queue, translates on the tick, prints every poison message,
+  skips alien fills loudly and halts on a `GatewayTranslationError` —
+  `[inbound-poison]`, exactly as `compose.py`'s `InboundDrain`.
+
 ## What changes here next
 
 [[market-maker/build/next|Next]]: ~~the stale-book crossing guard

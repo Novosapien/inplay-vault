@@ -1,8 +1,8 @@
 ---
-description: "Edwin's E51 parameter set and George's 26-08 rung range ported to the Go maker, with the fd193a4 corpora kept valid through a pinned dictionary"
+description: "E51 ported to the Go maker with the corpora pinned, then the Go venue leg made Python's: the resize pass removed and the inbound leg's silent drops found and fixed"
 ---
 
-# 2026-08-26-b — The Go maker carries E51, and the corpora keep the pin
+# 2026-08-26-b — The Go maker carries E51, and its venue leg becomes Python's
 
 > **Who:** AI session (the Go side), resumed from the 21-08 handover.
 > **Type:** build, local only. Nothing deployed. No VM touched.
@@ -108,3 +108,108 @@ description: "Edwin's E51 parameter set and George's 26-08 rung range ported to 
 4. **Decide N65 on evidence** once the 1–3 book has been watched live.
 5. Longer term: regenerate the corpora at a current Python commit and retire
    `ReferencePin()` — register the commit in `pin.go` first.
+
+---
+
+# Part 2 — "just use the same process as the Python one"
+
+> **Refs:** Go PR [#20](https://github.com/Novosapien/inplay-market-maker-go/pull/20) `feat/python-lifecycle` → `feat/phase-3-ingestion` ·
+> commits `94a21b5` (resize pass removed) · `86ec89e` (the inbound leg) ·
+> three parallel line-by-line comparisons against Python `main@f9eec8b`.
+
+## What we did
+
+George, after the E51 port: the parameters were never the whole story.
+The Go maker, at the SAME 3–6 × 10,000 the Python maker ran supervised,
+put **more than six orders a side** on a book, with a fat middle rung —
+"it just seemed like the replacer wasn't working". His ruling: **copy the
+Python process exactly.**
+
+1. **Removed the 21-08 resize pass** (`94a21b5`). Between 21-08 and 26-08
+   Go replaced a kept order whose size belonged to another rank. Python
+   rests it until gone (N10), whatever rank it now sits at. Go now does the
+   same — `ClearFirst`, `withinVariationBand`, the "pin the reference
+   lifecycle" test helpers and `clear_first_test.go` are gone; the churn
+   simulation's re-space case asserts Python's answer (three moves, nothing
+   resized, silent next pass). ⚠ This reverses the 21-08 ruling and brings
+   rank drift back exactly as Python has it; at 1–3 rungs × 550 the cost
+   is 550-vs-285 at worst.
+2. **Three parallel comparisons, file by file, against `f9eec8b`:** the
+   venue state machine (`engine.py`/`engine.go`, `state`, `order`), the
+   converger + marketable guard + backoff (`sync`, `backoff`, `tob_cache`,
+   `writer`, `transport`), and the inbound translation + drain
+   (`adapters/gateway`, `legs.go`, the tick). **Every engine and the
+   translator itself is a faithful port** — every transition, state set,
+   pending-price occupancy, examined cap, budget, guard verdict, backoff
+   schedule and payload field checked and agreed.
+3. **The divergences that CAN leave an order standing were all in Go's
+   wrapper around the translator, and Python has none of them** — fixed in
+   `86ec89e`:
+   - Go **dropped every order-stream message** between the subscribe and
+     the end of `Build` (minutes on a real journal). Python's
+     `asyncio.Queue()` buffers from the subscribe and drains from the first
+     tick.
+   - Go's queue was a **4,096-deep channel that dropped on overflow**.
+     Python's is unbounded.
+   - Go **skipped every translation refusal** (a bust, an unknown verb, an
+     unmodelled side) with a counter. Python halts on all but an unmapped
+     fill.
+   - Go printed the first poison message ever; Python prints every one.
+4. **The inbound leg is now Python's shape:** the leg exists before the
+   subscription and accepts raw bytes into an unbounded queue; `Build`
+   binds the symbol map; translation runs on the tick in `Next()`; an
+   alien fill is skipped loudly, poison is counted and printed every time,
+   and a `GatewayTranslationError` halts the run — the `runtime.Source`
+   contract now carries an error. The readings leg keeps its bounded queue
+   because JetStream redelivers what it drops.
+
+## What we learned
+
+- ⭐ **A dropped ack is not a lost log line — it is an invisible resting
+  order.** The record keeps a `PENDING_SUBMIT`/`PENDING_REPLACE` that
+  OCCUPIES its price (so the price is never re-posted) and is never
+  ACTIONABLE (so it is never cancelled), while the real order rests at the
+  venue unknown to the diff. One extra order per affected level, for ever.
+  That is the ">6 a side" shape, and the 21-08 resize could not have
+  caused or cured it.
+- ⭐ **The parity harnesses were blind to it by construction.** On a
+  scripted timeline every ack arrives and none is refused, so
+  `runloop-parity` and `gateway-parity` pass while the live wrapper drops.
+  The proof of a port is not only that the engines agree; it is that
+  every message reaches them.
+- ⚠ **The boot window was the likeliest live trigger.** mm-2 restarted four
+  times on 20/21-08 while the dead-man fired 21 times; every sweep ack and
+  every previous-life fill that landed during a Go boot was discarded.
+- ⚠ Two Go-only paths remain, both loud and both George's: the
+  `MM_TEST_ONLY` wire guard refuses AFTER `RegisterSubmit` and aborts the
+  pass (the process exits — the boot half should make it unreachable), and
+  `sync.go` reads an empty venue symbol for an unmapped id where Python
+  raises. Neither can leave a quiet extra order.
+- ⚠ **Which build the VM ran is unknown.** `/usr/local/bin/mm-go` is "a
+  21-Aug build"; two of that night's superseded attempts (the drawn-size
+  trigger flood, the string-keyed doubled level) each produce extra orders
+  on their own. Confirm the binary's commit before reading any old
+  observation as evidence.
+
+## Decisions made *(mirror into [[market-maker/decisions]])*
+
+- ✅ **The Go maker follows Python's venue process exactly** (George
+  26-08). No resize pass; rest-until-gone verbatim. Reverses the 21-08
+  "resize is the behaviour" ruling.
+- ✅ **The inbound leg buffers, never drops, and halts on a refusal** —
+  Python's `[inbound-poison]` contract, now Go's.
+
+## Questions opened / closed
+
+- None numbered. N65 stands (depth stays, jitter inverts).
+
+## Next (supersedes the list above where they differ)
+
+1. **Merge order on `inplay-market-maker-go`:** #19 (E51) then
+   `feat/python-lifecycle` — they touch the same runtime test files at
+   different lines; rebase the second if git cannot merge them.
+2. **Before any Go run:** read the commit of the VM's `/usr/local/bin/mm-go`
+   and the `MM_CLORDID_PREFIX` in `/etc/mm-2/env`. A run with the prefix
+   unset mints `MM` + 16 hex; a later run with `MMGO` treats those as the
+   Python maker's and leaves them standing.
+3. Then the test-maker env, with George's go.
