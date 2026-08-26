@@ -280,3 +280,32 @@ Python process exactly.**
 **Decision (George, 26-08):** the TEST maker runs with the boot heal ON —
 scoped by the `MMGO` prefix, it clears its own book on every restart. Never
 with the prefix unset.
+
+### ✎ 23:00–22:17Z — the resize comes back: rank drift on the old shape, by eye and by arithmetic
+
+- George, three books on the old-shape run: **BENG.TEST rank 2 holding
+  2,301** (a rank-2 draw is 5,400–9,000), **RAVE.TEST rank 5 holding 7,667**
+  (a rank-1/2 size). "There is something fundamentally wrong with the way
+  we're working it out." Per side ≤ 6 and 0 duplicates held — the LIFECYCLE
+  was right; the SIZES were stale by rank. That is rank drift, the 21-08
+  finding, back the moment the resize pass came out — and Python has it too
+  (its 20-08 note: "the ladder sizes are stale by design"); one rung hid it.
+- ✂ **The resize pass RETURNS** — Go PR #22 reverts `94a21b5` (only that
+  commit; the inbound-leg fix `86ec89e` stands). Test build
+  `test/old-ladder-shape-resize` (old shape + resize, NEVER merge) deployed
+  22:14Z as `CFG-0051-GO-OLDSHAPE`, `go-run14`, the heal clearing 2,980
+  (the old book plus its in-flight replaces).
+- ⭐ **Measured, every rung against its rank's ±25% band (10,000 × 0.72ⁱ):**
+  22:15:53Z 1,547 orders, 170 books, 3–6 a side, 0 duplicates, **0 rungs
+  carrying another rank's size**, 10 outside their own band (replaces in
+  flight); 22:16:53Z 1,562 orders, **0 another-rank, 2 outside own band**.
+  BENG.TEST 12,469 / 8,465 / 4,491 / 3,078 / 3,317 · RAVE.TEST 9,842 / 5,752 /
+  5,365 / 4,528 / 2,095 / 1,476.
+- What remains is **N65 only**: BENG's 3,078 / 3,317 are both inside their
+  bands and inverted by the independent per-rung draw (~6% of adjacent
+  pairs). `feat/monotonic-ladder` (parked 21-08) removes it; both engines.
+
+**Decisions (George, 26-08 evening):** the resize pass is the behaviour
+after all — the day's "copy Python" ruling is narrowed to the inbound leg,
+where Python was right and Go was dropping acks. Go PR #21 (the boot line
+that described "no resize pass") is superseded and closed.

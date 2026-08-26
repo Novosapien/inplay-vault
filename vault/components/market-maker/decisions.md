@@ -14,6 +14,29 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-26d — ✂ The resize pass returns — "copy Python" is narrowed to the inbound leg
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (23:00) ·
+Go PR #22 · N65
+
+- ⭐ On the old-shape test run George read rank drift straight off the panel:
+  BENG.TEST rank 2 at 2,301 (a rank-2 draw is 5,400–9,000), RAVE.TEST rank 5
+  at 7,667. Per side ≤ 6 and no duplicates — the lifecycle held; the sizes
+  were stale by rank. Rest-until-gone keeps a same-price order at the size
+  of the rank it was born at, and the grid re-spaces every dwell. Python
+  has it too ("stale by design", 20-08); one rung hid it.
+- ✂ **The resize pass is the behaviour** (re-affirming 21-08, reversing the
+  26-08c removal): a kept order outside its NEW rank's ±25% band gets one
+  replace to the rank's draw, on the rank basis. Measured on the old shape
+  22:15–22:17Z: 0 rungs carrying another rank's size across ~1,550 orders,
+  170 books, 3–6 a side, 0 duplicates.
+- ✅ **26-08c's inbound-leg fix stands** — that is the half where Python
+  was right and Go was dropping acks; it cured "more than six a side".
+- ⚠ What is left on the panel is N65's jitter inversion (~6% of adjacent
+  pairs). `feat/monotonic-ladder` removes it; both engines; George + Edwin.
+
+---
+
 ## 2026-08-26c — ✅ The Go maker follows Python's venue process — no resize, no dropped acks
 
 Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 2) ·
