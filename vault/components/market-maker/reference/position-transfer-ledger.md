@@ -423,3 +423,195 @@ reconcile at 08-11 22:47 — the seed is venue-agreed.
 5,000 of each of the 175 seeded symbols; the five QA books carry their
 traded state (journal `snt5` from floats COWB 3856 · EAGL 5406 ·
 GIAN 4605 · PATR 5245 · STEE 5419 at the 08-11 22:43 cutover).
+
+## 2026-08-26 — the TEST maker seed, account 2559580864 (George's direction; run by Claude)
+
+⚠ **Different account from the rest of this ledger** — the **test
+maker** `2559580864` (Hasan, 26-08), not the MM's `1797733477`. All
+**170 `.TEST` twins**, 100,000 shares each, `txfrCost` = the base
+ticker's vault v1.0 IPO price **per share** ("bought at the IPO price",
+George). Read-first skipped on George's ruling: the account was created
+this week and had never held anything. Canary `IPTCRAVE.TEST` first
+(20:05:24Z, UPTa in 9 ms), then the other 169 at 2/s (20:06–20:07Z).
+**170/170 `UPTa`, 0 `UPTx`, 0 unanswered**, every reply matched on
+account, symbol and `9386=100000` against the intent ledger. Sent via
+`inplay-fix-gateway` FHINPLAY01. Intent ledger:
+`~/ipo-ledgers/test-seed-2559580864.jsonl` on the gateway VM (home dir,
+not `/tmp`). Notional at basis ≈ $852,013,000.
+
+| ClOrdID | Symbol | txfrQty | txfrCost (per share) | Reply |
+|---|---|---|---|---|
+| Thlpodnjucy | IPTC49ER.TEST | +100,000 | $74.27 | UPTa |
+| Thlpodnuno2 | IPTCAFFC.TEST | +100,000 | $51.75 | UPTa |
+| Thlpodo5h0a | IPTCAKRZ.TEST | +100,000 | $36.01 | UPTa |
+| Thlpodogah9 | IPTCAPST.TEST | +100,000 | $45.75 | UPTa |
+| Thlpodor3xw | IPTCARKR.TEST | +100,000 | $45.67 | UPTa |
+| Thlpodp1xl1 | IPTCARMB.TEST | +100,000 | $56.23 | UPTa |
+| Thlpodpcqvp | IPTCAUBT.TEST | +100,000 | $48.59 | UPTa |
+| Thlpodpnkga | IPTCAZSD.TEST | +100,000 | $48.33 | UPTa |
+| Thlpodpydvf | IPTCAZWC.TEST | +100,000 | $51.24 | UPTa |
+| Thlpodq97db | IPTCBADG.TEST | +100,000 | $49.23 | UPTa |
+| Thlpodqk14b | IPTCBAMA.TEST | +100,000 | $60.45 | UPTa |
+| Thlpodquu70 | IPTCBAYB.TEST | +100,000 | $43.91 | UPTa |
+| Thlpodr5nfj | IPTCBCEA.TEST | +100,000 | $27.65 | UPTa |
+| Thlpodrggwm | IPTCBEAR.TEST | +100,000 | $67.53 | UPTa |
+| Thlpodrrajw | IPTCBENG.TEST | +100,000 | $71.76 | UPTa |
+| Thlpods2419 | IPTCBGFL.TEST | +100,000 | $38.92 | UPTa |
+| Thlpodscx8p | IPTCBILL.TEST | +100,000 | $77.27 | UPTa |
+| Thlpodsnqeh | IPTCBLSC.TEST | +100,000 | $30.77 | UPTa |
+| Thlpodsyjov | IPTCBOIL.TEST | +100,000 | $28.08 | UPTa |
+| Thlpodt9der | IPTCBRON.TEST | +100,000 | $69.61 | UPTa |
+| Thlpodtk6ws | IPTCBROW.TEST | +100,000 | $46.73 | UPTa |
+| Thlpodtv0gz | IPTCBSST.TEST | +100,000 | $56.99 | UPTa |
+| Thlpodu5tvg | IPTCBUCC.TEST | +100,000 | $60.71 | UPTa |
+| Thlpodugnd4 | IPTCBUCK.TEST | +100,000 | $68.95 | UPTa |
+| Thlpodurh3z | IPTCBUFB.TEST | +100,000 | $44.64 | UPTa |
+| Thlpodv2akb | IPTCBYUC.TEST | +100,000 | $60.90 | UPTa |
+| Thlpodvd3rt | IPTCCAGB.TEST | +100,000 | $45.18 | UPTa |
+| Thlpodvnxr2 | IPTCCARD.TEST | +100,000 | $35.66 | UPTa |
+| Thlpodvyr7d | IPTCCCCH.TEST | +100,000 | $38.63 | UPTa |
+| Thlpodw9kiv | IPTCCH49.TEST | +100,000 | $21.30 | UPTa |
+| Thlpodwkdp5 | IPTCCHAR.TEST | +100,000 | $69.26 | UPTa |
+| Thlpodwv6w9 | IPTCCHIE.TEST | +100,000 | $73.95 | UPTa |
+| Thlpodx60il | IPTCCINB.TEST | +100,000 | $39.41 | UPTa |
+| Thlpodxgu43 | IPTCCLEM.TEST | +100,000 | $56.87 | UPTa |
+| Thlpodxrno3 | IPTCCMCH.TEST | +100,000 | $46.69 | UPTa |
+| Thlpody2h75 | IPTCCOLB.TEST | +100,000 | $35.07 | UPTa |
+| Thlpodydah4 | IPTCCOLT.TEST | +100,000 | $58.24 | UPTa |
+| Thlpodyo4cq | IPTCCOMM.TEST | +100,000 | $57.36 | UPTa |
+| Thlpodyyxvr | IPTCCONH.TEST | +100,000 | $41.79 | UPTa |
+| Thlpodz9rby | IPTCCOSR.TEST | +100,000 | $32.13 | UPTa |
+| Thlpodzkl02 | IPTCCOWB.TEST | +100,000 | $69.51 | UPTa |
+| Thlpodzveh4 | IPTCDELB.TEST | +100,000 | $44.92 | UPTa |
+| Thlpoe067v0 | IPTCDOLP.TEST | +100,000 | $38.38 | UPTa |
+| Thlpoe0h13o | IPTCDUKE.TEST | +100,000 | $42.43 | UPTa |
+| Thlpoe0rul0 | IPTCEAGL.TEST | +100,000 | $72.88 | UPTa |
+| Thlpoe12ntt | IPTCECAP.TEST | +100,000 | $51.43 | UPTa |
+| Thlpoe1dhbi | IPTCEMEA.TEST | +100,000 | $44.11 | UPTa |
+| Thlpoe1oat1 | IPTCFALC.TEST | +100,000 | $54.88 | UPTa |
+| Thlpoe1z496 | IPTCFAOW.TEST | +100,000 | $44.05 | UPTa |
+| Thlpoe29xqr | IPTCFIUP.TEST | +100,000 | $45.46 | UPTa |
+| Thlpoe2kr86 | IPTCFLSS.TEST | +100,000 | $46.15 | UPTa |
+| Thlpoe2vki6 | IPTCFRSB.TEST | +100,000 | $50.57 | UPTa |
+| Thlpoe36dxw | IPTCGASP.TEST | +100,000 | $31.66 | UPTa |
+| Thlpoe3h7ep | IPTCGATO.TEST | +100,000 | $51.31 | UPTa |
+| Thlpoe3s0vv | IPTCGIAN.TEST | +100,000 | $57.58 | UPTa |
+| Thlpoe42uc2 | IPTCGOPH.TEST | +100,000 | $44.94 | UPTa |
+| Thlpoe4dnpk | IPTCGSEA.TEST | +100,000 | $38.64 | UPTa |
+| Thlpoe4ogwc | IPTCGTYJ.TEST | +100,000 | $47.06 | UPTa |
+| Thlpoe4zah9 | IPTCHAWA.TEST | +100,000 | $53.02 | UPTa |
+| Thlpoe5a4a3 | IPTCHFRG.TEST | +100,000 | $49.90 | UPTa |
+| Thlpoe5kxbg | IPTCHOOS.TEST | +100,000 | $68.22 | UPTa |
+| Thlpoe5vqqe | IPTCHOUC.TEST | +100,000 | $55.75 | UPTa |
+| Thlpoe66k9q | IPTCHUSK.TEST | +100,000 | $46.70 | UPTa |
+| Thlpoe6hdkr | IPTCIACL.TEST | +100,000 | $38.14 | UPTa |
+| Thlpoe6s74r | IPTCIAHW.TEST | +100,000 | $54.98 | UPTa |
+| Thlpoe730ex | IPTCILLI.TEST | +100,000 | $49.80 | UPTa |
+| Thlpoe7dtvg | IPTCJAGU.TEST | +100,000 | $63.24 | UPTa |
+| Thlpoe7omzl | IPTCJETS.TEST | +100,000 | $45.81 | UPTa |
+| Thlpoe7zghv | IPTCJKSC.TEST | +100,000 | $52.31 | UPTa |
+| Thlpoe8aa0j | IPTCJMDU.TEST | +100,000 | $60.42 | UPTa |
+| Thlpoe8l3m3 | IPTCKSGF.TEST | +100,000 | $29.24 | UPTa |
+| Thlpoe8vwy1 | IPTCKSJH.TEST | +100,000 | $44.50 | UPTa |
+| Thlpoe96qi3 | IPTCKSOW.TEST | +100,000 | $45.29 | UPTa |
+| Thlpoe9hjny | IPTCKSWC.TEST | +100,000 | $57.93 | UPTa |
+| Thlpoe9sd1f | IPTCKYWC.TEST | +100,000 | $38.31 | UPTa |
+| Thlpoea36no | IPTCLARC.TEST | +100,000 | $51.63 | UPTa |
+| Thlpoeae0er | IPTCLATB.TEST | +100,000 | $44.59 | UPTa |
+| Thlpoeaotx4 | IPTCLIBF.TEST | +100,000 | $58.04 | UPTa |
+| Thlpoeazmy4 | IPTCLION.TEST | +100,000 | $76.10 | UPTa |
+| Thlpoebagj9 | IPTCLOUC.TEST | +100,000 | $56.86 | UPTa |
+| Thlpoebl9wr | IPTCLSUT.TEST | +100,000 | $59.54 | UPTa |
+| Thlpoebw3lf | IPTCMEMT.TEST | +100,000 | $53.77 | UPTa |
+| Thlpoec6x2h | IPTCMIHU.TEST | +100,000 | $71.57 | UPTa |
+| Thlpoechqph | IPTCMIOH.TEST | +100,000 | $52.17 | UPTa |
+| Thlpoecsk5b | IPTCMISP.TEST | +100,000 | $35.04 | UPTa |
+| Thlpoed3d9a | IPTCMIWV.TEST | +100,000 | $57.26 | UPTa |
+| Thlpoede6p1 | IPTCMIZO.TEST | +100,000 | $48.13 | UPTa |
+| Thlpoedp08l | IPTCMOST.TEST | +100,000 | $32.85 | UPTa |
+| Thlpoedztmj | IPTCMRSH.TEST | +100,000 | $52.42 | UPTa |
+| Thlpoeeamvz | IPTCMSST.TEST | +100,000 | $35.79 | UPTa |
+| Thlpoeelgau | IPTCMTBR.TEST | +100,000 | $33.02 | UPTa |
+| Thlpoeew9j0 | IPTCNAVY.TEST | +100,000 | $58.22 | UPTa |
+| Thlpoef72oe | IPTCNCTH.TEST | +100,000 | $38.99 | UPTa |
+| Thlpoefhvx2 | IPTCNCWP.TEST | +100,000 | $52.50 | UPTa |
+| Thlpoefsp2s | IPTCNDFI.TEST | +100,000 | $72.75 | UPTa |
+| Thlpoeg3ice | IPTCNDSU.TEST | +100,000 | $70.63 | UPTa |
+| Thlpoegebjc | IPTCNEVW.TEST | +100,000 | $34.43 | UPTa |
+| Thlpoegp4n8 | IPTCNIHU.TEST | +100,000 | $29.80 | UPTa |
+| Thlpoegzxs4 | IPTCNMLB.TEST | +100,000 | $56.80 | UPTa |
+| Thlpoehar5a | IPTCNMSA.TEST | +100,000 | $35.28 | UPTa |
+| Thlpoehlknz | IPTCNTMG.TEST | +100,000 | $42.97 | UPTa |
+| Thlpoehwe2q | IPTCNWWC.TEST | +100,000 | $40.12 | UPTa |
+| Thlpoei77sv | IPTCODMO.TEST | +100,000 | $53.57 | UPTa |
+| Thlpoeii175 | IPTCOHBO.TEST | +100,000 | $50.40 | UPTa |
+| Thlpoeisukf | IPTCOKST.TEST | +100,000 | $45.48 | UPTa |
+| Thlpoej3nwr | IPTCOLMR.TEST | +100,000 | $56.25 | UPTa |
+| Thlpoejeh6s | IPTCORDU.TEST | +100,000 | $68.62 | UPTa |
+| Thlpoejpans | IPTCORST.TEST | +100,000 | $33.37 | UPTa |
+| Thlpoek044o | IPTCPACK.TEST | +100,000 | $70.83 | UPTa |
+| Thlpoekaxdr | IPTCPANT.TEST | +100,000 | $54.53 | UPTa |
+| Thlpoeklqou | IPTCPATR.TEST | +100,000 | $72.25 | UPTa |
+| Thlpoekwjyu | IPTCPITT.TEST | +100,000 | $54.95 | UPTa |
+| Thlpoel7ddt | IPTCPSNL.TEST | +100,000 | $62.51 | UPTa |
+| Thlpoeli72d | IPTCRAID.TEST | +100,000 | $49.13 | UPTa |
+| Thlpoelt12g | IPTCRAMS.TEST | +100,000 | $81.20 | UPTa |
+| Thlpodbwna3 | IPTCRAVE.TEST | +100,000 | $77.46 | UPTa |
+| Thlpoem3uhl | IPTCRAZR.TEST | +100,000 | $33.72 | UPTa |
+| Thlpoemenno | IPTCRICE.TEST | +100,000 | $29.65 | UPTa |
+| Thlpoemph1a | IPTCRUTG.TEST | +100,000 | $37.53 | UPTa |
+| Thlpoen0akl | IPTCSACS.TEST | +100,000 | $49.94 | UPTa |
+| Thlpoenb45c | IPTCSAIN.TEST | +100,000 | $58.58 | UPTa |
+| Thlpoenlxhv | IPTCSALJ.TEST | +100,000 | $43.97 | UPTa |
+| Thlpoenwr42 | IPTCSCGC.TEST | +100,000 | $45.71 | UPTa |
+| Thlpoeo7kh8 | IPTCSDAZ.TEST | +100,000 | $49.34 | UPTa |
+| Thlpoeoidt9 | IPTCSEHW.TEST | +100,000 | $75.05 | UPTa |
+| Thlpoeot73h | IPTCSHBK.TEST | +100,000 | $27.73 | UPTa |
+| Thlpoep411e | IPTCSJSP.TEST | +100,000 | $38.48 | UPTa |
+| Thlpoepeuye | IPTCSMGE.TEST | +100,000 | $31.56 | UPTa |
+| Thlpoeppovu | IPTCSMUM.TEST | +100,000 | $60.19 | UPTa |
+| Thlpoeq0igv | IPTCSOON.TEST | +100,000 | $55.70 | UPTa |
+| Thlpoeqbbo0 | IPTCSTAN.TEST | +100,000 | $31.65 | UPTa |
+| Thlpoeqm52a | IPTCSTEE.TEST | +100,000 | $62.28 | UPTa |
+| Thlpoeqwyzx | IPTCSYRO.TEST | +100,000 | $36.35 | UPTa |
+| Thlpoer7sc4 | IPTCTEMP.TEST | +100,000 | $40.55 | UPTa |
+| Thlpoerilri | IPTCTERP.TEST | +100,000 | $39.77 | UPTa |
+| Thlpoertf8b | IPTCTEXS.TEST | +100,000 | $69.61 | UPTa |
+| Thlpoes48il | IPTCTITA.TEST | +100,000 | $50.16 | UPTa |
+| Thlpoesf24r | IPTCTOLR.TEST | +100,000 | $54.97 | UPTa |
+| Thlpoespvcz | IPTCTROY.TEST | +100,000 | $49.92 | UPTa |
+| Thlpoet0oqz | IPTCTULN.TEST | +100,000 | $51.84 | UPTa |
+| Thlpoetbhza | IPTCTULS.TEST | +100,000 | $40.87 | UPTa |
+| Thlpoetmbap | IPTCTXAM.TEST | +100,000 | $58.19 | UPTa |
+| Thlpoetx4lm | IPTCTXLH.TEST | +100,000 | $63.81 | UPTa |
+| Thlpoeu7xyd | IPTCTXSB.TEST | +100,000 | $44.47 | UPTa |
+| Thlpoeuirai | IPTCTXTR.TEST | +100,000 | $74.10 | UPTa |
+| Thlpoeutkpt | IPTCUABB.TEST | +100,000 | $29.98 | UPTa |
+| Thlpoev4e0h | IPTCUCFK.TEST | +100,000 | $44.39 | UPTa |
+| Thlpoevf7d5 | IPTCUCLA.TEST | +100,000 | $46.00 | UPTa |
+| Thlpoevq0ti | IPTCUGAG.TEST | +100,000 | $68.74 | UPTa |
+| Thlpoew0uf6 | IPTCULMW.TEST | +100,000 | $30.04 | UPTa |
+| Thlpoewbnug | IPTCUMAM.TEST | +100,000 | $26.00 | UPTa |
+| Thlpoewmh7u | IPTCUNLV.TEST | +100,000 | $57.36 | UPTa |
+| Thlpoewxaux | IPTCUSCJ.TEST | +100,000 | $57.70 | UPTa |
+| Thlpoex84b0 | IPTCUSFB.TEST | +100,000 | $57.39 | UPTa |
+| Thlpoexixk6 | IPTCUTEP.TEST | +100,000 | $27.95 | UPTa |
+| Thlpoextqw4 | IPTCUTES.TEST | +100,000 | $60.11 | UPTa |
+| Thlpoey4kor | IPTCUTRN.TEST | +100,000 | $53.78 | UPTa |
+| Thlpoeyfe34 | IPTCUTST.TEST | +100,000 | $38.07 | UPTa |
+| Thlpoeyq7pl | IPTCVACV.TEST | +100,000 | $54.88 | UPTa |
+| Thlpoez11bh | IPTCVAND.TEST | +100,000 | $42.11 | UPTa |
+| Thlpoezbumi | IPTCVATH.TEST | +100,000 | $50.74 | UPTa |
+| Thlpoezmntj | IPTCVIKI.TEST | +100,000 | $62.46 | UPTa |
+| Thlpoezxhj7 | IPTCVOLS.TEST | +100,000 | $54.01 | UPTa |
+| Thlpof08awp | IPTCWAHU.TEST | +100,000 | $55.95 | UPTa |
+| Thlpof0j4gj | IPTCWAST.TEST | +100,000 | $40.85 | UPTa |
+| Thlpof0txkk | IPTCWKFD.TEST | +100,000 | $41.69 | UPTa |
+| Thlpof14qye | IPTCWKHT.TEST | +100,000 | $51.15 | UPTa |
+| Thlpof1fk1w | IPTCWMIB.TEST | +100,000 | $50.76 | UPTa |
+| Thlpof1qdjc | IPTCWVMN.TEST | +100,000 | $45.65 | UPTa |
+| Thlpof216nt | IPTCWYCO.TEST | +100,000 | $41.86 | UPTa |
+
+**Running position per this ledger, account 2559580864:** 100,000 of
+each of the 170 `.TEST` twins. No cash / buying power was set — bidding
+needs a UEAR on this account first.

@@ -68,6 +68,13 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
    in 6 s, **340 subscribed, 0 × 35=Y**. Proxy `/market/quotes` = 340,
    170 twins. Nothing swept, nothing lost (`lost_fills` 0).
 
+9. **Seeded the test maker** (George: "give the test market maker account
+   100k of each, bought at the IPO price"; read-first skipped — new
+   account). 170 × UPT 100,000 to `2559580864`, basis = base ticker's
+   v1.0 IPO price per share. Canary RAVE then 169 at 2/s. **170/170 UPTa,
+   0 UPTx.** Ledger section in
+   [[market-maker/reference/position-transfer-ledger]].
+
 ## What we learned
 
 - **tZERO's MD session accepts 680 subscriptions** (340 top-of-book + 340
@@ -118,7 +125,9 @@ description: "All 170 .TEST twins found, venue-validated by MD probe and wired i
 1. Rob: entitle `2559580864` and `1216516809` to `.TEST` only.
 2. ~~Deploy #27 + #28~~ ✅ done 19:39–19:40Z, both VMs, 0 MD rejects.
 3. Engines: `MM_BOT_ID=mm-test` / `SNT_BOT_ID=snt-test`, `MM_SECURITIES`
-   = twins, own journals, on `inplay-market-maker-go` (idle).
+   = twins, own journals, on `inplay-market-maker-go` (idle). The test
+   maker now HOLDS 100k of every twin; it still has no buying power
+   (UEAR) for bids.
 4. Panel: the global Production / Test switch.
 5. Review + merge Go maker #18 into `feat/phase-3-ingestion`; then the test
    instance env (above) on `inplay-market-maker-go`.
