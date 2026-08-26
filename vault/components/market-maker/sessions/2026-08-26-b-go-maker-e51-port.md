@@ -235,3 +235,45 @@ Python process exactly.**
   untranslatable` — so run 11 lost nothing past the queue; the boot window
   (uncounted by design) remains the only inbound loss that run could have
   had. The proof is the first re-quote on this build.
+
+### ✎ 21:48–21:56Z — started, validated, then swapped to the old shape on George's ask
+
+- **21:48Z started** (George's go, after the walls were re-verified on the box:
+  `MM_TEST_ONLY=on`, account 2559580864, 170 symbols all `.TEST`, boot heal
+  off, bot `mm-test`). Boot: `TEST-ONLY MODE: 170 .TEST twins named`, 694
+  opening instructions, composed in 14 ms.
+- **The venue's own index, one minute in:** mm-test 712 ACCEPTED on 170 books,
+  **zero on a real ticker**, per side 1 / 2 / 3 on 94 / 117 / 128 sides —
+  never above 3. The 137 IPO asks (unattributed bucket) and snt-1's order
+  untouched. **Eight minutes and many overnight re-spaces later:** 718 orders,
+  max 3 a side, 0 duplicate same-side prices, no refusals, no poison. ⭐ The
+  ">6 a side" shape did not recur on the #20 build.
+- ⚠ The test account already holds shares (`pos_size` 100,000 on the twins
+  with fills reported), so asks quote too.
+- **"Cardinals and Falcons show no prices":** not the maker. AFFC.TEST rests
+  3 bids / 3 asks (best 52.49 / 53.49) and CARD.TEST 1 / 1 at the venue, and
+  BOTH gateways' `/quotes` carry a best bid and offer for all 170 twins. The
+  gap is on the panel's quote path — the parallel session's symbol map.
+- **George: "the old configuration, so I can validate how it looks — 1–3
+  rungs is hard to judge."** Built `test/old-ladder-shape` (`b3d18b9`,
+  NEVER merge): the pin's 3–6 × 10,000 / floor 1,000 / width 1 on the E51
+  lean and floors. Deployed 21:53Z as `CFG-0049-GO-OLDSHAPE` with the
+  journal KEPT so the record knew its 718 orders (there is no per-bot cancel
+  on the gateway). Result: 1,526 orders, max 6 a side, 0 duplicates — but
+  **413 old orders under 1,000 shares still rested**, every one at a price
+  the new grid also wanted (AFFC.TEST's touch: the old 615 kept above a
+  fresh 3,985). ⭐ That is rest-until-gone doing exactly what Python does,
+  and the visible cost of removing the resize.
+- **George: "make sure it clears the old resting orders."** 21:56Z: fresh
+  journal `go-run13`, **`MM_BOOT_HEAL=on`**, `CFG-0050-GO-OLDSHAPE`. The
+  healer is scoped by the prefix: it cancels only `MMGO` + 14 hex it does not
+  know, reads `MMSN` as the taker's and `MM` + 16 hex (the Python maker, the
+  137 IPO asks) as FOREIGN — checked in `healer.go` and against the live index
+  before switching it on. Result: every old order gone (0 under 1,000), IPO
+  asks 137 and snt-1 untouched, AFFC.TEST 8,309 / 7,435 / 7,402 decaying.
+  ⚠ At 40 s four sides read 7–8 (post-first: new rungs land before the old
+  cancel); the settle count is in the deploy-log row.
+
+**Decision (George, 26-08):** the TEST maker runs with the boot heal ON —
+scoped by the `MMGO` prefix, it clears its own book on every restart. Never
+with the prefix unset.
