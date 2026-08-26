@@ -14,6 +14,37 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-26 — ✅ all 170 `.TEST` twins, derived lists, separate test accounts, and a per-bot dead-man
+
+Session: [[market-maker/sessions/2026-08-26-test-ticker-census]] ·
+gateway **PR #27** (merged, staged, not deployed) · **PR #28** (open) ·
+panel **PR #33** (merged, live)
+
+- ✅ **Every production ticker has a `.TEST` twin** — Rob Colucci, 26-08
+  04:56 BST. All 170 validated at the venue by MD probe (35=W each; a bogus
+  control got 35=Y). ✎ Extends 08-08c's ten.
+- ✅ **Twin lists are DERIVED from the real list** in the gateway config and
+  the panel map. A hand-kept list drifted once (the panel was 10 while the
+  venue was 170); it must not exist again.
+- ✅ **Test and production trade on separate venue accounts** — Market
+  Maker (Test) `2559580864`, Market Taker (Test) `1216516809` (Hasan). The
+  account, not the gateway, is the isolation boundary: one FIX session
+  carries both, and Rob's `.TEST`-only entitlement is the hard wall
+  (owed).
+- ✅ **The dead-man is PER BOT** (George: "dead man per bot"), not per
+  market — one process quotes all its books, so a book-level latch would
+  fire 170 times on one death. A dead test bot sweeps only its own quotes;
+  a dead production bot is still caught while a test bot lives. Rows with
+  no `botId` fall to an unattributed bucket swept on global silence only.
+  `cancel_all` stays global. Built as gateway PR #28.
+- ⚠ **George's rule, restated after this session merged two PRs on a
+  misread:** tell first, test locally, then deploy. No gateway restart
+  while the NCAA asks rest (expire 2026-08-27 02:00Z).
+- ⚠ **Unverified:** with 340 symbols and `TZERO_MD_BOOK_SYMBOLS=*`, a
+  restart opens 680 MD subscriptions. Watch the MD logon for 35=Y.
+
+---
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·

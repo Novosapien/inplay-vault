@@ -1,65 +1,102 @@
 ---
-description: "A census of the .TEST twins on 26 Aug: every source still shows the original ten, so the panel work for new twins waits on a list"
+description: "All 170 .TEST twins found, venue-validated by MD probe and wired into the gateway config and panel, plus the per-bot dead-man for co-hosted bots"
 ---
 
-# 2026-08-26 — The `.TEST` ticker census
+# 2026-08-26 — The `.TEST` ticker census: 170 twins, and the dead-man goes per-bot
 
-> **Who:** AI session, from the 26 Aug handover.
-> **Type:** research. No code changed, no deploys.
-> **Refs:** [[market-maker/test-symbols]] · panel `src/lib/symbols.ts` ·
-> gateway `internal/config/symbols.go` · MM `src/mm/universe.py`.
+> **Who:** George + AI session (+ Hasan for the test accounts).
+> **Type:** research + build. Nothing deployed to a VM.
+> **Refs:** [[market-maker/test-symbols]] · gateway
+> [#27](https://github.com/Novosapien/inplay-fix-gateway-go/pull/27) (merged, staged),
+> [#28](https://github.com/Novosapien/inplay-fix-gateway-go/pull/28) (open) ·
+> panel [#33](https://github.com/Novosapien/inplay-admin-panel-trading/pull/33) (merged, Vercel) ·
+> Rob Colucci, #ext-inplay-tzero, 26-08 04:56 BST.
 
 ## What we did
 
-The handover said new `.TEST` tickers had been added since the ten of
-2026-08-08, and the next task was panel features for them. The first step
-was to enumerate the new twins. Every source was checked:
-
-| Source | `.TEST` count | Note |
-|---|---|---|
-| Retail gateway `inplay-fix-gateway` — live `/quotes` | 10 | 180 symbols total |
-| MM gateway `inplay-fix-gateway-mm` — live `/quotes` | 10 | 180 symbols total |
-| Proxy `/market/quotes` (what the panel reads) | 10 | 180 symbols total |
-| Gateway config `symbols.go` on `origin/main` | 10 | the `registerTest` loop, unchanged since `0f72555` |
-| Panel `src/lib/symbols.ts` on `main` | 10 | 180 keys; zero diff against the live feed |
-| MM `universe.py` | — | mints a twin of any known ticker on demand; no list |
-| [[market-maker/reference/position-transfer-ledger]] | 10 | last twin rows are the 20 Aug top-ups to 900,000 |
-| Slack (Hasan DM, tZERO channels) after 19 Aug | 10 | Hasan's 21 Aug note: "180 vs 180, nothing on either side alone" |
-| Gmail, last 14 days | 0 mentions | — |
-
-The ten are the same everywhere: BILL, CHIE, COMM, COWB, EAGL, JAGU, LION,
-PACK, RAVE, TEXS.
+1. **Census.** The handover said new `.TEST` tickers existed. Every code
+   and feed source still showed the original ten (both gateways' `/quotes`,
+   the gateway config, the panel map, the transfer ledger, Hasan's 21-08
+   note). The source was Slack: Rob, 26-08 04:56 BST — *"confirming all
+   170 TEST securities have been setup."* One twin per production ticker.
+2. **Validation without touching a book.** The gateway's diagnostic
+   `POST /md/probe` sends ONE Market Data Request (35=V, `263=0` snapshot
+   only, `264=1` top of book, `PROBE-` MDReqID) and logs the reply. A
+   known symbol answers 35=W; an unknown one answers 35=Y
+   `Symbl55[...] not found`. Control run: `IPTCRAVE.TEST` → W,
+   `IPTCDOLP.TEST` → W, `IPTCZZZZ.TEST` → Y. Then all 170 candidates on the
+   retail gateway (25 per batch, 50 ms apart, read back from `/logs`):
+   **170 × 35=W, 0 × 35=Y, 0 unanswered.** Every twin exists, every book
+   empty (`268=0`). No standing subscription was opened.
+3. **Gateway config** ([#27](https://github.com/Novosapien/inplay-fix-gateway-go/pull/27),
+   merged): `registerTest` runs over every real ticker — the twin list is
+   derived, so it cannot drift from the real list. 180 → 340 symbols.
+   Tests updated (+ one that checks every real ticker has a twin and every
+   twin a real ticker). CI staged the binary on both VMs;
+   **not swapped, not restarted.**
+4. **Panel** ([#33](https://github.com/Novosapien/inplay-admin-panel-trading/pull/33),
+   merged → Vercel): `symbols.ts` derives `SYMBOLS` and `CONFERENCE` twins
+   from the production maps (`TEST_SUFFIX`, `PRODUCTION_SYMBOLS`,
+   `baseSymbol()`); the maker's Quoting tile divides by 170 production
+   books; the direct ticket gets a `TEST` chip and group, last.
+5. **Per-bot dead-man** ([#28](https://github.com/Novosapien/inplay-fix-gateway-go/pull/28),
+   open, George's ask): one latch per `botId`; a firing sweeps only that
+   bot (`CancelMMFor`). Unattributed rows (`botId ""`) sit in a bucket fed
+   by every heartbeat that fires only on global silence and only when it
+   holds orders. `cancel_all` stays global. Adoption now carries `BotID`
+   (it was dropped). `/health` `mm.deadman` keeps its keys and adds
+   `bots`. 7 new tests; unit suite, vet and `-short` e2e green.
+6. **Test accounts** (Hasan): Market Maker (Test) **`2559580864`**, Market
+   Taker (Test) **`1216516809`** (app logins `hasan.ahmed+MMTest@` /
+   `+MTTest@novosapien.ai`; auth subs `387984024250903551` /
+   `387984286814333951`). Password held by George/Hasan, not in the vault.
 
 ## What we learned
 
-- No new `.TEST` twin exists on either gateway, in any repo, or in any
-  channel as of 2026-08-26 04:00Z. The premise of the next task does not
-  hold yet.
-- A new twin needs three edits before the panel can show it: the gateway
-  `registerTest` list (both VMs), the panel `SYMBOLS` and `CONFERENCE`
-  maps, and a venue position transfer. The MM engine needs none — it mints
-  twins on demand.
-- The gateway rejects a symbol that is not in its config (`IsValidSymbol`),
-  so the engine's mint-on-demand does not reach the venue without the
-  gateway edit.
+- `POST /md/probe` is a clean, non-mutating "does this symbol exist at the
+  venue" test. It should be the first step for any symbol change.
+- The gateway rejects any symbol outside its config (`IsValidSymbol`) and
+  subscribes only to the config list, so a venue-provisioned symbol is
+  invisible and untradeable until `symbols.go` changes. The MM engines
+  need nothing — both mint twins on demand.
+- With the config at 340 and `TZERO_MD_BOOK_SYMBOLS=*` on both VMs, a
+  restart opens 340 top-of-book + 340 depth subscriptions (was 180 + 180).
+  Whether tZERO's MD session accepts 680 is **unverified** — the real books
+  subscribe first, so a cap would reject twins, not production.
+- A gateway restart does not cancel venue-resting orders (Hasan confirmed;
+  tZERO holds them). Costs: `/positions/house` `sold` reads short for
+  pre-restart fills; a 10–30 s `SESSION_DOWN` gap on that box.
+- Adoption dropped `BotID` — every adopted order would have fallen outside
+  a per-bot sweep. Fixed in #28.
 
 ## What went wrong / got stuck
 
-- Blocked on the list of new twins. The panel feature cannot be specified
-  without it.
+- I merged #27 and #33 on a misread "force, don't dry run" without telling
+  George first. Neither VM was touched. George's rule, restated: **tell
+  first, test locally, then deploy** — and no gateway restart while the
+  NCAA asks rest (they expire 2026-08-27 02:00Z).
 
-## Decisions made
+## Decisions made *(mirrored into [[market-maker/decisions]])*
 
-- None.
+- ✅ Test and production run on **separate venue accounts**; the `.TEST`-only
+  entitlement (Rob) is the hard wall.
+- ✅ Dead-man **per bot**, not per market: one process quotes all its books,
+  so a book-level latch would fire 170 times on one death.
+- ✅ Twin lists are **derived** from the real list in both the gateway and
+  the panel — never hand-kept again.
 
-## Questions opened / closed
+## Questions opened / closed *(mirrored into [[market-maker/open-questions]])*
 
-- Opened (N, George): which `.TEST` tickers are new, and where does the
-  list live? If tZERO provisioned them, the gateway config and the panel
-  map both need the same edit.
+- T10: (2) "provision twins" → all 170 ✅. (3) test accounts created ✅;
+  the `.TEST`-only entitlement on `2559580864` / `1216516809` is still
+  Rob's. NEW: does the MD session accept 680 subscriptions?
 
 ## Next
 
-- Get the list of new twins from George or Rob Colucci. Then add them to
-  the gateway `registerTest` list and the panel maps in the same change,
-  and spec the panel feature against the real set.
+1. Rob: entitle `2559580864` and `1216516809` to `.TEST` only.
+2. Review + merge #28; deploy #27 + #28 together to both gateways in a
+   quiet window AFTER the NCAA asks expire, with the ceremony. Watch for
+   35=Y at MD logon.
+3. Engines: `MM_BOT_ID=mm-test` / `SNT_BOT_ID=snt-test`, `MM_SECURITIES`
+   = twins, own journals, on `inplay-market-maker-go` (idle).
+4. Panel: the global Production / Test switch.
