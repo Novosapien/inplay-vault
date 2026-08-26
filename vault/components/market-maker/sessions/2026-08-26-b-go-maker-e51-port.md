@@ -213,3 +213,25 @@ Python process exactly.**
    unset mints `MM` + 16 hex; a later run with `MMGO` treats those as the
    Python maker's and leaves them standing.
 3. Then the test-maker env, with George's go.
+
+### ✎ 21:46Z — deployed, not started (George: "merge them then put the binary on there")
+
+- Go #19 and #20 merged → `feat/phase-3-ingestion@75ac263`. Linux binary
+  built locally (go 1.26.5, `-trimpath`), sha `154cf8474840c036…`, uploaded
+  and verified; installed as `/usr/local/bin/mm-go` on `inplay-market-maker-go`
+  (backup `mm-go.bak-2e557cfb` = the 21-08 build, whose commit is still
+  unknown).
+- `/etc/mm-2/env` rewritten for the test maker (backup
+  `env.bak-2026-08-26-cfg0047-mm2`): `mm-test` · `MM_TEST_ONLY=on` · account
+  `2559580864` · `CFG-0048-GO` · fresh `go-run12` journal · all 170 twins ·
+  new `supervised-inputs-170-twins.json` (each twin = its real ticker's row
+  from the 180 file; the ten original twins already carried exactly that) ·
+  boot heal off · `MMGO`. Everything else as mm-2 had it.
+- Dry-run of the boot gates with a dead NATS URL: `mode=supervised
+  config_version=CFG-0048-GO` then the NATS refusal — the sandbox lock and
+  the mode check pass. **Service not started.** Entitlement is off the list
+  (George: `MM_SECURITIES` + `MM_TEST_ONLY` gate it).
+- ⚠ The last mm-2 run's shutdown line read `gateway 13992 seen/0 dropped/0
+  untranslatable` — so run 11 lost nothing past the queue; the boot window
+  (uncounted by design) remains the only inbound loss that run could have
+  had. The proof is the first re-quote on this build.
