@@ -237,6 +237,73 @@ per-fixture vs global · volume in shares or dollars, and the window ·
 the house-volume rule above, written down · denomination ($2.50 per
 share per game, implied by his own EV numbers).
 
+### 9.1 · Off-field accumulates, but the price must NOT rise
+
+Off-field money sits in two buckets: **RAV** (earned so far) and **EAV**
+(still expected). Each game moves a slice from EAV into RAV. The two
+always sum to the same number, so the price does not move:
+
+| Point in season | RAV | EAV | total |
+|---|---|---|---|
+| Start | $0 | $18 | $18 |
+| Halfway | $9 | $9 | $18 |
+| End | $18 | $0 | $18 |
+
+The price moves **only** when a team earns more or less than expected.
+That difference is the earnings surprise, and it is the entire purpose of
+the weekly number.
+
+⚠ **The bug this prevents.** Today RAV is `0.00` and EAV is frozen at the
+full-season figure. Add realized money without draining EAV at the same
+time and **every team's price climbs about $1.25 a game for nothing —
+roughly $15 a share across a college season.** Both halves ship together,
+or neither.
+
+### 9.2 · ⚠ The live off-field numbers over-allocate the pools by ~9%
+
+Measured on the 138 live NCAA records (27-08):
+
+| Measure | Value |
+|---|---|
+| Off-field per team per game | min $0.955 · median $1.362 · max $2.302 |
+| **Two average teams meet** | **$2.72** against a $2.50 pool |
+| Two top teams meet | $4.61 |
+| League expected off-field | **$2,254** |
+| Money that exists (828 games × $2.50) | **$2,070** |
+| **Over-allocation** | **~$184, about 9%** |
+
+Worked case: Sacramento State earns $2.24 a game and North Dakota State
+$2.30. Both are FCS, so the fixture can happen — and it would pay
+**$4.54 out of a $2.50 pool**.
+
+**Popularity is not the explanation.** Popularity correctly sets *who gets
+more of the pool* — confirmed by Edwin on the 27-08 call (the Jets and
+Giants "still could make a lion share… even if they stink") and visible in
+the data: correlation between expected wins and off-field is only **0.729**,
+and Sacramento State earns the second-highest off-field in the league on
+4.61 expected wins. But popularity sets the **ratio**, never the **total**.
+Two teams in one fixture must still sum to $2.50.
+
+**The likely cause, with two independent pieces of evidence.** Edwin's
+model appears to price each team's off-field from its own popularity and
+never check that the fixture balances:
+
+1. His Gamecast formula `offShare = 1.0 + pct × 0.5` reads only the team's
+   own percentile and **never references the opponent** (§ the EV guide).
+2. The live numbers sum to 109% of the available pools, above.
+
+**Why it matters beyond tidiness.** Settlement pays what a team actually
+earned, not what was projected. If EAV runs ~9% above the money that
+exists, realized will land under expected week after week, and prices will
+**drift down across the whole league** — a systematic bias that looks like
+the model working while it is quietly wrong.
+
+**The ask (E51 item d):** is the $2.50 split between the pair, or is each
+team's number standalone? If it is a split, the projections need
+normalising against the fixture list. Also: when a listed team plays an
+opponent that is not a listed company, does it take the whole pool or only
+its share? That would legitimately explain part of the excess.
+
 **Generator change now (cheap):** EAV decays — `EAV = per-game share ×
 games remaining`, recomputed each regenerate, replacing the sheet's
 static season number.

@@ -14,6 +14,47 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27e — ⚠ the live off-field numbers over-allocate the pools by ~9%
+
+Measured on the 138 live NCAA records ·
+[[market-maker/systems/expected-wins-pipeline]] §9.1–9.2 · `E51(d)`
+
+- 📝 **Off-field accumulates but the price must NOT rise.** RAV (earned)
+  and EAV (expected) always sum to the same number; each game moves a
+  slice from one to the other. The price moves only on the difference
+  between earned and expected — the earnings surprise.
+- ⚠ **The bug that prevents:** RAV is `0.00` today and EAV is frozen at the
+  full-season figure. Add realized money without draining EAV and **every
+  price climbs ~$1.25 a game for nothing — ~$15 a share over a college
+  season.** Both halves ship together, or neither.
+- ⚠ **Measured over-allocation.** Off-field per team per game runs $0.955
+  to $2.302 (median $1.362). **Two average teams meet and sum to $2.72
+  against a $2.50 pool.** League-wide, expected off-field totals **$2,254**
+  while 828 games at $2.50 hold only **$2,070** — **~9% more promised than
+  exists.** Worked case: Sacramento State ($2.24/game) vs North Dakota
+  State ($2.30/game), both FCS so the fixture can happen, pays **$4.54 from
+  a $2.50 pool**.
+- 📝 **Popularity is NOT the explanation.** It correctly sets who gets more
+  of a pool — Edwin on the 27-08 call (the Jets and Giants "still could
+  make a lion share… even if they stink"), and the data agrees:
+  corr(expected wins, off-field) = **0.729**, with Sacramento State
+  second-highest in the league on 4.61 expected wins. But popularity sets
+  the **ratio**, never the **total**.
+- ⭐ **Likely cause, two independent evidences:** his model prices each
+  team's off-field from its own popularity without checking the fixture
+  balances. (1) His Gamecast formula `offShare = 1.0 + pct × 0.5` reads
+  only the team's own percentile and never the opponent. (2) The live
+  numbers sum to 109% of the pools.
+- ⚠ **Consequence, not cosmetic.** Settlement pays realized, not expected.
+  A 9% high EAV means realized lands under expected week after week and
+  **prices drift down across the whole league** — a systematic bias that
+  looks like the model working while it is wrong.
+- 🔴 **Ask (`E51(d)`):** is the $2.50 split between the pair, or is each
+  team's number standalone? If a split, normalise the projections against
+  the fixture list. And when a listed team plays a NON-listed opponent,
+  does it take the whole pool or only its share? That would legitimately
+  explain part of the excess.
+
 ## 2026-08-27d — ✅ hourly, pulled by us — the reference number becomes a feed
 
 George's ruling, same session · updates
