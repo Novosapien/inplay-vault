@@ -14,6 +14,42 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27d — ✅ hourly, pulled by us — the reference number becomes a feed
+
+George's ruling, same session · updates
+[[market-maker/parameters]] (feed cadence) ·
+[[market-maker/systems/expected-wins-pipeline]] §7
+
+- ✅ **Pull the season win totals HOURLY, ourselves.** George: it is a cheap
+  operation — one call returns the league, so 24 calls a day is nothing.
+  ✂ This supersedes the daily-06:00 cadence of Edwin's email items 3–4.
+  The reference number stops being a file he sends and becomes a feed we
+  pull. **He never has to produce anything.**
+- 📝 **Why hourly beats weekly.** Every re-pull moves every price at once.
+  Frequent pulls make each move small; rare pulls make them large jumps.
+  Futures also move mid-week on injuries and news, not only on results.
+- ⚠ **Rule 1 — record a change only when the line moves.** No heartbeat
+  events. An hourly write of an unchanged number fills the journal with
+  nothing and slows replay.
+- ⚠ **Rule 2 — a new line and the banking of a result happen together.**
+  A repriced season line ALREADY contains the result of the game just
+  played. Take the new line while the game is still open in G and the win
+  counts twice. This is Edwin's own rule from the 28-07 email (a game
+  leaves G when a new T absorbs it), now load-bearing hourly.
+- 📝 **No clash with live games.** Bookmakers do not move season lines
+  during a game (researched 27-07), so hourly pulls mid-game return the
+  same number. The line moves after the whistle — exactly when the result
+  should be banked.
+- 🔴 **NFL only.** Sportradar's futures product carries NFL season win
+  totals and **nothing for NCAA** (verified 16-07, confirmed by George
+  27-08). The 138 college teams that trade today have **no source to pull
+  at any cadence**, so they hold their July view until each game arrives.
+  This is the sharpened `E52` ask: name a college source, or accept that
+  college prices do not reprice on form this season.
+- ⚠ **Entitlement unverified.** Futures was checked on a **July trial**;
+  the August contract amendment covered live probabilities, not futures.
+  Confirm production access before the build depends on it.
+
 ## 2026-08-27c — ⭐ production checked: the seed matches live · T is 16 days static
 
 Read-only check of the MM VM (George's instruction: production, take care).
