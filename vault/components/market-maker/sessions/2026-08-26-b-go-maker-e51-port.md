@@ -462,3 +462,32 @@ at four times the normal cadence, holding.
    (`CFG-0057-GO-PACED60`, `go-run20`). To return to a normal build: stop,
    restore `mm-go.bak-154cf847-e51` (E51 shape) or build #22+#23 on the
    phase branch, bump the version, fresh journal; the heal clears the book.
+
+### ✎ 27-08 10:25Z — the UEAR, and a correction to Part 3
+
+- **tZERO's MaxOrdRate is an ACCOUNT setting we can write ourselves.** The
+  gateway's `POST /buying-power` sends a 35=UEAR (tag 8935 `maxOrdRate`,
+  IPLY default **100/s**; tag 8936 `maxDupOrdRate`, default **20/s** per
+  symbol-side for same-shaped orders — why a paced 80 still lost cancels).
+  Sent on the test account 2559580864: `maxOrdRate 2000, maxDupOrdRate 200`
+  → **`UEARa`** (accepted). No read-back exists; the proof is the next run.
+- **Test build paced at 400/s** (`test/fastdwell-paced400`, `CFG-0058`,
+  `go-run21`): 92,670 acks, **zero rate rejects**, busiest second 902.
+  Remaining: 1.7% `UNKNOWN ORDER` on cancels (an orig already replaced —
+  gone-retired, harmless) and transient double posts at 6× normal cadence
+  (1–7 duplicate prices per sample, none persisting 12 s; sides of 7–8 on a
+  handful of books at any instant — the post-first race).
+- ⚠ **CORRECTION to Part 3.** The 20/21-08 journals (`go-run01`…`11`) carry
+  **no "Exceeds Max Order Rate" at all.** Those runs were on the PRODUCTION
+  account 1797733477, which evidently already carries a raised MaxOrdRate
+  (who set it, when — ask Hasan; there is no read-back). Their rejects were
+  **duplicate ClOrdIDs** (run02: 32% — the unbumped salt), **NOT_CANCELABLE**
+  (run05: 683 — cancels refused = extra rungs) and FAILSRISK. So the wrong
+  ladder of 20/21-08 was rank drift + dropped acks + those rejects. The rate
+  limit was the TEST account's IPLY default, hit for the first time on 26-08.
+  "The cause all along" in Part 3 overreached by one night; the pacer, the
+  derived budget and the no-overlap rule stand on their own evidence.
+
+**Next:** UEAR on the production account on George's word (2000/200), then
+read production's effective rate the only way possible — a paced run and
+the reject count — and set `VenueMessageRateLimit` from that.

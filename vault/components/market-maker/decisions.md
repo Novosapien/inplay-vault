@@ -38,10 +38,17 @@ Go PR #23 · T2 · N65
 - ⭐ **Result:** at four times the normal cadence, on the old 3–6 × 10,000
   shape, every side 3–6, none above, 0 duplicates, 0 rejects, resting =
   wanted.
-- ⚠ **The weekend:** ~60 msg/s ÷ (2 × rungs) = books per second. 80 live
-  books at 500 ms and one rung need ~320/s. Activity tiers are a
-  requirement; T2 must be asked WITH the numbers; the Python maker needs
-  the same pacer before it quotes depth at game cadence.
+- ⭐ **27-08: the limit is OURS to set** — a 35=UEAR through the gateway's
+  `POST /buying-power` (`maxOrdRate` 8935, `maxDupOrdRate` 8936). Test
+  account raised to 2000/200, `UEARa`; at a paced 400/s zero rate rejects.
+  Production 1797733477 on George's word.
+- ⚠ **Correction:** the 20/21-08 journals carry NO rate rejects — those runs
+  were on the production account (already raised, by whom unknown). The
+  20/21-08 ladder was rank drift + dropped acks + duplicate-ClOrdID and
+  NOT_CANCELABLE rejects. The rate limit was the test account's default.
+- ⚠ **The weekend:** whatever the granted rate is, ÷ (2 × rungs) = book
+  updates per second. Activity tiers stay a requirement; the Python maker
+  has no pacer.
 
 ---
 
