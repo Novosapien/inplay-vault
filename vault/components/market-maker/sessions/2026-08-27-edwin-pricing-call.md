@@ -138,10 +138,59 @@ on record from both sides.
   promised formula.
 - **N54 opened** — the market data store for our own venue prints.
 
+## The production check (read-only, same session)
+
+George asked for a live check, with care — the system is in production. No
+restarts, no writes, no config changes. Only `ps`, `ls`, and `cat`.
+
+**What runs.** VM `inplay-market-maker` (project `inplay-497712`, zone
+`us-east4-a`, n2-standard-2, no external IP, IAP-only SSH). Two processes:
+`mm.runtime` up ~7 hours on journal `supervised47`; `snt.runtime` up 5
+days. `MM_MODE=supervised` · `MM_READINGS=bus` · `MM_CONFIG_VERSION=CFG-0045`
+· `MM_PRIOR_RUN_DIR=/var/lib/mm/supervised46` (anchors carried across the
+cutover, per F2) · `MM_BOOT_HEAL=off`.
+
+**The maker quotes 138 NCAA books**, from
+`/home/georgewestbrook/supervised-inputs-138-ncaa.json`. NFL tickers are
+NOT in `MM_SECURITIES`.
+
+⭐ **The seed is verified against production.** Our seed file reproduces
+the live file for all 138 tickers:
+
+| Difference | max | median |
+|---|---|---|
+| expected wins | 0.0005 | 0.0002 |
+| off-field | $0.005 | $0.0025 |
+| **reference price** | **$0.0061** | $0.0026 |
+
+The only difference is precision — the live file rounds to 3 decimal
+places, our seed carries full precision. **Nothing needs deploying.**
+
+⚠ **Correction to an earlier claim in this session.** We first compared
+against `docs/supervised-inputs-2026-08-07.json` and reported that our seed
+would move live books by up to $6.74. That file is a **stale 7-ticker NFL
+artefact** in the repo and is not what runs. The real comparison is above.
+
+⭐ **The real hole, now measured.** `t_effective_time` is
+`2026-08-11T22:00:00.000Z` for all 138 teams. **Expected wins have been
+static for 16 days and no path exists to update them.**
+`realized_on_field_total` and `realized_off_field` are both `0.00`.
+
+Saturday still prices correctly — the engine holds each finished game in G
+with its result pinned. **But the first regenerate of that file without
+absorption drops every winning team by $5.** The absorber is the critical
+path, not an improvement.
+
+**The off-field discrepancy is NFL-only.** The live NCAA file uses the same
+off-field source as our seed. The wider numbers Edwin quoted (Dallas ~$30)
+appear only in the old NFL file. Nothing is mispriced today, because NFL
+books are not quoted. Settle it before NFL secondary opens.
+
 ## Next
 
-- Send `E51` and `E52` to Edwin as one message. The first earnings burst
-  and the first Saturday results both land within days.
-- Ask for the popularity file and a weekly win-totals snapshot in the same
-  message.
-- Continue the generator build: EAV decay, then the absorb path.
+- Build the absorb path. It is the only thing between us and a broken price
+  after the first file regenerate.
+- Send `E51` and `E52` to Edwin as one message. Ask for the popularity file
+  and a weekly win-totals snapshot in the same message.
+- Add NFL to the universe and settle its off-field source before NFL
+  secondary opens.

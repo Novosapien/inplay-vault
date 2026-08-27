@@ -14,6 +14,41 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27c — ⭐ production checked: the seed matches live · T is 16 days static
+
+Read-only check of the MM VM (George's instruction: production, take care).
+`ps` / `ls` / `cat` only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-27-edwin-pricing-call]]
+
+- 📝 **What runs.** VM `inplay-market-maker` (`inplay-497712`,
+  `us-east4-a`, n2-standard-2, no external IP, IAP-only SSH).
+  `mm.runtime` up ~7 h on journal `supervised47`; `snt.runtime` up 5 days.
+  `MM_MODE=supervised` · `MM_READINGS=bus` · `CFG-0045` ·
+  `MM_PRIOR_RUN_DIR=supervised46` (F2 anchors carried) · `MM_BOOT_HEAL=off`.
+- 📝 **The maker quotes 138 NCAA books** from
+  `/home/georgewestbrook/supervised-inputs-138-ncaa.json`. **NFL tickers
+  are not in `MM_SECURITIES`** — the maker does not quote NFL today.
+- ⭐ **The seed is VERIFIED against production.** Our seed reproduces the
+  live file on all 138 tickers: max |ΔT| 0.0005, max |ΔEAV| $0.005, **max
+  |ΔRP| $0.0061** (median $0.0026). The only difference is precision — the
+  live file rounds to 3 dp, our seed carries full precision. **Nothing
+  needs deploying.**
+- ⚠ **Correction.** An earlier note in this session claimed our seed would
+  move live books by up to $6.74. That came from
+  `docs/supervised-inputs-2026-08-07.json`, a **stale 7-ticker NFL
+  artefact** in the repo that is not what runs. The measured figure is
+  $0.0061.
+- ⭐ **The hole, measured: T is static since `2026-08-11T22:00:00Z`** — 16
+  days — with no path to update it. `realized_on_field_total` and
+  `realized_off_field` are both `0.00`. Saturday still prices correctly
+  (the engine holds each finished game in G with its result pinned), **but
+  the first regenerate of that file without absorption drops every winning
+  team by $5.** The absorber is the critical path.
+- 📝 **The off-field discrepancy is NFL-only.** The live NCAA file uses the
+  same off-field source as our seed; the wider numbers Edwin quoted
+  (Dallas ~$30) appear only in the stale NFL file. Nothing is mispriced
+  today. Settle before NFL secondary opens.
+
 ## 2026-08-27b — 📝 the seed verifies against Edwin's own numbers · the tail does not
 
 Call: [[27-08-2026-mm-pricing-catchup]] ·

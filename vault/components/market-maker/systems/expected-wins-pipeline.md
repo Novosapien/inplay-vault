@@ -245,7 +245,28 @@ He offered the popularity file; `E51(d)` requests it.
 **The gap: he expects the tail to re-rate at once** — see §7 above and
 `E52`.
 
-## 11 · Build list (plan.md 26-08)
+## 11 · Live state, measured 27-08 (read-only check)
+
+| Fact | Value |
+|---|---|
+| Mode | `supervised` · readings off the bus · `CFG-0045` |
+| Books quoted | **138 NCAA**. NFL is not in `MM_SECURITIES` |
+| Inputs file | `/home/georgewestbrook/supervised-inputs-138-ncaa.json` |
+| Journal | `/var/lib/mm/supervised47` (prior run carried, F2) |
+| **`t_effective_time`** | **`2026-08-11T22:00:00Z` — static for 16 days** |
+| Banked | `realized_on_field_total` and `realized_off_field` both `0.00` |
+| Seed agreement | max ΔRP **$0.0061** across all 138 — verified |
+
+⚠ **The consequence that sets the build order.** Saturday prices correctly
+without the absorber, because the engine holds each finished game in G with
+its result pinned. **The first regenerate of the inputs file WITHOUT
+absorption drops every winning team by $5** — the file supplies a new T
+while G still carries the game, so the win is removed and never banked.
+
+**So the absorber and the file regenerate must ship together, or neither.**
+Regenerating the file is not a safe independent step.
+
+## 12 · Build list (plan.md 26-08)
 
 1. Seed: Edwin's package on the July CSV + the played-games backfill →
    `EXPECTED_WINS_SEED` + bucket object.
