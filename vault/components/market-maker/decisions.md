@@ -14,6 +14,34 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27 — ✅ the earnings report is ours to compute · the seed is built
+
+Continuation of the 26-08 pipeline session ·
+[[market-maker/systems/expected-wins-pipeline]] §9 · `E51` item (e)
+
+- ✅ **The seed is built and verified** (scratchpad, filing location TBD):
+  `EXPECTED_WINS_SEED` + the supervised-inputs file, all 170 tickers,
+  passes the engine's own `load_supervised_inputs`. The numbers are
+  Edwin's twice over — his `devig.py` on his July snapshot reproduces his
+  IPO sheet's `E[Wins]` to 10 decimals, all 170 rows. Tickers from
+  `universe.py` (tZERO's list); the symbols workbook is stale (132 NCAA
+  rows) — do not use it. EAV taken from the sheet's Off-Field EV column
+  (RAV 0), which keeps RP continuous with the listed IPO prices.
+- ✅ **We compute the weekly earnings report** (George). The volume data
+  is ours — every venue print carries its account. Edwin defines the
+  formula and audits; he runs no weekly process. The daily-file failure
+  mode does not return at weekly cadence.
+- ✅ **House volume counts, under the symmetry assumption** (George):
+  SNT-1 is active on both sides of every fixture, so its volume cancels
+  in a proportional split. ⚠ Consequences recorded: dilution toward an
+  even split while taker volume dominates, and a noise floor from random
+  clip sizes. **Safeguard: the report computes both columns (with /
+  without house accounts)** so the assumption is checked with evidence.
+- 📝 The off-field machine is the absorber mirrored, weekly:
+  `EAV −= expected · RAV += actual`, Δprice = the earnings surprise, in
+  the Tue/Wed burst window (23-07 ruling). Schema questions ride E51(e);
+  deadline is the first burst after games.
+
 ## 2026-08-26 — ✂ the daily file retires: expected wins seed once, then fold
 
 Session: [[market-maker/sessions/2026-08-26-expected-wins-pipeline]] ·

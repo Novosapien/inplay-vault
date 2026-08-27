@@ -161,7 +161,49 @@ quality gap, not a correctness gap.
   confirmed source, and it carries two books where Edwin froze on BetMGM
   (E51 item b).
 
-## 9 · Build list (plan.md 26-08)
+## 9 · The off-field mirror — earnings (27-08)
+
+Off-field runs the same machine as §3–4, on a weekly cadence:
+
+    on-field:   E   −= p_ref(g)  · banked += result    Δprice = $0 exactly
+    off-field:  EAV −= expected  · RAV += actual       Δprice = actual − expected
+
+The off-field jump is intended — it is the earnings surprise, applied in
+the Tue/Wed ~07:30 burst window (the 23-07 ruling, parameters.md).
+
+**The rule as recorded (Edwin's own docs, pending his confirm):** each
+game has a $2.50-per-share pool, split between the TWO teams in that
+fixture, pro-rata by trading volume. Per fixture, not a global pool.
+Live volume never feeds the live price (circularity); volume surfaces
+weekly only.
+
+**Producer — George's ruling 27-08: WE compute the earnings report.**
+The volume data is ours (every venue print, with its account). Edwin
+defines the formula and blesses it; he audits the output; he runs no
+weekly process. This removes the weekly hand-off — the daily-file
+failure mode does not return at weekly cadence.
+
+**House volume — George's ruling 27-08: included, under the symmetry
+assumption.** SNT-1 runs on all books, both sides of every fixture, so
+its volume cancels in a proportional split. ⚠ Recorded consequences:
+house volume DILUTES the user signal toward an even split (early season,
+taker volume dominates → earnings surprises compress toward zero — fails
+safe), and the taker's random clip sizes put a noise floor under a
+price-moving number. **Safeguard: the report computes BOTH columns —
+with and without house accounts** — so the assumption is checked with
+evidence, not asserted. Reversible at any time; the account tags exist
+on every print.
+
+**Schema questions riding E51** (pin before the first burst): pool shape
+per-fixture vs global · volume in shares or dollars, and the window ·
+the house-volume rule above, written down · denomination ($2.50 per
+share per game, implied by his own EV numbers).
+
+**Generator change now (cheap):** EAV decays — `EAV = per-game share ×
+games remaining`, recomputed each regenerate, replacing the sheet's
+static season number.
+
+## 10 · Build list (plan.md 26-08)
 
 1. Seed: Edwin's package on the July CSV + the played-games backfill →
    `EXPECTED_WINS_SEED` + bucket object.
