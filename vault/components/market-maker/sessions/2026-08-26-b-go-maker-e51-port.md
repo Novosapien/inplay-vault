@@ -502,12 +502,17 @@ never existed at the venue. Across four samples 5 s apart, sides with rungs
 from more than one grid: 6 / 11 / 0 / 5 of 340, none for 15 s. Uneven
 sides (a re-space in flight): mean 1.2 books of 170, none over 4 s.
 
-⚠ **The panel's book card polls `/api/market/book?symbol=` every 5 s and
-the twins' depth does not reach it** — the "dot is a token" gotcha from the
-26-08 census note (`market.book.*` does not match `IPTCBEAR.TEST`). The
-card keeps its last successful draw (the yellow dot). A page reload shows
-the venue's current book, then it freezes again. Panel/proxy fix, not the
-maker's. Both gateways' `/quotes` stores carry honest timestamps: the
+⚠ **The panel's book card is stale, and the cause is NOT yet proven.** What
+is measured: the card polls `/api/market/book?symbol=` every 5 s; that route
+proxies to `/market/book/{symbol}`; that path answers **404 on both FIX
+gateways, for a real ticker as well as a twin**. ⚠ The panel's proxy may
+target the trading service rather than the gateway, so the 404 does not
+settle it — the next session must read `PROXY_URL` on the panel and repeat
+the request against the host the panel actually calls. A candidate cause
+stays open: the 26-08 census note's "dot is a token" gotcha
+(`market.book.*` does not match `IPTCBEAR.TEST`). What IS settled: the
+venue's own book was correct at the same minute, so the maker is not the
+cause of a stale card. Both gateways' `/quotes` stores carry honest timestamps: the
 touch order is KEPT under rest-until-gone, so the best bid/offer genuinely
 does not move.
 
