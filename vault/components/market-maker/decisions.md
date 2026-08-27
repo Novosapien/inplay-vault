@@ -14,6 +14,47 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27b — 📝 the seed verifies against Edwin's own numbers · the tail does not
+
+Call: [[27-08-2026-mm-pricing-catchup]] ·
+session [[market-maker/sessions/2026-08-27-edwin-pricing-call]] ·
+`E51(d)` updated · `E52` `N54` opened
+
+- 📝 **The seed is verified against numbers Edwin quoted live.** He worked
+  LSU through on the call: IPO "$59 or 59.53", expected wins "8.55",
+  on-field "$42.75". Our seed holds 59.54 / 8.5452 / 42.73, and RP 60.87
+  against his sheet's IPO EV of 60.874. The seed stands.
+- 📝 **The absorber IS his model.** Unprompted, he described it: "a win to
+  LSU is not going to be worth $5 more a share because part of that is
+  already baked into the price", and put the move at **47 cents to $1.50**
+  for a heavy favourite. `$5 × (result − p_ref)` gives exactly those
+  numbers. No change to §3–4 of the pipeline.
+- 📝 **Off-field actual is trading volume — confirmed by Edwin on the
+  call**, in answer to George's direct question. Off-field expected is his
+  popularity model (socials, prime-time games, market size). Both match
+  what the 27-08 rulings assumed.
+- ⚠ **His spoken off-field numbers disagree with his own sheet.** He said
+  Dallas earns "like 30 bucks" and Carolina "12 or 14"; his sheet gives
+  24.07 and 19.22. His spread is about 2.2× top-to-bottom against the
+  sheet's 1.25×. Off-field is roughly 30% of a share price, so the
+  difference is material. **He offered to send the popularity file — take
+  it** (`E51(d)`).
+- ⚠ **He expects the tail to re-rate at once; our build does not.** On LSU
+  losing to Jacksonville State: "that share could go down 10 or $15". The
+  absorber alone gives −$4.53. The rest is the forward re-rate we deferred.
+- 🟡 **Proposed answer, no model needed: the weekly futures rebase.** A
+  bookmaker cuts LSU's season win total after a bad loss (8.5 → ~6.5);
+  re-de-vig and expected wins fall ~2 wins, so the price falls ~$10 — his
+  number, from market data alone, with §1.5 intact. This is the pipeline's
+  §7 `EXPECTED_WINS_REBASE`, already designed. **It needs a WEEKLY
+  win-totals snapshot instead of one.** ⚠ Point spreads alone do not do
+  this: they cover next week only, so a week-1 shock never reaches week 10.
+  Edwin's ruling required — `E52`.
+- ⚠ **Edwin promised a new formula "today" (27-08). It has not arrived.**
+  Hold the layer-3 build until it lands or he blesses the rebase.
+- 📝 **The season resets** — Edwin: "what I've designed is a reset." No
+  multi-year value; settlement at season end stands.
+
 ## 2026-08-27 — ✅ the earnings report is ours to compute · the seed is built
 
 Continuation of the 26-08 pipeline session ·

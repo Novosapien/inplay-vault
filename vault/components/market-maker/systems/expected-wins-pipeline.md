@@ -147,8 +147,22 @@ the form re-rate.
 
 Journalled like the seed, snapshot in the bucket. **Not built for
 Saturday.** A rebase moves every price at once, so it ships only after the
-E51 conversation. Without it the far tail holds the seed's view — a
-quality gap, not a correctness gap.
+E52 conversation. Without it the far tail holds the seed's view.
+
+⭐ **Promoted by the 27-08 call — the rebase is the answer to the forward
+re-rate.** Edwin expects a bad loss to move a share "down 10 or $15". The
+absorber alone gives −$4.53. A bookmaker cuts LSU's season win total after
+that loss (8.5 → ~6.5); re-de-vig and expected wins fall ~2 wins, so the
+price falls ~$10. **His number, from market data alone, with §1.5
+intact** — no Elo engine, no internal probabilities. The only new
+requirement is a **weekly** win-totals snapshot instead of one.
+
+⚠ **Point spreads do not do this job.** Edwin proposed deriving win
+probability from spreads, and wants InPlay-owned data rather than
+Sportradar's. Spreads publish Sunday for the following week only, so they
+re-rate one game at a time. A week-1 shock never reaches week 10. Spreads
+are a good layer-2 source; they are not a tail re-rate. Both points ride
+`E52`.
 
 ## 8 · Open rules (decide during the build)
 
@@ -203,7 +217,35 @@ share per game, implied by his own EV numbers).
 games remaining`, recomputed each regenerate, replacing the sheet's
 static season number.
 
-## 10 · Build list (plan.md 26-08)
+## 10 · What the 27-08 call confirmed
+
+[[27-08-2026-mm-pricing-catchup]] ·
+[[market-maker/sessions/2026-08-27-edwin-pricing-call]]
+
+**The seed verifies against numbers Edwin quoted live.** He worked LSU
+through on the call:
+
+| Quantity | Edwin, on the call | Our seed |
+|---|---|---|
+| IPO price | "$59 or 59.53" | 59.54 |
+| Expected wins | "8.55" | 8.5452 |
+| On-field baked in | "$42.75" | 42.73 |
+| Reference price | — | 60.87 (his sheet's IPO EV: 60.874) |
+
+**The absorber is his model.** Unprompted: "a win to LSU is not going to be
+worth $5 more a share because part of that is already baked into the
+price" — he put the move at 47 cents to $1.50 for a heavy favourite.
+`$5 × (result − p_ref)` gives exactly that. §3–4 need no change.
+
+**Off-field is confirmed both ways** — actual is trading volume, expected
+is his popularity model. ⚠ But his spoken numbers (Dallas ~$30, Carolina
+~$12–14) disagree with his own sheet (24.07, 19.22), which our seed used.
+He offered the popularity file; `E51(d)` requests it.
+
+**The gap: he expects the tail to re-rate at once** — see §7 above and
+`E52`.
+
+## 11 · Build list (plan.md 26-08)
 
 1. Seed: Edwin's package on the July CSV + the played-games backfill →
    `EXPECTED_WINS_SEED` + bucket object.
