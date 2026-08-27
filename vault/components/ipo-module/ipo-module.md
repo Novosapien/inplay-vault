@@ -484,6 +484,34 @@ graph LR
 >
 > **NFL follows the same process**, unchanged (George).
 
+> ### Update (26-08-2026, _[[26-08-2026-touchdown]]_): the window closes, and the handover to secondary has a time on it
+>
+> Held on the **final day of the NCAA IPO draft**, with Troy reading the countdown
+> off the app: **12 hours and 11 minutes** left, so the window closes at **22:00
+> on Wednesday 26 August**. At that point _"all the buttons just lock"_.
+>
+> **The handover was deliberately not automatic.** George asked whether secondary
+> starts as soon as the window closes or the next day. Troy chose the morning, and
+> the reason is the useful part: **QA on the open**. _"We should wait until the
+> morning to do it because then we're all on and can actively be looking at it in
+> submitting orders"_, checking that the locks actually came off. Edwin was not on
+> the call at that point; Troy took the decision and flagged he would confirm it,
+> which he did when Edwin joined.
+>
+> | When | What |
+> |---|---|
+> | Wed 26 Aug, 22:00 | **IPO window closes**, buy buttons lock |
+> | **Thu 27 Aug, 09:30 Eastern / 08:30 Central** | **Secondary trading opens**, with the team online to QA the open |
+> | Sat 29 Aug | First games, **138 teams live** |
+>
+> Little trading is expected in the two days before game day. The point of opening
+> early is that people **can** trade and test, and that any fault is found by the
+> team rather than by users on Saturday.
+>
+> ⚠ **Related gap:** there is **no prize pool page in the app** (George), so the
+> week-zero prize pool is announced by newsletter and push alert **linking to the
+> website**. See [[leaderboard]] and [[delivery/delivery]].
+
 ## Gaps and Questions for Next Call
 
 ### Gaps

@@ -109,6 +109,68 @@ compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
 
+## 26 August: the KYC layer comes off, and the last day of the draft
+
+A 34-minute touchdown on the **final day of the NCAA IPO draft**. Edwin joined at
+roughly the 24-minute mark, having worked until 4am, so Troy ran the first two
+thirds and took decisions on the understanding he would confirm them. Lily was
+introduced to the client on this call.
+
+**The gate identified on 24 August is now open.** Hasan demoed the
+no-verification path end to end and it works: a user can create an account and
+trade **without an ID document or a face scan**. The call became a live design
+review of it, producing four changes (the skip is buried, the fork should be its
+own screen, "simulated" goes in front of "trading" everywhere, and "KYC" comes
+out of the interface). Detail in
+[[customer-onboarding/customer-onboarding]] and
+[[compliance/regulatory-positioning]].
+
+**The switch to secondary has a time and a reason.** The IPO window closes at
+**22:00 on Wednesday 26 August**, when the buy buttons lock. **Secondary trading
+opens Thursday 27 August at 09:30 Eastern.** Troy chose the morning over an
+automatic flip at window close specifically so the team is online to **QA the
+open**: _"then we're all on and can actively be looking at it in submitting
+orders."_ First games **Saturday 29 August**, 138 teams live.
+
+**The numbers, stated on the call.** **187 verified users, 278 downloads.** The
+gap of roughly ninety is exactly what the KYC-less path is meant to convert.
+Edwin's caveat is worth keeping next to the number: the first batch is
+_"primarily all of us in our networks."_ The **interns started this week**, some
+already back on campus running involvement fairs with scripts and content.
+
+**There is a week-zero prize pool, and Troy had it wrong.** He assumed no cash
+pool for the first week of college games. Edwin corrected him flatly: _"No, we
+are."_ Sizing follows the standing rule of thumb of **roughly three dollars per
+competitor**, decided within a day and **published Friday 28 August**. ⚠ **There
+is no prize pool page in the app**, so it goes out by newsletter and a push alert
+linking to the website. See [[leaderboard]].
+
+**The comms plan for the open.** A newsletter tomorrow announcing secondary
+trading and the competition being live, a second on Friday carrying the prize
+pool, plus a push alert. Cody's framing for week zero: _"use this week just like
+the college teams do to warm up and learn the buttons."_ Troy's is sharper and
+should win: _"get your referral bank up. That's what we should really be
+pushing."_ The **5× referral multiplier holds to 30 August**, so it covers the
+first game day.
+
+**⚠ The largest open risk is the Sport Radar futures endpoint, and it is a
+supplier problem.** George named the consequence in terms: without that data
+_"the market maker is going to be way more volatile than it needs to be. Like it
+might just drop off."_ Sport Radar have **three engineers** on a bug open for a
+couple of weeks and promise a fix **absolutely before Saturday**, with **a credit
+on the bill** if they miss. George is pulling the endpoint daily and building a
+fallback until first game day. Tracked as S12 in
+[[market-maker/open-questions]]. A bill credit does not price a bad first game
+day, so the fallback needs a shape before Saturday.
+
+**Two commercial items are stalled, both ours.** The **warmed-up email outreach to
+marketers has not started**: Brett reported a run of bugs after the
+reconfiguration, with George and Vineth working through them. Edwin checked
+directly and Brett confirmed it. Separately, the **Wayne introduction** in New York
+has had no traction despite Brett nudging every second week.
+
+_Source: [[26-08-2026-touchdown]]._
+
 ## 24 August: the offering is live, and Thursday hangs on one piece of work
 
 An 18-minute touchdown, the shortest in the record and deliberately so (Troy:
@@ -358,7 +420,7 @@ sign of engagement rather than failure.
 
 ## Key dates it currently tracks
 
-- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · **26 Aug (Wed) IPO window closes · 27 Aug (Thu) NCAA secondary trading opens** (confirmed 24-08, gated on the KYC-layer removal) · 29 Aug first games · market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement.
+- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · **26 Aug (Wed) IPO window closes · 27 Aug (Thu) 09:30 ET NCAA secondary trading opens** (time set 26-08; KYC layer now removed) · 29 Aug first games, 138 teams live · market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement.
 
 ## Delivery notes from the 27-07 → 07-08 touchdowns
 

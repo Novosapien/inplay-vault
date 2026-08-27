@@ -6,6 +6,53 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-26: The KYC layer comes off, and the draft closes tonight
+
+Digested [[26-08-2026-touchdown]], 34 minutes on the final day of the NCAA IPO
+draft. Edwin joined two thirds of the way through, having worked until four in the
+morning, so Troy ran most of it. Lily was introduced to the client.
+
+**The thing that was gating Thursday is done.** Hasan demoed the no-verification
+path end to end: a person can now create an account and trade without an identity
+document or a face scan. The call turned into a live design review of it and
+produced four changes, all of which are worth having. The skip option is buried
+below the fold and has to move to the top. The verify-or-not choice should be its
+own screen straight after the email code, rather than hidden inside a verification
+screen. The word "simulated" goes in front of "trading" everywhere, because
+"start trading now" reads too much like a real brokerage account. And the term
+"KYC" comes out of the interface entirely, replaced by "get verified" and "start
+trading without verification".
+
+**Worth flagging: there are now two different first screens.** The 17 August call
+put a choice of three competitions on first open. This one puts a verify-or-not
+fork straight after the email code. Nobody has reconciled them into one sequence,
+and both are being built.
+
+**The open has a time and a reason.** The draft closes at ten tonight and the buy
+buttons lock. Secondary trading opens Thursday at half past nine Eastern. Troy
+chose the morning deliberately rather than flipping it overnight, so the whole
+team is online to test the open and confirm the locks came off. First games
+Saturday, 138 teams live.
+
+**The numbers.** 187 verified, 278 downloads. That gap of about ninety is exactly
+what the no-verification path exists to convert. Edwin's caveat stands beside it:
+the first batch is almost entirely their own networks. There is a prize pool for
+week zero after all, at roughly three dollars per competitor, published Friday,
+and there is no prize pool page in the app, so it goes out as a link to the
+website.
+
+**The largest risk is now a supplier.** The Sportradar futures endpoint is still
+broken, and George put the consequence plainly: without it the market maker will
+be far more volatile than it should be and might drop off altogether. Sportradar
+have three engineers on it and promise a fix before Saturday, with money back if
+they miss. That is not the same as a good first game day, so a fallback needs a
+shape before then.
+
+**Also:** the referral multiplier stays at five times until the end of the month,
+so it covers the first game day, the app icon might be changeable without a store
+review even though the name is not, and our warmed-up email outreach to marketers
+still has not started because of bugs.
+
 ## 2026-08-24: The offering is live, and Thursday hangs on one piece of work
 
 Digested [[24-08-2026-touchdown]], eighteen minutes, the shortest touchdown in the

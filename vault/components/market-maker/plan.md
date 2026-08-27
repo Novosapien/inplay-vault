@@ -68,6 +68,18 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > record — the MM quoted live on the real venue from 07-08 (six books
 > two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
+> **Update 26-08 (Wednesday touchdown, [[26-08-2026-touchdown]]):** **secondary
+> trading opens Thursday 27 August at 09:30 Eastern**, the morning after the IPO
+> window closes at 22:00 on the 26th, with the team online to **QA the open**
+> rather than flipping it overnight. First games **Saturday 29 August**, 138 teams
+> live.
+> ⚠ **The Sport Radar futures gap is now the largest open risk to that game day.**
+> George, in terms: without the data *"the market maker is going to be way more
+> volatile than it needs to be. Like it might just drop off."* He is testing the
+> endpoint daily and will work on **workarounds** until the first game day. SR have
+> three engineers on it and have promised a fix before Saturday, with a bill credit
+> if they miss. Tracked as **S12**.
+
 > **Update 24-08 (Monday touchdown, [[24-08-2026-touchdown]], Edwin absent):** the
 > **test-ticker constraint is named and lifting**. There are **only ten test
 > tickers** today, which is enough for replay but means **no replica test can run

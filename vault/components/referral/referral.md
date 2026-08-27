@@ -90,6 +90,16 @@ The base referral reward is 1,000 InPlay$; events apply a multiplier to it. Most
 | 4th of July | (event multiplier) | — | **Multi-day:** Fri 00:00 → Sun 23:59 |
 | Labor Day weekend | (event multiplier) | — | **Multi-day:** Fri 00:00 → Mon 23:59 |
 
+> **Confirmed (26-08-2026): the 5× runs through the first game day.** Troy assumed
+> the multiplier would end at launch; Cody and Kevin corrected him, it holds to the
+> **end of the month (Sunday 30 August)**, so it covers **secondary trading opening
+> on the 27th and the first live games on the 29th**. Troy's instruction for the
+> launch comms follows from it: the push is not the prize pool, it is _"get your
+> referral bank up. That's what we should really be pushing."_ ⚠ **A decision is
+> owed before Monday**: what replaces the 5× on 31 August, when the season is
+> actually running and the multiplier stops being free.
+> _(Source: [[26-08-2026-touchdown]])_
+
 > **Update (03-08-2026): 5× for the whole of August.** Cody set a flat **5×
 > multiplier running for the rest of August**, superseding the per-event
 > calendar above for that period. Rationale is bluntly arithmetic — with ~118

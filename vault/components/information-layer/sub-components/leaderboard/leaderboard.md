@@ -270,3 +270,22 @@ Leaf node -- no further decomposition needed. The full-page leaderboard and mini
 5. What's the proximity alert threshold? Within 50 places? 10%? Configurable?
 6. What happens on a tie at the payout boundary?
 7. Special event days -- what are the specific days and multipliers? Who decides?
+
+> ### ⚠ Gap found at launch (26-08-2026): there is no prize pool page in the app
+>
+> Troy asked for a **push alert pointing users to the prize pool** so they know
+> what they are playing for. George: _"I don't think we've got a page on the app
+> for the actual prize pool yet. So that might be something we need to add in."_
+> Edwin's stopgap: post it on the website and link to it.
+>
+> So the launch position is a **push notification into a browser**, for the single
+> number that tells a user why they should trade this week. Small build, high
+> leverage, and it is the natural companion to the leaderboard rather than a
+> separate surface.
+>
+> Context for sizing: the **week-zero pool is confirmed** (Edwin: _"No, we are"_,
+> correcting Troy's assumption that week one had none), sized on the standing rule
+> of thumb of **roughly three dollars per competitor**, against **187 verified
+> users**, and **published Friday 28 August**.
+> _(Source: [[26-08-2026-touchdown]])_
+

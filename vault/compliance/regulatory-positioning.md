@@ -89,8 +89,25 @@ for ~$1.2bn, evidence of how the category is being valued.
 | "regulated by the SEC" | nothing, the claim comes out entirely |
 | "IPO" | **"simulated IPO"** |
 | "securities" (unqualified, in marketing) | avoid; frame as the simulated challenge |
+| **"trading" (unqualified, in the app)** _(26-08)_ | **"simulated trading"**, everywhere the word appears |
+| **"start trading now"** _(26-08)_ | **"activate simulated trading"** |
 
 Kevin is credited with the "simulated IPO" phrasing.
+
+> **The "simulated" rule extended to the app itself (26-08-2026).** Reviewing the
+> new no-verification onboarding, Cody stopped on the call-to-action: _"start
+> trading now… that seems to me reads like regulatory brokerage account or maybe
+> too close to it."_ Troy: _"Put simulated in there. Activate simulated trading."_
+> Kevin generalised it: _"pretty much just add simulated in before trading and
+> pretty much everything should be good."_
+>
+> Treat this as a **blanket rule on in-app copy**, not a single button fix: the
+> word "trading" on its own, on any surface a user can reach, reads as a regulated
+> brokerage activity. The same review also took **"KYC" out of the interface** in
+> favour of **"get verified"**, which is a plain-language change rather than a
+> compliance one, but it lands on the same screens. See
+> [[customer-onboarding/customer-onboarding]].
+> _(Source: [[26-08-2026-touchdown]])_
 
 ## Where the testing-the-waters disclosure actually goes (17-08-2026)
 
