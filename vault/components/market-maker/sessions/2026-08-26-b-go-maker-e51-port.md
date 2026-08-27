@@ -491,3 +491,26 @@ at four times the normal cadence, holding.
 **Next:** UEAR on the production account on George's word (2000/200), then
 read production's effective rate the only way possible — a paced run and
 the reject count — and set `VenueMessageRateLimit` from that.
+
+### ✎ 27-08 12:00–12:10Z — the panel's twin cards are frozen; the venue book is right
+
+George: "the Bears has sat there for ages — rank 2 bigger than rank 1, no
+third bid, three asks." Measured at the venue at the same minute: Bears
+4 bids / 4 asks (+1 pending each side), every rung in band; Bills 11,361 /
+6,986 / 6,391 / 3,446 / 2,236 / 1,943, monotone — the card's 3,922 / 8,384
+never existed at the venue. Across four samples 5 s apart, sides with rungs
+from more than one grid: 6 / 11 / 0 / 5 of 340, none for 15 s. Uneven
+sides (a re-space in flight): mean 1.2 books of 170, none over 4 s.
+
+⚠ **The panel's book card polls `/api/market/book?symbol=` every 5 s and
+the twins' depth does not reach it** — the "dot is a token" gotcha from the
+26-08 census note (`market.book.*` does not match `IPTCBEAR.TEST`). The
+card keeps its last successful draw (the yellow dot). A page reload shows
+the venue's current book, then it freezes again. Panel/proxy fix, not the
+maker's. Both gateways' `/quotes` stores carry honest timestamps: the
+touch order is KEPT under rest-until-gone, so the best bid/offer genuinely
+does not move.
+
+Residual at 400/s: 1,535 cancels (13% of cancels) answered "UNKNOWN
+ORDER" — already gone at the venue, gone-retired by the record. A
+replace-lineage race under load; invisible at the normal cadence.
