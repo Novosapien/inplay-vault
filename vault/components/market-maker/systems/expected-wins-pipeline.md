@@ -10,7 +10,9 @@ description: "The normative page for expected-wins pricing: seed once from de-vi
 > Edwin cannot operate a daily hand-off)
 > **Ruling:** [[market-maker/decisions]] 26-08 ·
 > [[market-maker/sessions/2026-08-26-expected-wins-pipeline]]
-> **Closes:** N18 · N19 · N23 · N22's basis-drift residual · **Opens:** E51
+> **Closes:** N18 · N19 · N23 · N22's basis-drift residual ·
+> **Opens:** E51 (off-field + earnings) · E52 (the tail re-rate) ·
+> N54 (the market-data store)
 > **Background:** [[standards/gamecast-ev-plain-english-guide]] (the proof
 > that the Gamecast is the same model) · `reference/inplay-reference-feed/`
 > (Edwin's engine as code, 25 tests) · `reference/season-win-totals-170.csv`
@@ -138,16 +140,38 @@ an **external generator**:
 
 ## 7 · Rebase — the deferred layer, designed now
 
-Sportsbook futures reprice season totals mid-season (SR sells no such
-product — the per-game path is move 1 and needs nothing). A fresh de-vig
-mid-season is a **rebase**: legitimate market data, and the cheap form of
-the form re-rate.
+Sportsbook futures reprice season totals mid-season. A fresh de-vig is a
+**rebase**: legitimate market data, and the cheap form of the form re-rate.
 
-    EXPECTED_WINS_REBASE:  E ← devig(new snapshot) − banked, shares re-split
+    EXPECTED_WINS_REBASE:  E ← devig(new pull) − banked, shares re-split
 
-Journalled like the seed, snapshot in the bucket. **Not built for
-Saturday.** A rebase moves every price at once, so it ships only after the
-E52 conversation. Without it the far tail holds the seed's view.
+Journalled like the seed. **Not built for Saturday.** A rebase moves every
+price at once. Without it the far tail holds the seed's view.
+
+⭐ **Cadence ruled 27-08 (George): HOURLY, pulled by us** — see
+[[market-maker/parameters]]. One call returns the league, so 24 calls a day
+is negligible, and frequent pulls make each price move small instead of
+arriving as rare large jumps. Two rules make it safe:
+
+1. **Record a change only when the line moves.** No heartbeat events — an
+   hourly write of an unchanged number fills the journal with nothing.
+2. **A new line and the banking of a result happen together.** A repriced
+   season line ALREADY contains the result of the game just played. Take
+   the new line while the game is still open in G and the win counts
+   twice. This is Edwin's own rule (a game leaves G when a new T absorbs
+   it), now load-bearing hourly.
+
+No clash with live games: bookmakers do not move season lines during a
+game (researched 27-07), so mid-game pulls return the same number. The line
+moves after the whistle — exactly when the result should be banked.
+
+⚠ **Source split.** Sportradar's futures product carries **NFL** season
+totals. For the **138 college teams the endpoints exist but return no
+data** (George, 27-08) — so they sit in §11's **"no source"** state and
+hold their seeded view until Sportradar delivers. One code path covers
+both; college starts working with no code change. ⚠ **Entitlement
+unverified** — futures was checked on a July trial, and the August
+contract amendment covered live probabilities, not futures.
 
 ⭐ **Promoted by the 27-08 call — the rebase is the answer to the forward
 re-rate.** Edwin expects a bad loss to move a share "down 10 or $15". The
@@ -245,7 +269,42 @@ He offered the popularity file; `E51(d)` requests it.
 **The gap: he expects the tail to re-rate at once** — see §7 above and
 `E52`.
 
-## 11 · Live state, measured 27-08 (read-only check)
+## 11 · Freshness — what "stale" means here (George, 27-08)
+
+**A number is stale only if a newer one exists and we have not taken it.**
+Age is not staleness. A July number is correct if nobody has published a
+better one.
+
+That gives three states per team, not two:
+
+| State | Meaning | Alarm? |
+|---|---|---|
+| **Confirmed** | We reached the source. It gave the same number, or a new one we took. | No — fresh at any age |
+| **No source** | We reached the source. It carries no market for this team. The number stands on its original provenance. | No — but show it as **unbacked** |
+| **Broken** | We could not reach the source, or the pull failed. A newer number may exist and we are missing it. | **Yes — this is the only alarm** |
+
+**The alarm sits on the pull, never on the age of the value.** This is the
+same rule the live probability feed already runs (the E38 deviation): a
+successful fetch CONFIRMS the number even when it has not moved, and time
+counts from the last successful answer rather than the last change.
+
+⚠ **The 138 college teams sit in "no source", and cannot leave it.** Their
+July numbers did not come from Sportradar — Sportradar carries no college
+season totals, so someone supplied them by hand. The source can never
+confirm them. Display them as **unbacked, not stale**: calling them stale
+implies a fault our side when there is none.
+
+**Hold-last-value must be visible.** Today the college number is 16 days
+old and nothing anywhere says so. Hold it indefinitely — there is no
+alternative — but show its age and its state, so "the feed is broken" can
+never look identical to "the line has not moved".
+
+**Build consequence: one code path for all 170.** The pull runs hourly
+against every team. NFL answers; college returns nothing today. When
+Sportradar fixes the college endpoint it starts working with **no code
+change**.
+
+## 12 · Live state, measured 27-08 (read-only check)
 
 | Fact | Value |
 |---|---|
@@ -266,7 +325,7 @@ while G still carries the game, so the win is removed and never banked.
 **So the absorber and the file regenerate must ship together, or neither.**
 Regenerating the file is not a safe independent step.
 
-## 12 · Build list (plan.md 26-08)
+## 13 · Build list (plan.md 26-08)
 
 1. Seed: Edwin's package on the July CSV + the played-games backfill →
    `EXPECTED_WINS_SEED` + bucket object.
