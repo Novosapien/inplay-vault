@@ -252,6 +252,58 @@ Leaf node -- no further decomposition needed.
 
 ---
 
+> ### ⭐ Update (28-08-2026, _[[28-08-2026-touchdown]]_): the home page is reordered, and two defects surfaced
+>
+> **The trigger was outside feedback.** Edwin's contact at Meta sent screenshots
+> and notes: **new users find the app overwhelming when they open it**. George
+> accepted the point while noting that trading carries genuine underlying
+> complexity, and floated then immediately withdrew the idea of different app
+> versions for different user levels.
+>
+> **The fix agreed is an ordering change, and all three InPlay voices converged on
+> it.** Edwin's reading of the home page: the team IPO tile is _"overpowering"_,
+> and the offering is not the engaging part of the product. His summary of Troy's
+> earlier point: _"you buy them and then you wait."_ The excitement is trading
+> during games.
+>
+> | Change | Detail |
+> |---|---|
+> | **Live and upcoming games move up** | Directly under the simulated trading challenge header, so the first thing a user sees is a game they can click into |
+> | **The team IPO tile moves down** | Below the portfolio. Jared: _"substantially lower"_ |
+>
+> The reasoning is worth keeping because it generalises: **the offering is a
+> function the product needs, not a thing users enjoy**. It issues the securities;
+> it does not retain anyone. Surface area should follow engagement, not
+> architecture.
+>
+> #### Two defects found in the same conversation
+>
+> - ⚠ **College games are not appearing in upcoming games at all, only NFL**
+>   (Troy). Found **the day before the first live NCAA games**, on the page the
+>   reorder is about to promote.
+> - **The first-run walkthrough loses its place.** After four or five steps,
+>   pressing back does not return to the screen the user came from (Jared and
+>   Ronex). Hasan had already spotted it and has it in hand.
+>
+> #### Changes Edwin asked for in the walkthrough
+>
+> Hasan demoed the first-run tour: it starts at account creation, can be replayed
+> from settings, and walks balance, upcoming games, the markets tab, a team, the
+> price chart, holdings, a **simulated practice buy and sell**, the leaderboard
+> and groups.
+>
+> - **Remove the dollar signs.** _"No reference to money."_ Regulatory, see
+>   [[compliance/regulatory-positioning]]
+> - **No percentages anywhere. Show the net change in value instead.** A repeat
+>   instruction: _"I made this one before"_
+> - **Bug:** the sell step's button is unreachable on some screens. Hasan still has
+>   aspect ratios and accessibility zoom to handle
+> - **Kevin's addition:** mention the default order size inside the walkthrough, so
+>   users learn the setting exists (see [[trading/trading]])
+>
+> Separately, Edwin could not change his own username, and flagged that **website
+> language has to change for the regulators**, which he is handling himself.
+
 ## Open Questions
 
 1. Is this the same page as Game Day Overview, or are they separate views?

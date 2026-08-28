@@ -456,6 +456,155 @@ graph LR
 
 > **Update (12–17 June touchdowns):** **Named the "IPO draft" (17-06):** chosen over "draft board" (too close to fantasy sports) and bare "IPO" (unfamiliar to users). A **"What is an IPO draft?"** link sits to the right of the title and routes into [[education/education]] to explain the mechanic, why to buy IPOs, and what a position means. **Inventory visibility (17-06):** Edwin wants to **hide shares-remaining** until the offering is near close (for example only surface it under ~500k shares left); a percentage display was rejected (reads 0% at the start and looks weak). This implies a **straw buyer / market maker** to fill unsold inventory so an offering never looks like it had zero sales (see [[trading/trading]] and [[architecture/open-questions]]). **Launch dates firm up:** College Football IPO **~22 Aug**, NFL **~2 Sept**, refining the IPO Scheduling window (was NCAA ~Aug 20 / NFL ~7 days pre-Sept 9). **Synthetic off-field pricing for the pre-launch preview (15-06):** preview IPO pricing combines a **synthetic on-field** number (betting lines / futures) with a **synthetic off-field** number from a per-game ad-spend model (a game's ad spend distributed by each team's share of trade volume; ad spend is not published until the earnings reports). This is a preview/simulation input, not a live-trading decision. _Sources: [[15-06-2026-touchdown]], [[17-06-2026-touchdown]]. See [[digests/touchdowns-12-17-jun-2026]]._
 
+> ### Update (24-08-2026, _[[24-08-2026-touchdown]]_): the offering is live, and it produced two defects, one sell-out and one new requirement
+>
+> The NCAA offering opened Saturday **22 August**. The Monday touchdown after it
+> (Edwin absent) was almost entirely about what the offering surfaced.
+>
+> **1. Two defects, not one, and only the first is solved.**
+>
+> - **The IPO draft page was locked.** Jared could buy from the **markets and
+>   trade pages** but **not from the IPO page itself**, and the same happened for
+>   two of his friends and some internal testers. Cause: they were still on the
+>   **TestFlight beta build** rather than the **live App Store build**. Troy:
+>   _"you had to delete it out of test flight and then redownload the version that
+>   had been approved by the app store"_, and _"we should have made that more
+>   explicit"_. Jared reinstalled **during the call** and confirmed the IPO page
+>   problem was gone. ⚠ **Process lesson worth keeping:** the first question on
+>   any "the app is broken" report from a tester is **which build are you on**.
+> - **A separate buying-power failure survived the reinstall.** With **$80,000 of
+>   buying power showing**, an order for a couple of thousand still failed. The
+>   error text is the useful part: **_"not enough buying power for that order.
+>   Open orders and shorts holding play dollars."_** So the balance is being held
+>   by open orders and short positions rather than being absent. George's
+>   hypothesis for at least some accounts: **dry-run firepower that was allocated
+>   and then removed**, or older accounts. **Open.** Jared owes a video into the
+>   Novo Slack channel; Hasan is checking the account against the KYC email.
+>
+> Against those, the control group is clean: Cody's friends went through KYC over
+> the weekend and _"had no troubles at all"_ (they bought Alabama Crimson Tide),
+> and Troy plus two friends tested successfully.
+>
+> **2. The IPO book shows Edwin buying through the taker.** George shared the book
+> on screen: **shares offered · shares sold · shares bought by the public**. The
+> **gap between sold and bought-by-public is what Edwin has manually ordered
+> through the taker**, which confirms the manual-execution behaviour forecast on
+> 17-08.
+>
+> **3. A team sold out, and there is already a fix.** The **Florida Atlantic
+> Owls** sold out, leaving the market maker _"nothing that it can do the two-sided
+> quotes for"_. George called it _"not a huge issue"_: most of that stock was
+> bought by **the taker**, so a **position transfer back to the maker** restores
+> the inventory it needs to quote both sides. ⚠ Two things to close before
+> Thursday, tracked as **N53** in [[market-maker/open-questions]]: the transfer
+> mechanism is the one **N50** questions (a signed, non-idempotent delta), and
+> **nobody has counted how many other books are close to sold out**.
+>
+> **4. New standing requirement: a daily IPO purchase report.** Troy asked whether
+> individual buyers can be identified. Not from the book view George shared, but
+> he can produce a report: _"it would be good to get a daily report of anyone that
+> bought IPO shares throughout the process each day if possible."_ **George owns
+> it.** ⚠ Not to be confused with **E43**, the daily reference feed Edwin sends
+> the market maker; this one runs the other way, out of our own books.
+>
+> **Dates confirmed on the call:** the **IPO window closes Wednesday 26 August**,
+> **secondary trading opens Thursday 27 August**, and there are **no games until
+> Saturday**. The gap is deliberate, so that if anything is wrong _"it wasn't
+> fully visible to the whole universe yet"_. Thursday is gated on removing the KYC
+> layer, see [[customer-onboarding/customer-onboarding]].
+>
+> **NFL follows the same process**, unchanged (George).
+
+> ### Update (26-08-2026, _[[26-08-2026-touchdown]]_): the window closes, and the handover to secondary has a time on it
+>
+> Held on the **final day of the NCAA IPO draft**, with Troy reading the countdown
+> off the app: **12 hours and 11 minutes** left, so the window closes at **22:00
+> on Wednesday 26 August**. At that point _"all the buttons just lock"_.
+>
+> **The handover was deliberately not automatic.** George asked whether secondary
+> starts as soon as the window closes or the next day. Troy chose the morning, and
+> the reason is the useful part: **QA on the open**. _"We should wait until the
+> morning to do it because then we're all on and can actively be looking at it in
+> submitting orders"_, checking that the locks actually came off. Edwin was not on
+> the call at that point; Troy took the decision and flagged he would confirm it,
+> which he did when Edwin joined.
+>
+> | When | What |
+> |---|---|
+> | Wed 26 Aug, 22:00 | **IPO window closes**, buy buttons lock |
+> | **Thu 27 Aug, 09:30 Eastern / 08:30 Central** | **Secondary trading opens**, with the team online to QA the open |
+> | Sat 29 Aug | First games, **138 teams live** |
+>
+> Little trading is expected in the two days before game day. The point of opening
+> early is that people **can** trade and test, and that any fault is found by the
+> team rather than by users on Saturday.
+>
+> ⚠ **Related gap:** there is **no prize pool page in the app** (George), so the
+> week-zero prize pool is announced by newsletter and push alert **linking to the
+> website**. See [[leaderboard]] and [[delivery/delivery]].
+> ### ⚠ Update (27-08-2026, _[[27-08-2026-touchbase]]_): the holding structure is backwards, and the NFL offering changes
+>
+> ⚠ **The conversation that produced this was cut short by the tZERO go-live
+> call and has not resumed.** Recorded because it is an instruction, not because
+> it is settled. Edwin: _"let's come back to this because this is very
+> important."_
+>
+> **What we built.** The **market maker** holds all the shares and rests the sell
+> orders; the **taker** buys its target share; users buy the rest. George
+> explained the reasoning honestly: _"we just thought what's simpler is the maker
+> just owns all of them cuz it's simple."_
+>
+> **Edwin's response: _"So that's backwards."_**
+>
+> **The structure he described instead**, which is how a real primary works:
+>
+> | Party | Role |
+> |---|---|
+> | **The team company** | Sells its own shares. It is the issuer |
+> | **InPlay Markets** | The **broker dealer** handling the sale, over tZERO's ATS |
+> | **The team-company treasury** | Holds whatever is not sold. His example: a million offered, 600,000 sold, **400,000 rest in treasury** |
+> | **The market maker** | The **selling agent**, providing two-sided liquidity from real inventory it may own |
+>
+> **Treasury is therefore real again.** Edwin was explicit about what it is:
+> _"It's actually an asset like a bank account, but it's a securities account…
+> just a securities bank account."_ And the unsold shares still have value:
+> _"that 400,000 that remain unsold, they actually are worth something."_
+> ⚠ **This re-reverses the 12 August retirement of the treasury holdback**, after
+> the app had already removed a field it had built for it. Recorded in
+> [[requirement-changes]] as the register's second re-reversal.
+>
+> **The instruction for the next offering, in his words:**
+>
+> > **"Right now for this instance, the taker is the buyer. But for the NFL,
+> > let's make it the maker be the buyer."**
+>
+> He accepted the NCAA run as it stands, _"it's okay for now. Good sim"_, so this
+> is not a fix-now item. It is a **rebuild-before-5-September** item, and it
+> changes the module that has just run a live offering. Tracked as **E54** in
+> [[market-maker/open-questions]], which lists the four things owed before it can
+> be specified.
+>
+> **One clarification worth keeping, because it simplifies a different problem.**
+> A maker selling from inventory is not shorting: _"they don't have to do the
+> short locates. So they're not getting short, they're just selling."_ That is
+> the first clean answer to the sold-out book problem raised on 24 August, where
+> the maker had nothing to offer.
+>
+> ⚠ **Terminology is disputed and InPlay owe cleaner language.** Troy argued the
+> group keeps saying "maker" as though it were passive, when a market maker does
+> _"both the taking and the making including making the shares available"_. Reg A
+> blocks "designated market maker"; "liquidity provider" or "selling agent" are
+> available. He also flagged _"a little misunderstanding about how the accounts
+> get created"_, which was not resolved before the call ended. **Until that
+> lands, building the NFL primary means guessing which entity holds what, which
+> is how the current structure ended up backwards.** Tracked as **E55**.
+>
+> **Also raised, and explicitly not a build item.** Edwin is exploring **credit
+> terms from the team companies to the makers**, so inventory can be topped off
+> easily. It is not regulatory-approved and he is still framing it: _"I haven't
+> gotten that approved from regulatory."_ Tracked as **E56**, production-model
+> thinking rather than scope.
+
 ## Gaps and Questions for Next Call
 
 ### Gaps

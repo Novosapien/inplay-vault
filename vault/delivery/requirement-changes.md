@@ -39,14 +39,41 @@ changed.
 
 | Class | Count |
 |-------|------:|
-| Reversal | **14** |
-| Re-reversal | **1** |
+| Reversal | **16** |
+| Re-reversal | **3** |
 | Descope | **1** |
 | Late parameter change | **6** |
 | Late scope addition | **8** |
-| **Total recorded changes to settled requirements** | **30** |
+| **Total recorded changes to settled requirements** | **34** |
 
-All thirty fall inside roughly **four weeks**, between 20 July and 19
+> **Updated 28-08-2026 after the Friday touchdown ([[28-08-2026-touchdown]]).**
+> Two more. **R17** reverses a position taken **the previous day**: off-field
+> volume now includes maker and taker activity, having excluded both on 27 August.
+> **R18** is the register's **third re-reversal**: the order ticket's default
+> quantity returns to the configured default order size, a setting that was built,
+> changed to last-traded, and is now changing back.
+>
+> ⚠ **R17 is the fastest reversal in the register**, at roughly 24 hours. That is
+> not a criticism of the decision, which is defensible. It is a measurement of how
+> quickly a position can move, and therefore of how much confidence to place in
+> a requirement that has only just been agreed.
+
+> **Updated 27-08-2026 after the touchbase ([[27-08-2026-touchbase]]).** Two more
+> changes, both Edwin's, both mid-sentence when the call was cut short for the
+> tZERO go-live. **R15** reverses the IPO holding structure and makes the maker
+> the NFL buyer. **R16** re-reverses the treasury holdback, which had been retired
+> on 12 August after the app removed a field built for it. R16 is the register's
+> **second re-reversal**, after subscription billing.
+>
+> ✅ **One thing that belongs here and is not a change.** On the same call Edwin
+> asked for live admin-panel control of the maker's spread and then **withdrew it
+> himself**: _"If there's any kind of change, then don't... I don't want to make
+> any changes whatsoever until we have this secondary market up and trading."_ It
+> is recorded under **Held** below rather than counted, because it is the first
+> in-window ask in this record that the client stood down on his own judgement,
+> and a register that only counts changes would make that invisible.
+
+All thirty-four fall inside roughly **six weeks**, between 20 July and 28
 August. The last six days carry **fifteen** of them, including nine that
 arrived on 18 August, the day after the build definition was frozen. Two of the
 eight additions were withdrawn on the 18-08 review call, one because the feature
@@ -74,16 +101,29 @@ context, the offering opens on 22 August and trading starts on 29 August.
 | R12 | **In-game price moves on win probability alone.** Edwin was explicit that no own event model was needed: _"you don't have to create it, you just pull Sport Radar's probability in"_ | E15, resolved on the 23-07 MM call, recorded in [[market-maker/open-questions]] | **Probability plus score.** A per-point offset moves the price immediately when the score changes | [[17-08-2026-touchdown]] | Adds a data dependency: the market maker must now consume play-by-play, not just probabilities |
 | R13 | **A rich app with many surfaces**, built that way deliberately to carry advertising inventory. Edwin confirmed the reasoning on the call | [[advertising/advertising]], the app as built | **Reduce the surfaces.** Money first, live games, news behind an icon, question whether discover needs to exist | [[17-08-2026-touchdown]] | Edwin was fair about the cause: the rationale was advertising revenue that never arrived |
 | R14 | **The testing-the-waters disclosure on most surfaces**, as Edwin's own prototype had it | Edwin's prototype, the 07-08 disclaimer work | **An info button plus the competition-selection screen.** Not every surface | [[17-08-2026-touchdown]], recorded in [[compliance/regulatory-positioning]] | The lightest of the reversals, and it improves the product |
+| R15 | **The market maker holds all the shares and rests the sell orders; the taker is the buyer.** Built this way deliberately for simplicity, George: _"we just thought what's simpler is the maker just owns all of them cuz it's simple"_ | [[ipo-module/ipo-module]], the NCAA offering as built and run 22 to 26 Aug | **Backwards.** Edwin: _"So that's backwards."_ The team company sells, InPlay Markets is the broker dealer, unsold shares rest in treasury, and the maker is the selling agent holding inventory. **"For the NFL, let's make it the maker be the buyer"** | [[27-08-2026-touchbase]] | ⚠ **Ten days before the NFL offering**, and it changes the module that has just run a live one. The NCAA build was accepted as it stands (_"it's okay for now. Good sim"_), so the cost is a rebuild rather than a hotfix. Tracked as E54; cannot be specified until E55 lands |
+| R16 | **The treasury holdback is retired. Treasury does not exist**, and the app removed a field it had already built for it | [[03-08-2026-touchdown]] and the 12 Aug float change, recorded as R4 above | **Treasury is real**, holding the unsold remainder as a securities account. Edwin: _"It's actually an asset like a bank account, but it's a securities account"_ | [[27-08-2026-touchbase]] | ⚠ **Re-reversal, the second in this register.** The position returns to roughly where R4 left it before 12 August. The useful half: it gives N21 a direction it has waited on since 29 July |
+| R17 | **Off-field volume excludes maker and taker activity.** Agreed on 27 August, with the exclusion recorded as the important half: the two house bots trade continuously, so counting them would swamp the real signal | [[27-08-2026-touchbase]], recorded in [[earnings-report/earnings-report]] | **Both are included.** Edwin: _"Leave them both then. Leave the maker and the taker because I want to report more trading volume each week. I don't want to report 22 trades"_ | [[28-08-2026-touchdown]] | ⚠ **Reversed in roughly 24 hours**, the fastest in this register. The reason is presentational rather than mechanical, and George had confirmed either filter is trivial. The cost: reported weekly volume becomes mostly house activity, and since volume drives the off-field allocation, the allocation is that much less connected to real participants |
+| R18 | **The order ticket's quantity holds the last traded size.** Built as a configurable default order size, then deliberately changed to last-traded | The setting exists under More; George: _"I think we added that and then changed it to the last order"_ | **Back to the configured default order size.** Edwin proposed resetting to zero; George, Jared and Troy all argued against, and Troy settled it on the industry norm: _"the default order size is what it always goes back to. That's how it works on other trading softwares too"_ | [[28-08-2026-touchdown]] | **Re-reversal, the third in this register**, and the cheapest kind: the setting still exists, so this is flipping behaviour back rather than rebuilding. ✅ Worth noting the shape of the conversation: the client proposed a fix, three people disagreed with reasons, and he took theirs |
 
-| R15 | **The home ticker carries prices and their change**, argued for by Edwin on 12 August as the thing that creates the excitement on the home screen | [[12-08-2026-touchdown]] | **IPO prices only, no net change** | [[change-requests-2026-08-18]] #5 | Six days later |
-| R16 | **Full order-book depth on the team page**, built once the gateway began publishing the whole book | Gateway order-book publishing, delivered before 10-08 | **Top of book only**, expandable on demand | [[change-requests-2026-08-18]] #17 | The depth work is finished and tested. It is now hidden rather than removed |
-| R17 | **Limit is the default order type**, with the synthetic market order built behind a flag that ships off | [[trading/sub-components/order-entry/order-entry]]; synthetic market order merged 15-08 | **Market becomes the default** | [[change-requests-2026-08-18]] #20 | Turns an unverified default on for every user four days before the offering |
+| R19 | **The home ticker carries prices and their change**, argued for by Edwin on 12 August as the thing that creates the excitement on the home screen | [[12-08-2026-touchdown]] | **IPO prices only, no net change** | [[change-requests-2026-08-18]] #5 | Six days later |
+| R20 | **Full order-book depth on the team page**, built once the gateway began publishing the whole book | Gateway order-book publishing, delivered before 10-08 | **Top of book only**, expandable on demand | [[change-requests-2026-08-18]] #17 | The depth work is finished and tested. It is now hidden rather than removed |
+| R21 | **Limit is the default order type**, with the synthetic market order built behind a flag that ships off | [[trading/sub-components/order-entry/order-entry]]; synthetic market order merged 15-08 | **Market becomes the default** | [[change-requests-2026-08-18]] #20 | Turns an unverified default on for every user four days before the offering |
+| R22 | **Shares remaining stays hidden until near the close**, at Edwin's instruction, so the offering does not read as a race | Recorded in the 05-08 plan and carried since | **A public-facing display of remaining availability**, his example being 500,000 left of 1,000,000 | [[19-08-2026-touchdown-requirements-review]] | ⚠ The number has no obvious source any more: since 19 August the offering is venue-backed and the float's remaining counter was deliberately stopped from gating buys, because the maker's book is the inventory |
 
-| R18 | **Shares remaining stays hidden until near the close**, at Edwin's instruction, so the offering does not read as a race | Recorded in the 05-08 plan and carried since | **A public-facing display of remaining availability**, his example being 500,000 left of 1,000,000 | [[19-08-2026-touchdown-requirements-review]] | ⚠ The number has no obvious source any more: since 19 August the offering is venue-backed and the float's remaining counter was deliberately stopped from gating buys, because the maker's book is the inventory |
+Rows R1 to R22 contain **19 distinct reversals** of settled requirements, three of
+which (R6, R16 and R18) are re-reversals, plus two rows (R3 and R8) that are
+second changes to requirements already changed once.
 
-Rows R1 to R18 contain **15 distinct reversals** of settled requirements, one of
-which (R6) is a re-reversal, plus two rows (R3 and R8) that are second changes to
-requirements already changed once.
+⚠ **R12 and R15 deserve reading together.** R12 changed the price from probability
+alone to probability plus score. On 27 August Edwin went further: _"the prices
+cannot be locked to win probability"_ at all, and the price should reflect the
+market's expectancy of a share's value over time. That is not logged as a separate
+row because it is the same requirement moving a second time and the conversation
+was cut off before it finished, but it is the third time the same gap has surfaced
+(see E30, E34 and N54 in [[market-maker/open-questions]]). **When a requirement
+moves three times, the pattern is usually that the underlying question was never
+asked directly.**
 
 ## Descope
 
@@ -128,12 +168,23 @@ grievances.
 
 ---
 
+## Held: asks raised and stood down
+
+Not changes, and deliberately not counted. Recorded because a register that only
+counts changes makes restraint invisible, and restraint is worth as much as the
+changes cost.
+
+| # | The ask | Where | What happened |
+|---|---------|-------|---------------|
+| H1 | **Live admin-panel control of the market maker's bid and ask**, so Edwin could tighten or move the spread during a game. The underlying need is real: the spread is standardised and has not been tuned for late-game or game-specific variables | [[27-08-2026-touchbase]] | **Withdrawn by Edwin, in the same exchange, before any work started.** George said it might be difficult, and Edwin's reply was _"If there's any kind of change, then don't. Just make sure that the market maker's up. I don't want to make any changes whatsoever until we have this secondary market up and trading."_ Then, when George offered to look anyway: _"you got enough on your plate. Let's just get through this weekend."_ The need stands for after the first game weekend |
+
+
 ## What the register is for
 
 Three things, and none of them is blame.
 
 **To make the claim checkable.** "Most of the recent change has been reversal" is
-an assertion. Twenty rows with two citations each is evidence, and it can be
+an assertion. Thirty-four rows with two citations each is evidence, and it can be
 argued with on the specifics rather than the sentiment.
 
 **To price the next one honestly.** When the next change arrives, this is the
@@ -162,7 +213,7 @@ which is a different and cheaper problem worth knowing about.
 Twenty-two change requests arrived on 18 August, the day after the freeze and
 four days before the offering. They are held in full, classified, in
 [[change-requests-2026-08-18]]. Only the seven that change a settled requirement
-are counted in this register: R15, R16, R17 and A5 to A8. The other fifteen are
+are counted in this register: R19, R20, R21 and A5 to A8. The other fifteen are
 layout, naming, copy or a defect, and carry no settled requirement behind them.
 
 Two items on that list, #13 and #14, are recorded there rather than here because

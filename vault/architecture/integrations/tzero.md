@@ -1224,6 +1224,38 @@ Data source: **Order Entry v2.2 feed** (per-user, per-order)
 - Development **complete and functioning in the segregated environment**. Rate = **$1.20 per share (adjustable)**.
 - **Novo to test:** verify the **FIX tags on the gateway** and confirm **data flows correctly to the blockchain**.
 
+### 10.5b Shorting: the simulation is looser than production (24-08-2026)
+
+⚠ **This corrects an assumption held the other way round.** Troy, correcting
+George on the 24-08 touchdown: _"There's no limit on the shorts in the simulation.
+There's a limit on the shorts in production."_
+
+- **An additional 1,000,000 shares per team is eligible for shorting**, so a
+  million long and a million short.
+- **tZERO have turned the locate flag off**, allowing shorts of **up to 100% of
+  the long shares**. Troy: _"T0 has bypassed that to allow up to 100% of shorts
+  against the longs… my understanding is they had turned the locate flag off
+  essentially."_
+- **Edwin is emulating the production constraint** by having the market maker
+  acquire a portion of the shares **to loan out**. Troy called this _"not a fully
+  functional need right now"_ given the bypass.
+- ⚠ **Unconfirmed.** Troy: _"we'll have to confirm how that would work"_, and took
+  it into the **tZERO call on 25 August**. Treat the bypass as reported, not
+  verified, and do not build against it until it is.
+
+Why it matters now: the Florida Atlantic Owls **sold out** at the NCAA offering,
+so the market maker has no float to offer in that book. Tracked as **N53**,
+**E26** and **T16** in [[market-maker/open-questions]].
+(Source: [[24-08-2026-touchdown]])
+
+### 10.5c Test tickers: only ten today, a full replica coming (24-08-2026)
+
+- There are **only ten test tickers** at present. That supports replay testing but
+  **not a replica test while live games are running**.
+- tZERO will provide a **full replica of all the test tickers**, so a change such
+  as a maker quoting **five levels instead of three** can be exercised **during
+  live games with zero effect on any users** (George, 24-08). Tracked as **T17**.
+
 ### 10.6 IPO issuance path (23-07-2026)
 
 - IPO adopts a **standard primary-issuance model: bypass the Matching Engine and mint tokens directly to investor wallets** via the **transfer-agent workspace** (IPO = **single-price, long-only** primary raise). **Novo needs minting access in the tokenization engine.** Owned by [[primary-offering-execution]].

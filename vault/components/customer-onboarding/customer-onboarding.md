@@ -133,6 +133,158 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### 🔴 Update (28-08-2026): the KYC-less path creates accounts that cannot trade
+>
+> **Found the day before the first live games, and it is the operational
+> consequence of shipping the no-verification path on the 26th.**
+>
+> Troy has **two unverified accounts with no buying power**, one created weeks ago
+> and one created the day before, and asked the direct question: how does the
+> 13-and-over tier get enabled for trading?
+>
+> **The cause (Hasan).** Getting a trading account is currently **an explicit
+> step**, not an automatic one. He had intended onboarding to allocate buying
+> power and register the account with tZERO by itself. The sequencing is the hard
+> part: the account has to move from **tZERO's staging API onto their main
+> system** before buying power can be allocated, and timing that is _"a bit clunky
+> at the moment."_
+>
+> **Troy's real concern is not his own two accounts:**
+>
+> > _"I'm more worried about anyone that may have signed up over the last week
+> > without going through the ID verification, expecting those locked feeds to
+> > come off now that we're open for secondary trading."_
+>
+> In other words: the verification wall came down on the 26th, secondary opened on
+> the 27th, and **nobody knows how many accounts created in between can actually
+> trade**. The people most likely to be affected are exactly the ones the
+> KYC-less path was built to attract.
+>
+> **Timings Hasan gave on the call:**
+>
+> | Work | Estimate |
+> |---|---|
+> | Backfill: find every account with no buying power and allocate it | **Half an hour to an hour** |
+> | The underlying fix: make allocation automatic on onboarding | **A few hours** |
+>
+> Edwin: _"That's a critical piece."_ He connected it straight to spend: _"if
+> we're spending money on advertising, we've got to have people be able to sign up
+> and not do the KYC."_ ⚠ **That is the right link to hold.** The marketing agency
+> starts testing ads in **week three** (see [[advertising/advertising]]), so the
+> automatic path has to be dependable well before paid traffic arrives, not just
+> before Saturday.
+>
+> _Source: [[28-08-2026-touchdown]]._
+
+> ### ⭐ Update (26-08-2026): the KYC-less path is BUILT, and the demo produced four changes
+>
+> Hasan demoed the no-verification path end to end on the 26-08 touchdown. **It
+> works.** The flow is unchanged until near the end: date of birth, email,
+> verification code, create account. The identity check then appears with a skip,
+> and the user can trade **without an ID document or a face scan**.
+>
+> The call turned into a live design review. **Four changes came out of it.**
+>
+> **1. The skip is buried and must move.** _"I'll do it later"_ sits below the
+> fold. Cody and Troy both want it **at the top, or as a popup**. Troy's reasoning
+> is the part to keep: _"people will be like ugh because they don't even know that
+> that's even an option at that point and they may just give up and not even
+> scroll."_ A skip nobody finds is not a skip.
+>
+> **2. The fork becomes its own screen, straight after the email code.** Cody
+> pointed back at Edwin's own example: the user lands on a page and **chooses
+> their route**, rather than discovering the choice buried inside a verification
+> screen. Kevin: _"once you put that in and then click next, it should bring you to
+> this page here now, and then you can pick either one of those."_ Troy agreed and
+> gave the principle: _"if we can remove a couple hops because we want them to get
+> to the screen so they can see the screen as soon as possible."_ Hasan confirmed
+> it can work that way.
+>
+> ⚠ **Note the relationship to the 17-08 screen.** That call put a **choice of
+> three competitions** on first open. This one puts a **verify-or-not fork**
+> straight after the email code. They are two different forks, one level apart,
+> and **nobody has reconciled them into a single first-run sequence**. Worth
+> settling before more screens are built on either.
+>
+> **3. The word "simulated" goes in front of "trading" everywhere.** Cody:
+> _"start trading now… that seems to me reads like regulatory brokerage account or
+> maybe too close to it."_ Troy: _"Put simulated in there. Activate simulated
+> trading."_ Kevin: _"pretty much just add simulated in before trading and pretty
+> much everything should be good."_ **This is a compliance copy rule, not a
+> preference.** Recorded in [[compliance/regulatory-positioning]].
+>
+> **4. "KYC" comes out of the interface.** Troy: _"KYC is not a term that really
+> resonates with everyone."_ The group worked through "get identity verified", "get
+> ID verified" and (Jared, joking) "IDification", and landed on the shortest
+> version:
+>
+> | Option | Label |
+> |---|---|
+> | Verify | **"Get verified"** |
+> | Skip | **"Start trading without verification"** |
+>
+> Troy's argument for dropping "ID": _"we don't even have to put ID in there
+> because it says you need to be of these ages. So that's what you're doing the
+> verification for. It's pretty implicit."_
+>
+> #### Defects and asks from the same demo
+>
+> - ⚠ **Date of birth is in the wrong order.** The field shows **day before
+>   month**; US users expect month first (Jared). George accepted it on the spot.
+> - **SMS verification instead of email code** (Jared), and he brought the user
+>   research with him: people do not want to leave the app, and the Gmail autofill
+>   prompt is unreliable, _"that didn't pop up on mine. That didn't pop up on my
+>   friends either."_ George: doable via **Twilio**, needs the organisation set up
+>   and verified, _"not a done in a day"_. **Recorded as an improvement, not
+>   committed.**
+> - **Apple and Google one-click sign-in** (Troy), for the future to-do list.
+>   George: doable, provider choice needed, and Google's own verification process
+>   is arduous and video-based, _"one of the things that we can't speed up with
+>   AI."_
+> - **A first-run step-by-step guide**, as Edwin had demonstrated, is on Novo's
+>   list with George targeting **end of that week**.
+>
+> _Source: [[26-08-2026-touchdown]]._
+
+> ### ⚠ Update (24-08-2026): removing the KYC layer is the single gate on Thursday
+>
+> Troy, on the 24-08 touchdown: _"Let's focus on removing the KYC layer right now.
+> That's the highest priority right now is to get that lifted as fast as
+> possible."_ George had already described the work as _"not a turn it on"_ job,
+> but committed to it _"over the next day or two"_.
+>
+> **The sequence Troy set out:**
+>
+> | When | What |
+> |---|---|
+> | Wednesday 26 August, evening | **IPO window closes** |
+> | **Thursday 27 August** | **Secondary trading opens.** The KYC layer needs to be gone by here |
+> | Saturday 29 August | First games |
+>
+> The two-day gap between trading opening and the first games is **deliberate**:
+> _"we wanted to have a couple days again just so that in case anything was wrong,
+> it wasn't fully visible to the whole universe yet."_
+>
+> This is the moment the three-tier decision of 03-08 / 07-08 stops being a model
+> and becomes the critical path. What was scoped on 24-07 as a KYC-less side door
+> for the academic programme, then promoted on 03-08 into the main funnel's first
+> stage, is now **the single piece of work standing between the product and its
+> trading launch**.
+>
+> Two things to hold on to while it lands:
+>
+> - **The gate being lifted is the trading gate, not the payout gate.** Cash
+>   prizes still require full Persona KYC and US tax residency. Nothing here
+>   touches [[compliance/eligibility-and-age-gating]]'s payout rules.
+> - **The tZERO date-of-birth blocker (G1) is the thing to verify.** As of 07-08,
+>   tZERO's onboarding API still required a date of birth of 18 plus, which meant
+>   a Trader Light user could not be allocated a wallet and therefore could not
+>   trade at all. 14-08 recorded that tZERO **will** remove the 18 plus
+>   requirement. ⚠ The 24-08 call never mentions it, so **confirm G1 is actually
+>   closed before treating Thursday as safe**.
+>
+> _Source: [[24-08-2026-touchdown]]._
+
 > ### Update (17-08-2026): the first screen is a choice of three competitions
 >
 > Edwin's simplest statement yet of what first open has to do, and it is a
