@@ -14,6 +14,80 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-28 — ⭐ Edwin's SDMM-1 v5.1 engine · ✅ the injury channel is DROPPED
+
+Received `novo_handoff_1.zip` 27-08 — the formula he promised on the call.
+Filed at `reference/edwin-sdmm1-v51-2026-08-27/`. Run and measured, not
+just read. Brief: artifact "What Edwin sent" (claude.ai).
+
+- 📝 **What it is.** "SDMM-1 Reference Price Specification v5.1": a working
+  engine (476 lines, stdlib only), a 31-test acceptance suite, and a spec.
+  **All 31 tests pass. It reproduces LSU's published IPO of $59.535 to the
+  penny.** He states the rule: a port is correct when all 31 pass.
+- 📝 **The price formula is nearly ours.** His forward leg `5·ΣP(win)` IS
+  our `$5 × T` — expected wins is the sum of per-game win probabilities.
+  Same $5 win, $2.50 tie, $2.50 pool, settlement identity, live leg, and
+  no-step-at-the-whistle. **What differs is underneath:** we hold a frozen
+  number, he holds a per-team RATING in points that every observation
+  updates by one Kalman step.
+- ⭐ **It answers `E52` outright.** Measured on his engine: a loss is
+  **−$12.54**, a big win **+$6.51**, an ugly win (by 2 as a 28.5-pt
+  favourite) **−$5.46**. Decomposed: the game itself is only −$4.53; the
+  other 11 games re-rate from 7.64 to 6.22 expected wins = −$7.14. **Our
+  weekly-futures-rebase proposal is superseded — withdraw it.**
+- ⭐ **A win probability IS a spread.** Verified on all 12 LSU games:
+  `d = √(ς² + Var d) · Φ⁻¹(p)` reproduces the engine's own edge exactly,
+  and feeding the derived number gives a price identical to feeding the
+  real spread. **So his "primary channel" may already be in our hands** as
+  Sportradar's pregame win probability. ⚠ Two unknowns: how far ahead SR
+  prices college games, and what observation noise their number deserves
+  (he assumes 1.5 pts for a bookmaker spread).
+- ⚠ **The reference implementation does not scale.** It rebuilds the whole
+  posterior on every read — deliberate, because in-place updates
+  double-apply ($1.18 per repeated tick in his v4). **Measured: 0.5 ms at
+  his 13-team demo, 364 ms at our 138 books, 652 ms at 170.** The cache
+  clears on any new observation, and we poll live games every 500 ms, so a
+  rebuild already exceeds the poll interval. **Fix: checkpoint the settled
+  observations and replay only the live games — measured 5.5 ms, 130×
+  faster, and it keeps his idempotency.** Same checkpoint-plus-replay
+  pattern our journal already uses. Performance is explicitly out of his
+  scope.
+- ⚠ **Our prices are ~2% above what shares were sold at.** Measured across
+  132 matched college teams: our reference price runs a **median +2.39%**
+  over the listed IPO. His two "extra" legs — discounting (−1.14%) and the
+  risk charge (−0.87%) — are **−2.01%**, almost exactly the gap. They are
+  not decoration; they reconcile the model to the real offer price. Both
+  are one line of arithmetic and both unwind to zero at settlement.
+  ⚠ One outlier (Louisiana Monroe, −40%) is probably a name-join error in
+  the check, not a real discrepancy — verify before quoting it.
+- ✅ **DECISION (George, 28-08): DROP the injury channel.** Measured, the
+  channel collapses to a single scenario:
+
+  | Injury | Move |
+  |---|---|
+  | Own QB, season-ending | **−$8.31** |
+  | Own WR / DL | −$1.75 |
+  | Own OL / RB | −$1.40 / −$1.18 |
+  | Own kicker | −$0.62 |
+  | Opponent's QB out | +$0.26 to +$0.77 |
+
+  **Why dropping is safe:** a QB injury still reaches the price through
+  Sportradar's win probability — immediately during the game, and for
+  later games as each gets its pregame number. It arrives **delayed, not
+  lost**.
+  **Why dropping is a net simplification:** the stale-spread trap exists
+  ONLY because an injury can post-date a posted spread. Dropping injuries
+  removes the −$3.57 wrong-direction bug, the `stale_spreads()`
+  invalidation logic, the timestamp requirement on the board feed, and an
+  injury feed (position + severity) **we do not have**.
+  ⚠ **Recorded cost, and it is a product one:** Edwin's 09-08 Gamecast
+  document made the star-QB case its headline (a major injury dropped a
+  winning team's price in 26 of 26 tests). It is also the most dramatic
+  moment in the product — the quarterback goes off and users expect the
+  price to react. Under this ruling it drifts instead. **Revisit if the
+  product wants the theatre; the channel can be added later without
+  changing anything else.**
+
 ## 2026-08-27e — ⚠ the live off-field numbers over-allocate the pools by ~9%
 
 Measured on the 138 live NCAA records ·

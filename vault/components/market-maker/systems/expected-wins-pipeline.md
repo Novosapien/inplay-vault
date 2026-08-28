@@ -1,5 +1,5 @@
 ---
-description: "The normative page for expected-wins pricing: seed once from de-vigged win totals, then the zero-jump absorber — equations, lifecycle, generator design, rebase"
+description: "Expected-wins pricing: seed once, then the zero-jump absorber — with §7 withdrawn and the injury channel dropped after Edwin's SDMM-1 v5.1 engine"
 ---
 
 # Expected-Wins Pipeline — the pricing centre
@@ -138,7 +138,22 @@ an **external generator**:
 - The reference-feed adapter (`validate_records()`) survives as the
   door-validation seam only.
 
-## 7 · Rebase — the deferred layer, designed now
+> ⚠️ **§7 IS WITHDRAWN (28-08).** Edwin's SDMM-1 v5.1 engine
+> (`reference/edwin-sdmm1-v51-2026-08-27/`) answers the forward re-rate
+> properly — a per-team rating that every observation updates, giving a
+> **−$12.54** loss against our absorber's −$4.53. The weekly futures
+> rebase below is superseded and should not be built. Kept for the
+> reasoning trail. See [[market-maker/decisions]] 28-08 and `E53`.
+>
+> ✅ **The injury channel is DROPPED** (George, 28-08). Measured, it is one
+> scenario — a season-ending QB is −$8.31 and everything else is under $2.
+> A QB injury still reaches the price through Sportradar's win
+> probability, delayed rather than lost. Dropping it also removes the
+> stale-spread trap, its −$3.57 wrong-direction bug, and the timestamp
+> requirement on the board feed. ⚠ Cost is product theatre, not
+> correctness — revisit if the app wants the moment.
+
+## 7 · Rebase — the deferred layer, designed now ~~(WITHDRAWN 28-08)~~
 
 Sportsbook futures reprice season totals mid-season. A fresh de-vig is a
 **rebase**: legitimate market data, and the cheap form of the form re-rate.
