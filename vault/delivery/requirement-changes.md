@@ -39,12 +39,24 @@ changed.
 
 | Class | Count |
 |-------|------:|
-| Reversal | **11** |
-| Re-reversal | **2** |
+| Reversal | **12** |
+| Re-reversal | **3** |
 | Descope | **1** |
 | Late parameter change | **4** |
 | Late scope addition | **4** |
-| **Total recorded changes to settled requirements** | **22** |
+| **Total recorded changes to settled requirements** | **24** |
+
+> **Updated 28-08-2026 after the Friday touchdown ([[28-08-2026-touchdown]]).**
+> Two more. **R17** reverses a position taken **the previous day**: off-field
+> volume now includes maker and taker activity, having excluded both on 27 August.
+> **R18** is the register's **third re-reversal**: the order ticket's default
+> quantity returns to the configured default order size, a setting that was built,
+> changed to last-traded, and is now changing back.
+>
+> ⚠ **R17 is the fastest reversal in the register**, at roughly 24 hours. That is
+> not a criticism of the decision, which is defensible. It is a measurement of how
+> quickly a position can move, and therefore of how much confidence to place in
+> a requirement that has only just been agreed.
 
 > **Updated 27-08-2026 after the touchbase ([[27-08-2026-touchbase]]).** Two more
 > changes, both Edwin's, both mid-sentence when the call was cut short for the
@@ -87,10 +99,12 @@ opens on 22 August and trading starts on 29 August.
 | R14 | **The testing-the-waters disclosure on most surfaces**, as Edwin's own prototype had it | Edwin's prototype, the 07-08 disclaimer work | **An info button plus the competition-selection screen.** Not every surface | [[17-08-2026-touchdown]], recorded in [[compliance/regulatory-positioning]] | The lightest of the reversals, and it improves the product |
 | R15 | **The market maker holds all the shares and rests the sell orders; the taker is the buyer.** Built this way deliberately for simplicity, George: _"we just thought what's simpler is the maker just owns all of them cuz it's simple"_ | [[ipo-module/ipo-module]], the NCAA offering as built and run 22 to 26 Aug | **Backwards.** Edwin: _"So that's backwards."_ The team company sells, InPlay Markets is the broker dealer, unsold shares rest in treasury, and the maker is the selling agent holding inventory. **"For the NFL, let's make it the maker be the buyer"** | [[27-08-2026-touchbase]] | ⚠ **Ten days before the NFL offering**, and it changes the module that has just run a live one. The NCAA build was accepted as it stands (_"it's okay for now. Good sim"_), so the cost is a rebuild rather than a hotfix. Tracked as E54; cannot be specified until E55 lands |
 | R16 | **The treasury holdback is retired. Treasury does not exist**, and the app removed a field it had already built for it | [[03-08-2026-touchdown]] and the 12 Aug float change, recorded as R4 above | **Treasury is real**, holding the unsold remainder as a securities account. Edwin: _"It's actually an asset like a bank account, but it's a securities account"_ | [[27-08-2026-touchbase]] | ⚠ **Re-reversal, the second in this register.** The position returns to roughly where R4 left it before 12 August. The useful half: it gives N21 a direction it has waited on since 29 July |
+| R17 | **Off-field volume excludes maker and taker activity.** Agreed on 27 August, with the exclusion recorded as the important half: the two house bots trade continuously, so counting them would swamp the real signal | [[27-08-2026-touchbase]], recorded in [[earnings-report/earnings-report]] | **Both are included.** Edwin: _"Leave them both then. Leave the maker and the taker because I want to report more trading volume each week. I don't want to report 22 trades"_ | [[28-08-2026-touchdown]] | ⚠ **Reversed in roughly 24 hours**, the fastest in this register. The reason is presentational rather than mechanical, and George had confirmed either filter is trivial. The cost: reported weekly volume becomes mostly house activity, and since volume drives the off-field allocation, the allocation is that much less connected to real participants |
+| R18 | **The order ticket's quantity holds the last traded size.** Built as a configurable default order size, then deliberately changed to last-traded | The setting exists under More; George: _"I think we added that and then changed it to the last order"_ | **Back to the configured default order size.** Edwin proposed resetting to zero; George, Jared and Troy all argued against, and Troy settled it on the industry norm: _"the default order size is what it always goes back to. That's how it works on other trading softwares too"_ | [[28-08-2026-touchdown]] | **Re-reversal, the third in this register**, and the cheapest kind: the setting still exists, so this is flipping behaviour back rather than rebuilding. ✅ Worth noting the shape of the conversation: the client proposed a fix, three people disagreed with reasons, and he took theirs |
 
-Rows R1 to R16 contain **13 distinct reversals** of settled requirements, two of
-which (R6 and R16) are re-reversals, plus two rows (R3 and R8) that are second
-changes to requirements already changed once.
+Rows R1 to R18 contain **15 distinct reversals** of settled requirements, three of
+which (R6, R16 and R18) are re-reversals, plus two rows (R3 and R8) that are
+second changes to requirements already changed once.
 
 ⚠ **R12 and R15 deserve reading together.** R12 changed the price from probability
 alone to probability plus score. On 27 August Edwin went further: _"the prices

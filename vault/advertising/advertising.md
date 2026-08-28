@@ -68,3 +68,32 @@ Nothing here may be loaded into the workforce until these close. Full per-docume
 ## The one honest weakness
 
 Every first-person quote in [[buyer-personas]] was written by Novosapien, not captured from a real buyer. InPlay has closed no advertising deals, and Edwin and Cody asked for the personas to be built on assumptions so the session could finish. That is a legitimate starting point and it is stated at the top of the document rather than buried, but those quotes need replacing with real phrasing as soon as real calls happen. It is the one part that cannot be quietly corrected later.
+
+
+## The marketing agency's timeline (28-08-2026)
+
+Cody set out the agency's plan on the Friday touchdown. They are already in
+TestFlight, and **reviewing the app and onboarding experience is explicitly part
+of their scope**, not an extra.
+
+| When | What happens |
+|---|---|
+| **Weeks 1 to 2** | Discovery. Reviewing the app and the onboarding experience, feeding back suggestions from a marketer's point of view |
+| **Week 3** | **First ad tests.** Hooks and language only, **no graphics**, small spend, testing what resonates. Edwin's framing: _"even on their little $200 a day stuff"_ |
+| **Weeks 3 to 4** | A spreadsheet of **suggested spend**, based on what the research found |
+| **Week 5** | **The first real campaign** |
+
+**Two things follow from this that matter more than the dates.**
+
+**First, week three is the real deadline for onboarding, not Saturday.** Edwin
+made the link himself: _"if we're spending money on advertising, we've got to
+have people be able to sign up and not do the KYC."_ The buying-power gap found
+on 28 August (see [[customer-onboarding/customer-onboarding]]) has to be
+dependable before paid traffic arrives, not merely before the first game.
+
+**Second, an access blocker is outstanding.** Brett asked Cody to chase the
+agency for logins so they can be added to **tag manager, analytics and
+Firebase**. Without those they cannot instrument anything they are about to
+test, and Sebastian has not responded. Cody agreed to ping him.
+
+_Source: [[28-08-2026-touchdown]]._

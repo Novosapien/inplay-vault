@@ -133,6 +133,49 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### 🔴 Update (28-08-2026): the KYC-less path creates accounts that cannot trade
+>
+> **Found the day before the first live games, and it is the operational
+> consequence of shipping the no-verification path on the 26th.**
+>
+> Troy has **two unverified accounts with no buying power**, one created weeks ago
+> and one created the day before, and asked the direct question: how does the
+> 13-and-over tier get enabled for trading?
+>
+> **The cause (Hasan).** Getting a trading account is currently **an explicit
+> step**, not an automatic one. He had intended onboarding to allocate buying
+> power and register the account with tZERO by itself. The sequencing is the hard
+> part: the account has to move from **tZERO's staging API onto their main
+> system** before buying power can be allocated, and timing that is _"a bit clunky
+> at the moment."_
+>
+> **Troy's real concern is not his own two accounts:**
+>
+> > _"I'm more worried about anyone that may have signed up over the last week
+> > without going through the ID verification, expecting those locked feeds to
+> > come off now that we're open for secondary trading."_
+>
+> In other words: the verification wall came down on the 26th, secondary opened on
+> the 27th, and **nobody knows how many accounts created in between can actually
+> trade**. The people most likely to be affected are exactly the ones the
+> KYC-less path was built to attract.
+>
+> **Timings Hasan gave on the call:**
+>
+> | Work | Estimate |
+> |---|---|
+> | Backfill: find every account with no buying power and allocate it | **Half an hour to an hour** |
+> | The underlying fix: make allocation automatic on onboarding | **A few hours** |
+>
+> Edwin: _"That's a critical piece."_ He connected it straight to spend: _"if
+> we're spending money on advertising, we've got to have people be able to sign up
+> and not do the KYC."_ ⚠ **That is the right link to hold.** The marketing agency
+> starts testing ads in **week three** (see [[advertising/advertising]]), so the
+> automatic path has to be dependable well before paid traffic arrives, not just
+> before Saturday.
+>
+> _Source: [[28-08-2026-touchdown]]._
+
 > ### ⭐ Update (26-08-2026): the KYC-less path is BUILT, and the demo produced four changes
 >
 > Hasan demoed the no-verification path end to end on the 26-08 touchdown. **It

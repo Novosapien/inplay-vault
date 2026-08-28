@@ -68,6 +68,27 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > record — the MM quoted live on the real venue from 07-08 (six books
 > two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
+> **⭐ Update 28-08 (Friday touchdown, [[28-08-2026-touchdown]]), the day before
+> the first live NCAA games.** The 27-08 conversation resumed and finished the
+> valuation half. **The delta model has its numbers** (see
+> [[market-maker/decisions]] 2026-08-28): the kickoff win probability is already
+> inside expected wins, and the change from it to the result moves the price. TCU
+> at 77.3% against a $5 payout prices at ~$3.86 and should rise toward $5 on a
+> win.
+> 🔴 **One defect goes live tomorrow with no fix in place (`N55`).** Because
+> expected wins never moves, the price **snaps back to its opening level when a
+> game ends**. The delta model is the fix and it is not built. `S12` makes this
+> certain rather than likely, since NCAA expected wins is static anyway while the
+> futures endpoint is down. **Plan the first weekend around it being visible.**
+> ⚠ **`N56` is the assumption to test before building further:** that the kickoff
+> probability really is inside expected wins. The two numbers come from different
+> Sportradar feeds. It is testable against a completed game, and it should be
+> tested rather than assumed.
+> **Also:** injuries are deliberately out of scope for now, off-field volume now
+> **includes** maker and taker activity (reversing 27-08, `R17`), and journal
+> replay latency needs an approach (`N57`). At least one Novosapien engineer is on
+> standby for Saturday.
+
 > **⭐ Update 27-08 (touchbase, [[27-08-2026-touchbase]]): the plan gains a
 > structural item ten days before the NFL offering.** Edwin reversed the IPO
 > holding structure: the maker should hold the inventory, and **for the NFL

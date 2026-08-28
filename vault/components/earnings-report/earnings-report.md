@@ -58,6 +58,41 @@ Earnings Report
 ---
 
 
+> ### ⭐ Update (28-08-2026, _[[28-08-2026-touchdown]]_): the volume definitions settle, and one of them reverses yesterday
+>
+> Four answers in quick succession on the Friday touchdown, and the last one
+> **reverses the position taken the previous day**.
+>
+> | Question | Answer |
+> |---|---|
+> | What does "volume" mean? | **The notional amount, effectively the number of trades.** Not dollar-weighted. Edwin: _"we're not going to break it down into the actual dollar for dollar… keep it very simple"_ |
+> | Over what window? | **Game to game, not calendar.** _"As soon as the game's over, then that share's count till the next game is over."_ Games are always **at least four days apart** (Sunday then Thursday at the tightest) |
+> | When does it publish? | **Tuesday for NFL, Wednesday for college.** Reconfirmed |
+> | Does house activity count? | ⚠ **Yes. Maker and taker volume is now INCLUDED** |
+>
+> **⚠ The reversal, and what it costs.** On 27 August Edwin accepted excluding
+> both house bots, and the vault recorded the exclusion as the important half.
+> On 28 August, after George confirmed either filter is trivial to apply, he
+> reversed it:
+>
+> > _"Leave them both then. Leave the maker and the taker **because I want to
+> > report more trading volume each week. I don't want to report 22 trades.**"_
+>
+> The reason is **presentational, not mechanical**, and it is worth stating the
+> consequence plainly rather than burying it. The maker and the taker trade
+> continuously across every book. Including them means the reported weekly volume
+> is **mostly house activity**, and since volume drives the off-field allocation,
+> **the allocation becomes correspondingly less connected to what real
+> participants did**. With 187 verified users and two bots quoting all day, the
+> house share is not a rounding error.
+>
+> That interacts directly with the standing open item on this component about
+> **volume-allocation gaming**: a mechanic already exposed to gaming is now also
+> dominated by house flow. Recorded as **R17** in [[requirement-changes]].
+>
+> **The off-field figure itself is unchanged**: $250 per game, allocated by share
+> of volume, seeded at the offering.
+
 > ### ⚠ Update (27-08-2026, _[[27-08-2026-touchbase]]_): trading volume is never shown publicly
 >
 > A firm instruction from Edwin, with an anti-gaming rationale that is worth
