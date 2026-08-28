@@ -14,6 +14,73 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-27: ✂ two settled positions reversed, who holds the shares and what moves the price
+
+Session: [[market-maker/sessions/2026-08-27-touchbase-digest]] ·
+[[27-08-2026-touchbase]] · `E54` `E55` `E56` `N54`
+
+A 13-minute touchbase on the morning secondary opened, cut short by the tZERO
+go-live call. ⚠ **Both reversals below were mid-conversation when the call
+ended.** Edwin: *"let's come back to this because this is very important."* They
+are logged because they are instructions, not because they are finished.
+
+- ✂ **The IPO holding structure is backwards, and NFL changes.** George
+  described the build (the **maker** holds all shares and rests the sell orders,
+  the **taker** buys). Edwin: *"So that's backwards."* The real structure: the
+  team company sells, a broker dealer handles the sale (**InPlay Markets**) over
+  tZERO's ATS, and the maker acts as **selling agent** providing two-sided
+  liquidity. Accepted for the NCAA run, *"it's okay for now. Good sim"*, with a
+  direct instruction for the next one: **"for the NFL, let's make it the maker be
+  the buyer."** Supersedes the 2026-07-31 primary-structure decision on the buyer
+  side only; the two-MPID split stands. **Ten days before the NFL offering.**
+- ✅ **The maker as seller does not need short locates.** Edwin: *"they don't
+  have to do the short locates. So they're not getting short, they're just
+  selling."* The cleanest statement yet of why selling from inventory and selling
+  short are different problems, and it narrows `E26`: a maker holding real
+  inventory removes the need to short in the sold-out case `N53` raised.
+- ✂ **Treasury is real again.** Unsold shares (his worked example: 400,000 of a
+  million) sit in the **team company's treasury**, which he described as *"an
+  asset like a bank account, but it's a securities account."* This re-reverses
+  the 12-08 retirement of the treasury holdback and gives `N21` its direction
+  after four weeks. Recorded in [[requirement-changes]] as a re-reversal, the
+  second in the register.
+- ✂ **The price must NOT be locked to win probability.** Edwin: *"the prices
+  cannot be locked to win probability."* **This supersedes the ✅ 23-07 decision**
+  (*"In-game price driver = Sport Radar live win probability, pulled directly. No
+  own event-weight algorithm in v1"*), which has been the basis of Chapter 3
+  since. His example: a heavy underdog wins 70 to nothing, win probability reaches
+  100%, so a probability-locked price stops at $5, but the market's view of the
+  team has changed and the share should reach perhaps $10. The price is *"based
+  on the market's expectancy of the value of that share over time."*
+  ⚠ George conceded the gap: *"at the moment that's not being included in how the
+  maker's pricing."*
+- 🟡 **Per-game price range: roughly zero to $12.** Stated as the range the price
+  *should* move in over a game. Consistent in direction with the 17-08 target of
+  $1.50 to $8 intra-game, but wider. **Not yet a parameter row**: it was stated
+  inside an unfinished explanation, so it stays 🟡 proposed pending the resumed
+  call.
+- 🟡 **The proposed mechanism: expected wins moves after a game.** George's
+  reading, which Edwin was about to work through: a big win raises the team's
+  expected wins for the season, which feeds the price, separately from the next
+  game's win probability arriving from Sport Radar. ⚠ **Blocked by the same
+  broken feed as `S12`**: NCAA expected wins is static today. Tracked as `N54`.
+- ⚠ **Terminology is disputed and InPlay owe cleaner language.** Troy: the group
+  keeps saying "maker" as though it were passive, when a market maker does *"both
+  the taking and the making including making the shares available"*. Reg A blocks
+  "designated market maker"; *"liquidity provider"* or *"selling agent"* are
+  available. He also flagged *"a little misunderstanding about how the accounts
+  get created"*, which is unresolved and matters more than the vocabulary.
+  Tracked as `E55`.
+- 📌 **Scope withdrawn by the client, recorded as a positive.** Edwin asked for
+  admin-panel control to tighten or move the maker's bid-ask during a live game,
+  then withdrew it himself within the same exchange: *"If there's any kind of
+  change, then don't. Just make sure that the market maker's up. I don't want to
+  make any changes whatsoever until we have this secondary market up and
+  trading."* And: *"you got enough on your plate. Let's just get through this
+  weekend."* **The first in-window ask in the record that the client withdrew on
+  his own judgement.** The underlying need (the spread is standardised and untuned
+  for late-game variables) stands for after the weekend.
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·

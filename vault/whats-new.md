@@ -6,6 +6,58 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-27: Two settled decisions reversed, in a call that was cut off
+
+Digested [[27-08-2026-touchbase]], thirteen minutes on the morning secondary
+trading opened. It was cut short by Troy for the tZERO go-live call, and Edwin's
+parting words were that the conversation is very important and should resume. It
+has not. Everything below is an instruction rather than a settled position, and
+the vault records it that way.
+
+**We built the offering the wrong way round.** George explained our structure,
+where the market maker holds all the shares and the taker buys them. Edwin said
+plainly: "so that's backwards." In a real offering the team company sells its own
+shares, a broker dealer handles the sale, whatever does not sell rests in the
+team's own treasury, and the market maker acts as selling agent holding real
+inventory. He accepted what we built for the college run, calling it a good
+simulation, and then gave a clear instruction for the next one: for the NFL, the
+maker becomes the buyer. That is a structural change to the part of the system
+that has just run a live offering, ten days before it runs the next one.
+
+**Treasury is back.** It was retired on the twelfth of August, after the app had
+already removed a field built for it. Edwin has now described it as a working
+part of the structure, holding the unsold shares as a kind of securities bank
+account. That makes it the second time a decision has been reversed and then
+reversed back, and it is recorded as such.
+
+**The bigger reversal is about price.** Since late July the agreed position has
+been that the in-game price follows Sportradar's win probability directly, with
+no model of our own. Edwin has now said the opposite: prices cannot be locked to
+win probability. His example is the clearest explanation of his thinking we have
+on record. An underdog wins seventy to nothing. The win probability reaches a
+hundred percent, so a probability-locked price stops. But the market's view of
+that team has changed completely, and the share should keep climbing. The price,
+he says, should reflect what the market expects a share to be worth over time,
+not just the chance of winning today.
+
+**The catch is that the fix depends on the feed that is broken.** His mechanism
+needs a team's expected wins to move after a game. George checked immediately
+before the call: for college teams, expected wins is frozen, because the
+Sportradar futures endpoint has been down for a fortnight. So the correction
+depends on the input we do not have, which is the same input Saturday's pricing
+needs.
+
+**Worth noticing, because it is the first time.** Edwin asked for a control that
+would let him adjust the market maker's spread during a live game, and then
+withdrew the request himself before anyone started work, telling George to get
+through the weekend first. Every previous late request in this record was
+absorbed. This one was stood down by the person asking, and the vault now records
+held asks alongside changed ones so that restraint is visible.
+
+**Also confirmed:** trading volume is never shown publicly on any team, because
+publishing it would tell users which team is about to receive the larger
+off-field payout and turn the mechanic into a coordination game.
+
 ## 2026-08-26: The KYC layer comes off, and the draft closes tonight
 
 Digested [[26-08-2026-touchdown]], 34 minutes on the final day of the NCAA IPO

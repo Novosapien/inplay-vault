@@ -39,12 +39,27 @@ changed.
 
 | Class | Count |
 |-------|------:|
-| Reversal | **10** |
-| Re-reversal | **1** |
+| Reversal | **11** |
+| Re-reversal | **2** |
 | Descope | **1** |
 | Late parameter change | **4** |
 | Late scope addition | **4** |
-| **Total recorded changes to settled requirements** | **20** |
+| **Total recorded changes to settled requirements** | **22** |
+
+> **Updated 27-08-2026 after the touchbase ([[27-08-2026-touchbase]]).** Two more
+> changes, both Edwin's, both mid-sentence when the call was cut short for the
+> tZERO go-live. **R15** reverses the IPO holding structure and makes the maker
+> the NFL buyer. **R16** re-reverses the treasury holdback, which had been retired
+> on 12 August after the app removed a field built for it. R16 is the register's
+> **second re-reversal**, after subscription billing.
+>
+> ✅ **One thing that belongs here and is not a change.** On the same call Edwin
+> asked for live admin-panel control of the maker's spread and then **withdrew it
+> himself**: _"If there's any kind of change, then don't... I don't want to make
+> any changes whatsoever until we have this secondary market up and trading."_ It
+> is recorded under **Held** below rather than counted, because it is the first
+> in-window ask in this record that the client stood down on his own judgement,
+> and a register that only counts changes would make that invisible.
 
 All twenty fall inside roughly **four weeks**, between 20 July and 17 August, and
 the last five days of that window carry six of them. For context, the offering
@@ -70,10 +85,22 @@ opens on 22 August and trading starts on 29 August.
 | R12 | **In-game price moves on win probability alone.** Edwin was explicit that no own event model was needed: _"you don't have to create it, you just pull Sport Radar's probability in"_ | E15, resolved on the 23-07 MM call, recorded in [[market-maker/open-questions]] | **Probability plus score.** A per-point offset moves the price immediately when the score changes | [[17-08-2026-touchdown]] | Adds a data dependency: the market maker must now consume play-by-play, not just probabilities |
 | R13 | **A rich app with many surfaces**, built that way deliberately to carry advertising inventory. Edwin confirmed the reasoning on the call | [[advertising/advertising]], the app as built | **Reduce the surfaces.** Money first, live games, news behind an icon, question whether discover needs to exist | [[17-08-2026-touchdown]] | Edwin was fair about the cause: the rationale was advertising revenue that never arrived |
 | R14 | **The testing-the-waters disclosure on most surfaces**, as Edwin's own prototype had it | Edwin's prototype, the 07-08 disclaimer work | **An info button plus the competition-selection screen.** Not every surface | [[17-08-2026-touchdown]], recorded in [[compliance/regulatory-positioning]] | The lightest of the reversals, and it improves the product |
+| R15 | **The market maker holds all the shares and rests the sell orders; the taker is the buyer.** Built this way deliberately for simplicity, George: _"we just thought what's simpler is the maker just owns all of them cuz it's simple"_ | [[ipo-module/ipo-module]], the NCAA offering as built and run 22 to 26 Aug | **Backwards.** Edwin: _"So that's backwards."_ The team company sells, InPlay Markets is the broker dealer, unsold shares rest in treasury, and the maker is the selling agent holding inventory. **"For the NFL, let's make it the maker be the buyer"** | [[27-08-2026-touchbase]] | ⚠ **Ten days before the NFL offering**, and it changes the module that has just run a live one. The NCAA build was accepted as it stands (_"it's okay for now. Good sim"_), so the cost is a rebuild rather than a hotfix. Tracked as E54; cannot be specified until E55 lands |
+| R16 | **The treasury holdback is retired. Treasury does not exist**, and the app removed a field it had already built for it | [[03-08-2026-touchdown]] and the 12 Aug float change, recorded as R4 above | **Treasury is real**, holding the unsold remainder as a securities account. Edwin: _"It's actually an asset like a bank account, but it's a securities account"_ | [[27-08-2026-touchbase]] | ⚠ **Re-reversal, the second in this register.** The position returns to roughly where R4 left it before 12 August. The useful half: it gives N21 a direction it has waited on since 29 July |
 
-Rows R1 to R14 contain **11 distinct reversals** of settled requirements, one of
-which (R6) is a re-reversal, plus two rows (R3 and R8) that are second changes to
-requirements already changed once.
+Rows R1 to R16 contain **13 distinct reversals** of settled requirements, two of
+which (R6 and R16) are re-reversals, plus two rows (R3 and R8) that are second
+changes to requirements already changed once.
+
+⚠ **R12 and R15 deserve reading together.** R12 changed the price from probability
+alone to probability plus score. On 27 August Edwin went further: _"the prices
+cannot be locked to win probability"_ at all, and the price should reflect the
+market's expectancy of a share's value over time. That is not logged as a separate
+row because it is the same requirement moving a second time and the conversation
+was cut off before it finished, but it is the third time the same gap has surfaced
+(see E30, E34 and N54 in [[market-maker/open-questions]]). **When a requirement
+moves three times, the pattern is usually that the underlying question was never
+asked directly.**
 
 ## Descope
 
@@ -109,6 +136,17 @@ grievances.
 | A4 | **Pre-offering indication of interest**, queued orders against a shares-remaining bar | [[31-07-2026-touchdown]] | Scoping owed, never started |
 
 ---
+
+## Held: asks raised and stood down
+
+Not changes, and deliberately not counted. Recorded because a register that only
+counts changes makes restraint invisible, and restraint is worth as much as the
+changes cost.
+
+| # | The ask | Where | What happened |
+|---|---------|-------|---------------|
+| H1 | **Live admin-panel control of the market maker's bid and ask**, so Edwin could tighten or move the spread during a game. The underlying need is real: the spread is standardised and has not been tuned for late-game or game-specific variables | [[27-08-2026-touchbase]] | **Withdrawn by Edwin, in the same exchange, before any work started.** George said it might be difficult, and Edwin's reply was _"If there's any kind of change, then don't. Just make sure that the market maker's up. I don't want to make any changes whatsoever until we have this secondary market up and trading."_ Then, when George offered to look anyway: _"you got enough on your plate. Let's just get through this weekend."_ The need stands for after the first game weekend |
+
 
 ## What the register is for
 

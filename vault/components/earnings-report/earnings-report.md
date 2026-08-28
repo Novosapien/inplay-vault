@@ -57,6 +57,44 @@ Earnings Report
 
 ---
 
+
+> ### ⚠ Update (27-08-2026, _[[27-08-2026-touchbase]]_): trading volume is never shown publicly
+>
+> A firm instruction from Edwin, with an anti-gaming rationale that is worth
+> keeping in full because it explains a whole class of future design decisions:
+>
+> > _"We know that we're not going to show publicly any trading volume on any of
+> > these, right? So that's a mystery. We don't want anyone to look at the trading
+> > volume and say, oh well, they're at 2 million and this guy's at 200,000, I'm
+> > going to buy this one because they're going to get 90% of the off-field. We
+> > want that price to be a mystery until Tuesday."_
+>
+> **Why it matters.** The off-field pool is allocated by share of trade volume,
+> so publishing volume during a game would tell every user exactly which team is
+> about to receive the larger allocation. That turns the off-field mechanic from
+> a valuation input into a coordination game, and the team with the most volume
+> attracts more volume for that reason alone. **The mystery is the mechanic's
+> defence, not a presentation choice.**
+>
+> **Consequences to hold on to:**
+>
+> - **No public volume display anywhere**, on any team surface, during or after a
+>   game. This constrains the game page, the team page and any research surface
+>   that might otherwise show volume as a standard market statistic.
+> - **The off-field number stays unknown until the Tuesday release**, which is
+>   what the batched Bloomberg-style release already assumes.
+> - ⚠ It sits in tension with the standing open item on this component about
+>   **volume-allocation gaming**. It reduces the exposure rather than removing it:
+>   a user cannot see the volume, but a large enough participant still knows their
+>   own contribution to it.
+>
+> **The mechanic itself was confirmed in the same exchange**, by George and
+> accepted by Edwin without correction: **trading volume during a game, allocated
+> proportionally, $250, excluding both maker and taker activity.** The exclusion
+> of house activity is the important half and had not been stated this plainly
+> before: the two house bots generate volume continuously, so counting them would
+> swamp the real signal.
+
 ## 2. What Needs to Happen?
 
 **Functional requirements:**
