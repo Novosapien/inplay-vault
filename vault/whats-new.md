@@ -6,6 +6,52 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-28: The pricing model gets its numbers, the day before real football
+
+Digested [[28-08-2026-touchdown]], 49 minutes on the Friday before the first live
+college games. This is the conversation Wednesday cut short, and it went much
+better, because Edwin stopped explaining the pricing model and worked it through
+with real numbers.
+
+**The model, in one line.** A favourite's value is already in its price before
+kickoff. What moves the share is the gap between what was expected and what
+actually happened. Worked live on the call: TCU had a 77.3 percent chance of
+winning against a five dollar payout, so the share prices at three dollars
+eighty-six, and rises toward five if they win. Edwin was clear that precision is
+not the point: the number only has to be sensible enough for the market to trade
+around it.
+
+**One problem goes live tomorrow and there is no fix.** George spotted it. Because
+a team's expected wins never updates, the price climbs during a game and then
+drops straight back to where it started when the game ends. Edwin said flatly that
+this will not do. The fix is the model above, and it is not built. The first
+weekend of real trading will show it.
+
+**A quieter problem is more urgent.** Some people who signed up in the last week
+cannot trade at all: their accounts have no buying power, because allocating a
+trading account is still a manual step. It is the bill for shipping the
+no-verification signup quickly, and it is a fair one. An hour to catch up everyone
+affected, a few hours to fix the cause.
+
+**The home page is being reshuffled after outside feedback.** A contact of Edwin's
+at Meta said new users find the app overwhelming. Live games move to the top, the
+team offering tile moves below the portfolio. The reasoning is worth keeping: the
+offering is something the product needs, not something users enjoy. You buy shares
+and then you wait. The excitement is in the trading.
+
+**A good exchange worth noting.** Edwin found the order ticket remembers your last
+trade size and wanted it reset to zero. George, Jared and Troy all disagreed with
+reasons, Troy settled it on how real trading apps behave, and Edwin took their
+answer. It is the first time in this record the team has talked the client out of
+a change on the merits.
+
+**And a genuinely interesting strategic thread.** Edwin thinks the pricing model
+may become the most valuable thing being built here, and something sportsbooks
+would buy. Cody's argument for why is good: betting odds move to balance each
+book's own position rather than to reflect true value, so polling ten books gives
+you noise. InPlay is a single pool, which makes its price a cleaner signal. The
+best version of it needs a sportsbook licence we do not have.
+
 ## 2026-08-27: Two settled decisions reversed, in a call that was cut off
 
 Digested [[27-08-2026-touchbase]], thirteen minutes on the morning secondary

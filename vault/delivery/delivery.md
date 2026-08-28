@@ -109,6 +109,76 @@ compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
 
+## 28 August: the day before the first live games
+
+A 49-minute Friday touchdown, the day before the first live NCAA games. Present:
+Edwin, Troy, Cody, Jared, Kevin (InPlay) and George, Brett, Hasan, Lily
+(Novosapien). It closed with Edwin asking who would be on standby for Saturday.
+George: at least one of us.
+
+**The valuation conversation that was cut short on Wednesday finished, and it
+finished well.** Edwin stopped describing the pricing model and worked it through
+with live numbers: TCU at a **77.3%** win probability against a $5 payout prices
+at **$3.86**, and rising toward $5 if they win. The principle underneath it is
+that a favourite's value is **already in the price before kickoff**, so what moves
+the share is the difference between the expected result and the actual one. Full
+record in [[market-maker/decisions]].
+
+**⚠ One defect goes live tomorrow with no fix in place.** George found it and
+named it plainly: because expected wins never updates, the price **rises during a
+game and then drops back to where it started when the game ends**. Edwin: _"we
+don't want anything dropping back down, that's not going to work."_ The fix is
+the model above and it is not built. **Plan the first weekend around users seeing
+it**, rather than being surprised by it on Monday.
+
+**⚠ The more urgent problem is that some accounts cannot trade at all.** Troy
+found two unverified accounts with no buying power, and his real worry is
+everyone who signed up in the week since the verification wall came down,
+_"expecting those locked feeds to come off now that we're open for secondary
+trading."_ Allocating a trading account is still a manual step rather than an
+automatic one. Hasan's estimates: **an hour to backfill everyone affected, a few
+hours to fix the cause**. Edwin: _"that's a critical piece."_ This is the
+operational bill for shipping the KYC-less path quickly, and it is a fair one.
+
+**The home page is being reordered, prompted by outside feedback.** Edwin's
+contact at Meta reported that new users find the app overwhelming on open. All
+three InPlay voices agreed on the fix: **live games move up, the team IPO tile
+moves down below the portfolio**. The reasoning generalises usefully: the offering
+is a function the product needs, not a thing users enjoy. _"You buy them and then
+you wait."_ ⚠ A defect surfaced alongside it: **college games are not appearing in
+upcoming games at all**, the day before college games.
+
+**A good exchange on the order ticket, worth recording as a pattern.** Edwin found
+the quantity field sticky and proposed resetting it to zero. George, Jared and
+Troy all disagreed with reasons, Troy settled it on the industry norm, and Edwin
+took their answer. **The client proposed, the team pushed back, the better answer
+won.** Detail in [[trading/trading]].
+
+**The marketing agency now has a timeline**, and it changes what "ready" means.
+Discovery in weeks one and two, **first ad tests in week three**, a spend plan in
+weeks three and four, **the first real campaign in week five**. Edwin drew the
+link himself: paid traffic is worthless if people cannot sign up and trade without
+verification. **Week three, not Saturday, is the real deadline for the onboarding
+fix.** See [[advertising/advertising]].
+
+**The strategic conversation of the week, and it is about data.** Edwin thinks the
+reference model _"might become the most valuable thing we create, that sports
+books may want to buy from us"_, and Cody agreed it could _"replace a portion of a
+billion dollar company's business."_ The argument is genuinely good: sportsbook
+prices move on **flow rather than value**, because each book shades its line to
+balance its own position, so polling ten books gives fragmented data rather than a
+truer price. **InPlay is a single liquidity pool**, which makes its price a
+cleaner signal. ⚠ The best version of it is blocked: deriving probabilities from
+live odds needs a **sportsbook licence**. Cody is pursuing a precedent.
+
+**Also:** off-field volume now includes house bot activity, reversing Wednesday's
+position within about 24 hours (**R17**), the order ticket default reverts to a
+configured setting (**R18**), injuries are deliberately out of scope for now, and
+team reference data is wrong in at least a dozen places (Notre Dame's conference,
+Louisiana Tech's colour, several abbreviations).
+
+_Source: [[28-08-2026-touchdown]]._
+
 ## 26 August: the KYC layer comes off, and the last day of the draft
 
 A 34-minute touchdown on the **final day of the NCAA IPO draft**. Edwin joined at

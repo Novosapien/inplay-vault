@@ -454,6 +454,59 @@ Max/Brett identified trading as carrying the biggest risk of all components: "we
 >
 > **Update (24 July touchdown):** **Trading is launch non-negotiable — target live for ~Aug 22** (Troy: "we need to get this live for the 22nd"; Edwin: "less than a month before this is all going to happen"). The full trading-infrastructure component map was completed 23-07 — "every single component… where are we at with all of it" — leaving a to-do list of small items (e.g. the **cancel feature** and **cancel-and-replace**), tightly integrated with the [[market-maker/market-maker|Market Maker]] ("the market maker is going to be the thing trading"). **Testing doesn't wait for live games:** SR simulation replays of past games (e.g. Chiefs–Ravens) can run multiple times a day, checked from both the user's perspective and the MM's side. **Launch-scope remainder named:** notifications, tax forms, payouts — payouts are the blind spot (payment-provider deal unsigned; worst case users see amounts owed and payouts are delayed a couple of weeks; Edwin fine with an interim manual rail — Zelle/wire). Cody's roadmap/bandwidth-visibility ask → Brett + George building a vault dashboard for release cadence. _Source: [[24-07-2026-touchdown]]._
 
+> ### ⭐ Update (28-08-2026, _[[28-08-2026-touchdown]]_): the order ticket, and the settings tab it needs
+>
+> The longest single exchange on the Friday touchdown, and a good one, because the
+> client proposed a fix, three people disagreed with reasons, and he accepted
+> theirs.
+>
+> **The problem Edwin found.** The quantity field on the order ticket is
+> **sticky**: it holds the last traded size, and holds it **across teams**, so 500
+> on Air Force is still 500 when you open Alabama. His concern is legitimate:
+> _"people are going to mess it up the first couple times and if they do it on
+> size, it's going to be catastrophic."_
+>
+> **His proposed fix was to reset it to zero. Three people talked him out of it.**
+> George: zero means _"effectively no one-click trading"_. Jared: _"it would
+> frustrate me if I was not able to buy."_ **Troy settled it** with the
+> industry norm: _"the default order size is what it always goes back to. That's
+> how it works on other trading softwares too."_ Jared confirmed: _"That's how I
+> do it on Weebull, Robinhood, thinkorswim."_
+>
+> **Resolution: the ticket reloads to the user's configured default order size.**
+> Not the last trade, not zero. The setting already exists under More; it was
+> built that way, changed to last-order, and now flips back. Recorded as **R18** in
+> [[requirement-changes]], a re-reversal inside the app.
+>
+> #### Troy's larger ask: a one-click trading settings tab
+>
+> The better version of the same idea, and it is how trading software normally
+> works: a dedicated place to set the presets that pre-populate every order
+> ticket.
+>
+> > _"At the minimum you want quantity and then the ability to default to market
+> > on every ticket."_
+>
+> ⚠ **He named a defect while asking for it.** Order type is **inconsistent
+> depending on which screen the ticket is opened from**: _"sometimes market
+> sticks, sometimes market doesn't."_ That is a bug in its own right and should
+> not wait for the settings tab.
+>
+> #### Quantity presets become incremental
+>
+> George proposed that the preset chips **add** rather than replace, so tapping
+> 100 then 25 gives 125. Edwin: _"Incremental."_ Jared added that other apps also
+> carry a **plus and minus stepper** moving in a configurable increment, which
+> does not exist today.
+>
+> #### Why the control matters to Edwin specifically
+>
+> Worth recording, because it explains the intensity of the exchange. He uses the
+> price control to **rest passive orders** rather than pay the offer or hit the
+> bid: _"I don't want to give up an edge right away. I want to work it."_ The
+> one-click path is the fast path for taking liquidity; he is trying to provide
+> it, and the interface makes that the harder action.
+
 ## Gaps and Questions for Next Call
 
 ### Gaps
