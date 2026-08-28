@@ -68,6 +68,46 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > record — the MM quoted live on the real venue from 07-08 (six books
 > two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
+> **⭐ Update 28-08 (Friday touchdown, [[28-08-2026-touchdown]]), the day before
+> the first live NCAA games.** The 27-08 conversation resumed and finished the
+> valuation half. **The delta model has its numbers** (see
+> [[market-maker/decisions]] 2026-08-28): the kickoff win probability is already
+> inside expected wins, and the change from it to the result moves the price. TCU
+> at 77.3% against a $5 payout prices at ~$3.86 and should rise toward $5 on a
+> win.
+> 🔴 **One defect goes live tomorrow with no fix in place (`N55`).** Because
+> expected wins never moves, the price **snaps back to its opening level when a
+> game ends**. The delta model is the fix and it is not built. `S12` makes this
+> certain rather than likely, since NCAA expected wins is static anyway while the
+> futures endpoint is down. **Plan the first weekend around it being visible.**
+> ⚠ **`N56` is the assumption to test before building further:** that the kickoff
+> probability really is inside expected wins. The two numbers come from different
+> Sportradar feeds. It is testable against a completed game, and it should be
+> tested rather than assumed.
+> **Also:** injuries are deliberately out of scope for now, off-field volume now
+> **includes** maker and taker activity (reversing 27-08, `R17`), and journal
+> replay latency needs an approach (`N57`). At least one Novosapien engineer is on
+> standby for Saturday.
+
+> **⭐ Update 27-08 (touchbase, [[27-08-2026-touchbase]]): the plan gains a
+> structural item ten days before the NFL offering.** Edwin reversed the IPO
+> holding structure: the maker should hold the inventory, and **for the NFL
+> offering the maker becomes the buyer** (`E54`). The NCAA build was accepted as
+> it stands (*"it's okay for now. Good sim"*), so this is a **rebuild before
+> 5 September**, not a hotfix. ⚠ It cannot be specified until InPlay return the
+> cleaner language and the account-creation model (`E55`), because guessing which
+> entity holds what is how the current structure ended up backwards.
+> **A second reversal lands on valuation:** the price *"cannot be locked to win
+> probability"* (`N54`), superseding the ✅ 23-07 decision Chapter 3 rests on. Its
+> proposed mechanism, expected wins moving after a game, is **blocked by `S12`**,
+> the same broken futures endpoint that threatens Saturday.
+> ⚠ **Both were mid-explanation when the call was cut short for the tZERO
+> go-live. Neither is settled, and the conversation has not resumed.**
+> ✅ **Scope withdrawn rather than added:** Edwin asked for live admin-panel
+> control of the maker's spread and stood it down himself, telling George to get
+> through the weekend first. The second implementation was being tested in the
+> background across 27 to 28 August, which is what prompted the exchange.
+
 > **Update 26-08 (Wednesday touchdown, [[26-08-2026-touchdown]]):** **secondary
 > trading opens Thursday 27 August at 09:30 Eastern**, the morning after the IPO
 > window closes at 22:00 on the 26th, with the team online to **QA the open**

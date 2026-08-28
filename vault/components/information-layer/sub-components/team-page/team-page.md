@@ -272,3 +272,27 @@ Leaf node -- no further decomposition needed.
 3. Does the page show other users' trading activity on this team (e.g., "most traded team today", volume indicators)?
 4. Stock price chart: should it show the same annotation style as the Single Game Page for historical games?
 5. Off-season content: what's the value prop of a Team Page when no games are being played?
+
+
+> ### ⚠ Update (28-08-2026, _[[28-08-2026-touchdown]]_): team reference data is wrong in at least a dozen places
+>
+> Jared's review found errors across conference, colour and abbreviation, with
+> more to come: _"there's probably 15 others."_
+>
+> | Team | Currently shows | Should be |
+> |---|---|---|
+> | Notre Dame | In the **ACC** | **Independent** |
+> | Louisiana Tech | Colour **red** | **Blue** |
+> | UConn | `UCN` | **`CONN`** |
+> | Charlotte | `CHAR` | **`CLT`** |
+>
+> George's response: the **names** came through in the last data update, the
+> **colours** did not, and he will re-run it. Text updates are straightforward.
+>
+> ⚠ **Small individually, and worth taking seriously anyway.** This is the
+> reference data on the surfaces users see, and it was found the day before the
+> first live college games by someone who follows the sport. An audience that
+> knows Notre Dame is independent will notice, and getting a team's own colour
+> wrong undermines confidence in the prices sitting next to it. **A full sweep of
+> all 138 NCAA teams is worth doing rather than fixing the four that were
+> reported.**
