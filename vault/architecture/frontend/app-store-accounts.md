@@ -4,7 +4,7 @@ description: "Register of the Apple and Google Play developer accounts and live 
 
 # App Store Accounts & Live App Identity
 
-Reference for the store accounts and published app identifiers. Both listings went live on 22 July 2026. Last updated: 24 August 2026.
+Reference for the store accounts and published app identifiers. Both listings went live on 22 July 2026. Last updated: 26 August 2026.
 
 ## Accounts
 
@@ -51,6 +51,21 @@ and installing the **live App Store build** fixes it, confirmed live on the call
 Troy: _"we should have made that more explicit."_ The first question on any
 tester's "the app is broken" report is **which build are you on**. See
 [[ipo-module/ipo-module]] and [frontend-deployment](frontend-deployment.md).
+
+### Icon and name split (26-08-2026)
+
+The freeze holds, but the two changes were separated and they are not the same
+size:
+
+| Change | Cost | Position |
+|---|---|---|
+| **App icon** | Troy: probably **no review**, apps push icon changes frequently | Ask taken: can the icon alone be simplified first |
+| **App name** | Hasan: needs a **new app store check**, _"at least like a week or so"_. George: _"either a completely new app review or a completely new submission"_ | Held |
+
+Cody held both until the **Viral** contract is settled; the kickoff happened on
+**25 August** and he had a contract call immediately after this touchdown. Edwin
+raised the change again and accepted the lift: _"that might be a bigger lift than
+we thought."_ (Source: [[26-08-2026-touchdown]])
 
 ## Related
 

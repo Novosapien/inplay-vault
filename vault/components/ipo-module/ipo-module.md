@@ -484,6 +484,96 @@ graph LR
 >
 > **NFL follows the same process**, unchanged (George).
 
+> ### Update (26-08-2026, _[[26-08-2026-touchdown]]_): the window closes, and the handover to secondary has a time on it
+>
+> Held on the **final day of the NCAA IPO draft**, with Troy reading the countdown
+> off the app: **12 hours and 11 minutes** left, so the window closes at **22:00
+> on Wednesday 26 August**. At that point _"all the buttons just lock"_.
+>
+> **The handover was deliberately not automatic.** George asked whether secondary
+> starts as soon as the window closes or the next day. Troy chose the morning, and
+> the reason is the useful part: **QA on the open**. _"We should wait until the
+> morning to do it because then we're all on and can actively be looking at it in
+> submitting orders"_, checking that the locks actually came off. Edwin was not on
+> the call at that point; Troy took the decision and flagged he would confirm it,
+> which he did when Edwin joined.
+>
+> | When | What |
+> |---|---|
+> | Wed 26 Aug, 22:00 | **IPO window closes**, buy buttons lock |
+> | **Thu 27 Aug, 09:30 Eastern / 08:30 Central** | **Secondary trading opens**, with the team online to QA the open |
+> | Sat 29 Aug | First games, **138 teams live** |
+>
+> Little trading is expected in the two days before game day. The point of opening
+> early is that people **can** trade and test, and that any fault is found by the
+> team rather than by users on Saturday.
+>
+> ⚠ **Related gap:** there is **no prize pool page in the app** (George), so the
+> week-zero prize pool is announced by newsletter and push alert **linking to the
+> website**. See [[leaderboard]] and [[delivery/delivery]].
+> ### ⚠ Update (27-08-2026, _[[27-08-2026-touchbase]]_): the holding structure is backwards, and the NFL offering changes
+>
+> ⚠ **The conversation that produced this was cut short by the tZERO go-live
+> call and has not resumed.** Recorded because it is an instruction, not because
+> it is settled. Edwin: _"let's come back to this because this is very
+> important."_
+>
+> **What we built.** The **market maker** holds all the shares and rests the sell
+> orders; the **taker** buys its target share; users buy the rest. George
+> explained the reasoning honestly: _"we just thought what's simpler is the maker
+> just owns all of them cuz it's simple."_
+>
+> **Edwin's response: _"So that's backwards."_**
+>
+> **The structure he described instead**, which is how a real primary works:
+>
+> | Party | Role |
+> |---|---|
+> | **The team company** | Sells its own shares. It is the issuer |
+> | **InPlay Markets** | The **broker dealer** handling the sale, over tZERO's ATS |
+> | **The team-company treasury** | Holds whatever is not sold. His example: a million offered, 600,000 sold, **400,000 rest in treasury** |
+> | **The market maker** | The **selling agent**, providing two-sided liquidity from real inventory it may own |
+>
+> **Treasury is therefore real again.** Edwin was explicit about what it is:
+> _"It's actually an asset like a bank account, but it's a securities account…
+> just a securities bank account."_ And the unsold shares still have value:
+> _"that 400,000 that remain unsold, they actually are worth something."_
+> ⚠ **This re-reverses the 12 August retirement of the treasury holdback**, after
+> the app had already removed a field it had built for it. Recorded in
+> [[requirement-changes]] as the register's second re-reversal.
+>
+> **The instruction for the next offering, in his words:**
+>
+> > **"Right now for this instance, the taker is the buyer. But for the NFL,
+> > let's make it the maker be the buyer."**
+>
+> He accepted the NCAA run as it stands, _"it's okay for now. Good sim"_, so this
+> is not a fix-now item. It is a **rebuild-before-5-September** item, and it
+> changes the module that has just run a live offering. Tracked as **E54** in
+> [[market-maker/open-questions]], which lists the four things owed before it can
+> be specified.
+>
+> **One clarification worth keeping, because it simplifies a different problem.**
+> A maker selling from inventory is not shorting: _"they don't have to do the
+> short locates. So they're not getting short, they're just selling."_ That is
+> the first clean answer to the sold-out book problem raised on 24 August, where
+> the maker had nothing to offer.
+>
+> ⚠ **Terminology is disputed and InPlay owe cleaner language.** Troy argued the
+> group keeps saying "maker" as though it were passive, when a market maker does
+> _"both the taking and the making including making the shares available"_. Reg A
+> blocks "designated market maker"; "liquidity provider" or "selling agent" are
+> available. He also flagged _"a little misunderstanding about how the accounts
+> get created"_, which was not resolved before the call ended. **Until that
+> lands, building the NFL primary means guessing which entity holds what, which
+> is how the current structure ended up backwards.** Tracked as **E55**.
+>
+> **Also raised, and explicitly not a build item.** Edwin is exploring **credit
+> terms from the team companies to the makers**, so inventory can be topped off
+> easily. It is not regulatory-approved and he is still framing it: _"I haven't
+> gotten that approved from regulatory."_ Tracked as **E56**, production-model
+> thinking rather than scope.
+
 ## Gaps and Questions for Next Call
 
 ### Gaps

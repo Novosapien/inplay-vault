@@ -14,6 +14,144 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-28: ⭐ the reference price gets its numbers, and the snap-back gets named
+
+Session: [[market-maker/sessions/2026-08-28-touchdown-digest]] ·
+[[28-08-2026-touchdown]] · `N55` `N56` `N57` `S13`
+
+The Friday touchdown, **the day before the first live NCAA games**. This is the
+conversation 27-08 was cut off before finishing, and it is far more useful,
+because Edwin worked the model through with real numbers instead of describing it.
+
+- ⭐ **The reference-price model, stated and confirmed twice.** George put it back
+  to Edwin and he agreed both times: **the kickoff win probability is already
+  factored into expected wins, and the CHANGE between that kickoff probability and
+  the actual result is what moves the share value.** This is the mechanism `N54`
+  was missing on 27-08, and it completes the supersession of the ✅ 23-07
+  probability-only decision.
+- ✅ **The worked example, with live numbers from the call.** TCU against North
+  Carolina: money line **-380**, Sportradar win probability **77.3%**, payout $5.
+
+  | Step | Value |
+  |---|---|
+  | Price before kickoff | 0.773 × $5 = **~$3.86** |
+  | If TCU wins | rises **from $3.86 toward $5** on the on-field leg |
+  | Edwin's per-game season value at this probability | around **$1.14** |
+
+  His stated purpose: *"we don't want the market or the participants to think that
+  oh they bought a team, the team won, they're entitled to $5."* Most of a
+  favourite's value is already in the price before kickoff.
+- ✅ **Precision is explicitly not the goal.** Edwin: *"there's no wrong or right
+  answer. We just need it to be digestible by the market"*, because the maker bids
+  and asks around it. ⚠ Worth holding on to: this lowers the bar for the reference
+  price and raises it for the **spread**, which is where the tradeable edge now
+  sits.
+- 🟡 **Edwin's own model takes bid-offer pressure as a value input.** Described as
+  *"not quite an ELO system, but it's going to work like an ELO system"*, valuing
+  the remaining season from record, remaining fixtures and opponent strength. His
+  example: *"currently LSU is three and three, and they're down 14 points in the
+  fourth quarter. What's their value with two minutes left?"* ⚠ **A model that
+  feeds on our own book's pressure and then prices our own book is circular**, and
+  nobody named that on the call. Raise it before it is built.
+- ⚠ **Injuries are out of scope for now.** George called the injuries section of
+  Edwin's document the part that *"needs a decent amount of work"*; Edwin agreed to
+  take it step by step. Recorded so its absence is deliberate rather than
+  forgotten.
+- 🔴 **The end-of-game snap-back is now a named defect (`N55`), and it is live
+  tomorrow.** George: *"price goes up, changes during a game, and then at the end
+  of the game, because the expected wins hasn't changed, it's just going to drop
+  back down to what it was before."* Edwin: *"we don't want anything dropping back
+  down, that's not going to work."* **The delta model above is the fix and it is
+  not built.** The first live games are 29 August.
+- ✂ **Off-field volume now INCLUDES maker and taker activity**, reversing the
+  position taken on 27-08 the previous day. George confirmed either filter is
+  trivial; Edwin chose inclusion for presentation: *"Leave them both then. Leave
+  the maker and the taker because I want to report more trading volume each week.
+  I don't want to report 22 trades."* ⚠ **The cost is worth stating:** the two
+  house bots trade continuously, so reported volume becomes mostly house activity,
+  and the off-field allocation it drives is that much less connected to real
+  participant behaviour. Recorded as `R17` in [[requirement-changes]].
+- ✅ **Off-field volume definitions settled.** Volume means the **notional amount,
+  effectively the number of trades**, not dollar-weighted (*"keep it very
+  simple"*). The window is **game to game**, not calendar: *"as soon as the game's
+  over, then that share's count till the next game is over."* Games are always at
+  least **four days apart**. Earnings release stays **Tuesday NFL, Wednesday
+  college**.
+- ⚠ **The whole model rests on an unverified assumption (`N56`).** George named it
+  immediately: it assumes win probability really is factored into expected wins.
+  Expected wins and win probability come from **different Sportradar feeds**, and
+  different providers give different expected wins. He called it a fair
+  assumption. It is still an assumption, and every price depends on it.
+- ⚠ **Journal replay adds latency (`N57`).** George: rebuilding state by replaying
+  the journal costs time and the approach needs choosing.
+
+## 2026-08-27: ✂ two settled positions reversed, who holds the shares and what moves the price
+
+Session: [[market-maker/sessions/2026-08-27-touchbase-digest]] ·
+[[27-08-2026-touchbase]] · `E54` `E55` `E56` `N54`
+
+A 13-minute touchbase on the morning secondary opened, cut short by the tZERO
+go-live call. ⚠ **Both reversals below were mid-conversation when the call
+ended.** Edwin: *"let's come back to this because this is very important."* They
+are logged because they are instructions, not because they are finished.
+
+- ✂ **The IPO holding structure is backwards, and NFL changes.** George
+  described the build (the **maker** holds all shares and rests the sell orders,
+  the **taker** buys). Edwin: *"So that's backwards."* The real structure: the
+  team company sells, a broker dealer handles the sale (**InPlay Markets**) over
+  tZERO's ATS, and the maker acts as **selling agent** providing two-sided
+  liquidity. Accepted for the NCAA run, *"it's okay for now. Good sim"*, with a
+  direct instruction for the next one: **"for the NFL, let's make it the maker be
+  the buyer."** Supersedes the 2026-07-31 primary-structure decision on the buyer
+  side only; the two-MPID split stands. **Ten days before the NFL offering.**
+- ✅ **The maker as seller does not need short locates.** Edwin: *"they don't
+  have to do the short locates. So they're not getting short, they're just
+  selling."* The cleanest statement yet of why selling from inventory and selling
+  short are different problems, and it narrows `E26`: a maker holding real
+  inventory removes the need to short in the sold-out case `N53` raised.
+- ✂ **Treasury is real again.** Unsold shares (his worked example: 400,000 of a
+  million) sit in the **team company's treasury**, which he described as *"an
+  asset like a bank account, but it's a securities account."* This re-reverses
+  the 12-08 retirement of the treasury holdback and gives `N21` its direction
+  after four weeks. Recorded in [[requirement-changes]] as a re-reversal, the
+  second in the register.
+- ✂ **The price must NOT be locked to win probability.** Edwin: *"the prices
+  cannot be locked to win probability."* **This supersedes the ✅ 23-07 decision**
+  (*"In-game price driver = Sport Radar live win probability, pulled directly. No
+  own event-weight algorithm in v1"*), which has been the basis of Chapter 3
+  since. His example: a heavy underdog wins 70 to nothing, win probability reaches
+  100%, so a probability-locked price stops at $5, but the market's view of the
+  team has changed and the share should reach perhaps $10. The price is *"based
+  on the market's expectancy of the value of that share over time."*
+  ⚠ George conceded the gap: *"at the moment that's not being included in how the
+  maker's pricing."*
+- 🟡 **Per-game price range: roughly zero to $12.** Stated as the range the price
+  *should* move in over a game. Consistent in direction with the 17-08 target of
+  $1.50 to $8 intra-game, but wider. **Not yet a parameter row**: it was stated
+  inside an unfinished explanation, so it stays 🟡 proposed pending the resumed
+  call.
+- 🟡 **The proposed mechanism: expected wins moves after a game.** George's
+  reading, which Edwin was about to work through: a big win raises the team's
+  expected wins for the season, which feeds the price, separately from the next
+  game's win probability arriving from Sport Radar. ⚠ **Blocked by the same
+  broken feed as `S12`**: NCAA expected wins is static today. Tracked as `N54`.
+- ⚠ **Terminology is disputed and InPlay owe cleaner language.** Troy: the group
+  keeps saying "maker" as though it were passive, when a market maker does *"both
+  the taking and the making including making the shares available"*. Reg A blocks
+  "designated market maker"; *"liquidity provider"* or *"selling agent"* are
+  available. He also flagged *"a little misunderstanding about how the accounts
+  get created"*, which is unresolved and matters more than the vocabulary.
+  Tracked as `E55`.
+- 📌 **Scope withdrawn by the client, recorded as a positive.** Edwin asked for
+  admin-panel control to tighten or move the maker's bid-ask during a live game,
+  then withdrew it himself within the same exchange: *"If there's any kind of
+  change, then don't. Just make sure that the market maker's up. I don't want to
+  make any changes whatsoever until we have this secondary market up and
+  trading."* And: *"you got enough on your plate. Let's just get through this
+  weekend."* **The first in-window ask in the record that the client withdrew on
+  his own judgement.** The underlying need (the spread is standardised and untuned
+  for late-game variables) stands for after the weekend.
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·

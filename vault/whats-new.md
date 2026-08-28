@@ -6,6 +6,151 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-08-28: The pricing model gets its numbers, the day before real football
+
+Digested [[28-08-2026-touchdown]], 49 minutes on the Friday before the first live
+college games. This is the conversation Wednesday cut short, and it went much
+better, because Edwin stopped explaining the pricing model and worked it through
+with real numbers.
+
+**The model, in one line.** A favourite's value is already in its price before
+kickoff. What moves the share is the gap between what was expected and what
+actually happened. Worked live on the call: TCU had a 77.3 percent chance of
+winning against a five dollar payout, so the share prices at three dollars
+eighty-six, and rises toward five if they win. Edwin was clear that precision is
+not the point: the number only has to be sensible enough for the market to trade
+around it.
+
+**One problem goes live tomorrow and there is no fix.** George spotted it. Because
+a team's expected wins never updates, the price climbs during a game and then
+drops straight back to where it started when the game ends. Edwin said flatly that
+this will not do. The fix is the model above, and it is not built. The first
+weekend of real trading will show it.
+
+**A quieter problem is more urgent.** Some people who signed up in the last week
+cannot trade at all: their accounts have no buying power, because allocating a
+trading account is still a manual step. It is the bill for shipping the
+no-verification signup quickly, and it is a fair one. An hour to catch up everyone
+affected, a few hours to fix the cause.
+
+**The home page is being reshuffled after outside feedback.** A contact of Edwin's
+at Meta said new users find the app overwhelming. Live games move to the top, the
+team offering tile moves below the portfolio. The reasoning is worth keeping: the
+offering is something the product needs, not something users enjoy. You buy shares
+and then you wait. The excitement is in the trading.
+
+**A good exchange worth noting.** Edwin found the order ticket remembers your last
+trade size and wanted it reset to zero. George, Jared and Troy all disagreed with
+reasons, Troy settled it on how real trading apps behave, and Edwin took their
+answer. It is the first time in this record the team has talked the client out of
+a change on the merits.
+
+**And a genuinely interesting strategic thread.** Edwin thinks the pricing model
+may become the most valuable thing being built here, and something sportsbooks
+would buy. Cody's argument for why is good: betting odds move to balance each
+book's own position rather than to reflect true value, so polling ten books gives
+you noise. InPlay is a single pool, which makes its price a cleaner signal. The
+best version of it needs a sportsbook licence we do not have.
+
+## 2026-08-27: Two settled decisions reversed, in a call that was cut off
+
+Digested [[27-08-2026-touchbase]], thirteen minutes on the morning secondary
+trading opened. It was cut short by Troy for the tZERO go-live call, and Edwin's
+parting words were that the conversation is very important and should resume. It
+has not. Everything below is an instruction rather than a settled position, and
+the vault records it that way.
+
+**We built the offering the wrong way round.** George explained our structure,
+where the market maker holds all the shares and the taker buys them. Edwin said
+plainly: "so that's backwards." In a real offering the team company sells its own
+shares, a broker dealer handles the sale, whatever does not sell rests in the
+team's own treasury, and the market maker acts as selling agent holding real
+inventory. He accepted what we built for the college run, calling it a good
+simulation, and then gave a clear instruction for the next one: for the NFL, the
+maker becomes the buyer. That is a structural change to the part of the system
+that has just run a live offering, ten days before it runs the next one.
+
+**Treasury is back.** It was retired on the twelfth of August, after the app had
+already removed a field built for it. Edwin has now described it as a working
+part of the structure, holding the unsold shares as a kind of securities bank
+account. That makes it the second time a decision has been reversed and then
+reversed back, and it is recorded as such.
+
+**The bigger reversal is about price.** Since late July the agreed position has
+been that the in-game price follows Sportradar's win probability directly, with
+no model of our own. Edwin has now said the opposite: prices cannot be locked to
+win probability. His example is the clearest explanation of his thinking we have
+on record. An underdog wins seventy to nothing. The win probability reaches a
+hundred percent, so a probability-locked price stops. But the market's view of
+that team has changed completely, and the share should keep climbing. The price,
+he says, should reflect what the market expects a share to be worth over time,
+not just the chance of winning today.
+
+**The catch is that the fix depends on the feed that is broken.** His mechanism
+needs a team's expected wins to move after a game. George checked immediately
+before the call: for college teams, expected wins is frozen, because the
+Sportradar futures endpoint has been down for a fortnight. So the correction
+depends on the input we do not have, which is the same input Saturday's pricing
+needs.
+
+**Worth noticing, because it is the first time.** Edwin asked for a control that
+would let him adjust the market maker's spread during a live game, and then
+withdrew the request himself before anyone started work, telling George to get
+through the weekend first. Every previous late request in this record was
+absorbed. This one was stood down by the person asking, and the vault now records
+held asks alongside changed ones so that restraint is visible.
+
+**Also confirmed:** trading volume is never shown publicly on any team, because
+publishing it would tell users which team is about to receive the larger
+off-field payout and turn the mechanic into a coordination game.
+
+## 2026-08-26: The KYC layer comes off, and the draft closes tonight
+
+Digested [[26-08-2026-touchdown]], 34 minutes on the final day of the NCAA IPO
+draft. Edwin joined two thirds of the way through, having worked until four in the
+morning, so Troy ran most of it. Lily was introduced to the client.
+
+**The thing that was gating Thursday is done.** Hasan demoed the no-verification
+path end to end: a person can now create an account and trade without an identity
+document or a face scan. The call turned into a live design review of it and
+produced four changes, all of which are worth having. The skip option is buried
+below the fold and has to move to the top. The verify-or-not choice should be its
+own screen straight after the email code, rather than hidden inside a verification
+screen. The word "simulated" goes in front of "trading" everywhere, because
+"start trading now" reads too much like a real brokerage account. And the term
+"KYC" comes out of the interface entirely, replaced by "get verified" and "start
+trading without verification".
+
+**Worth flagging: there are now two different first screens.** The 17 August call
+put a choice of three competitions on first open. This one puts a verify-or-not
+fork straight after the email code. Nobody has reconciled them into one sequence,
+and both are being built.
+
+**The open has a time and a reason.** The draft closes at ten tonight and the buy
+buttons lock. Secondary trading opens Thursday at half past nine Eastern. Troy
+chose the morning deliberately rather than flipping it overnight, so the whole
+team is online to test the open and confirm the locks came off. First games
+Saturday, 138 teams live.
+
+**The numbers.** 187 verified, 278 downloads. That gap of about ninety is exactly
+what the no-verification path exists to convert. Edwin's caveat stands beside it:
+the first batch is almost entirely their own networks. There is a prize pool for
+week zero after all, at roughly three dollars per competitor, published Friday,
+and there is no prize pool page in the app, so it goes out as a link to the
+website.
+
+**The largest risk is now a supplier.** The Sportradar futures endpoint is still
+broken, and George put the consequence plainly: without it the market maker will
+be far more volatile than it should be and might drop off altogether. Sportradar
+have three engineers on it and promise a fix before Saturday, with money back if
+they miss. That is not the same as a good first game day, so a fallback needs a
+shape before then.
+
+**Also:** the referral multiplier stays at five times until the end of the month,
+so it covers the first game day, the app icon might be changeable without a store
+review even though the name is not, and our warmed-up email outreach to marketers
+still has not started because of bugs.
+
 ## 2026-08-24: The offering is live, and Thursday hangs on one piece of work
 
 Digested [[24-08-2026-touchdown]], eighteen minutes, the shortest touchdown in the
