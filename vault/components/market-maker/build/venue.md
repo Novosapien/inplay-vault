@@ -218,6 +218,16 @@ superseded 07-08h):
   by construction, a drawn level being ≥ 1,000).
 - New levels post FIRST, then cancels (N12 — post-first ordering; a
   momentary self-cross during adjustment is tolerated for v1).
+  ⚠ **AS-BUILT ONLY SINCE 30-08 — no longer the target.** George's
+  23-07 ordering rules (retreating side first · cancels before creates
+  at overlapping prices · advancing side deepest-first · micro-barrier
+  only on the orders an advance would cross) sat unpromoted in
+  [[market-maker/learnings]] and were promoted to a decision on 30-08.
+  The code is still the flat one-liner (`reconciler.py:173`). What
+  forced it: `IPTCNCTH` self-crossed **2 h 45 min** on 29-08 behind a
+  whole-book guard refusal, recovering only when the touch moved —
+  `momentary` is what Edwin licensed, and this was not momentary.
+  Build gated on **N56**.
 - **No replace ever relies on keeping queue priority** (§8.3 — tZERO
   sends amends to the back of the queue).
 - **An in-flight replace occupies its DESTINATION price**

@@ -698,6 +698,20 @@ out of the CA2 chunk that prompted it.
   a message-budget optimization, and T2's MaxOrdRate answer (not taste)
   decides whether it's ever needed.
 
+- ⭐⭐ **PROMOTED 30-08 — this entry cost us 2 h 45 min of a crossed
+  book.** It sat here, in the learnings, and was never mirrored into
+  [[market-maker/decisions]]. So it never bound anything: N12's flat
+  post-first shipped, `requirements.md` R-L03 codified it ✅, and the
+  reconciler is one line (`venue/reconciler.py:173`). On 29-08 the
+  R-Q09 guard refused a whole book and `IPTCNCTH` sat SELF-CROSSED
+  from 16:07Z to 18:52Z during a live game — the exact failure the
+  final clause below prevents. ⚠ **The process lesson, and it is the
+  working guide's own rule:** a design argument recorded ONLY as a
+  learning is a design argument that loses. If it changes what gets
+  built, it goes in `decisions.md` in the same session. See
+  [[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] and
+  `N56`.
+
 - **Publish is a reconciler, not a send (George's push, refining the
   trilemma).** Levels and quantities differ cycle-to-cycle, so no single
   strategy (cancel-first / post-first / amend-all) covers a real cycle. The

@@ -14,6 +14,194 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-30b — ✅ N55 built · ✅ N56 takes the PROPER fix · ⭐ a Python→Go divergence register is born
+
+George's rulings, same session ·
+[[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+service PR #51 · [[market-maker/go-port-backlog]] NEW
+
+- ✅ **N55 BUILT — the publisher's tick becomes a setting** (service
+  **PR #51**, `fix/mm-publisher-tick-setting`, 830 tests, ruff + mypy
+  clean). `run_forever(..., tick_s: float = 1.0)` was hardcoded and
+  quantised every poll tier, so the pool's `MMPUB_POLL_LIVE_S=0.5` could
+  never apply — set since 11-08, measured at **one poll per 1.16 s** on
+  29-08. Adds `MMPUB_TICK_S` (default **0.5**) and a model validator
+  that REFUSES a tick slower than the fastest tier, so the same silent
+  mismatch fails at boot instead of running 19 days. ⚠ **Stated in the
+  PR, not buried:** SR re-computes an NCAA probability every ~7 s, so a
+  1.16 s poll already oversamples it ~6×. **A config-vs-code correction,
+  not a pricing fix.** ⏳ Not deployed — George's go.
+- ⏳ **STILL OWED, deliberately not in PR #51:** `MMPUB_POLL_POST_GAME_S`
+  is unset and takes the 2.0 s default. Measured 29-08: 33 finished games
+  took ~**14 of every 16** SR calls. An env change, not code, and the
+  value must be chosen against the MM's ~20 s freshness fuse.
+- ✅ **DECISION (George, 30-08): N56 takes the PROPER fix in Python —
+  option (b), order granularity — not the cheap `[cancels-through]`
+  extension.** ✂ This overrides the recommendation put to him (take (a)
+  now, hold (b) for the port). The micro-barrier is the design he
+  specified on 23-07 and it is the one that gets built. ⚠ **The blocker
+  is unchanged and real:** `[atomic-book]` mints submit ClOrdIDs **BY
+  POSITION**, so a partial send re-diffs onto ids the venue already
+  holds (caught by test). Order granularity therefore means
+  non-positional id minting plus a fresh replay-equality proof.
+- ⭐ **DECISION (George, 30-08): keep a Python→Go DIVERGENCE REGISTER.**
+  His words: *"make a note of any divergences from the original Python
+  one and the Go one so when we have stabilised the Go one we can add in
+  the new features we have added to the Python one."* Born as
+  [[market-maker/go-port-backlog]] — the mirror of
+  [[market-maker/go-port-findings]], which runs Go→Python. Rule: **add
+  the row in the session that makes the change.**
+- 📝 **The divergence is small TODAY and that is the point of starting
+  now: four commits since the pin `fd193a4`** (`68b76a8` Edwin's 20-08
+  parameter rows · `76341d3` the alien drain · `d162d8c` its unenforced
+  invariant · `f9eec8b` rungs back to 1–3), plus N56 when built.
+  ⚠ **Two traps recorded there:** `f9eec8b` OVERRIDES `68b76a8` on
+  `min_levels`/`max_levels`, so porting in commit order and stopping
+  early ships the one-rung book George already withdrew; and
+  **differential replay CANNOT see any of this** — the harness compares
+  at the pin, so it goes quiet exactly where the register must speak.
+- ⚠ **`76341d3` blocks shadow running, and the Go maker caused it.** On
+  20-08 mm-2 (Go) quoted `.TEST` on the shared MM gateway, the gateway
+  broadcast namespace-wide, and mm-1 (Python) **crash-looped on replay
+  at every boot** — NRestarts=25, the dead-man fired 21 times. Until Go
+  carries the drain, any side-by-side run re-creates the incident in the
+  other direction.
+- 📝 **Where N56 should land first is now an open question, not a
+  given.** Go has no live journal to keep replay-equal, so it is the
+  cheaper place to change id identity; if Go goes first, Python inherits
+  the design. Recorded in the register against the N56 row.
+
+## 2026-08-30 — ⭐ the Tar Heels crossed for 2h45m · ✅ the ordering rules are PROMOTED out of learnings.md
+
+Edwin reported books with asks and no bids, and named the North Carolina
+Tar Heels. Traced read-only to a book, a mechanism and a decision.
+Session: [[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+`N56` opened · `R-L03` changes by addendum
+
+- ⚠ **`IPTCNCTH` was SELF-CROSSED from 16:07Z to 18:52Z on 29-08 —
+  2 h 45 min.** The ask side froze at **40.26** and never moved; the bid
+  kept repricing up to **40.63**. Ask levels grew **3 → 17** against 4–7
+  bids. Real trading ran at **40.43–40.72** the whole time, $0.20–$0.45
+  above our stuck ask. `IPTCHFRG` — the other book in the same game —
+  had the identical fault. ⭐ **It recovered ON ITS OWN** when the
+  blocking touch moved: no hotfix, no operator. **Only live-game books
+  are exposed** — they are the only ones repricing fast enough to run
+  into a resting third-party touch. 📝 The lopsided ask wall priced
+  below the bids is exactly what Edwin saw.
+- 📝 **Mechanism.** A third-party bid rested at 40.40; our target ask
+  moved below it; the R-Q09 marketable guard refused — correctly (we
+  price off our own valuation, never the book, and without the guard
+  every repost sweeps the touch: **$50,366 on 09-08**). ⚠ **The refusal
+  holds back the WHOLE BOOK, not the offending side** — the alarm's own
+  words, *"no submit or replace has gone out for this book since"*.
+  `MARKETABLE_GUARD_STALLED` fired **9 times**. 📝 **`[cancels-through]`
+  did not save it**: it IS in the running tree, but the reconciler moves
+  a stale order with a REPLACE, and the guard holds replaces. The ruling
+  covers cancels, not the cancel-half of a held replace.
+- ⭐⭐ **THE FINDING: we designed the fix on 23-07 and never shipped it.**
+  George's memory of a cancel-first ruling is CORRECT and the note
+  exists — in [[market-maker/learnings]], **not here**: *"Publish is a
+  reconciler, not a send (George's push) … retreating side first,
+  **cancels before creates at overlapping prices**, advancing side
+  deepest-first with top-of-book last, **micro-barrier only on the
+  specific orders an advance would cross**."* ⚠ **It was never mirrored
+  into this log**, so N12's flat post-first was never superseded, and
+  **`requirements.md` R-L03 then codified the flat version** ("submits,
+  then replaces, then cancels", source N12, ✅ test-backed). The
+  requirement locked in the design George had argued against. The built
+  reconciler is one line — `venue/reconciler.py:173`,
+  `tuple(submits) + tuple(replaces) + tuple(cancels)`: no
+  retreating-side-first, no cancels-before-creates, no micro-barrier.
+  ⭐ **The last clause IS the fix for this fault** — a micro-barrier
+  refuses the crossing ORDER; the guard was built to refuse the BOOK.
+- ✅ **DECISION (George, 30-08): PROMOTE the ordering rules to a
+  decision.** They become the **target** design for the reconciler and
+  ✂ **supersede N12's flat post-first**. `R-L03` changes through the
+  requirements addendum, never silently. ⚠ **Not built and not
+  scheduled** — R11 stands and `N56` is answered first.
+- 📝 **Edwin's written standard and his spoken ruling conflict, and the
+  spoken one governs.** Written: PTS-001 §6.13.1 — *"locked or crossed
+  markets SHALL NOT be published"* and *"executable two-sided quotations
+  SHALL be maintained unless trading is halted or suspended"* (also
+  §6.12, §7.2, §6.9.1). Spoken 23-07: *"new orders are faster than
+  cancels… if we have to cross in order to make the adjustment in price,
+  I don't care"* — no cancel-first-wait gap, George confirming the same
+  day. By the working guide's ground rule the spoken decision outranks
+  the standard, **so post-first is governing and it is HIS**. ⚠ **What
+  his tolerance does not cover is the word `momentary`** — it licenses a
+  price adjustment, not a 2 h 45 min guard-frozen book. **That gap is
+  ours and was never recorded.** Frame it as drift, not as a knowing
+  supersession.
+- ⚠ **The 06-08c conflict is still open on the maker side.** tZERO's
+  wash-trade blocking REJECTS self-crosses, recorded then as "the
+  reconciler has a change coming either way". **The taker got its fix
+  (wash guard, MM PR #29). The maker never did.**
+- ⚠ **The gateway ops endpoint has diverged from the engine.** All 9
+  `IPTCNCTH` orders `GET /orders/mm` returned had no ack in 2 hours, at
+  prices $3 from the engine's, while the engine sent 60,891 acks for
+  that book. **`MM_BOOT_HEAL=on` reads that endpoint.** Filed in `N56`.
+
+## 2026-08-29 — ⭐ the NCAA-Saturday cadence check: the engine holds, Sportradar is the limit
+
+Read-only production check, first college Saturday (George's question: does
+the maker run at a cadence that suits live NCAA games?). `ps` / `journalctl` /
+`describe` / a 40 MB journal tail only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]] ·
+`N55` opened
+
+- ⭐ **The engine meets its cadence with ~92% headroom.** Engine
+  `supervised48` / `CFG-0046`, 138 NCAA books, no NFL. Measured
+  16:46–17:05Z: tick 0.5 s, sweep 0.5 s with **`missed_intervals=0`
+  across 1,423 sweeps**, `cycles=138` on every tick, converger backlog
+  1–11 books of 138 and clearing, **engine CPU 7.5% of one core**, load
+  average 0.00. No book suspended and no re-offer withheld in 6 hours.
+- ⭐ **THE LIMIT IS SPORTRADAR, NOT THE MACHINE.** SR changes an NCAA
+  probability every **7 s at the median** (mean 13 s · p90 25 s · max
+  153 s · min 2 s). Measured on `sr:sport_event:70894628`: 1,040 reading
+  events carried only **55 distinct probabilities**; the rest are
+  liveness confirmations. **College is slower than the NFL's 4 s
+  median.** The poll already oversamples the source ~6×, and the LIVE
+  redraw ~14×. The cadence question is answered on the input side.
+- ⚠ **`MMPUB_POLL_LIVE_S=0.5` is SET and UNREACHABLE.** The env var is on
+  the `inplay-mm-publisher` worker pool; `run_forever(..., tick_s: float
+  = 1.0)` in `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py:477`
+  is a hardcoded default with no settings field and no env override, so
+  one wake per second is the floor. Measured: 513 fetches in 597 s =
+  **one poll per 1.16 s**. ✂ Corrects [[market-maker/parameters]] row
+  `poll tier — LIVE`, which recorded 500 ms as deployed. **Cost, measured
+  rather than assumed: ~0.3 s of average detection latency against a 7 s
+  source** — a config-vs-code defect, not a mispricing. Filed `N55`; fix
+  out of hours under R11, never mid-slate.
+- ✂ **The serial-fetch caveat is WITHDRAWN for the publisher.**
+  `PublisherWorker.tick()` gathers every due game in ONE `asyncio.gather`,
+  so a round costs one SR round-trip, not N of them (11.4 fetches/s across
+  ~35 due games, round ~1.16 s). The 14-08 fear that "the serial-fetch
+  shape caps out near ~35 live games" no longer describes the code; it
+  still describes the MM's own in-engine poller, which retires at the
+  ingestion switch.
+- ⚠ **One live book was frozen: `IPTCNCTH`.** `MARKETABLE_GUARD_STALLED`
+  fired four times from 16:18Z with 148 refusals in 30 minutes; its sell
+  target sits behind a touch at 40.39/40.40 x182 and **no submit or
+  replace has left that book since**. `IPTCHFRG` did the same at 16:05Z
+  and cleared. `R-Q09` refusing and `N41` alarming, both as designed —
+  **and still the only broken cadence on the board.**
+- 📝 **The dead games out-poll the live ones.** `MMPUB_POLL_POST_GAME_S`
+  is unset, so it takes the 2.0 s code default — the LIVE rate. 33
+  finished games from 27–29 Aug are fetched every ~2 s: about **14 of
+  every 16 SR calls go to games that will never move again**. The "never
+  retire" behaviour is `N40`'s ruling working correctly; only the rate is
+  wrong. The settle watch only has to beat the MM's ~20 s freshness fuse.
+- ⚠ **`inplay-mm-publisher-testing` polls PRODUCTION Sportradar** — the
+  same live game as the production pool, seconds apart (17:02:35Z).
+  Duplicate quota spend. Whether it also publishes on the production
+  subject depends on a Redis fence nobody has read.
+- ⚠ **This is not the peak, and the numbers must not be quoted as if it
+  were.** 83 games are tracked and **65 sit at the overnight tier**; the
+  window held one live game rising to seven. The recorded **~35%
+  missed-sweeps fault did not reproduce** — but it was measured at three
+  live games under the pre-08-13 `sweep_max_interval_s`. **Re-measure at
+  peak before anyone calls it closed.**
+
 ## 2026-08-28 — ⭐ Edwin's SDMM-1 v5.1 engine · ✅ the injury channel is DROPPED
 
 Received `novo_handoff_1.zip` 27-08 — the formula he promised on the call.

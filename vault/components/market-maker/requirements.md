@@ -26,6 +26,25 @@ decision, recorded · `SPEC` = the v1.3 build spec.
 
 ## Addendum — changes to these requirements
 
+### 2026-08-30 — the reconciler's ordering rules are promoted; flat post-first becomes ✎
+
+- **CHANGED R-L03** ✅ → ✎. The requirement read *"Instructions are
+  post-first: submits, then replaces, then cancels"*, sourced to N12. It
+  codified a design George had already argued against: his 23-07
+  ordering rules (retreating side first · **cancels before creates at
+  overlapping prices** · advancing side deepest-first, top-of-book last
+  · **micro-barrier only on the specific orders an advance would
+  cross**) were recorded in [[market-maker/learnings]] and **never
+  mirrored into [[market-maker/decisions]]**, so they never bound
+  anything. George promoted them on 30-08 (decisions 30-08). ⚠ **The
+  built machine is still flat post-first** — `venue/reconciler.py:173` —
+  so R-L03 describes what RUNS, not what is required. It stays ✎ until
+  `N56` is ruled and the reconciler changes. What forced the promotion:
+  `IPTCNCTH` self-crossed for 2 h 45 min on 29-08 behind a whole-book
+  guard refusal. ⚠ Edwin's spoken 23-07 tolerance (post-first, "I don't
+  care" about a momentary cross) still governs over PTS-001 §6.13.1 —
+  the promotion narrows **`momentary`**, it does not overturn his call.
+
 ### 2026-08-15 — the boot healer lands, and the fresh-journal rule retires for the maker (fix-set CA4)
 
 - **CHANGED R-D05** 🔴 → 🟡: **built** (MM PR #42, `fix-set/ca4-boot-healer`,
@@ -101,7 +120,7 @@ these are gospel under the 22-07 filter and are not ours to change.
 |---|---|---|---|---|
 | R-L01 | An order at a still-wanted price is left alone — never topped up (rest-until-gone) | EDWIN (N10) | ✅ | test |
 | R-L02 | A price move is ONE cancel-replace that adopts the new rank's drawn size | GEORGE (07-08h) | ✅ | PR #8, live 32→70% monotone |
-| R-L03 | Instructions are post-first: submits, then replaces, then cancels | N12 | ✅ | test |
+| R-L03 | ✎ Instructions are post-first: submits, then replaces, then cancels | N12 | ✎ **as-built, not as-required — see addendum 30-08** | test |
 | R-L04 | No replace relies on keeping queue priority | SPEC §8.3 | ✅ | by construction |
 | R-L05 | DONE_FOR_DAY is a distinct terminal state | SPEC/22-07 | 🟡 ✎ | **never observed — see T14** |
 | R-L06 | An in-flight replace occupies its destination price — no double-post | OURS | ✅ | PR #9, zero doubles live |

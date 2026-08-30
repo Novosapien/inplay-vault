@@ -86,6 +86,11 @@ END     1. write a session note in sessions/ (format below)
            · machine changed?         → build/ (the as-built pages —
                                         update the page you changed;
                                         keep them TRUE)
+           · Python changed after the
+             Go pin `fd193a4`?        → go-port-backlog.md (the row
+                                        goes in THIS session — a
+                                        divergence recorded later is
+                                        one reconstructed from memory)
            · built/merged/deployed?   → build-deploy-log.md (the
                                         cross-session pipeline state —
                                         update the row IN the session,
@@ -129,6 +134,7 @@ honest and fast — 10 minutes max:
 | Vocabulary + equation symbols | [[market-maker/glossary]] |
 | Distilled understanding (concepts, traps caught) | [[market-maker/learnings]] |
 | **Defects the Go port found in the Python engine** | [[market-maker/go-port-findings]] |
+| **Python changes the Go port still OWES (add the row in the session)** | [[market-maker/go-port-backlog]] |
 | Session-by-session narrative | `sessions/` |
 | Source standards + plain-English guides | [[standards/README\|standards/]] |
 | Platform reality (venue facts, gateway, streams) | `trading-architecture.md` (platform team's doc — apply the 22-07 filter) |
