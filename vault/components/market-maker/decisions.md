@@ -1165,6 +1165,36 @@ panel **PR #33** (merged, live)
 - ⚠ **Unverified:** with 340 symbols and `TZERO_MD_BOOK_SYMBOLS=*`, a
   restart opens 680 MD subscriptions. Watch the MD logon for 35=Y.
 
+## 2026-08-27 — ✅ the maker returns: NCAA only, three rungs, dead-man timers home
+
+Session: [[market-maker/sessions/2026-08-27-ncaa-only-maker-and-three-rungs]] ·
+MM `main@f9eec8b` · `CFG-0044` then `CFG-0045`
+
+- ✅ **The maker quotes the 138 NCAA books only** (George, 27-08). The 32
+  NFL books carry no maker quote. Two settings move together —
+  `MM_SECURITIES` and `MM_SUPERVISED_INPUTS` — because the engine refuses
+  a reviewed-inputs file that names a ticker outside `MM_SECURITIES`.
+- ✂ **Three rungs a side, drawn 1–3** (`min_levels` 1, `max_levels` 3).
+  **Supersedes Edwin's 20-08 E51 answer 2** — "ONE rung a side… do not
+  build the optionality into v1". `min_step_ticks`/`max_step_ticks` (1–4)
+  revive with it. ⚠ Book-visible, and **Edwin has not been told**.
+  Measured live: 86 books at 1 rung, 92 at 2, 97 at 3.
+- ✅ **The dead-man timers return to 10 s / 30 s** whenever an engine
+  runs. The 7-day offering posture is retired.
+- ⭐ **The per-bot dead-man fired for the first time and was RIGHT.**
+  `mm-test` (2,134 orders) and `snt-1` (1) were swept for silence while
+  `mm-1` kept its whole book, because it heartbeats. The old global latch
+  would have taken all three. ⚠ Corollary: `snt-1` never publishes MM
+  heartbeats by design, so **the taker's resting orders are swept
+  whenever every bot is quiet**.
+- ⚠ **Shape B needs the dead-man ALIVE.** A fresh-journal cutover relies
+  on the sweep to clear the old book at `systemctl stop`. With the timers
+  at 7 days there is no sweep, and the new engine posts beside its own
+  orphans. Restore the timers BEFORE the stop.
+- ⛔ **A heavy log read hung the MM gateway VM** (mine, 12:52Z; instance
+  reset at 13:24:55Z). Never read wire logs on a trading VM. The logs
+  ship to `gs://inplay-fix-gateway-logs/`; read them off the box.
+
 ---
 
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
