@@ -487,6 +487,158 @@ hashes both files being compared. Four planted defects prove it, including the
 exact one that was carried. Full detail in [[market-maker/go-port-findings|GP-13]];
 the sweep-interval documentation drift found alongside it is GP-14.
 
+## 2026-08-27a — ⭐⭐ tZERO's order rate is the ceiling: the wire is paced, the budget derived, versions never overlap
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 3) ·
+Go PR #23 · T2 · N65
+
+- ⭐⭐ **"Exceeds Max Order Rate."** The fast-dwell journal: 29% of everything
+  sent refused by tZERO; in every burst second exactly 100–101 new orders
+  accepted and the rest refused. Every boot blew it (a third of the opening
+  ladder). A refused cancel is an extra rung, a refused replace a wrong-size
+  rung, a refused post a missing one — the whole wrong ladder of 20/21-08
+  and 26-08 was this. Neither engine had a limiter; T2 had sat unanswered
+  since July.
+- ✅ **The wire is paced to the venue's rate**: `VenueMessageRateLimit` 60 🟡
+  MEASURED (100 → 5% refused, 80 → 1.4%, 60 → 0 of 23,619), on the one
+  writer every order crosses. Heartbeat and kill switch take a priority
+  lane — never paced, never behind an order.
+- ✅ **The converger budget is derived from the wire** —
+  `ConvergeMaxInstructionsPerTick` 15 = 60/s × 0.25 s, pinned by Validate
+  (was 128, and the transport queue was the backlog).
+- ✅ **No overlapping versions** — a book with orders in flight holds its
+  next quote; `VenueSyncHoldMaxS` 30 s caps a stuck pending.
+- ⭐ **Result:** at four times the normal cadence, on the old 3–6 × 10,000
+  shape, every side 3–6, none above, 0 duplicates, 0 rejects, resting =
+  wanted.
+- ⭐ **27-08: the limit is OURS to set** — a 35=UEAR through the gateway's
+  `POST /buying-power` (`maxOrdRate` 8935, `maxDupOrdRate` 8936). Test
+  account raised to 2000/200, `UEARa`; at a paced 400/s zero rate rejects.
+  Production 1797733477 on George's word.
+- ⚠ **Correction:** the 20/21-08 journals carry NO rate rejects — those runs
+  were on the production account (already raised, by whom unknown). The
+  20/21-08 ladder was rank drift + dropped acks + duplicate-ClOrdID and
+  NOT_CANCELABLE rejects. The rate limit was the test account's default.
+- ⚠ **The weekend:** whatever the granted rate is, ÷ (2 × rungs) = book
+  updates per second. Activity tiers stay a requirement; the Python maker
+  has no pacer.
+
+---
+
+## 2026-08-26d — ✂ The resize pass returns — "copy Python" is narrowed to the inbound leg
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (23:00) ·
+Go PR #22 · N65
+
+- ⭐ On the old-shape test run George read rank drift straight off the panel:
+  BENG.TEST rank 2 at 2,301 (a rank-2 draw is 5,400–9,000), RAVE.TEST rank 5
+  at 7,667. Per side ≤ 6 and no duplicates — the lifecycle held; the sizes
+  were stale by rank. Rest-until-gone keeps a same-price order at the size
+  of the rank it was born at, and the grid re-spaces every dwell. Python
+  has it too ("stale by design", 20-08); one rung hid it.
+- ✂ **The resize pass is the behaviour** (re-affirming 21-08, reversing the
+  26-08c removal): a kept order outside its NEW rank's ±25% band gets one
+  replace to the rank's draw, on the rank basis. Measured on the old shape
+  22:15–22:17Z: 0 rungs carrying another rank's size across ~1,550 orders,
+  170 books, 3–6 a side, 0 duplicates.
+- ✅ **26-08c's inbound-leg fix stands** — that is the half where Python
+  was right and Go was dropping acks; it cured "more than six a side".
+- ⚠ What is left on the panel is N65's jitter inversion (~6% of adjacent
+  pairs). `feat/monotonic-ladder` removes it; both engines; George + Edwin.
+
+---
+
+## 2026-08-26c — ✅ The Go maker follows Python's venue process — no resize, no dropped acks
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 2) ·
+Go PR `feat/python-lifecycle` `94a21b5` `86ec89e` · N10 · N65
+
+- ✅ **"Just use the same process as the Python one"** (George). The Go
+  maker, at the same 3–6 × 10,000 the Python maker ran supervised, left
+  MORE than six orders a side with a fat middle rung. The Go venue leg now
+  does exactly what Python's does.
+- ✂ **The 21-08 resize pass is REMOVED** — reverses "the resize is the
+  behaviour, not a flag". A kept order rests at its own size until it is
+  gone (N10), whatever rank it now occupies; rank drift is back exactly as
+  Python has it live, and at 1–3 rungs × 550 it costs 550-vs-285 at worst.
+- ⭐ **Three line-by-line comparisons against `f9eec8b`** found every engine
+  and the translator a faithful port. **The divergences that can leave an
+  order standing were all in Go's inbound wrapper**: messages dropped
+  through the boot window, a 4,096 queue that dropped on overflow, refusals
+  skipped where Python halts, poison printed once. A dropped ack is an
+  invisible resting order — a phantom PENDING occupies the price and is
+  never actionable while the real order rests unknown to the diff.
+- ✅ **The inbound leg is Python's**: unbounded, buffered from the
+  subscribe, translated on the tick, alien fills skipped loudly, poison
+  printed every time, a `GatewayTranslationError` halts the run.
+- ⚠ The parity harnesses could not see any of this: on a scripted timeline
+  every ack arrives. A port is proven when every message reaches the
+  engines, not only when the engines agree.
+
+---
+
+## 2026-08-26b — ✅ The Go maker carries E51, and the corpora keep the pin
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] ·
+Go PR `feat/e51-parameters` · Python `main@f9eec8b` · N65 · N66
+
+- ✅ **The Go maker's shipped dictionary is Python `f9eec8b`'s:** Edwin's
+  20-08 answers (E51) — `min_width_ticks` 25, `base_size` 550,
+  `min_quantity` 100, `material_qty_change` 50, `skew_reference_shares`
+  48,000, width floors 50/100 — plus George's 26-08 rung ruling, **1–3
+  drawn**, not Edwin's 1/1. The behaviour rides with the numbers: the state
+  floor in the width, the lean's denominator off the float for the PRICE
+  skew only, the applied lean in the position record.
+- ✅ **The corpora fold under the dictionary their manifest's commit names.**
+  Every target under `testdata/` is Python@fd193a4's output under fd193a4's
+  numbers; a fold under the shipped dictionary diverges on every drawn size
+  (measured: three asks where the pin has five). `config.ReferencePin()`
+  carries fd193a4's rows, `config.DictionaryAtCommit` resolves a manifest's
+  commit, and an unknown commit is REFUSED, never guessed. ⚠ The pin is a
+  test target, not an operator option — it fails `Validate()` on purpose.
+- ✅ **`SkewReferenceShares` 0 means "§4.3's float"** — the pre-E51 rule —
+  and is reserved for the pin. A shipped dictionary must be positive.
+- ⚠ **N65 is NOT moot.** The 21-08 note expected `levels 1/1` to dissolve
+  the monotonicity question; the 26-08 ruling keeps depth, so the per-level
+  ±25% draw still inverts adjacent rungs.
+- ⚠ The gateway's per-bot dead-man (#28) is **deployed** (parallel session,
+  26-08 19:39Z). The Go maker still does not run without George's explicit
+  go — that rule is his, restated 26-08.
+
+---
+
+## 2026-08-21 — ✅ Rank drift is the ladder defect, and the resize is behaviour not a flag
+
+Session: [[market-maker/sessions/2026-08-21-go-maker-ladder-shape]] ·
+Go PR #17 `46c9538` `506216f` `8cebdde` `667b181` · N10 · N65 · N66
+
+- ⭐ **RANK DRIFT is why the Go ladders did not decay outward.** §8.1 pass 1
+  keeps a resting order whenever its PRICE is still wanted, so an order born at
+  rank 6 can sit at rank 3 still carrying its rank-6 size. Traced on
+  IPTCJAGU.TEST: a 2-cent grid became a 4-cent grid, three kept orders were left
+  untouched, and a 2,564 sat at rank 3 above a freshly posted 4,069.
+  ⭐ George described the mechanism from the panel before it was measured.
+- ⭐ **The proof it is version mixing:** inside ONE quote version a step can only
+  fall in `[0.432, 1.20]` (the 0.72 decay against the ±25% band). Live steps
+  reached **2.16**.
+- ✅ **The trigger is the RANK BASIS (`Level.PreVariation`), never the drawn
+  size.** The drawn size is re-drawn every version, so comparing against it
+  republished every level every cycle — 246 orders on 10 books, 389 new orders
+  and 550 cancels in three minutes. `quantity.go` already stated the rule:
+  materiality is judged BEFORE variation.
+- ✅ **The resize is the BEHAVIOUR, not an environment variable** (George,
+  21-08). `MM_REQUOTE_CLEAR_FIRST` removed; the parity harnesses pin the
+  reference lifecycle themselves and say why.
+- ✅ **`MMGO` + 14 hex is the Go maker's ClOrdID scheme.** It keeps the `MM` the
+  gateway's namespace check demands and fails the Python healer's `MM` + 16-hex
+  test on the `G`, so our book reads as FOREIGN to it. ⚠ A wholly non-MM prefix
+  is impossible — the gateway refuses it with `MM_PREFIX_REQUIRED`.
+- ⭐ **A test that asserts on ONE reconcile call cannot see churn.** Three live
+  failures passed the entire unit suite. The fix ships with a closed-loop churn
+  simulation; restoring the old trigger fails it by name.
+- ⚠ **tZERO was blameless.** 389 new orders, 157 replaces, 550 cancels, every
+  one acked, zero rejects. Every failure that night was ours.
+
 ---
 
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores

@@ -364,6 +364,35 @@ arrives with its chunk.
 | `classifier thresholds` | Staleness/latency limits per class | — | 🔴 TBD | N3 |
 | `RP publication` | Reference price identity | RP = ESV (mid) · frozen on feed failure | ✅ | CTS-002 + 20-07 |
 
+## 2026-08-26 — the shipped dictionary, both engines (E51 ported to Go)
+
+The rows below are what `dictionary.py` (Python `main@f9eec8b`) and
+`dictionary.go` (Go `feat/e51-parameters`) ship. Every one supersedes the
+§12.2 registry row above it. Edwin's values are 🟡 until the first live 1–3
+book is watched; the two George rows are ✂ his. The full reasoning per row
+is in [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]]
+(E51) and [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]].
+
+| Parameter | Value | Was (fd193a4 pin) | Status | Source |
+|---|---|---|---|---|
+| `min_width_ticks` | **25** — a $0.25 baseline touch; ⚠ binds BEFORE the extra, so the realised spread is 25–30 | 1 (🔴 E31) | 🟡 Edwin 20-08 (E51 answer 1) | "I'm not picking a k, I'm picking the room" |
+| `min_levels` / `max_levels` | **1 / 3**, drawn per dwell | 3 / 6 | ✂ 🟡 George 26-08, superseding Edwin's 1/1 (E51 answer 2) — ⚠ book-visible, Edwin to be told | Python `f9eec8b` |
+| `base_size` | **550** | 10,000 (ours) | 🟡 Edwin 20-08 (E51 answer 3) | "500 or 600" |
+| `min_quantity` | **100** — a backstop; the 550 touch draws 412–688 | 1,000 (§5.7.3, ours) | ✂ 🟡 George 20-08 | ⚠ no tZERO minimum in any venue doc |
+| `material_qty_change` | **50** | 500 (§5.8) | ✂ 🟡 George 20-08 | near-dormant; `material_ia_change` does the work |
+| `skew_reference_shares` | **48,000** — the lean's denominator, NOT §4.3's float; saturates at 12,000 net (M ÷ S × row). EPR keeps the real float | the float (900k / 1M) | 🟡 Edwin 20-08 (E51 answer 5) | "maximum skew at ±12,000 net" |
+| `defensive_width_floor_ticks` · `overnight_width_floor_ticks` | **50 · 100** — applied AFTER the extra, widest wins; 100 sits above `max_width_ticks` 60 on purpose | none | 🟡 Edwin 20-08 (E51 answer 6) | "judgement, not derivation — bring the data" |
+| `k_intensity` · `size_decay` · `max_quantity` · `variation ±25%` | unchanged: 1.2 · 0.72 · 15,000 · 0.75–1.25 | same | as above | — |
+
+| `venue_message_rate_limit` | **60 msg/s** on the wire (new + cancel + replace; heartbeat exempt) | none (🔴 T2 unanswered) | 🟡 **MEASURED 27-08** — 100 → 5% refused, 80 → 1.4%, 60 → 0 | Go PR #23; Python has no limiter |
+| `converge_max_instructions_per_tick` | **15** = rate × 0.25 s interval (pinned by Validate) | 128 | ✂ George 26-08, derived | Go PR #23 |
+| `venue_sync_hold_max_s` | **30 s** — a book with orders in flight holds its next version; past the cap it publishes and says so | none | 🟡 ours, George 26-08 | Go PR #23 |
+
+⚠ **The Go tree keeps BOTH sets.** `config.Default()` is this table;
+`config.ReferencePin()` is the "Was" column, because every corpus under
+`testdata/` is Python@fd193a4's output. The pin fails validation on purpose
+and cannot boot.
+
 ## Quoting engine
 
 | Parameter | Meaning | Value | Status | Source |
