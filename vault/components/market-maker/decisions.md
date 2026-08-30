@@ -1197,6 +1197,41 @@ MM `main@f9eec8b` · `CFG-0044` then `CFG-0045`
 
 ---
 
+## 2026-08-28 — the gateway OOM, and the restart ceremony that broke the book
+
+Session: [[market-maker/sessions/2026-08-28-gateway-oom-and-restart-ceremony]] ·
+gateway PR #29 · `inplay-fix-gateway-go@64dda79`
+
+- ⚠ **A DEAD-MAN SWEEP IS NOT A SUBSTITUTE FOR `cancel_all`.** Stopping the
+  maker and letting the dead-man clear its book leaves the maker's own record
+  saying those orders still rest. On 28-08 that produced **5,164
+  `UNKNOWN_ORDER` rejects** and held mm-1 at 65 of 138 symbols for an hour. The
+  difference is whether the maker knows its book is gone. Cancel from the
+  maker, and confirm `open_orders` reaches ~0, before stopping it.
+- ✅ **A gateway cutover requires a fresh maker journal.** `MM_JOURNAL_PATH` is
+  pinned in `/etc/mm-1/env`, so a restart replays the same journal and re-mints
+  every phantom. `MM_BOOT_HEAL=on` alone is NOT enough — it cleared 706 orders
+  and the next replay brought them back. Point `MM_JOURNAL_PATH` at a new run
+  directory, set `MM_PRIOR_RUN_DIR` to the old one so anchors carry, and bump
+  `MM_CONFIG_VERSION`. Coverage then returned to 138/138 in **77 seconds**.
+- ✅ **`strings.Clone` on `OrderID` and `ExecID` ships; eviction does not, yet.**
+  `fix.ParseMessage` aliases the raw message, so each tracked row pinned its
+  whole ~380-byte execution report. The clone recovers ~31% of the growth and
+  carries no behavioural risk. It is **not** the fix — `OrderTracker.orders`
+  has never evicted a row since 2026-06-02, and only eviction bounds it.
+- ⚠ **The boot grace is the wrong knob.** mm-1's sweep on 27-08 fired 120 s
+  after boot on the **10 s heartbeat timeout**, not the 30 s
+  `MM_DEADMAN_BOOT_GRACE_MS`. Raising the boot grace does not protect a maker
+  that is silent during a ceremony.
+- ⚠ **Cloud Monitoring notifies once per incident.** A condition that stays
+  true goes silent after the first email. `snt-1` has been halted since
+  **22-08 21:45Z** on a reconcile halt (`IPTCFRSB`: venue 433,320, ours 5,078,
+  float 3,847) and nobody was reminded for nearly six days.
+- ⚠ **Nothing watches quote coverage, and the maker logs no venue rejects.**
+  `IPTCFAOW` — the only symbol of 137 with zero house inventory — had every ask
+  refused for sixteen hours in silence. Both gaps were found by eye on the
+  panel, not by an alert.
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
