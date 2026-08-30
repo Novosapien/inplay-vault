@@ -423,3 +423,40 @@ reconcile at 08-11 22:47 — the seed is venue-agreed.
 5,000 of each of the 175 seeded symbols; the five QA books carry their
 traded state (journal `snt5` from floats COWB 3856 · EAGL 5406 ·
 GIAN 4605 · PATR 5245 · STEE 5419 at the 08-11 22:43 cutover).
+
+## 2026-08-19/20 — the full IPO seed + offering (George's direction; run by Claude)
+
+Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] · runbook
+[[market-maker/reference/ipo-seeding-runbook]]
+
+⚠ **`txfrCost` in this run is a PRICE PER SHARE, not a total** — the unit was
+settled by measurement on 19-08 and the earlier entries in this ledger use the
+other reading. See the runbook §2.
+
+**Read first.** Every one of the 170 books already held 79,000–108,000 shares
+(17,820,524 in total), so each transfer is `float − held`, never the float.
+Pre-seed positions: `/tmp/ipo/positions.json` on the gateway VM ⚠ (`/tmp` — not
+durable).
+
+| Batch | Books | Shares transferred | Ledger |
+|---|---|---|---|
+| Eagles, by hand (the proving run) | 1 | +840,298 @ 72.88 | — |
+| The other 169 | 169 | +148,979,476 | `/tmp/ipo/seed-ledger.jsonl` |
+| Top-ups after trading (AFFC/RAVE/HOOS/MISP) | 4 | +195,550 | — |
+| The ten `.TEST` twins | 10 | +8,000,000 (to 900,000 each) | — |
+
+**Result:** all 170 real books at float — 900,000 NFL · 1,000,000 NCAA,
+166,800,000 shares — verified 170/170 by the asks' own `9383`. The ten twins at
+900,000 each.
+
+### UEPR entries (this ledger's first — the message was believed disabled)
+
+| Account | Symbol | Qto | Why |
+|---|---|---|---|
+| 1797733477 | IPTCJAGU.TEST | 99,657 | ⚠ **repair** — a `Qto=0` "no-op" probe at 16:24:35Z zeroed the opening balance and destroyed **99,663 shares**. Restored to 101,665 |
+| 4963224393 | IPTCAFFC | −42,225 | back to 7,887, undoing the Buy-ticket test |
+| 4963224393 | IPTCRAVE | −41,320 | back to 3,855, same |
+
+⚠ Both taker resets booked a **realized P&L artefact** — AFFC +$7,146.39, RAVE
++$11,074.87. Reducing a position always marks a P&L; a position can be reset, a
+trade cannot be un-traded.

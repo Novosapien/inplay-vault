@@ -186,6 +186,9 @@ curl -XPOST http://10.0.1.2:8080/position-transfer \
        "txfrQty":1000,"txfrCost":25000.00,"confirmTyp":2}'
 Constraints: txfrQty non-zero; txfrCost must share its sign; and txfrCost / txfrQty must be > 0.
 
+> ⚠⚠ **CONTRADICTED BY MEASUREMENT, 2026-08-19.** The line above says `txfrCost` is the **total**. Probed live against the session wire log that afternoon, the venue treats **9387 as a PRICE PER SHARE**: 7 shares at `txfrCost=7.00` booked a basis of **49.00**, and a second transfer of 2 shares at 3.00 moved the basis by exactly **6.00**. The 05-08 probe used 1 share at 1.00 — the single quantity where a total and a per-share price are the same number, which is why this went unnoticed for two weeks. The spec's own `(TxfrCost / TxfrQty) = averagePrx` reads as a total, so the spec and the venue disagree and **one of them is wrong**. ⚠ The measurements were taken on an **IPLY** account; the unit is still unconfirmed on **IPLM**, where the maker lives. Settle it with one transfer of a distinctive quantity at a distinctive price into a throwaway symbol BEFORE any real seed — at 900,000 shares the wrong reading is wrong by a factor of 900,000, and UPT cannot be undone. See [[market-maker/decisions]] 2026-08-19e.
+
+
 Three properties that will hurt you
 It is ONE-WAY. Positive transfers apply. Negative transfers are accepted (UPTa) and then silently do nothing — tested twice, with and without confirmTyp. You can add inventory; you cannot remove it. Reducing means selling in the market.
 It is NOT idempotent. Each call is an independent signed delta. Two calls of +1 give you +2. confirmTyp does not sequence one transfer into two steps — that was tested and disproven.

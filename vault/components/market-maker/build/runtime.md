@@ -140,9 +140,14 @@ consumes the emitted sweeps and never re-runs the scheduler.
 - **Portfolio-wide**: ONE event per slot covers all 170 (§3.1.4 +
   §2.5). ✂ The slot is **0.5 s since 08-11** (was 2.0 s — the sweep is
   the LIVE quote pulse, MM PR #16); a sweep counts as MISSED past
-  `sweep_max_interval_s` = **1.0 s** (✂ George 08-13 evening — the
-  absolute half-second slack restored; the 08-11 ratio had silently
-  tightened it to 125 ms). The missed counter is portfolio-wide — see
+  `sweep_max_interval_s` = **2.0 s** (⭐ ✂ George 14-08, pre-slate ruling
+  — RELAXES the 1.0 s of 08-13 evening, so ordinary multi-game engine
+  load cannot walk the portfolio into DEFENSIVE through the §3.5
+  missed-sweep deductions. His stated range was 1.5–2.0 and 2.0 was
+  chosen because it is §3.1.4's own absolute. The 08-13 evening 1.0 s
+  had itself restored the absolute half-second slack, because the 08-11
+  ratio silently tightened it to 125 ms). The missed counter is
+  portfolio-wide — see
   [[market-maker/build/market-state|Market state]] for what a miss does
   to every book.
 - **Fixed slots**: a late tick catches up to the wall clock rather than
