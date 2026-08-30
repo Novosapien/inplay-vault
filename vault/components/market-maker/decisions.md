@@ -94,7 +94,26 @@ Session: [[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
   every repost sweeps the touch: **$50,366 on 09-08**). ⚠ **The refusal
   holds back the WHOLE BOOK, not the offending side** — the alarm's own
   words, *"no submit or replace has gone out for this book since"*.
-  `MARKETABLE_GUARD_STALLED` fired **9 times**. 📝 **`[cancels-through]`
+  `MARKETABLE_GUARD_STALLED` fired **9 times**.
+- ⭐⭐ **CORRECTED 30-08 (from `inplay-vault-17`) — the window has TWO
+  causes and the second is OURS.** That session resumed **SNT-1 at
+  17:20:12Z**, inside the freeze. Verified both ways on the VM:
+  **16:07Z→17:21Z is third-party onset** (SNT-1 journal-halted since
+  22-08, its halt had swept its orders, **zero** taker orders or fills
+  on IPTCNCTH before 17:21:05Z — the original reading HOLDS);
+  **17:21Z→18:52Z is HOUSE-TAKER SUSTAIN** — the taker walked the bid
+  40.43 → 40.55 and sold repeatedly at **40.40**, the exact level the
+  guard named, while the maker's ask sat frozen at 40.26.
+  ⚠ **Why our own taker can block our own maker: the guard nets
+  OWN-ACCOUNT only.** `net-of-own` means the MAKER's account; SNT-1 is
+  account **4963224393**, so **the house taker is EXTERNAL to the
+  guard** and a house-level self-cross is structurally invisible to it.
+  ⚠ **This recurs on every live book where both are active — which is
+  every live book, by design.** Opened as **N76**. `inplay-vault-17`
+  reaches the same root cause from the reconcile side (MM PR #59): one
+  venue, two strategies, no separation. 📝 The taker did not CREATE the
+  40.40 level — that existed from 16:07Z while it was halted.
+- 📝 **`[cancels-through]`
   did not save it**: it IS in the running tree, but the reconciler moves
   a stale order with a REPLACE, and the guard holds replaces. The ruling
   covers cancels, not the cancel-half of a held replace.
