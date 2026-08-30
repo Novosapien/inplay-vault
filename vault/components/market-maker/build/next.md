@@ -35,7 +35,13 @@ states live in [[market-maker/build-deploy-log]].
 **Ours, unblocked — in rough order:**
 
 1. **The missed-sweeps fix chain** (~35% of ticks miss a sweep slot
-   under three live games — engine time per event):
+   under three live games — engine time per event). ✎ **29-08: it did
+   NOT reproduce on the first NCAA Saturday** — `missed_intervals=0`
+   across 1,423 sweeps, engine CPU 7.5% of one core, at ONE to SEVEN
+   live games. ⚠ Not closed: the fault was measured at three live games
+   under the pre-08-13 `sweep_max_interval_s`, and 65 of 83 tracked
+   games were still pre-kickoff. **Re-measure at peak before judging it**
+   ([[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]]):
    step 1 the instrumented per-stage/per-event cost measurement (A2
    replay at 10×, no live game needed; also sizes the drain-cap
    re-size owed since group commit) → step 2 the design fixes
@@ -68,16 +74,25 @@ states live in [[market-maker/build-deploy-log]].
    reject storm suppresses every price on a side and the book closes
    one-sided): never suppress the best remaining postable level per
    side. Changes [[market-maker/build/venue|Venue]].
-6. **The stale-book crossing guard (R-Q09)** — the engine's reposts
+6. ⭐ **The guard's GRANULARITY (N75, raised 30-08)** — the R-Q09
+   guard refuses a whole BOOK; George's promoted ordering rules
+   refuse the crossing ORDER (the micro-barrier). The whole-book
+   refusal froze `IPTCNCTH` self-crossed for **2 h 45 min** during a
+   live game on 29-08. Cheap option: extend `[cancels-through]` to
+   the cancel-half of a held replace. Deep option: order
+   granularity, blocked by `[atomic-book]`'s positional ClOrdID
+   minting. Changes [[market-maker/build/venue|Venue]]
+   ([[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]]).
+7. **The stale-book crossing guard (R-Q09)** — the engine's reposts
    take stale third-party liquidity ($50,366 measured once) — and
    **the sell gate (R-Q08)** — nothing subtracts live resting sells
    before an ask ladder (`sellable = Pos − livS`). Changes
    [[market-maker/build/venue|Venue]].
-7. **Maker shorts (N34)** — the ask ladder's side-2→5 flip at MINTING
+8. **Maker shorts (N34)** — the ask ladder's side-2→5 flip at MINTING
    (a resting order cannot change side on replace); the taker's half
    is merged and OFF. Changes [[market-maker/build/venue|Venue]] and
    [[market-maker/build/quoting|Quoting]].
-8. **The review debt** — the VM deliberately runs ahead of review:
+9. **The review debt** — the VM deliberately runs ahead of review:
    MM PRs #21 · #22 · #24 · #25 · #26 · #27 · #30 OPEN while
    production runs their lineage (the wash-guard/boot-rebase branch
    split is CLOSED — `step4b-wash` @ `5b10d68` merges main into
@@ -87,18 +102,18 @@ states live in [[market-maker/build-deploy-log]].
    testing→main promotion (65 commits), not the one-hunk hotfix
    (which has no PR — see [[market-maker/build/ingestion|Ingestion]]).
    Gateway PR #4 (dead-man default) OPEN.
-9. **Terminal-record pruning** — engine state grows ~70–90 MB/h at
+10. **Terminal-record pruning** — engine state grows ~70–90 MB/h at
    the 500 ms/180-book cadence. Changes
    [[market-maker/build/runtime|Runtime]].
-10. **Protocol drills** TT4 (kill mid-window) · TT6 (rig replay of a
+11. **Protocol drills** TT4 (kill mid-window) · TT6 (rig replay of a
     full game); the A2 starvation check still fails at 10×
     compression (the engine-time floor — re-judge after the
     missed-sweeps chain).
-11. **The daily reference feed build** — designed 13-08
+12. **The daily reference feed build** — designed 13-08
     ([[market-maker/systems/daily-reference-feed]]); build gated on
     George's approval + the N23 event-type blessing. Changes
     [[market-maker/build/ingestion|Ingestion]].
-12. Housekeeping owed: a systemd unit for the supervised engine
+13. Housekeeping owed: a systemd unit for the supervised engine
     (doubles as the N15 beat-jitter recorder) · the CI/CD audit
     (George, 06-08). ~~The boot-reconcile healer (parked with eyes
     open)~~ — BUILT 15-08 (CA4, MM #42), not deployed.

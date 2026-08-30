@@ -1,0 +1,262 @@
+<title>SDMM-1 Reference Price Spec</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F2F3F1; --panel:#FBFBF9; --sunk:#E9EAE6;
+  --ink:#14181A; --ink-2:#3E4340; --muted:#6A6E67; --faint:#8E9189;
+  --rule:#DCDED8; --rule-2:#C7CAC3;
+  --accent:#8A6410; --accent-soft:#F0E6CE;
+  --s1:#B8891A; --s2:#0F9B76; --s3:#5257C4; --s4:#C43C50;
+  --up:#1B6B44; --down:#A6382C;
+  --ok-bg:#E6EFEB; --ok-fg:#1E5C46;
+  --shadow:0 1px 2px rgba(20,24,26,.06), 0 6px 20px rgba(20,24,26,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#14161A; --panel:#1B1E22; --sunk:#101215;
+    --ink:#E9EAE5; --ink-2:#C3C6BF; --muted:#94978F; --faint:#73766F;
+    --rule:#2A2E33; --rule-2:#3A3F45;
+    --accent:#C79A3A; --accent-soft:#2E2818;
+    --s1:#B78A1C; --s2:#189B72; --s3:#767BDC; --s4:#D95064;
+    --up:#4FA97A; --down:#DD6E60;
+    --ok-bg:#152D24; --ok-fg:#7CC7A6;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 26px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#14161A; --panel:#1B1E22; --sunk:#101215;
+  --ink:#E9EAE5; --ink-2:#C3C6BF; --muted:#94978F; --faint:#73766F;
+  --rule:#2A2E33; --rule-2:#3A3F45;
+  --accent:#C79A3A; --accent-soft:#2E2818;
+  --s1:#B78A1C; --s2:#189B72; --s3:#767BDC; --s4:#D95064;
+  --up:#4FA97A; --down:#DD6E60;
+  --ok-bg:#152D24; --ok-fg:#7CC7A6;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 26px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); margin:0;
+  font-family:"IBM Plex Sans", system-ui, -apple-system, sans-serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 28px 96px;}
+.prose{max-width:68ch;}
+h1,h2,h3{font-family:"Zilla Slab", Georgia, serif; text-wrap:balance; margin:0;}
+h1{font-size:clamp(2.1rem,4.6vw,3.1rem); font-weight:600; line-height:1.08; letter-spacing:-.015em;}
+h2{font-size:1.5rem; font-weight:600; line-height:1.2;}
+h3{font-size:1.04rem; font-weight:600;}
+p{margin:0} a{color:var(--accent)}
+code,.mono{font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; font-variant-numeric:tabular-nums;}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:.7rem; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--accent);}
+.lede{font-size:1.1rem; color:var(--ink-2); line-height:1.6;}
+.small{font-size:.9rem; color:var(--ink-2); line-height:1.58;}
+.xs{font-size:.78rem; color:var(--faint); line-height:1.5;}
+.tcap{font-size:.78rem; color:var(--faint); margin-top:8px; line-height:1.5;}
+b.k{color:var(--ink); font-weight:600;}
+
+.mast{border-bottom:1px solid var(--rule); padding:56px 0 34px; display:flex; flex-direction:column; gap:18px;}
+.rail{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+.tick{font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); border:1px solid var(--rule-2); border-radius:2px; padding:3px 8px;}
+.tick.ok{background:var(--ok-bg); color:var(--ok-fg); border-color:transparent;}
+.hero-eq{margin-top:6px; background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--accent);
+  border-radius:3px; padding:22px 24px; overflow-x:auto; box-shadow:var(--shadow);}
+.hero-eq .eq{font-family:"IBM Plex Mono",monospace; font-size:1rem; font-weight:500; white-space:nowrap; line-height:2;}
+.hero-eq .gloss{margin-top:10px; font-size:.85rem; color:var(--muted);}
+
+section{padding:52px 0 0; display:flex; flex-direction:column; gap:20px;}
+.sec-head{display:flex; gap:16px; align-items:flex-start; border-top:1px solid var(--rule); padding-top:26px;}
+.sec-no{font-family:"IBM Plex Mono",monospace; font-size:.78rem; font-weight:600; color:var(--accent); padding-top:.45em; min-width:2.2em;}
+.sec-head .t{display:flex; flex-direction:column; gap:6px;}
+
+.eqblock{background:var(--panel); border:1px solid var(--rule); border-radius:3px; padding:18px 20px; overflow-x:auto;}
+.eqblock .line{font-family:"IBM Plex Mono",monospace; font-size:.92rem; white-space:nowrap; line-height:2;}
+.eqblock .line .op{color:var(--muted);}
+.eqblock .tag{display:inline-block; min-width:5.2em; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint);}
+.swatch{display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:7px;}
+
+.legs{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px;}
+.leg{background:var(--panel); border:1px solid var(--rule); border-radius:3px; padding:14px 16px;
+  display:flex; flex-direction:column; gap:7px; border-top:3px solid var(--c);}
+.leg .lname{font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.11em; text-transform:uppercase; color:var(--c); font-weight:600;}
+.leg .lval{font-family:"IBM Plex Mono",monospace; font-size:1.22rem; font-weight:500; font-variant-numeric:tabular-nums;}
+.leg .ldesc{font-size:.81rem; color:var(--muted); line-height:1.45;}
+
+.tw{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:.86rem;}
+th,td{padding:9px 14px; text-align:right; border-bottom:1px solid var(--rule); white-space:nowrap;}
+th{font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; background:var(--sunk); border-bottom:1px solid var(--rule-2);}
+td{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; color:var(--ink-2);}
+th:first-child,td:first-child{text-align:left;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr.hi td{background:var(--accent-soft); color:var(--ink); font-weight:500;}
+tbody tr.par td{background:var(--sunk);}
+td.up{color:var(--up)} td.down{color:var(--down)} td.pass{color:var(--ok-fg); font-weight:600}
+
+.note{border:1px solid var(--rule); border-left:3px solid var(--s4); border-radius:3px;
+  background:var(--panel); padding:16px 18px; display:flex; flex-direction:column; gap:8px;}
+.note.good{border-left-color:var(--s2);} .note.info{border-left-color:var(--s3);}
+.note .nh{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted);}
+.note p{font-size:.92rem; color:var(--ink-2);}
+
+.calc{border:1px solid var(--rule-2); border-radius:4px; background:var(--panel); box-shadow:var(--shadow); overflow:hidden;}
+.calc-grid{display:grid; grid-template-columns:minmax(280px,1fr) minmax(300px,1.05fr);}
+@media(max-width:820px){.calc-grid{grid-template-columns:1fr;}}
+.inputs{padding:22px 24px; display:flex; flex-direction:column; gap:20px; border-right:1px solid var(--rule);}
+@media(max-width:820px){.inputs{border-right:0; border-bottom:1px solid var(--rule);}}
+.fset{display:flex; flex-direction:column; gap:12px;}
+.fset > .fh{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--accent); padding-bottom:7px; border-bottom:1px solid var(--rule);}
+.field{display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px;}
+.field label{font-size:.85rem; color:var(--ink-2);}
+.field label .u{color:var(--faint); font-size:.76rem;}
+.field input[type=number]{width:86px; padding:5px 8px; text-align:right; background:var(--sunk); color:var(--ink);
+  border:1px solid var(--rule-2); border-radius:2px; font-family:"IBM Plex Mono",monospace; font-size:.86rem; font-variant-numeric:tabular-nums;}
+.field input[type=range]{grid-column:1/-1; width:100%; accent-color:var(--accent);}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.gamestrip{display:flex; gap:3px; flex-wrap:wrap;}
+.gamestrip button{flex:1; min-width:30px; padding:6px 2px; border:1px solid var(--rule-2); border-radius:2px;
+  background:var(--sunk); color:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:.72rem; cursor:pointer;}
+.gamestrip button.w{background:var(--s2); color:#fff; border-color:transparent;}
+.gamestrip button.l{background:var(--s4); color:#fff; border-color:transparent;}
+.readout{padding:22px 24px; display:flex; flex-direction:column; gap:16px; background:var(--sunk);}
+.bignum{display:flex; flex-direction:column; gap:2px;}
+.bignum .lab{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted);}
+.bignum .v{font-family:"IBM Plex Mono",monospace; font-size:2.45rem; font-weight:500; line-height:1.05; font-variant-numeric:tabular-nums;}
+.bignum .sub{font-family:"IBM Plex Mono",monospace; font-size:.84rem; color:var(--muted);}
+.stack{display:flex; gap:2px; height:40px;}
+.stack .seg{border-radius:2px; display:flex; align-items:center; justify-content:center; min-width:2px;}
+.stack .seg span{font-family:"IBM Plex Mono",monospace; font-size:.75rem; font-weight:600; color:#fff;}
+.rows{display:flex; flex-direction:column; border-top:1px solid var(--rule);}
+.rows .r{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:7px 0; border-bottom:1px solid var(--rule); font-size:.85rem;}
+.rows .r .n{display:flex; align-items:center; gap:8px; color:var(--ink-2);}
+.rows .r .n i{width:10px; height:10px; border-radius:2px; display:block; flex:none;}
+.rows .r .v{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;}
+.rows .r.tot{font-weight:600; border-bottom:0; padding-top:10px;}
+.quote{display:flex; gap:2px;}
+.quote .q{flex:1; padding:9px 12px; background:var(--panel); border:1px solid var(--rule-2); display:flex; flex-direction:column; gap:1px;}
+.quote .q:first-child{border-radius:2px 0 0 2px} .quote .q:last-child{border-radius:0 2px 2px 0}
+.quote .q .l{font-family:"IBM Plex Mono",monospace; font-size:.63rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint);}
+.quote .q .v{font-family:"IBM Plex Mono",monospace; font-size:1rem; font-variant-numeric:tabular-nums;}
+.chartcard{background:var(--panel); border:1px solid var(--rule); border-radius:3px; padding:18px 20px 12px;}
+.figtop{display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:12px;}
+.figtop .ct{font-family:"Zilla Slab",serif; font-size:1rem; font-weight:600;}
+svg{display:block;width:100%;height:auto}
+ul.tight{margin:0; padding-left:1.15em; display:flex; flex-direction:column; gap:9px;}
+ul.tight li{font-size:.93rem; color:var(--ink-2);}
+.foot{border-top:1px solid var(--rule); margin-top:64px; padding-top:22px;}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<div class="wrap">
+<header class="mast">
+  <div class="rail">
+    <span class="eyebrow">SDMM-1 · Reference Price Specification</span>
+    <span class="tick">handoff — novosapien</span>
+    <span class="tick">v5.1 · Aug 27</span>
+    <span class="tick ok">31/31 acceptance tests</span>
+  </div>
+  <h1>Reference price, t-zero through settlement</h1>
+  <p class="lede prose">The single valuation path for all 170 team companies. One formula prices the IPO, every week of secondary trading, and settlement — the differences are only which observations have arrived. Build against <span class="mono">novo_engine.py</span>; a port is correct when it passes <span class="mono">test_engine.py</span>.</p>
+
+  <div class="hero-eq">
+    <div class="eq"><span style="color:var(--muted)">settlement</span>  V<sub>T</sub> = $5·W + $2.50·T<sub>ies</sub> (NFL) + A   <span style="color:var(--muted)">— accrual; nothing pays until the regular season ends</span></div>
+    <div class="eq"><span style="color:var(--muted)">price</span>       P(t) = DF(t) · [ 5·ΣP(win<sub>g</sub>) + 2.50·ΣP(tie<sub>g</sub>) + 2.50·Σv<sub>g</sub> ] − RC(t)</div>
+    <div class="eq"><span style="color:var(--muted)">state</span>       r ~ N(m, S) in points · d<sub>g</sub> = r<sub>i</sub> − r<sub>j</sub> + H · P(win) = Φ( d<sub>g</sub> / √(ς² + Var d<sub>g</sub>) )</div>
+    <div class="gloss">Banked legs use actual results and printed ad dollars at face (× DF). Unresolved legs use the posterior. The live game is $5 × WP<sub>live</sub>, exactly. Everything is linear-Gaussian, so every update below is one exact Kalman step and the price is a martingale in closed form — there is no drift to tune away.</div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head"><div class="sec-no">01</div><div class="t"><h2>Constants</h2>
+  <p class="small">League-level, set once. Values marked (est) should be re-estimated from InPlay history before launch; they are standard defaults, not fits.</p></div></div>
+  <div class="tw"><table>
+    <thead><tr><th>Constant</th><th>NCAA</th><th>NFL</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">WIN_VALUE</td><td>$5.00</td><td>$5.00</td><td>a win banks exactly $5, absolute</td></tr>
+      <tr><td class="mono">TIE_VALUE</td><td>—</td><td>$2.50</td><td>tie leg; NCAA plays overtime</td></tr>
+      <tr><td class="mono">AD_POOL</td><td>$2.50</td><td>$2.50</td><td>marketing pool per game</td></tr>
+      <tr><td class="mono">SIGMA_G (est)</td><td>15.0</td><td>12.5</td><td>margin sd around the rating edge, pts</td></tr>
+      <tr><td class="mono">SIGMA_SPREAD (est)</td><td>1.5</td><td>1.5</td><td>posted spread error vs true edge, pts</td></tr>
+      <tr><td class="mono">HOME_ADV (est)</td><td>2.5</td><td>1.8</td><td>home field, pts; 0 on neutral sites</td></tr>
+      <tr><td class="mono">SIGMA_MKT</td><td>2.2</td><td>2.7</td><td>season-win sd convention (governs t0 rating sd)</td></tr>
+      <tr><td class="mono">TIE_BAND</td><td>0</td><td>±0.5</td><td>margin band that settles as a tie</td></tr>
+      <tr><td class="mono">CAP_LO / CAP_HI</td><td colspan="2">0.20 / 0.80</td><td>Supplement A clamp on per-game ad capture</td></tr>
+      <tr><td class="mono">INJURY_PTS.QB (est)</td><td colspan="2">7.0</td><td>rating points; RB 1.0 · WR 1.5 · OL 1.2 · DL 1.5 · LB 1.0 · DB 1.2 · K 0.5</td></tr>
+      <tr><td class="mono">RATE</td><td colspan="2">4%</td><td>annualised, for DF(t) = e<sup>−r·τ</sup></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="sec-no">02</div><div class="t"><h2>t-zero calibration</h2>
+  <p class="small">Inputs per team: expected season wins and the published IPO. Everything else is derived.</p></div></div>
+  <div class="eqblock">
+    <div class="line"><span class="tag">1</span> opponent ratings: invert each reference p through P(win) so the model reproduces the feed exactly</div>
+    <div class="line"><span class="tag">2</span> rating sd: solve so season-win σ = SIGMA_MKT  <span class="op">// LSU: 8.57 pts → σ = $11.00</span></div>
+    <div class="line"><span class="tag">3</span> brand level: solve so mean capture matches the IPO-implied share  <span class="op">// LSU: 0.600</span></div>
+    <div class="line"><span class="tag">4</span> risk premium: ρ = 1 − (IPO / DF₀) / gross  <span class="op">// solved from the price, never assumed</span></div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>LSU worked</th><th>$</th></tr></thead>
+    <tbody>
+      <tr><td>Win leg — 5 × 8.55</td><td>42.750</td></tr>
+      <tr><td>Marketing leg — 2.50 × 0.600 × 12</td><td>18.000</td></tr>
+      <tr><td>Time value — DF = e<sup>−0.04 × 105/365</sup> = 0.988559</td><td class="down">−0.695</td></tr>
+      <tr class="hi"><td>Risk charge — ρ = 0.866% at full σ</td><td class="down">−0.520</td></tr>
+      <tr><td><b>Reference price</b></td><td><b>59.535</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="tcap">Reconciles to the published $59.54 to the penny. Per-game probabilities match the feed to 1e−9 and sum to 8.55.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="sec-no">03</div><div class="t"><h2>The five update channels</h2>
+  <p class="small">Each is one observation on the shared rating (or brand) state via the same Kalman step: <span class="mono">m ← m + S·h·ν/(h′Sh + σ²<sub>obs</sub>)</span>, <span class="mono">S ← S − S·h·h′·S/(h′Sh + σ²<sub>obs</sub>)</span>, with h = +1 home / −1 away.</p></div></div>
+  <div class="tw"><table>
+    <thead><tr><th>Event</th><th>Observation of</th><th>Obs. noise</th><th>Rules</th></tr></thead>
+    <tbody>
+      <tr class="hi"><td>Posted spread (weekly board)</td><td>d<sub>g</sub></td><td>1.5 pts</td><td>PRIMARY channel — 100× the information of a result. Never price off the raw spread as Φ(S/ς): filter it, then price off the posterior (raw is ~$0.50/game biased).</td></tr>
+      <tr><td>Final margin</td><td>d<sub>g</sub></td><td>15 pts</td><td>banks the $5 (or tie) and re-rates the team in one step. The evidence is the margin vs the number, not the W/L.</td></tr>
+      <tr><td>Live projection</td><td>d<sub>g</sub></td><td>ς²/elapsed</td><td>weight rises 0→1 through the game; equals the final-margin update at the whistle, so nothing steps. The live game itself is priced $5 × WP<sub>live</sub> — no shrinkage, ever.</td></tr>
+      <tr><td>Tuesday ad print</td><td>logit capture</td><td>0.35 lg</td><td>updates BRAND state only. An ad number never moves a football rating (one-way cut; the win leg is 2.4× the ad leg and amplifies any leakage).</td></tr>
+      <tr><td>Injury report</td><td>rating shift</td><td>—</td><td>−INJURY_PTS on that team + variance widening. Applies to ANY team in the league — an opponent's QB moves your price. Invalidates posted spreads it post-dates (flag for re-post; a stale spread fights the injury, wrong sign).</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note info"><div class="nh">Engineering requirements, non-negotiable</div>
+  <p><b class="k">State must be replayable:</b> store observations, rebuild the posterior from the prior on read. In-place updates double-apply on repeated ticks (−$1.18 per repeat, measured) and the maker ticks many times a minute. <b class="k">One observation per game:</b> final margin supersedes live projection supersedes spread. <b class="k">Timestamps on the board feed:</b> they decide whether an injury post-dates a spread.</p></div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="sec-no">04</div><div class="t"><h2>Marketing — retention model</h2>
+  <p class="small">Per Supplement A, confirmed Aug 27.</p></div></div>
+  <ul class="tight prose">
+    <li>Each game carries a $2.50 pool. A team's capture is its own number vs the field (0.6 brand + 0.4 performance), <b class="k">clamped 20–80%</b>. The two captures in a game need not sum to 1 — <b class="k">the platform retains the residual</b> (~35.8% league-wide on the NFL reconstruction sheet).</li>
+    <li>Revenue accrues; the Tuesday report is an information event, not a distribution — the share never goes ex-anything. A print at projection is roughly price-neutral; a beat re-rates the forward brand leg, not just the banked cash.</li>
+    <li>Both sides' captures print independently; carry them per-team, never as complements.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head"><div class="sec-no">05</div><div class="t"><h2>Worked reference states</h2>
+  <p class="small">Exact engine output — use these to validate a port end-to-end.</p></div></div>
+  <div class="tw"><table>
+    <thead><tr><th>State</th><th>Banked W</th><th>Banked A</th><th>Live</th><th>Fwd W</th><th>Fwd A</th><th>RC</th><th>Fair</th></tr></thead>
+    <tbody>
+      <tr><td>t-zero</td><td>0</td><td>0</td><td>0</td><td>42.26</td><td>17.79</td><td>−0.52</td><td><b>59.535</b></td></tr>
+      <tr><td>5-0 at the number, trailing g6 (WP .30), ads @ 0.70×5</td><td>24.86</td><td>8.70</td><td>1.49</td><td>20.22</td><td>11.20</td><td>−0.32</td><td><b>66.155</b></td></tr>
+      <tr class="hi"><td>3-3 (won big, lost close), down 14 late 4th in g7 (WP .02), ads @ proj</td><td>14.93</td><td>8.59</td><td>0.10</td><td>14.31</td><td>8.43</td><td>−0.28</td><td><b>46.072</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="tcap">Behaviours a port must reproduce: price falls on an ugly win (−$5.46 winning by 2 as a 28.5-pt favourite); winning at the number ≈ carry only; a near-certain live loss is already in the price (the whistle moves it a quarter); an opponent QB injury moves the price (+$0.76 on a coin flip, +$0.26 on a blowout) with the team's own rating unchanged; hanging the full board cuts σ by a third with zero martingale bias over the spread distribution.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="sec-no">06</div><div class="t"><h2>Port acceptance</h2></div></div>
+  <p class="small prose">A port is accepted when <span class="mono">test_engine.py</span> passes 31/31 against it: t-zero reconciliation to the penny, martingale bias &lt; $0.01 over the predictive of every event type (spread, margin, ad print), zero drift over 200 repeated ticks, exact settlement identity, no whistle step, stale-spread invalidation, and the behaviour set above. <b class="k">Out of scope of this document:</b> the quoting layer (width, pull rule, position cap, skew — inputs sized, not specified here) and final constants estimation, which awaits the freeze file and game history.</p>
+</section>
+
+<div class="foot"><p class="xs">SDMM-1 Reference Price Specification v5.1 · reference implementation <span class="mono">novo_engine.py</span> · acceptance suite <span class="mono">test_engine.py</span> (31/31) · stdlib only, no dependencies · InPlay Markets / novosapien</p></div>
+</div>

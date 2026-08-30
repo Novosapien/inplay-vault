@@ -14,6 +14,498 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-30b — ✅ N74 built · ✅ N75 takes the PROPER fix · ⭐ a Python→Go divergence register is born
+
+George's rulings, same session ·
+[[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+service PR #51 · [[market-maker/go-port-backlog]] NEW
+
+- ✅ **N74 BUILT — the publisher's tick becomes a setting** (service
+  **PR #51**, `fix/mm-publisher-tick-setting`, 830 tests, ruff + mypy
+  clean). `run_forever(..., tick_s: float = 1.0)` was hardcoded and
+  quantised every poll tier, so the pool's `MMPUB_POLL_LIVE_S=0.5` could
+  never apply — set since 11-08, measured at **one poll per 1.16 s** on
+  29-08. Adds `MMPUB_TICK_S` (default **0.5**) and a model validator
+  that REFUSES a tick slower than the fastest tier, so the same silent
+  mismatch fails at boot instead of running 19 days. ⚠ **Stated in the
+  PR, not buried:** SR re-computes an NCAA probability every ~7 s, so a
+  1.16 s poll already oversamples it ~6×. **A config-vs-code correction,
+  not a pricing fix.** ⏳ Not deployed — George's go.
+- ⏳ **STILL OWED, deliberately not in PR #51:** `MMPUB_POLL_POST_GAME_S`
+  is unset and takes the 2.0 s default. Measured 29-08: 33 finished games
+  took ~**14 of every 16** SR calls. An env change, not code, and the
+  value must be chosen against the MM's ~20 s freshness fuse.
+- ✅ **DECISION (George, 30-08): N75 takes the PROPER fix in Python —
+  option (b), order granularity — not the cheap `[cancels-through]`
+  extension.** ✂ This overrides the recommendation put to him (take (a)
+  now, hold (b) for the port). The micro-barrier is the design he
+  specified on 23-07 and it is the one that gets built. ⚠ **The blocker
+  is unchanged and real:** `[atomic-book]` mints submit ClOrdIDs **BY
+  POSITION**, so a partial send re-diffs onto ids the venue already
+  holds (caught by test). Order granularity therefore means
+  non-positional id minting plus a fresh replay-equality proof.
+- ⭐ **DECISION (George, 30-08): keep a Python→Go DIVERGENCE REGISTER.**
+  His words: *"make a note of any divergences from the original Python
+  one and the Go one so when we have stabilised the Go one we can add in
+  the new features we have added to the Python one."* Born as
+  [[market-maker/go-port-backlog]] — the mirror of
+  [[market-maker/go-port-findings]], which runs Go→Python. Rule: **add
+  the row in the session that makes the change.**
+- 📝 **The divergence is small TODAY and that is the point of starting
+  now: four commits since the pin `fd193a4`** (`68b76a8` Edwin's 20-08
+  parameter rows · `76341d3` the alien drain · `d162d8c` its unenforced
+  invariant · `f9eec8b` rungs back to 1–3), plus N75 when built.
+  ⚠ **Two traps recorded there:** `f9eec8b` OVERRIDES `68b76a8` on
+  `min_levels`/`max_levels`, so porting in commit order and stopping
+  early ships the one-rung book George already withdrew; and
+  **differential replay CANNOT see any of this** — the harness compares
+  at the pin, so it goes quiet exactly where the register must speak.
+- ⚠ **`76341d3` blocks shadow running, and the Go maker caused it.** On
+  20-08 mm-2 (Go) quoted `.TEST` on the shared MM gateway, the gateway
+  broadcast namespace-wide, and mm-1 (Python) **crash-looped on replay
+  at every boot** — NRestarts=25, the dead-man fired 21 times. Until Go
+  carries the drain, any side-by-side run re-creates the incident in the
+  other direction.
+- 📝 **Where N75 should land first is now an open question, not a
+  given.** Go has no live journal to keep replay-equal, so it is the
+  cheaper place to change id identity; if Go goes first, Python inherits
+  the design. Recorded in the register against the N75 row.
+
+## 2026-08-30 — ⭐ the Tar Heels crossed for 2h45m · ✅ the ordering rules are PROMOTED out of learnings.md
+
+Edwin reported books with asks and no bids, and named the North Carolina
+Tar Heels. Traced read-only to a book, a mechanism and a decision.
+Session: [[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+`N75` opened · `R-L03` changes by addendum
+
+- ⚠ **`IPTCNCTH` was SELF-CROSSED from 16:07Z to 18:52Z on 29-08 —
+  2 h 45 min.** The ask side froze at **40.26** and never moved; the bid
+  kept repricing up to **40.63**. Ask levels grew **3 → 17** against 4–7
+  bids. Real trading ran at **40.43–40.72** the whole time, $0.20–$0.45
+  above our stuck ask. `IPTCHFRG` — the other book in the same game —
+  had the identical fault. ⭐ **It recovered ON ITS OWN** when the
+  blocking touch moved: no hotfix, no operator. **Only live-game books
+  are exposed** — they are the only ones repricing fast enough to run
+  into a resting third-party touch. 📝 The lopsided ask wall priced
+  below the bids is exactly what Edwin saw.
+- 📝 **Mechanism.** A third-party bid rested at 40.40; our target ask
+  moved below it; the R-Q09 marketable guard refused — correctly (we
+  price off our own valuation, never the book, and without the guard
+  every repost sweeps the touch: **$50,366 on 09-08**). ⚠ **The refusal
+  holds back the WHOLE BOOK, not the offending side** — the alarm's own
+  words, *"no submit or replace has gone out for this book since"*.
+  `MARKETABLE_GUARD_STALLED` fired **9 times**. 📝 **`[cancels-through]`
+  did not save it**: it IS in the running tree, but the reconciler moves
+  a stale order with a REPLACE, and the guard holds replaces. The ruling
+  covers cancels, not the cancel-half of a held replace.
+- ⭐⭐ **THE FINDING: we designed the fix on 23-07 and never shipped it.**
+  George's memory of a cancel-first ruling is CORRECT and the note
+  exists — in [[market-maker/learnings]], **not here**: *"Publish is a
+  reconciler, not a send (George's push) … retreating side first,
+  **cancels before creates at overlapping prices**, advancing side
+  deepest-first with top-of-book last, **micro-barrier only on the
+  specific orders an advance would cross**."* ⚠ **It was never mirrored
+  into this log**, so N12's flat post-first was never superseded, and
+  **`requirements.md` R-L03 then codified the flat version** ("submits,
+  then replaces, then cancels", source N12, ✅ test-backed). The
+  requirement locked in the design George had argued against. The built
+  reconciler is one line — `venue/reconciler.py:173`,
+  `tuple(submits) + tuple(replaces) + tuple(cancels)`: no
+  retreating-side-first, no cancels-before-creates, no micro-barrier.
+  ⭐ **The last clause IS the fix for this fault** — a micro-barrier
+  refuses the crossing ORDER; the guard was built to refuse the BOOK.
+- ✅ **DECISION (George, 30-08): PROMOTE the ordering rules to a
+  decision.** They become the **target** design for the reconciler and
+  ✂ **supersede N12's flat post-first**. `R-L03` changes through the
+  requirements addendum, never silently. ⚠ **Not built and not
+  scheduled** — R11 stands and `N75` is answered first.
+- 📝 **Edwin's written standard and his spoken ruling conflict, and the
+  spoken one governs.** Written: PTS-001 §6.13.1 — *"locked or crossed
+  markets SHALL NOT be published"* and *"executable two-sided quotations
+  SHALL be maintained unless trading is halted or suspended"* (also
+  §6.12, §7.2, §6.9.1). Spoken 23-07: *"new orders are faster than
+  cancels… if we have to cross in order to make the adjustment in price,
+  I don't care"* — no cancel-first-wait gap, George confirming the same
+  day. By the working guide's ground rule the spoken decision outranks
+  the standard, **so post-first is governing and it is HIS**. ⚠ **What
+  his tolerance does not cover is the word `momentary`** — it licenses a
+  price adjustment, not a 2 h 45 min guard-frozen book. **That gap is
+  ours and was never recorded.** Frame it as drift, not as a knowing
+  supersession.
+- ⚠ **The 06-08c conflict is still open on the maker side.** tZERO's
+  wash-trade blocking REJECTS self-crosses, recorded then as "the
+  reconciler has a change coming either way". **The taker got its fix
+  (wash guard, MM PR #29). The maker never did.**
+- ⚠ **The gateway ops endpoint has diverged from the engine.** All 9
+  `IPTCNCTH` orders `GET /orders/mm` returned had no ack in 2 hours, at
+  prices $3 from the engine's, while the engine sent 60,891 acks for
+  that book. **`MM_BOOT_HEAL=on` reads that endpoint.** Filed in `N75`.
+
+## 2026-08-29 — ⭐ the NCAA-Saturday cadence check: the engine holds, Sportradar is the limit
+
+Read-only production check, first college Saturday (George's question: does
+the maker run at a cadence that suits live NCAA games?). `ps` / `journalctl` /
+`describe` / a 40 MB journal tail only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]] ·
+`N74` opened
+
+- ⭐ **The engine meets its cadence with ~92% headroom.** Engine
+  `supervised48` / `CFG-0046`, 138 NCAA books, no NFL. Measured
+  16:46–17:05Z: tick 0.5 s, sweep 0.5 s with **`missed_intervals=0`
+  across 1,423 sweeps**, `cycles=138` on every tick, converger backlog
+  1–11 books of 138 and clearing, **engine CPU 7.5% of one core**, load
+  average 0.00. No book suspended and no re-offer withheld in 6 hours.
+- ⭐ **THE LIMIT IS SPORTRADAR, NOT THE MACHINE.** SR changes an NCAA
+  probability every **7 s at the median** (mean 13 s · p90 25 s · max
+  153 s · min 2 s). Measured on `sr:sport_event:70894628`: 1,040 reading
+  events carried only **55 distinct probabilities**; the rest are
+  liveness confirmations. **College is slower than the NFL's 4 s
+  median.** The poll already oversamples the source ~6×, and the LIVE
+  redraw ~14×. The cadence question is answered on the input side.
+- ⚠ **`MMPUB_POLL_LIVE_S=0.5` is SET and UNREACHABLE.** The env var is on
+  the `inplay-mm-publisher` worker pool; `run_forever(..., tick_s: float
+  = 1.0)` in `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py:477`
+  is a hardcoded default with no settings field and no env override, so
+  one wake per second is the floor. Measured: 513 fetches in 597 s =
+  **one poll per 1.16 s**. ✂ Corrects [[market-maker/parameters]] row
+  `poll tier — LIVE`, which recorded 500 ms as deployed. **Cost, measured
+  rather than assumed: ~0.3 s of average detection latency against a 7 s
+  source** — a config-vs-code defect, not a mispricing. Filed `N74`; fix
+  out of hours under R11, never mid-slate.
+- ✂ **The serial-fetch caveat is WITHDRAWN for the publisher.**
+  `PublisherWorker.tick()` gathers every due game in ONE `asyncio.gather`,
+  so a round costs one SR round-trip, not N of them (11.4 fetches/s across
+  ~35 due games, round ~1.16 s). The 14-08 fear that "the serial-fetch
+  shape caps out near ~35 live games" no longer describes the code; it
+  still describes the MM's own in-engine poller, which retires at the
+  ingestion switch.
+- ⚠ **One live book was frozen: `IPTCNCTH`.** `MARKETABLE_GUARD_STALLED`
+  fired four times from 16:18Z with 148 refusals in 30 minutes; its sell
+  target sits behind a touch at 40.39/40.40 x182 and **no submit or
+  replace has left that book since**. `IPTCHFRG` did the same at 16:05Z
+  and cleared. `R-Q09` refusing and `N41` alarming, both as designed —
+  **and still the only broken cadence on the board.**
+- 📝 **The dead games out-poll the live ones.** `MMPUB_POLL_POST_GAME_S`
+  is unset, so it takes the 2.0 s code default — the LIVE rate. 33
+  finished games from 27–29 Aug are fetched every ~2 s: about **14 of
+  every 16 SR calls go to games that will never move again**. The "never
+  retire" behaviour is `N40`'s ruling working correctly; only the rate is
+  wrong. The settle watch only has to beat the MM's ~20 s freshness fuse.
+- ⚠ **`inplay-mm-publisher-testing` polls PRODUCTION Sportradar** — the
+  same live game as the production pool, seconds apart (17:02:35Z).
+  Duplicate quota spend. Whether it also publishes on the production
+  subject depends on a Redis fence nobody has read.
+- ⚠ **This is not the peak, and the numbers must not be quoted as if it
+  were.** 83 games are tracked and **65 sit at the overnight tier**; the
+  window held one live game rising to seven. The recorded **~35%
+  missed-sweeps fault did not reproduce** — but it was measured at three
+  live games under the pre-08-13 `sweep_max_interval_s`. **Re-measure at
+  peak before anyone calls it closed.**
+
+## 2026-08-28 — ⭐ Edwin's SDMM-1 v5.1 engine · ✅ the injury channel is DROPPED
+
+Received `novo_handoff_1.zip` 27-08 — the formula he promised on the call.
+Filed at `reference/edwin-sdmm1-v51-2026-08-27/`. Run and measured, not
+just read. Brief: artifact "What Edwin sent" (claude.ai).
+
+- 📝 **What it is.** "SDMM-1 Reference Price Specification v5.1": a working
+  engine (476 lines, stdlib only), a 31-test acceptance suite, and a spec.
+  **All 31 tests pass. It reproduces LSU's published IPO of $59.535 to the
+  penny.** He states the rule: a port is correct when all 31 pass.
+- 📝 **The price formula is nearly ours.** His forward leg `5·ΣP(win)` IS
+  our `$5 × T` — expected wins is the sum of per-game win probabilities.
+  Same $5 win, $2.50 tie, $2.50 pool, settlement identity, live leg, and
+  no-step-at-the-whistle. **What differs is underneath:** we hold a frozen
+  number, he holds a per-team RATING in points that every observation
+  updates by one Kalman step.
+- ⭐ **It answers `E52` outright.** Measured on his engine: a loss is
+  **−$12.54**, a big win **+$6.51**, an ugly win (by 2 as a 28.5-pt
+  favourite) **−$5.46**. Decomposed: the game itself is only −$4.53; the
+  other 11 games re-rate from 7.64 to 6.22 expected wins = −$7.14. **Our
+  weekly-futures-rebase proposal is superseded — withdraw it.**
+- ⭐ **A win probability IS a spread.** Verified on all 12 LSU games:
+  `d = √(ς² + Var d) · Φ⁻¹(p)` reproduces the engine's own edge exactly,
+  and feeding the derived number gives a price identical to feeding the
+  real spread. **So his "primary channel" may already be in our hands** as
+  Sportradar's pregame win probability. ⚠ Two unknowns: how far ahead SR
+  prices college games, and what observation noise their number deserves
+  (he assumes 1.5 pts for a bookmaker spread).
+- ⚠ **The reference implementation does not scale.** It rebuilds the whole
+  posterior on every read — deliberate, because in-place updates
+  double-apply ($1.18 per repeated tick in his v4). **Measured: 0.5 ms at
+  his 13-team demo, 364 ms at our 138 books, 652 ms at 170.** The cache
+  clears on any new observation, and we poll live games every 500 ms, so a
+  rebuild already exceeds the poll interval. **Fix: checkpoint the settled
+  observations and replay only the live games — measured 5.5 ms, 130×
+  faster, and it keeps his idempotency.** Same checkpoint-plus-replay
+  pattern our journal already uses. Performance is explicitly out of his
+  scope.
+- ⚠ **Our prices are ~2% above what shares were sold at.** Measured across
+  132 matched college teams: our reference price runs a **median +2.39%**
+  over the listed IPO. His two "extra" legs — discounting (−1.14%) and the
+  risk charge (−0.87%) — are **−2.01%**, almost exactly the gap. They are
+  not decoration; they reconcile the model to the real offer price. Both
+  are one line of arithmetic and both unwind to zero at settlement.
+  ⚠ One outlier (Louisiana Monroe, −40%) is probably a name-join error in
+  the check, not a real discrepancy — verify before quoting it.
+- ✅ **DECISION (George, 28-08): DROP the injury channel.** Measured, the
+  channel collapses to a single scenario:
+
+  | Injury | Move |
+  |---|---|
+  | Own QB, season-ending | **−$8.31** |
+  | Own WR / DL | −$1.75 |
+  | Own OL / RB | −$1.40 / −$1.18 |
+  | Own kicker | −$0.62 |
+  | Opponent's QB out | +$0.26 to +$0.77 |
+
+  **Why dropping is safe:** a QB injury still reaches the price through
+  Sportradar's win probability — immediately during the game, and for
+  later games as each gets its pregame number. It arrives **delayed, not
+  lost**.
+  **Why dropping is a net simplification:** the stale-spread trap exists
+  ONLY because an injury can post-date a posted spread. Dropping injuries
+  removes the −$3.57 wrong-direction bug, the `stale_spreads()`
+  invalidation logic, the timestamp requirement on the board feed, and an
+  injury feed (position + severity) **we do not have**.
+  ⚠ **Recorded cost, and it is a product one:** Edwin's 09-08 Gamecast
+  document made the star-QB case its headline (a major injury dropped a
+  winning team's price in 26 of 26 tests). It is also the most dramatic
+  moment in the product — the quarterback goes off and users expect the
+  price to react. Under this ruling it drifts instead. **Revisit if the
+  product wants the theatre; the channel can be added later without
+  changing anything else.**
+
+## 2026-08-27e — ⚠ the live off-field numbers over-allocate the pools by ~9%
+
+Measured on the 138 live NCAA records ·
+[[market-maker/systems/expected-wins-pipeline]] §9.1–9.2 · `E51(d)`
+
+- 📝 **Off-field accumulates but the price must NOT rise.** RAV (earned)
+  and EAV (expected) always sum to the same number; each game moves a
+  slice from one to the other. The price moves only on the difference
+  between earned and expected — the earnings surprise.
+- ⚠ **The bug that prevents:** RAV is `0.00` today and EAV is frozen at the
+  full-season figure. Add realized money without draining EAV and **every
+  price climbs ~$1.25 a game for nothing — ~$15 a share over a college
+  season.** Both halves ship together, or neither.
+- ⚠ **Measured over-allocation.** Off-field per team per game runs $0.955
+  to $2.302 (median $1.362). **Two average teams meet and sum to $2.72
+  against a $2.50 pool.** League-wide, expected off-field totals **$2,254**
+  while 828 games at $2.50 hold only **$2,070** — **~9% more promised than
+  exists.** Worked case: Sacramento State ($2.24/game) vs North Dakota
+  State ($2.30/game), both FCS so the fixture can happen, pays **$4.54 from
+  a $2.50 pool**.
+- 📝 **Popularity is NOT the explanation.** It correctly sets who gets more
+  of a pool — Edwin on the 27-08 call (the Jets and Giants "still could
+  make a lion share… even if they stink"), and the data agrees:
+  corr(expected wins, off-field) = **0.729**, with Sacramento State
+  second-highest in the league on 4.61 expected wins. But popularity sets
+  the **ratio**, never the **total**.
+- ⭐ **Likely cause, two independent evidences:** his model prices each
+  team's off-field from its own popularity without checking the fixture
+  balances. (1) His Gamecast formula `offShare = 1.0 + pct × 0.5` reads
+  only the team's own percentile and never the opponent. (2) The live
+  numbers sum to 109% of the pools.
+- ⚠ **Consequence, not cosmetic.** Settlement pays realized, not expected.
+  A 9% high EAV means realized lands under expected week after week and
+  **prices drift down across the whole league** — a systematic bias that
+  looks like the model working while it is wrong.
+- 🔴 **Ask (`E51(d)`):** is the $2.50 split between the pair, or is each
+  team's number standalone? If a split, normalise the projections against
+  the fixture list. And when a listed team plays a NON-listed opponent,
+  does it take the whole pool or only its share? That would legitimately
+  explain part of the excess.
+
+## 2026-08-27d — ✅ hourly, pulled by us — the reference number becomes a feed
+
+George's ruling, same session · updates
+[[market-maker/parameters]] (feed cadence) ·
+[[market-maker/systems/expected-wins-pipeline]] §7
+
+- ✅ **Pull the season win totals HOURLY, ourselves.** George: it is a cheap
+  operation — one call returns the league, so 24 calls a day is nothing.
+  ✂ This supersedes the daily-06:00 cadence of Edwin's email items 3–4.
+  The reference number stops being a file he sends and becomes a feed we
+  pull. **He never has to produce anything.**
+- 📝 **Why hourly beats weekly.** Every re-pull moves every price at once.
+  Frequent pulls make each move small; rare pulls make them large jumps.
+  Futures also move mid-week on injuries and news, not only on results.
+- ⚠ **Rule 1 — record a change only when the line moves.** No heartbeat
+  events. An hourly write of an unchanged number fills the journal with
+  nothing and slows replay.
+- ⚠ **Rule 2 — a new line and the banking of a result happen together.**
+  A repriced season line ALREADY contains the result of the game just
+  played. Take the new line while the game is still open in G and the win
+  counts twice. This is Edwin's own rule from the 28-07 email (a game
+  leaves G when a new T absorbs it), now load-bearing hourly.
+- 📝 **No clash with live games.** Bookmakers do not move season lines
+  during a game (researched 27-07), so hourly pulls mid-game return the
+  same number. The line moves after the whistle — exactly when the result
+  should be banked.
+- 🔴 **NFL only.** Sportradar's futures product carries NFL season win
+  totals and **nothing for NCAA** (verified 16-07, confirmed by George
+  27-08). The 138 college teams that trade today have **no source to pull
+  at any cadence**, so they hold their July view until each game arrives.
+  This is the sharpened `E52` ask: name a college source, or accept that
+  college prices do not reprice on form this season.
+- ⚠ **Entitlement unverified.** Futures was checked on a **July trial**;
+  the August contract amendment covered live probabilities, not futures.
+  Confirm production access before the build depends on it.
+
+## 2026-08-27c — ⭐ production checked: the seed matches live · T is 16 days static
+
+Read-only check of the MM VM (George's instruction: production, take care).
+`ps` / `ls` / `cat` only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-27-edwin-pricing-call]]
+
+- 📝 **What runs.** VM `inplay-market-maker` (`inplay-497712`,
+  `us-east4-a`, n2-standard-2, no external IP, IAP-only SSH).
+  `mm.runtime` up ~7 h on journal `supervised47`; `snt.runtime` up 5 days.
+  `MM_MODE=supervised` · `MM_READINGS=bus` · `CFG-0045` ·
+  `MM_PRIOR_RUN_DIR=supervised46` (F2 anchors carried) · `MM_BOOT_HEAL=off`.
+- 📝 **The maker quotes 138 NCAA books** from
+  `/home/georgewestbrook/supervised-inputs-138-ncaa.json`. **NFL tickers
+  are not in `MM_SECURITIES`** — the maker does not quote NFL today.
+- ⭐ **The seed is VERIFIED against production.** Our seed reproduces the
+  live file on all 138 tickers: max |ΔT| 0.0005, max |ΔEAV| $0.005, **max
+  |ΔRP| $0.0061** (median $0.0026). The only difference is precision — the
+  live file rounds to 3 dp, our seed carries full precision. **Nothing
+  needs deploying.**
+- ⚠ **Correction.** An earlier note in this session claimed our seed would
+  move live books by up to $6.74. That came from
+  `docs/supervised-inputs-2026-08-07.json`, a **stale 7-ticker NFL
+  artefact** in the repo that is not what runs. The measured figure is
+  $0.0061.
+- ⭐ **The hole, measured: T is static since `2026-08-11T22:00:00Z`** — 16
+  days — with no path to update it. `realized_on_field_total` and
+  `realized_off_field` are both `0.00`. Saturday still prices correctly
+  (the engine holds each finished game in G with its result pinned), **but
+  the first regenerate of that file without absorption drops every winning
+  team by $5.** The absorber is the critical path.
+- 📝 **The off-field discrepancy is NFL-only.** The live NCAA file uses the
+  same off-field source as our seed; the wider numbers Edwin quoted
+  (Dallas ~$30) appear only in the stale NFL file. Nothing is mispriced
+  today. Settle before NFL secondary opens.
+
+## 2026-08-27b — 📝 the seed verifies against Edwin's own numbers · the tail does not
+
+Call: [[27-08-2026-mm-pricing-catchup]] ·
+session [[market-maker/sessions/2026-08-27-edwin-pricing-call]] ·
+`E51(d)` updated · `E52` `N73` opened
+
+- 📝 **The seed is verified against numbers Edwin quoted live.** He worked
+  LSU through on the call: IPO "$59 or 59.53", expected wins "8.55",
+  on-field "$42.75". Our seed holds 59.54 / 8.5452 / 42.73, and RP 60.87
+  against his sheet's IPO EV of 60.874. The seed stands.
+- 📝 **The absorber IS his model.** Unprompted, he described it: "a win to
+  LSU is not going to be worth $5 more a share because part of that is
+  already baked into the price", and put the move at **47 cents to $1.50**
+  for a heavy favourite. `$5 × (result − p_ref)` gives exactly those
+  numbers. No change to §3–4 of the pipeline.
+- 📝 **Off-field actual is trading volume — confirmed by Edwin on the
+  call**, in answer to George's direct question. Off-field expected is his
+  popularity model (socials, prime-time games, market size). Both match
+  what the 27-08 rulings assumed.
+- ⚠ **His spoken off-field numbers disagree with his own sheet.** He said
+  Dallas earns "like 30 bucks" and Carolina "12 or 14"; his sheet gives
+  24.07 and 19.22. His spread is about 2.2× top-to-bottom against the
+  sheet's 1.25×. Off-field is roughly 30% of a share price, so the
+  difference is material. **He offered to send the popularity file — take
+  it** (`E51(d)`).
+- ⚠ **He expects the tail to re-rate at once; our build does not.** On LSU
+  losing to Jacksonville State: "that share could go down 10 or $15". The
+  absorber alone gives −$4.53. The rest is the forward re-rate we deferred.
+- 🟡 **Proposed answer, no model needed: the weekly futures rebase.** A
+  bookmaker cuts LSU's season win total after a bad loss (8.5 → ~6.5);
+  re-de-vig and expected wins fall ~2 wins, so the price falls ~$10 — his
+  number, from market data alone, with §1.5 intact. This is the pipeline's
+  §7 `EXPECTED_WINS_REBASE`, already designed. **It needs a WEEKLY
+  win-totals snapshot instead of one.** ⚠ Point spreads alone do not do
+  this: they cover next week only, so a week-1 shock never reaches week 10.
+  Edwin's ruling required — `E52`.
+- ⚠ **Edwin promised a new formula "today" (27-08). It has not arrived.**
+  Hold the layer-3 build until it lands or he blesses the rebase.
+- 📝 **The season resets** — Edwin: "what I've designed is a reset." No
+  multi-year value; settlement at season end stands.
+
+## 2026-08-27 — ✅ the earnings report is ours to compute · the seed is built
+
+Continuation of the 26-08 pipeline session ·
+[[market-maker/systems/expected-wins-pipeline]] §9 · `E51` item (e)
+
+- ✅ **The seed is built and verified** (scratchpad, filing location TBD):
+  `EXPECTED_WINS_SEED` + the supervised-inputs file, all 170 tickers,
+  passes the engine's own `load_supervised_inputs`. The numbers are
+  Edwin's twice over — his `devig.py` on his July snapshot reproduces his
+  IPO sheet's `E[Wins]` to 10 decimals, all 170 rows. Tickers from
+  `universe.py` (tZERO's list); the symbols workbook is stale (132 NCAA
+  rows) — do not use it. EAV taken from the sheet's Off-Field EV column
+  (RAV 0), which keeps RP continuous with the listed IPO prices.
+- ✅ **We compute the weekly earnings report** (George). The volume data
+  is ours — every venue print carries its account. Edwin defines the
+  formula and audits; he runs no weekly process. The daily-file failure
+  mode does not return at weekly cadence.
+- ✅ **House volume counts, under the symmetry assumption** (George):
+  SNT-1 is active on both sides of every fixture, so its volume cancels
+  in a proportional split. ⚠ Consequences recorded: dilution toward an
+  even split while taker volume dominates, and a noise floor from random
+  clip sizes. **Safeguard: the report computes both columns (with /
+  without house accounts)** so the assumption is checked with evidence.
+- 📝 The off-field machine is the absorber mirrored, weekly:
+  `EAV −= expected · RAV += actual`, Δprice = the earnings surprise, in
+  the Tue/Wed burst window (23-07 ruling). Schema questions ride E51(e);
+  deadline is the first burst after games.
+
+## 2026-08-26 — ✂ the daily file retires: expected wins seed once, then fold
+
+Session: [[market-maker/sessions/2026-08-26-expected-wins-pipeline]] ·
+closes `N18` `N19` `N23` + N22's residual · opens `E51`
+
+Edwin cannot operate a daily 06:00 hand-off (George). The whole daily-file
+plan is replaced by an automated pipeline. This supersedes the 28-07
+file-transport plan and the N19 upload-page ruling.
+
+- ✅ **Seed once, then fold.** Expected wins per team seed ONE time from the
+  July season-win-totals snapshot (de-vig per Edwin's 28-07 method; σ_mkt
+  2.7 NFL / 2.2 NCAA, already ✅). After the seed, every change is the one
+  rule: `new expected wins = old + (result − kickoff probability)` — live
+  form replaces the result with the live probability. No external feed of
+  expected wins ever again.
+- ✅ **The absorber is exact.** Moving a finished game out of expected wins
+  and into banked changes the price by $0.00 — `contribution(g) = $5·x_g`
+  before and after. Proven; the four-row table is the regression test. The
+  06:00 sawtooth (`[t-is-not-the-field]`) can never occur.
+- ✅ **The one-basis rule.** A pregame game's entry in expected wins TRACKS
+  Sportradar's pregame number (the pregame poll tiers already fetch it),
+  freezes at kickoff as `p_ref`, and absorbs at that frozen value. The
+  subtracted number IS the carried number, so N22's basis drift is
+  structurally impossible.
+- ✅ **Flat split for unpriced games.** Games SR has not priced carry
+  `expected wins ÷ games remaining` as scaffolding; SR's number replaces
+  each share before kickoff. The shares sum to the seed, so expected wins
+  end the season at exactly zero. ⚠ The kickoff-window swap on a mismatch
+  game can move ~$1.25 in one step — real information, but lumpy.
+- ✅ **One new event type, dictionary payload.** `EXPECTED_WINS_SEED` — one
+  event, all 170 teams, keys sorted, decimals as strings (the `ANCHOR_SEED`
+  shape); payload carries the snapshot's path + sha256, the object itself
+  in the bucket per the 03-08 storage ruling. Everything AFTER the seed is
+  derived state: a fold over events the journal already records (readings,
+  kickoff freezes, `OFFICIAL_RESULT`). This answers N23.
+- 🟡 **Layer 3 (form re-rate of the far tail) deferred** behind Edwin's
+  one-time blessing (`E51`). Without it the tail holds the seed's view —
+  a quality gap, not a correctness gap. ⚠ T is book-visible under the
+  22-07 line and §1.5; the blessing converts Edwin from daily operator to
+  one-off approver.
+- 📝 **The Gamecast bundle (09-08) is not a new pricing model.** Expanded,
+  `seasonFair` is the 28-07 model as a delta from the IPO price; the live
+  leg is ours × the damping dial `M`. `M` is uncomputable anyway — the SR
+  probabilities feed carries no game clock (verified on the Chiefs–Ravens
+  capture). Its off-field method is the one new piece and fails pool
+  conservation as written (two elite teams claim $3.00 of a $2.50 pool) —
+  held as an ask in `E51`, not adopted. Its manufactured-variability
+  mechanisms are logged as third corroboration on `E34`.
+
 ## 2026-08-28: ⭐ the reference price gets its numbers, and the snap-back gets named
 
 Session: [[market-maker/sessions/2026-08-28-touchdown-digest]] ·
