@@ -1,3 +1,7 @@
+---
+description: "The .TEST twin registry: tZERO's suffix scheme, the original ten, the 26 Aug expansion to all 170, the MD-probe validation, and the replay games"
+---
+
 # Market Maker — Test Symbols
 
 > **Component:** [[market-maker/market-maker]]
@@ -57,6 +61,31 @@ two-sided and the taker trades them (first print `IPTCPACK.TEST`
 | KC | Kansas City Chiefs | `IPTCCHIE.TEST` | ✅ used in `MM_SECURITIES` drills |
 | PHI | Philadelphia Eagles | `IPTCEAGL.TEST` | ✅ live production symbol |
 | WAS | Washington Commanders | `IPTCCOMM.TEST` | ✅ gateway config + UPTa 08-11 |
+
+## 2b · 26 Aug — every ticker has a twin (170)
+
+Rob Colucci, #ext-inplay-tzero, 2026-08-26 04:56 BST: *"confirming all 170
+TEST securities have been setup."* One `.TEST` twin per production ticker.
+
+**Validated the same day, without touching a book**, with the gateway's
+`POST /md/probe` (one 35=V, snapshot only, top of book, `PROBE-` MDReqID;
+the reply lands in `/logs`). A known symbol answers 35=W, an unknown one
+35=Y `Symbl55[<sym>] not found`. All 170 twins answered 35=W (empty books);
+the control `IPTCZZZZ.TEST` answered 35=Y. Session:
+[[market-maker/sessions/2026-08-26-test-ticker-census]].
+
+Where the list lives now — DERIVED, never hand-kept:
+
+- Gateway `internal/config/symbols.go`: `registerTest` over every real
+  ticker (PR #27, merged 26-08; **staged on both VMs, not yet deployed**).
+- Panel `src/lib/symbols.ts`: twins derived from the production maps
+  (PR #33, merged 26-08, live on Vercel).
+- MM engines: nothing — both mint a twin of any known ticker on demand.
+
+**Test identities** (Hasan, 26-08): Market Maker (Test) **`2559580864`**,
+Market Taker (Test) **`1216516809`**. Entitlement to `.TEST` only is still
+owed by Rob. Engines run them as `mm-test` / `snt-test`; the gateway's
+dead-man is per bot from PR #28.
 
 ## 3 · Why these ten teams
 
@@ -150,8 +179,8 @@ length.
 | # | Item | Owner |
 |---|---|---|
 | 1 | ~~Confirm the four unconfirmed codes~~ ✅ resolved 08-11: `LION`, `TEXS` (not `TEXA`), `JAGU`, `COMM` — the gateway's deployed config + a venue `UPTa` on each | — |
-| 2 | ~~Provision the ten `.TEST` symbols~~ ✅ done by 08-11 (gateway config; all ten accepted transfers) | — |
-| 3 | Create the `.TEST`-only account, and confirm whether the MM account 1797733477 can hold both `.TEST` and production books, or needs a second account | T0 (Rob) |
+| 2 | ~~Provision the ten `.TEST` symbols~~ ✅ done by 08-11; ✅ **all 170 provisioned 26-08** (Rob) and MD-probed | — |
+| 3 | ~~Create the `.TEST`-only account~~ ✅ **accounts created 26-08** (Hasan): maker `2559580864`, taker `1216516809`. The MM account 1797733477 demonstrably holds both. **Still owed: the `.TEST`-only entitlement on the two test accounts** | T0 (Rob) |
 | 4 | Confirm a `.TEST` symbol is exempt from the app's user-facing universe — the T10 caveat, now a venue-side entitlement rather than an app filter | T0 + us |
 | 5 | Do the `.TEST` books get an `UEPR` reference price, or do they open empty? An empty book rejects every order ("No price available", the `IPTCBILL` state) — this gates whether the ten books can be quoted at all | T0 (Rob) + the Hasan `LmtPerc` ask |
 

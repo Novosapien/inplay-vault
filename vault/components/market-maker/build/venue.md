@@ -218,6 +218,16 @@ superseded 07-08h):
   by construction, a drawn level being ≥ 1,000).
 - New levels post FIRST, then cancels (N12 — post-first ordering; a
   momentary self-cross during adjustment is tolerated for v1).
+  ⚠ **AS-BUILT ONLY SINCE 30-08 — no longer the target.** George's
+  23-07 ordering rules (retreating side first · cancels before creates
+  at overlapping prices · advancing side deepest-first · micro-barrier
+  only on the orders an advance would cross) sat unpromoted in
+  [[market-maker/learnings]] and were promoted to a decision on 30-08.
+  The code is still the flat one-liner (`reconciler.py:173`). What
+  forced it: `IPTCNCTH` self-crossed **2 h 45 min** on 29-08 behind a
+  whole-book guard refusal, recovering only when the touch moved —
+  `momentary` is what Edwin licensed, and this was not momentary.
+  Build gated on **N75**.
 - **No replace ever relies on keeping queue priority** (§8.3 — tZERO
   sends amends to the back of the queue).
 - **An in-flight replace occupies its DESTINATION price**
@@ -503,6 +513,51 @@ Never deltas: there is no history to replay and no sequence to reconcile.
   at 45.44 shown for ~5 min against a journal-confirmed bid at 45.45 that
   rested unfilled). `POST /md/book-resubscribe` on the gateway is the
   feed's own heal for both.
+
+## ⭐ The Go maker's venue leg — Python's process, verbatim (26-08)
+
+The Go port (`inplay-market-maker-go/internal/venue`, `cmd/mm/legs.go`)
+was compared file by file against this page's code at `f9eec8b` on 26-08,
+after the live Go book left more than six orders a side. The record, the
+reconciler, the converger, the guard, the backoff and the translator are
+faithful ports — every transition and condition agreed. Two things are
+now different from what the Go tree did before 26-08:
+
+- **No resize pass.** Between 21-08 and 26-08 Go replaced a kept order
+  whose size belonged to another rank (rank drift). George 26-08: the Go
+  maker follows THIS page's lifecycle — rest-until-gone as ruled, the
+  kept order left alone whatever rank it now occupies.
+- **The inbound leg is Python's shape.** Go used to drop every gateway
+  message that arrived before `Build` finished, drop past a 4,096-deep
+  queue, and skip translation refusals with a counter. A dropped ack is
+  an invisible resting order: the record keeps a `PENDING_*` that occupies
+  the price and is never actionable while the real order rests at the
+  venue unknown to the diff. Go now buffers from the subscribe in an
+  unbounded queue, translates on the tick, prints every poison message,
+  skips alien fills loudly and halts on a `GatewayTranslationError` —
+  `[inbound-poison]`, exactly as `compose.py`'s `InboundDrain`.
+
+## ⭐⭐ The venue's order rate — measured 27-08, and what it changes
+
+tZERO refuses **"Exceeds Max Order Rate"** past roughly 60–100 order
+messages a second per session (exactly 100–101 new orders accepted in
+every burst second; a paced 80 still refused 1.4%, cancels weighing more
+than replaces; 60 clean). Neither engine had a limiter: the converger's
+budget is 512/s and the gateway's governor 5,000/s. Every Go boot blew it
+(a third of the opening ladder refused) and the fast-dwell test refused
+29% of everything sent. A refused cancel rests on as an extra rung, a
+refused replace stays at its old price and size, a refused post is a
+missing rung — and the reject backoff (2, 4, 8 … 60 s per price) then
+makes each one rest longer. That was the wrong ladder.
+
+The Go maker (PR #23): the one wire writer paces order messages to
+`venue_message_rate_limit` (60/s) in any one-second window, heartbeat and
+kill switch on a priority lane; the converger budget is rate × interval
+(15 per 0.25 s pass), so the backlog lives at the stage where a stale
+version is superseded, not in the transport queue; and a book with orders
+in flight holds its next version (cap 30 s). ⚠ **The Python maker has none
+of this** and will meet the same wall the moment it quotes depth at game
+cadence. ⚠ Capacity: ~60 msg/s ÷ (2 × rungs) = book updates per second.
 
 ## What changes here next
 

@@ -14,6 +14,498 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-08-30b — ✅ N74 built · ✅ N75 takes the PROPER fix · ⭐ a Python→Go divergence register is born
+
+George's rulings, same session ·
+[[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+service PR #51 · [[market-maker/go-port-backlog]] NEW
+
+- ✅ **N74 BUILT — the publisher's tick becomes a setting** (service
+  **PR #51**, `fix/mm-publisher-tick-setting`, 830 tests, ruff + mypy
+  clean). `run_forever(..., tick_s: float = 1.0)` was hardcoded and
+  quantised every poll tier, so the pool's `MMPUB_POLL_LIVE_S=0.5` could
+  never apply — set since 11-08, measured at **one poll per 1.16 s** on
+  29-08. Adds `MMPUB_TICK_S` (default **0.5**) and a model validator
+  that REFUSES a tick slower than the fastest tier, so the same silent
+  mismatch fails at boot instead of running 19 days. ⚠ **Stated in the
+  PR, not buried:** SR re-computes an NCAA probability every ~7 s, so a
+  1.16 s poll already oversamples it ~6×. **A config-vs-code correction,
+  not a pricing fix.** ⏳ Not deployed — George's go.
+- ⏳ **STILL OWED, deliberately not in PR #51:** `MMPUB_POLL_POST_GAME_S`
+  is unset and takes the 2.0 s default. Measured 29-08: 33 finished games
+  took ~**14 of every 16** SR calls. An env change, not code, and the
+  value must be chosen against the MM's ~20 s freshness fuse.
+- ✅ **DECISION (George, 30-08): N75 takes the PROPER fix in Python —
+  option (b), order granularity — not the cheap `[cancels-through]`
+  extension.** ✂ This overrides the recommendation put to him (take (a)
+  now, hold (b) for the port). The micro-barrier is the design he
+  specified on 23-07 and it is the one that gets built. ⚠ **The blocker
+  is unchanged and real:** `[atomic-book]` mints submit ClOrdIDs **BY
+  POSITION**, so a partial send re-diffs onto ids the venue already
+  holds (caught by test). Order granularity therefore means
+  non-positional id minting plus a fresh replay-equality proof.
+- ⭐ **DECISION (George, 30-08): keep a Python→Go DIVERGENCE REGISTER.**
+  His words: *"make a note of any divergences from the original Python
+  one and the Go one so when we have stabilised the Go one we can add in
+  the new features we have added to the Python one."* Born as
+  [[market-maker/go-port-backlog]] — the mirror of
+  [[market-maker/go-port-findings]], which runs Go→Python. Rule: **add
+  the row in the session that makes the change.**
+- 📝 **The divergence is small TODAY and that is the point of starting
+  now: four commits since the pin `fd193a4`** (`68b76a8` Edwin's 20-08
+  parameter rows · `76341d3` the alien drain · `d162d8c` its unenforced
+  invariant · `f9eec8b` rungs back to 1–3), plus N75 when built.
+  ⚠ **Two traps recorded there:** `f9eec8b` OVERRIDES `68b76a8` on
+  `min_levels`/`max_levels`, so porting in commit order and stopping
+  early ships the one-rung book George already withdrew; and
+  **differential replay CANNOT see any of this** — the harness compares
+  at the pin, so it goes quiet exactly where the register must speak.
+- ⚠ **`76341d3` blocks shadow running, and the Go maker caused it.** On
+  20-08 mm-2 (Go) quoted `.TEST` on the shared MM gateway, the gateway
+  broadcast namespace-wide, and mm-1 (Python) **crash-looped on replay
+  at every boot** — NRestarts=25, the dead-man fired 21 times. Until Go
+  carries the drain, any side-by-side run re-creates the incident in the
+  other direction.
+- 📝 **Where N75 should land first is now an open question, not a
+  given.** Go has no live journal to keep replay-equal, so it is the
+  cheaper place to change id identity; if Go goes first, Python inherits
+  the design. Recorded in the register against the N75 row.
+
+## 2026-08-30 — ⭐ the Tar Heels crossed for 2h45m · ✅ the ordering rules are PROMOTED out of learnings.md
+
+Edwin reported books with asks and no bids, and named the North Carolina
+Tar Heels. Traced read-only to a book, a mechanism and a decision.
+Session: [[market-maker/sessions/2026-08-29-b-tar-heels-crossed-book]] ·
+`N75` opened · `R-L03` changes by addendum
+
+- ⚠ **`IPTCNCTH` was SELF-CROSSED from 16:07Z to 18:52Z on 29-08 —
+  2 h 45 min.** The ask side froze at **40.26** and never moved; the bid
+  kept repricing up to **40.63**. Ask levels grew **3 → 17** against 4–7
+  bids. Real trading ran at **40.43–40.72** the whole time, $0.20–$0.45
+  above our stuck ask. `IPTCHFRG` — the other book in the same game —
+  had the identical fault. ⭐ **It recovered ON ITS OWN** when the
+  blocking touch moved: no hotfix, no operator. **Only live-game books
+  are exposed** — they are the only ones repricing fast enough to run
+  into a resting third-party touch. 📝 The lopsided ask wall priced
+  below the bids is exactly what Edwin saw.
+- 📝 **Mechanism.** A third-party bid rested at 40.40; our target ask
+  moved below it; the R-Q09 marketable guard refused — correctly (we
+  price off our own valuation, never the book, and without the guard
+  every repost sweeps the touch: **$50,366 on 09-08**). ⚠ **The refusal
+  holds back the WHOLE BOOK, not the offending side** — the alarm's own
+  words, *"no submit or replace has gone out for this book since"*.
+  `MARKETABLE_GUARD_STALLED` fired **9 times**. 📝 **`[cancels-through]`
+  did not save it**: it IS in the running tree, but the reconciler moves
+  a stale order with a REPLACE, and the guard holds replaces. The ruling
+  covers cancels, not the cancel-half of a held replace.
+- ⭐⭐ **THE FINDING: we designed the fix on 23-07 and never shipped it.**
+  George's memory of a cancel-first ruling is CORRECT and the note
+  exists — in [[market-maker/learnings]], **not here**: *"Publish is a
+  reconciler, not a send (George's push) … retreating side first,
+  **cancels before creates at overlapping prices**, advancing side
+  deepest-first with top-of-book last, **micro-barrier only on the
+  specific orders an advance would cross**."* ⚠ **It was never mirrored
+  into this log**, so N12's flat post-first was never superseded, and
+  **`requirements.md` R-L03 then codified the flat version** ("submits,
+  then replaces, then cancels", source N12, ✅ test-backed). The
+  requirement locked in the design George had argued against. The built
+  reconciler is one line — `venue/reconciler.py:173`,
+  `tuple(submits) + tuple(replaces) + tuple(cancels)`: no
+  retreating-side-first, no cancels-before-creates, no micro-barrier.
+  ⭐ **The last clause IS the fix for this fault** — a micro-barrier
+  refuses the crossing ORDER; the guard was built to refuse the BOOK.
+- ✅ **DECISION (George, 30-08): PROMOTE the ordering rules to a
+  decision.** They become the **target** design for the reconciler and
+  ✂ **supersede N12's flat post-first**. `R-L03` changes through the
+  requirements addendum, never silently. ⚠ **Not built and not
+  scheduled** — R11 stands and `N75` is answered first.
+- 📝 **Edwin's written standard and his spoken ruling conflict, and the
+  spoken one governs.** Written: PTS-001 §6.13.1 — *"locked or crossed
+  markets SHALL NOT be published"* and *"executable two-sided quotations
+  SHALL be maintained unless trading is halted or suspended"* (also
+  §6.12, §7.2, §6.9.1). Spoken 23-07: *"new orders are faster than
+  cancels… if we have to cross in order to make the adjustment in price,
+  I don't care"* — no cancel-first-wait gap, George confirming the same
+  day. By the working guide's ground rule the spoken decision outranks
+  the standard, **so post-first is governing and it is HIS**. ⚠ **What
+  his tolerance does not cover is the word `momentary`** — it licenses a
+  price adjustment, not a 2 h 45 min guard-frozen book. **That gap is
+  ours and was never recorded.** Frame it as drift, not as a knowing
+  supersession.
+- ⚠ **The 06-08c conflict is still open on the maker side.** tZERO's
+  wash-trade blocking REJECTS self-crosses, recorded then as "the
+  reconciler has a change coming either way". **The taker got its fix
+  (wash guard, MM PR #29). The maker never did.**
+- ⚠ **The gateway ops endpoint has diverged from the engine.** All 9
+  `IPTCNCTH` orders `GET /orders/mm` returned had no ack in 2 hours, at
+  prices $3 from the engine's, while the engine sent 60,891 acks for
+  that book. **`MM_BOOT_HEAL=on` reads that endpoint.** Filed in `N75`.
+
+## 2026-08-29 — ⭐ the NCAA-Saturday cadence check: the engine holds, Sportradar is the limit
+
+Read-only production check, first college Saturday (George's question: does
+the maker run at a cadence that suits live NCAA games?). `ps` / `journalctl` /
+`describe` / a 40 MB journal tail only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]] ·
+`N74` opened
+
+- ⭐ **The engine meets its cadence with ~92% headroom.** Engine
+  `supervised48` / `CFG-0046`, 138 NCAA books, no NFL. Measured
+  16:46–17:05Z: tick 0.5 s, sweep 0.5 s with **`missed_intervals=0`
+  across 1,423 sweeps**, `cycles=138` on every tick, converger backlog
+  1–11 books of 138 and clearing, **engine CPU 7.5% of one core**, load
+  average 0.00. No book suspended and no re-offer withheld in 6 hours.
+- ⭐ **THE LIMIT IS SPORTRADAR, NOT THE MACHINE.** SR changes an NCAA
+  probability every **7 s at the median** (mean 13 s · p90 25 s · max
+  153 s · min 2 s). Measured on `sr:sport_event:70894628`: 1,040 reading
+  events carried only **55 distinct probabilities**; the rest are
+  liveness confirmations. **College is slower than the NFL's 4 s
+  median.** The poll already oversamples the source ~6×, and the LIVE
+  redraw ~14×. The cadence question is answered on the input side.
+- ⚠ **`MMPUB_POLL_LIVE_S=0.5` is SET and UNREACHABLE.** The env var is on
+  the `inplay-mm-publisher` worker pool; `run_forever(..., tick_s: float
+  = 1.0)` in `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py:477`
+  is a hardcoded default with no settings field and no env override, so
+  one wake per second is the floor. Measured: 513 fetches in 597 s =
+  **one poll per 1.16 s**. ✂ Corrects [[market-maker/parameters]] row
+  `poll tier — LIVE`, which recorded 500 ms as deployed. **Cost, measured
+  rather than assumed: ~0.3 s of average detection latency against a 7 s
+  source** — a config-vs-code defect, not a mispricing. Filed `N74`; fix
+  out of hours under R11, never mid-slate.
+- ✂ **The serial-fetch caveat is WITHDRAWN for the publisher.**
+  `PublisherWorker.tick()` gathers every due game in ONE `asyncio.gather`,
+  so a round costs one SR round-trip, not N of them (11.4 fetches/s across
+  ~35 due games, round ~1.16 s). The 14-08 fear that "the serial-fetch
+  shape caps out near ~35 live games" no longer describes the code; it
+  still describes the MM's own in-engine poller, which retires at the
+  ingestion switch.
+- ⚠ **One live book was frozen: `IPTCNCTH`.** `MARKETABLE_GUARD_STALLED`
+  fired four times from 16:18Z with 148 refusals in 30 minutes; its sell
+  target sits behind a touch at 40.39/40.40 x182 and **no submit or
+  replace has left that book since**. `IPTCHFRG` did the same at 16:05Z
+  and cleared. `R-Q09` refusing and `N41` alarming, both as designed —
+  **and still the only broken cadence on the board.**
+- 📝 **The dead games out-poll the live ones.** `MMPUB_POLL_POST_GAME_S`
+  is unset, so it takes the 2.0 s code default — the LIVE rate. 33
+  finished games from 27–29 Aug are fetched every ~2 s: about **14 of
+  every 16 SR calls go to games that will never move again**. The "never
+  retire" behaviour is `N40`'s ruling working correctly; only the rate is
+  wrong. The settle watch only has to beat the MM's ~20 s freshness fuse.
+- ⚠ **`inplay-mm-publisher-testing` polls PRODUCTION Sportradar** — the
+  same live game as the production pool, seconds apart (17:02:35Z).
+  Duplicate quota spend. Whether it also publishes on the production
+  subject depends on a Redis fence nobody has read.
+- ⚠ **This is not the peak, and the numbers must not be quoted as if it
+  were.** 83 games are tracked and **65 sit at the overnight tier**; the
+  window held one live game rising to seven. The recorded **~35%
+  missed-sweeps fault did not reproduce** — but it was measured at three
+  live games under the pre-08-13 `sweep_max_interval_s`. **Re-measure at
+  peak before anyone calls it closed.**
+
+## 2026-08-28 — ⭐ Edwin's SDMM-1 v5.1 engine · ✅ the injury channel is DROPPED
+
+Received `novo_handoff_1.zip` 27-08 — the formula he promised on the call.
+Filed at `reference/edwin-sdmm1-v51-2026-08-27/`. Run and measured, not
+just read. Brief: artifact "What Edwin sent" (claude.ai).
+
+- 📝 **What it is.** "SDMM-1 Reference Price Specification v5.1": a working
+  engine (476 lines, stdlib only), a 31-test acceptance suite, and a spec.
+  **All 31 tests pass. It reproduces LSU's published IPO of $59.535 to the
+  penny.** He states the rule: a port is correct when all 31 pass.
+- 📝 **The price formula is nearly ours.** His forward leg `5·ΣP(win)` IS
+  our `$5 × T` — expected wins is the sum of per-game win probabilities.
+  Same $5 win, $2.50 tie, $2.50 pool, settlement identity, live leg, and
+  no-step-at-the-whistle. **What differs is underneath:** we hold a frozen
+  number, he holds a per-team RATING in points that every observation
+  updates by one Kalman step.
+- ⭐ **It answers `E52` outright.** Measured on his engine: a loss is
+  **−$12.54**, a big win **+$6.51**, an ugly win (by 2 as a 28.5-pt
+  favourite) **−$5.46**. Decomposed: the game itself is only −$4.53; the
+  other 11 games re-rate from 7.64 to 6.22 expected wins = −$7.14. **Our
+  weekly-futures-rebase proposal is superseded — withdraw it.**
+- ⭐ **A win probability IS a spread.** Verified on all 12 LSU games:
+  `d = √(ς² + Var d) · Φ⁻¹(p)` reproduces the engine's own edge exactly,
+  and feeding the derived number gives a price identical to feeding the
+  real spread. **So his "primary channel" may already be in our hands** as
+  Sportradar's pregame win probability. ⚠ Two unknowns: how far ahead SR
+  prices college games, and what observation noise their number deserves
+  (he assumes 1.5 pts for a bookmaker spread).
+- ⚠ **The reference implementation does not scale.** It rebuilds the whole
+  posterior on every read — deliberate, because in-place updates
+  double-apply ($1.18 per repeated tick in his v4). **Measured: 0.5 ms at
+  his 13-team demo, 364 ms at our 138 books, 652 ms at 170.** The cache
+  clears on any new observation, and we poll live games every 500 ms, so a
+  rebuild already exceeds the poll interval. **Fix: checkpoint the settled
+  observations and replay only the live games — measured 5.5 ms, 130×
+  faster, and it keeps his idempotency.** Same checkpoint-plus-replay
+  pattern our journal already uses. Performance is explicitly out of his
+  scope.
+- ⚠ **Our prices are ~2% above what shares were sold at.** Measured across
+  132 matched college teams: our reference price runs a **median +2.39%**
+  over the listed IPO. His two "extra" legs — discounting (−1.14%) and the
+  risk charge (−0.87%) — are **−2.01%**, almost exactly the gap. They are
+  not decoration; they reconcile the model to the real offer price. Both
+  are one line of arithmetic and both unwind to zero at settlement.
+  ⚠ One outlier (Louisiana Monroe, −40%) is probably a name-join error in
+  the check, not a real discrepancy — verify before quoting it.
+- ✅ **DECISION (George, 28-08): DROP the injury channel.** Measured, the
+  channel collapses to a single scenario:
+
+  | Injury | Move |
+  |---|---|
+  | Own QB, season-ending | **−$8.31** |
+  | Own WR / DL | −$1.75 |
+  | Own OL / RB | −$1.40 / −$1.18 |
+  | Own kicker | −$0.62 |
+  | Opponent's QB out | +$0.26 to +$0.77 |
+
+  **Why dropping is safe:** a QB injury still reaches the price through
+  Sportradar's win probability — immediately during the game, and for
+  later games as each gets its pregame number. It arrives **delayed, not
+  lost**.
+  **Why dropping is a net simplification:** the stale-spread trap exists
+  ONLY because an injury can post-date a posted spread. Dropping injuries
+  removes the −$3.57 wrong-direction bug, the `stale_spreads()`
+  invalidation logic, the timestamp requirement on the board feed, and an
+  injury feed (position + severity) **we do not have**.
+  ⚠ **Recorded cost, and it is a product one:** Edwin's 09-08 Gamecast
+  document made the star-QB case its headline (a major injury dropped a
+  winning team's price in 26 of 26 tests). It is also the most dramatic
+  moment in the product — the quarterback goes off and users expect the
+  price to react. Under this ruling it drifts instead. **Revisit if the
+  product wants the theatre; the channel can be added later without
+  changing anything else.**
+
+## 2026-08-27e — ⚠ the live off-field numbers over-allocate the pools by ~9%
+
+Measured on the 138 live NCAA records ·
+[[market-maker/systems/expected-wins-pipeline]] §9.1–9.2 · `E51(d)`
+
+- 📝 **Off-field accumulates but the price must NOT rise.** RAV (earned)
+  and EAV (expected) always sum to the same number; each game moves a
+  slice from one to the other. The price moves only on the difference
+  between earned and expected — the earnings surprise.
+- ⚠ **The bug that prevents:** RAV is `0.00` today and EAV is frozen at the
+  full-season figure. Add realized money without draining EAV and **every
+  price climbs ~$1.25 a game for nothing — ~$15 a share over a college
+  season.** Both halves ship together, or neither.
+- ⚠ **Measured over-allocation.** Off-field per team per game runs $0.955
+  to $2.302 (median $1.362). **Two average teams meet and sum to $2.72
+  against a $2.50 pool.** League-wide, expected off-field totals **$2,254**
+  while 828 games at $2.50 hold only **$2,070** — **~9% more promised than
+  exists.** Worked case: Sacramento State ($2.24/game) vs North Dakota
+  State ($2.30/game), both FCS so the fixture can happen, pays **$4.54 from
+  a $2.50 pool**.
+- 📝 **Popularity is NOT the explanation.** It correctly sets who gets more
+  of a pool — Edwin on the 27-08 call (the Jets and Giants "still could
+  make a lion share… even if they stink"), and the data agrees:
+  corr(expected wins, off-field) = **0.729**, with Sacramento State
+  second-highest in the league on 4.61 expected wins. But popularity sets
+  the **ratio**, never the **total**.
+- ⭐ **Likely cause, two independent evidences:** his model prices each
+  team's off-field from its own popularity without checking the fixture
+  balances. (1) His Gamecast formula `offShare = 1.0 + pct × 0.5` reads
+  only the team's own percentile and never the opponent. (2) The live
+  numbers sum to 109% of the pools.
+- ⚠ **Consequence, not cosmetic.** Settlement pays realized, not expected.
+  A 9% high EAV means realized lands under expected week after week and
+  **prices drift down across the whole league** — a systematic bias that
+  looks like the model working while it is wrong.
+- 🔴 **Ask (`E51(d)`):** is the $2.50 split between the pair, or is each
+  team's number standalone? If a split, normalise the projections against
+  the fixture list. And when a listed team plays a NON-listed opponent,
+  does it take the whole pool or only its share? That would legitimately
+  explain part of the excess.
+
+## 2026-08-27d — ✅ hourly, pulled by us — the reference number becomes a feed
+
+George's ruling, same session · updates
+[[market-maker/parameters]] (feed cadence) ·
+[[market-maker/systems/expected-wins-pipeline]] §7
+
+- ✅ **Pull the season win totals HOURLY, ourselves.** George: it is a cheap
+  operation — one call returns the league, so 24 calls a day is nothing.
+  ✂ This supersedes the daily-06:00 cadence of Edwin's email items 3–4.
+  The reference number stops being a file he sends and becomes a feed we
+  pull. **He never has to produce anything.**
+- 📝 **Why hourly beats weekly.** Every re-pull moves every price at once.
+  Frequent pulls make each move small; rare pulls make them large jumps.
+  Futures also move mid-week on injuries and news, not only on results.
+- ⚠ **Rule 1 — record a change only when the line moves.** No heartbeat
+  events. An hourly write of an unchanged number fills the journal with
+  nothing and slows replay.
+- ⚠ **Rule 2 — a new line and the banking of a result happen together.**
+  A repriced season line ALREADY contains the result of the game just
+  played. Take the new line while the game is still open in G and the win
+  counts twice. This is Edwin's own rule from the 28-07 email (a game
+  leaves G when a new T absorbs it), now load-bearing hourly.
+- 📝 **No clash with live games.** Bookmakers do not move season lines
+  during a game (researched 27-07), so hourly pulls mid-game return the
+  same number. The line moves after the whistle — exactly when the result
+  should be banked.
+- 🔴 **NFL only.** Sportradar's futures product carries NFL season win
+  totals and **nothing for NCAA** (verified 16-07, confirmed by George
+  27-08). The 138 college teams that trade today have **no source to pull
+  at any cadence**, so they hold their July view until each game arrives.
+  This is the sharpened `E52` ask: name a college source, or accept that
+  college prices do not reprice on form this season.
+- ⚠ **Entitlement unverified.** Futures was checked on a **July trial**;
+  the August contract amendment covered live probabilities, not futures.
+  Confirm production access before the build depends on it.
+
+## 2026-08-27c — ⭐ production checked: the seed matches live · T is 16 days static
+
+Read-only check of the MM VM (George's instruction: production, take care).
+`ps` / `ls` / `cat` only — no restart, no write, no config change.
+Session: [[market-maker/sessions/2026-08-27-edwin-pricing-call]]
+
+- 📝 **What runs.** VM `inplay-market-maker` (`inplay-497712`,
+  `us-east4-a`, n2-standard-2, no external IP, IAP-only SSH).
+  `mm.runtime` up ~7 h on journal `supervised47`; `snt.runtime` up 5 days.
+  `MM_MODE=supervised` · `MM_READINGS=bus` · `CFG-0045` ·
+  `MM_PRIOR_RUN_DIR=supervised46` (F2 anchors carried) · `MM_BOOT_HEAL=off`.
+- 📝 **The maker quotes 138 NCAA books** from
+  `/home/georgewestbrook/supervised-inputs-138-ncaa.json`. **NFL tickers
+  are not in `MM_SECURITIES`** — the maker does not quote NFL today.
+- ⭐ **The seed is VERIFIED against production.** Our seed reproduces the
+  live file on all 138 tickers: max |ΔT| 0.0005, max |ΔEAV| $0.005, **max
+  |ΔRP| $0.0061** (median $0.0026). The only difference is precision — the
+  live file rounds to 3 dp, our seed carries full precision. **Nothing
+  needs deploying.**
+- ⚠ **Correction.** An earlier note in this session claimed our seed would
+  move live books by up to $6.74. That came from
+  `docs/supervised-inputs-2026-08-07.json`, a **stale 7-ticker NFL
+  artefact** in the repo that is not what runs. The measured figure is
+  $0.0061.
+- ⭐ **The hole, measured: T is static since `2026-08-11T22:00:00Z`** — 16
+  days — with no path to update it. `realized_on_field_total` and
+  `realized_off_field` are both `0.00`. Saturday still prices correctly
+  (the engine holds each finished game in G with its result pinned), **but
+  the first regenerate of that file without absorption drops every winning
+  team by $5.** The absorber is the critical path.
+- 📝 **The off-field discrepancy is NFL-only.** The live NCAA file uses the
+  same off-field source as our seed; the wider numbers Edwin quoted
+  (Dallas ~$30) appear only in the stale NFL file. Nothing is mispriced
+  today. Settle before NFL secondary opens.
+
+## 2026-08-27b — 📝 the seed verifies against Edwin's own numbers · the tail does not
+
+Call: [[27-08-2026-mm-pricing-catchup]] ·
+session [[market-maker/sessions/2026-08-27-edwin-pricing-call]] ·
+`E51(d)` updated · `E52` `N73` opened
+
+- 📝 **The seed is verified against numbers Edwin quoted live.** He worked
+  LSU through on the call: IPO "$59 or 59.53", expected wins "8.55",
+  on-field "$42.75". Our seed holds 59.54 / 8.5452 / 42.73, and RP 60.87
+  against his sheet's IPO EV of 60.874. The seed stands.
+- 📝 **The absorber IS his model.** Unprompted, he described it: "a win to
+  LSU is not going to be worth $5 more a share because part of that is
+  already baked into the price", and put the move at **47 cents to $1.50**
+  for a heavy favourite. `$5 × (result − p_ref)` gives exactly those
+  numbers. No change to §3–4 of the pipeline.
+- 📝 **Off-field actual is trading volume — confirmed by Edwin on the
+  call**, in answer to George's direct question. Off-field expected is his
+  popularity model (socials, prime-time games, market size). Both match
+  what the 27-08 rulings assumed.
+- ⚠ **His spoken off-field numbers disagree with his own sheet.** He said
+  Dallas earns "like 30 bucks" and Carolina "12 or 14"; his sheet gives
+  24.07 and 19.22. His spread is about 2.2× top-to-bottom against the
+  sheet's 1.25×. Off-field is roughly 30% of a share price, so the
+  difference is material. **He offered to send the popularity file — take
+  it** (`E51(d)`).
+- ⚠ **He expects the tail to re-rate at once; our build does not.** On LSU
+  losing to Jacksonville State: "that share could go down 10 or $15". The
+  absorber alone gives −$4.53. The rest is the forward re-rate we deferred.
+- 🟡 **Proposed answer, no model needed: the weekly futures rebase.** A
+  bookmaker cuts LSU's season win total after a bad loss (8.5 → ~6.5);
+  re-de-vig and expected wins fall ~2 wins, so the price falls ~$10 — his
+  number, from market data alone, with §1.5 intact. This is the pipeline's
+  §7 `EXPECTED_WINS_REBASE`, already designed. **It needs a WEEKLY
+  win-totals snapshot instead of one.** ⚠ Point spreads alone do not do
+  this: they cover next week only, so a week-1 shock never reaches week 10.
+  Edwin's ruling required — `E52`.
+- ⚠ **Edwin promised a new formula "today" (27-08). It has not arrived.**
+  Hold the layer-3 build until it lands or he blesses the rebase.
+- 📝 **The season resets** — Edwin: "what I've designed is a reset." No
+  multi-year value; settlement at season end stands.
+
+## 2026-08-27 — ✅ the earnings report is ours to compute · the seed is built
+
+Continuation of the 26-08 pipeline session ·
+[[market-maker/systems/expected-wins-pipeline]] §9 · `E51` item (e)
+
+- ✅ **The seed is built and verified** (scratchpad, filing location TBD):
+  `EXPECTED_WINS_SEED` + the supervised-inputs file, all 170 tickers,
+  passes the engine's own `load_supervised_inputs`. The numbers are
+  Edwin's twice over — his `devig.py` on his July snapshot reproduces his
+  IPO sheet's `E[Wins]` to 10 decimals, all 170 rows. Tickers from
+  `universe.py` (tZERO's list); the symbols workbook is stale (132 NCAA
+  rows) — do not use it. EAV taken from the sheet's Off-Field EV column
+  (RAV 0), which keeps RP continuous with the listed IPO prices.
+- ✅ **We compute the weekly earnings report** (George). The volume data
+  is ours — every venue print carries its account. Edwin defines the
+  formula and audits; he runs no weekly process. The daily-file failure
+  mode does not return at weekly cadence.
+- ✅ **House volume counts, under the symmetry assumption** (George):
+  SNT-1 is active on both sides of every fixture, so its volume cancels
+  in a proportional split. ⚠ Consequences recorded: dilution toward an
+  even split while taker volume dominates, and a noise floor from random
+  clip sizes. **Safeguard: the report computes both columns (with /
+  without house accounts)** so the assumption is checked with evidence.
+- 📝 The off-field machine is the absorber mirrored, weekly:
+  `EAV −= expected · RAV += actual`, Δprice = the earnings surprise, in
+  the Tue/Wed burst window (23-07 ruling). Schema questions ride E51(e);
+  deadline is the first burst after games.
+
+## 2026-08-26 — ✂ the daily file retires: expected wins seed once, then fold
+
+Session: [[market-maker/sessions/2026-08-26-expected-wins-pipeline]] ·
+closes `N18` `N19` `N23` + N22's residual · opens `E51`
+
+Edwin cannot operate a daily 06:00 hand-off (George). The whole daily-file
+plan is replaced by an automated pipeline. This supersedes the 28-07
+file-transport plan and the N19 upload-page ruling.
+
+- ✅ **Seed once, then fold.** Expected wins per team seed ONE time from the
+  July season-win-totals snapshot (de-vig per Edwin's 28-07 method; σ_mkt
+  2.7 NFL / 2.2 NCAA, already ✅). After the seed, every change is the one
+  rule: `new expected wins = old + (result − kickoff probability)` — live
+  form replaces the result with the live probability. No external feed of
+  expected wins ever again.
+- ✅ **The absorber is exact.** Moving a finished game out of expected wins
+  and into banked changes the price by $0.00 — `contribution(g) = $5·x_g`
+  before and after. Proven; the four-row table is the regression test. The
+  06:00 sawtooth (`[t-is-not-the-field]`) can never occur.
+- ✅ **The one-basis rule.** A pregame game's entry in expected wins TRACKS
+  Sportradar's pregame number (the pregame poll tiers already fetch it),
+  freezes at kickoff as `p_ref`, and absorbs at that frozen value. The
+  subtracted number IS the carried number, so N22's basis drift is
+  structurally impossible.
+- ✅ **Flat split for unpriced games.** Games SR has not priced carry
+  `expected wins ÷ games remaining` as scaffolding; SR's number replaces
+  each share before kickoff. The shares sum to the seed, so expected wins
+  end the season at exactly zero. ⚠ The kickoff-window swap on a mismatch
+  game can move ~$1.25 in one step — real information, but lumpy.
+- ✅ **One new event type, dictionary payload.** `EXPECTED_WINS_SEED` — one
+  event, all 170 teams, keys sorted, decimals as strings (the `ANCHOR_SEED`
+  shape); payload carries the snapshot's path + sha256, the object itself
+  in the bucket per the 03-08 storage ruling. Everything AFTER the seed is
+  derived state: a fold over events the journal already records (readings,
+  kickoff freezes, `OFFICIAL_RESULT`). This answers N23.
+- 🟡 **Layer 3 (form re-rate of the far tail) deferred** behind Edwin's
+  one-time blessing (`E51`). Without it the tail holds the seed's view —
+  a quality gap, not a correctness gap. ⚠ T is book-visible under the
+  22-07 line and §1.5; the blessing converts Edwin from daily operator to
+  one-off approver.
+- 📝 **The Gamecast bundle (09-08) is not a new pricing model.** Expanded,
+  `seasonFair` is the 28-07 model as a delta from the IPO price; the live
+  leg is ours × the damping dial `M`. `M` is uncomputable anyway — the SR
+  probabilities feed carries no game clock (verified on the Chiefs–Ravens
+  capture). Its off-field method is the one new piece and fails pool
+  conservation as written (two elite teams claim $3.00 of a $2.50 pool) —
+  held as an ask in `E51`, not adopted. Its manufactured-variability
+  mechanisms are logged as third corroboration on `E34`.
+
 ## 2026-08-28: ⭐ the reference price gets its numbers, and the snap-back gets named
 
 Session: [[market-maker/sessions/2026-08-28-touchdown-digest]] ·
@@ -152,6 +644,594 @@ are logged because they are instructions, not because they are finished.
   his own judgement.** The underlying need (the spread is standardised and untuned
   for late-game variables) stands for after the weekend.
 
+## 2026-08-20 — ⚠ The ladder sizes are stale by design (N10), and two live fixes failed
+
+Session: [[market-maker/sessions/2026-08-20-d-ladder-shape-and-two-failed-fixes]] ·
+N10 · N63 · N64 · Go `2a55d74`, `fa3dfc2`
+
+- ⭐ **The level sizes do not decay outward because of N10, not because a cancel
+  failed.** The reconciler keeps a resting order at a still-wanted price at
+  whatever size it carries. Sizes are re-drawn every quote version. So a kept
+  order holds an older draw. Measured live: **197 of 360 ladders out of decay
+  order**, age spread inside one ladder median 39 s and max 277 s.
+  ⭐ The arithmetic settles the cause: one version can step UP by at most
+  `0.72 × 1.25/0.75 = 1.20`. Observed steps reached **2.16**.
+- ✅ **The Go port is faithful to the pin.** 960 quantity ladders byte-identical,
+  the venue differential fuzz passes fresh at every step, and the quoting gate
+  passes field for field over 1,089 readings. ⚠ Python's LIVE book could not be
+  measured: `mm-1` has been stopped since 19-08.
+- ✅ **George's ruling: clear the old quotes before publishing the new ones.**
+  This REVERSES N10 and Edwin must be told. It costs queue priority at every
+  level whose drawn size moved.
+- ⚠⚠ **The first implementation took the books dark and was reverted live.** It
+  cancelled a level and re-posted it on the next pass, so every book was empty
+  for a pass on every version: **72 to 97 of 180 books quoting**, 11 of 164
+  quoting in all ten samples. ⭐ The unit tests passed, because every one of them
+  asserted on a SINGLE reconcile call and none measured absence over time.
+- ✅ **The corrected design: resize in place.** A level whose price is still
+  wanted is REPLACED to the current draw, so one order holds it throughout.
+  ⚠ Built and gated, **NOT verified live** — the run was stopped first.
+- ⚠ **`base_size` is 10,000 in BOTH engines** (`quantity.go:29`,
+  `dictionary.py:129`). Edwin's agreed 500 to 3,000 (17-08) is in neither. N63.
+- ⚠ **The Go maker does not trade tonight.** The Python maker is the fallback.
+
+---
+
+## 2026-08-20 — ✅ The market data feed was alive; 868 stranded orders swept by seeding the index the LRU had eaten
+
+Session: [[market-maker/sessions/2026-08-20-c-stranded-book]] · N59 · N60 · N62
+
+- ✅ **N59 closed — the feed never died.** A `35=V` snapshot probe answered in ~25 ms;
+  all 180 books answered. The freeze at 17:12:20 was silence, not death. The
+  "phantom" two-sided books were **868 real orders** from the 13:30:02 SIGSEGV
+  boot, DAY, all on FHINPLAY02. **A full-book sweep does not blank market data**;
+  that Saturday risk is withdrawn in the form stated.
+- ⚠⚠ **Why no tracker knew them: Redis `allkeys-lru` evicted the order index.**
+  `inplay-redis` (1 GB) peaked at 1.02 GB ~14:00; 74,444 index writes failed
+  with OOM; resting-order hashes are the coldest keys. The MM gateway's 15:53
+  restart rehydrated **0**. The boot healer, the operator sweep and the dead-man
+  are all tracker-fed, so all three were blind. **N62, owner Hasan.**
+- ✅ **Clearance path chosen (George, ~17:55Z): seed the index, restart the MM
+  gateway, let the dead-man sweep.** The mint is deterministic, so the 13:38
+  boot's `Duplicate clOrdID` rejects named every stranded order. 867 rows
+  seeded, 868 rehydrated, dead-man fired at +30 s, **868 `35=F` → 868 `39=4`
+  → 0 `35=9`**. Venue re-snapshot: 3 retail orders, zero MM.
+- ✅ **N60 closed** — zero 900,000-share IPO orders at the venue.
+- ⭐ **Method:** a quiet feed and a dead feed look identical from timestamps.
+  Ask the venue (`35=V`). And before any gateway restart, compare
+  `SCARD fix:orders:open:mm` with `/orders/mm` — if they differ, the tracker's
+  memory is already gone.
+
+---
+
+## 2026-08-20 — ✅ Edwin's maker asks become a parameter round: rungs countered at 1–3, the drift reads trades only, and one combined bound
+
+**Who:** George (the rulings) + AI session, 20-08.
+**Refs:** [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]] ·
+[[18-08-2026-requirements-session]] · E30 · E31 · E34 · E51 · T23.
+**Sent to Edwin 20-08.**
+
+Edwin asked for four maker changes on the 18-08 call: top of book only, wider
+quotes, ~550 shares instead of 11,000, and a *"distribution level away from fair
+value… around 20 cents 25 cents"*. This session turned them into a signed-off-able
+parameter set and sent it. **Nothing is built until he answers.**
+
+- ⭐ ✅ **Asks 1 to 3 are inert without a persistence mechanism — so a FIFTH ask
+  was added, ours.** Edwin's own example: a participant sells 1,000 into a
+  550-share bid, 550 fills. Next cycle RP has not moved, and 550 shares against a
+  900,000 float moves `IA` by **$0.0006** — six hundredths of one tick. We re-post
+  the same bid and buy the rest. Thinning and widening deliver nothing on their
+  own. The fifth ask raises the inventory lean back toward the scale Edwin
+  designed it for (his `inv_ref` saturated at 12,000 shares; ours at 225,000).
+
+- ✅ **George: rungs go to 1–3 DRAWN, not 1.** A counter to ask 1, sent as an
+  explicit counter rather than a silent change. The size cut does the work —
+  three rungs at 550 hold 1,231 shares a side against today's 30,739 (a 96% cut)
+  against 550 for one rung (98%); two percentage points does not change what
+  Edwin saw. Keeping 1–3 preserves §5.2's stress ladder (Stable 3 · Active 2 ·
+  Defensive 1), which one-rung-everywhere would spend for good given Active and
+  Defensive already quote identically. The document says *"if you still want one,
+  say so and we build one."*
+
+- ⭐ ✅ **The drift reads EXECUTIONS only, never resting orders.** A resting order
+  is free, and §4.2 marks every portfolio and the leaderboard at RP, so posting
+  and pulling a bid to move our quote has a direct payoff. A trade costs money,
+  so it is credible. This re-affirms the 30-07 withdrawal of the §5.5
+  book-derived blend, for the same reason. Our own fills are journalled, so ask 4
+  needs **no new data** to build.
+
+- ✅ **One combined $0.25 bound** on the total gap between our quote and fair
+  value, covering the lean and the drift together. Both respond to our fills, so
+  two separate bounds would let one sweep take us 50 cents from fair value when
+  Edwin asked for 25. Put to him for confirmation.
+
+- ⭐ ⚠ **RPV-2 is Edwin's own July design, and ask 4 is the one term of it we
+  could accept.** `rpv2_flow_responsive.py` already moves price with flow at
+  **6 ticks per 1,000 net shares** (`RPV2Config`) or **10** (`HANDOFF.md` §3) —
+  the E30 conflict, still open. The 30-07 ruling was *build none of it*: three of
+  its four terms invented movement, and the fourth moved **RP**, which SNT-1
+  would then drive. **Ask 4 is that fourth term alone, applied to the QUOTE
+  instead of RP**, which answers our own objection — RP, the settlement value and
+  the leaderboard are all untouched, and §3.6.6's Bounded Reflexivity Prohibition
+  (trading reaches RP only through §3.6, weekly and capped) is not engaged.
+  So the coefficient already exists; Edwin owes **6-vs-10**, not a new number.
+
+- ⚠ ✂ **Ask 4 is a bounded DRIFT, not a deadband on fair value — George's
+  correction.** The first reading was "stop following RP until it has moved 25
+  cents". George rejected it: that is a lag mechanism, so with no trading at all
+  we would quote stale prices while the game moved and be picked off by anyone
+  watching the win probability. Edwin's own word is *"reside"* — the distance is
+  between OUR QUOTE and CURRENT fair value:
+
+      centre = RP + drift          drift bounded to ±$0.25
+
+  We keep tracking fair value continuously and carry an offset on top. No trading
+  → drift zero → we quote at fair value.
+
+- ⚠ **His two numbers are NOT one rule.** The claim that 25 cents and "5% win
+  probability" were the same thing (5% × $5.00 = $0.25) was coincidence dressed
+  as a finding. **25 cents BOUNDS the drift; a 5% probability move CLEARS it.**
+  Two parameters, not one.
+
+- ⚠ **`skew_reference_shares` was first published in the wrong form.** 12,000 is
+  the **saturation point**, not the denominator: saturation is `M ÷ S × D`, so
+  D = **48,000**. The effect table was right throughout (550 sh → 1.1 ticks).
+  Also recorded: 12,000 was fitted to Edwin's 250-share book (48 rungs to
+  saturation); at 550 a rung it is 22, so scale-matched it is nearer 26,400.
+  Framed for him as *"how many rungs before we are fully leaned over?"*
+
+- ⚠ **The untradable-opponent rule is ALREADY SPEC, not a new fact.** §3.6.1: when
+  the opponent sits outside the universe, the universe team takes the **full
+  $2.50** as both expected and realized, and no capture-share applies. Edwin
+  restated it on the call (North Dakota State, ~22 such games this season). It
+  was missing from [[market-maker/parameters]] only. The pair-identity guard is
+  unaffected — it is gated on `len(sides) == 2`.
+
+- ⚠ **Off-field §3.6 is fully specified and entirely unbuilt.** RAV/EAV are
+  reviewed constants in `docs/supervised-inputs-2026-08-07.json` ($18.31–$30.82
+  expected, $0.00 realized). No BDI, VMI, capture share or weekly publication
+  exists. Two external inputs are missing: `IPOEligibleOrderShares` (no
+  publisher, E27 family) and counted participant volume (§5.5). Not a day-one
+  blocker — the frozen values carry the right magnitude at listing — but the
+  error grows across the season.
+
+- ⚠ **PROCESS, from the call (George, agreed by Edwin): anything touching the
+  maker takes two reviewers at minimum.** *"In terms of the market, like I think
+  anything touching the makers, two at minimum."*
+
+- ⚠ **The deploy window conflicts with R11.** Edwin said *"next Saturday"* —
+  29-08 — which is a live NCAA Saturday once secondary opens 26 or 27 Aug (E25).
+  **R11 forbids a maker cutover while games are live.** Ship before NCAA
+  secondary opens, or take a Sunday morning.
+
+## 2026-08-19g — ✅ Go port Phase 4: AC13's named gaps, the boot sequence's wave, and where the anchor reader lives
+
+**Who:** George (AC13) and the Phase-4 team lead (the rest), 19-08.
+**Refs:** [[market-maker/sessions/2026-08-19-go-port-phase-4]].
+
+- ⭐ ✅ **George: AC13 is a PORT GATE WITH NAMED GAPS.** Every un-runnable
+  TT/TJ row is named individually — the row id, what it needs, and why this
+  repository cannot supply it. **A named gap is UNCOVERED**: never passed,
+  never deferred, never waived. The naming requirement is normative, not
+  descriptive, because the list has to survive into whoever books the QA-venue
+  session months from now. It is therefore a TEST rather than a document
+  (`TestAC13Coverage`), versioned beside the code it describes and failing when
+  a claim stops being true. The split is **3 covered · 5 partial · 11
+  uncovered**, of 19 rows. ⚠ Writing it down as a checkable thing immediately
+  caught two errors in figures already reported — a transport unblocks SEVEN
+  rows, not eight, and the headline was not the "1 / 4 / 14" first sent.
+
+- ✅ **The boot SEQUENCE is built in wave 2; the COMPOSITION stays in wave 3.**
+  AC8 gates Phase 4, and a gate that cannot be taken until the last wave is a
+  gate that gets taken under time pressure. The sequence is behaviour the pin
+  defines (lock → first beat → build → seed → replay → heal → stand); the
+  wiring is env, NATS and systemd, which is a different job.
+  ⚠ **The cost is recorded rather than hidden:** the recommendation to build
+  the composition FIRST was put and **declined by George**, so a boot sequence
+  lands one wave before the composition it will run inside.
+
+- ✅ **`ANCHOR_SEED`'s reader lives with the boot path, not with the event
+  core.** Python's `events/anchor_seed.py` is one file doing two jobs, and the
+  Go port splits it: the **applier** was delivered in Phase 2 inside the
+  valuation engine, and the **reader** sits beside the boot ceremony. The
+  reason is layering — the reader folds the prior journal's tail through a
+  throwaway valuation engine, and an `events → valuation` import inverts the
+  dependency. The event core may not know about an engine. Mirroring Python's
+  path was never available, because the file was already split across two Go
+  packages.
+
+- ✅ **S1's missing eviction is ported DEFECT INCLUDED**, and fixed in Phase 5.
+  ⚠ It is **not output-neutral**, which is why "fix it in passing" was refused:
+  `schedule.py:145` guards adoption with `if not game_id or game_id in
+  self._games: continue`, so evicting a finished game lets the file **re-adopt**
+  it with `from_file=True` and different facts — deriving LIVE for four hours
+  where the bus rules derive OVERNIGHT. Recording a defect is cheap; changing
+  behaviour inside a zero-diff phase is not.
+
+## 2026-08-19f — ✅ N47 ruled: a price may be a millionth off, so the pair guard relaxes to the band
+
+**Who:** George, 19-08. **"Price is being a millionth off is fine."**
+
+### The contradiction
+
+Two rules in one code path disagreed.
+
+- **§3.2.1's accept band** takes a win/tie/loss triple whose sum is within a
+  millionth of 1 and says: use these numbers **untouched**.
+  (`sum_accept_tolerance = 0.000001`.)
+- **The `[pairs]` guard** then asserts `GEV(home) + GEV(away) == $5.00`
+  **exactly** (`valuation/engine.py:395`).
+
+A triple a millionth off produces prices a millionth off, so the guard raises —
+out of `process()`, with no `except` in `cycle()`. The book stops quoting.
+
+Measured at the pin: **100%** of the accept band's non-exact sums raise, and
+**2.7%** of §3.2.1 repairs raise too, from the repair's own precision-28 residue
+(`0.49/0.99 + 0.4/0.99` does not return to exactly 1).
+
+⚠ **Latent only by luck.** Sportradar's two percentages sum to exactly 100 on
+all 1,089 readings of the captured game — a property of the PROVIDER, not of our
+code, and nothing checks it. `adapters/sportradar.py:93-94` reads SR's two
+numbers rather than deriving one from the other, so a provider that rounds
+differently, a schema change, or a second feed makes it live.
+
+### The ruling — option (b), relax the guard
+
+    pair_total != WIN_VALUE
+      becomes
+    abs(pair_total − WIN_VALUE) > WIN_VALUE × sum_accept_tolerance
+
+A tolerance of **$5.00 × 1e-6 = $0.000005** — half a thousandth of a cent.
+
+⭐ **It changes no stated behaviour, only an over-tight assertion.** The guard's
+job is catching a swapped home/away pair and a badly broken repair. Neither can
+hide inside a millionth, so nothing is given up. The other two options both cost
+something real: tightening the band would refuse readings §3.2.1 says to keep,
+and normalising inside the band would change what §3.2.1 means by *accepted*.
+
+⚠ **Edwin was not consulted, and did not need to be.** The open question framed
+this as needing his number. On the ruling it is a tolerance decision rather than
+a modelling one — how much slop a cross-check may allow — and that is George's.
+
+### ⚠⚠ It is NOT implemented yet, and that is the point
+
+Phases 0–4 of the Go port are a **faithful** port, certified by differential
+replay against the pin. Changing either engine now breaks the zero-diff mandate:
+Go would stop raising where Python raises, and the valuation fuzz drives that
+exact case **every 77 steps**.
+
+**The change lands at Phase 5, in BOTH engines together.** Until then Go
+reproduces the raise exactly and
+`TestTheAcceptBandContradictsThePairGuard` pins it.
+
+Full entry: [[market-maker/go-port-findings|GP-3]] · question: `N47`.
+
+---
+
+## 2026-08-19e — ✅ N52 and N48 ruled, gate 0-b passes, and a setting must be enforced rather than documented
+
+**Who:** George (both rulings), during the Go port's Phase-3 session.
+
+### N52 — rebuild the a2 corpus on one timeline
+
+The corpus carried two clocks 60,871,126 s apart: its probability readings kept
+the captured 2024 Chiefs-Ravens game's stamps while its venue events and sweeps
+carried the 2026 replay's. §5.3 decays the variance rate by
+`exp(−ln2 · Δt ÷ 20)`, so the first sweep after a reading asked for
+`exp(−2.1 × 10⁶)` and CPython stored a `variance_rate` of
+`4.385597164977966123725114636E-916199`. `apd` caps the exponent at ±100000 and
+cannot hold it at all.
+
+George was given three options and chose the rebuild. He was then given the
+**pacing** choice with this measured recommendation AGAINST the option he took:
+
+> The capture's real reading cadence is one every ~16 s, which sits in §3.3.1's
+> Warning and Degraded bands. Compressing onto the run clock at the drill's
+> 120× makes every gap 0.13 s — every reading Current — which removes the
+> freshness, status and confidence surface from the a2 arm.
+
+**He chose the 120× compression anyway, and that is the decision.** The
+mitigation is real and was part of the reasoning: the RETIRED corpus did not
+exercise those bands either — two-year-old readings are Invalid on all of them
+— and `testdata/valuation-fuzz/` drives §3.3/§3.4/§3.5 through the API rather
+than through a corpus. So it is a change of blind spot, not a new one.
+
+He also ruled the old corpus is **replaced with one regression test kept**: the
+two-clock case survives as four tests in `internal/decimal` on the exact
+numbers, so GP-12 stays reproducible without keeping a 9.8 MB journal to
+demonstrate it.
+
+⭐ **Gate 0-b now PASSES** — all eighteen subtrees byte-identical on both
+corpora, plus the AC11 determinism stress at GOMAXPROCS 1, 2 and 8.
+
+### N48 — ship each closed run directory to a bucket at rotation
+
+Option (1). It closes the retention inversion (the journal kept for 7 days
+against N19's perpetual retention for the input file that feeds it), the anchor
+seed's local-path dependency, and the absence of any cloud path in the engine.
+⚠ The one-hour window is **ACCEPTED, not closed** — option (2), continuous
+shipping, was rejected as invasive against a 2.4 ms group commit and a drain
+that is already 98% of the tick.
+
+Built the same day. ⭐ It ships at **BOOT, not at shutdown**: the PRIOR run's
+directory is the one definitively closed, it is exactly the directory the anchor
+seed reads, and shutdown-shipping would send nothing in the case that matters
+most — a crash, an OOM, a kill -9.
+
+### ⭐ The standing rule this session earned
+
+The `quotes` divergence that had been carried for a whole chunk was **never a
+port defect**. The six-game reference is Python's fold under config version
+`GO-REFERENCE`; the harness was passing `CB11787049727`, the value the journal's
+own RECORDS carry. The version salts every §5.7.3 draw, so the fold reproduced
+every price that does not depend on a draw and got every drawn one wrong —
+"nearly correct", which is why it survived so long.
+
+⚠ **`testdata/README.md` already named `GO-REFERENCE` in as many words, and the
+flag's own help text already warned about exactly this failure.** Documentation
+did not prevent it. So:
+
+> **A setting that is part of a certification target must be ENFORCED against
+> that target's own manifest, not documented beside it.**
+
+The harness now refuses unless the manifest agrees with the config version AND
+hashes both files being compared. Four planted defects prove it, including the
+exact one that was carried. Full detail in [[market-maker/go-port-findings|GP-13]];
+the sweep-interval documentation drift found alongside it is GP-14.
+
+## 2026-08-27a — ⭐⭐ tZERO's order rate is the ceiling: the wire is paced, the budget derived, versions never overlap
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 3) ·
+Go PR #23 · T2 · N65
+
+- ⭐⭐ **"Exceeds Max Order Rate."** The fast-dwell journal: 29% of everything
+  sent refused by tZERO; in every burst second exactly 100–101 new orders
+  accepted and the rest refused. Every boot blew it (a third of the opening
+  ladder). A refused cancel is an extra rung, a refused replace a wrong-size
+  rung, a refused post a missing one — the whole wrong ladder of 20/21-08
+  and 26-08 was this. Neither engine had a limiter; T2 had sat unanswered
+  since July.
+- ✅ **The wire is paced to the venue's rate**: `VenueMessageRateLimit` 60 🟡
+  MEASURED (100 → 5% refused, 80 → 1.4%, 60 → 0 of 23,619), on the one
+  writer every order crosses. Heartbeat and kill switch take a priority
+  lane — never paced, never behind an order.
+- ✅ **The converger budget is derived from the wire** —
+  `ConvergeMaxInstructionsPerTick` 15 = 60/s × 0.25 s, pinned by Validate
+  (was 128, and the transport queue was the backlog).
+- ✅ **No overlapping versions** — a book with orders in flight holds its
+  next quote; `VenueSyncHoldMaxS` 30 s caps a stuck pending.
+- ⭐ **Result:** at four times the normal cadence, on the old 3–6 × 10,000
+  shape, every side 3–6, none above, 0 duplicates, 0 rejects, resting =
+  wanted.
+- ⭐ **27-08: the limit is OURS to set** — a 35=UEAR through the gateway's
+  `POST /buying-power` (`maxOrdRate` 8935, `maxDupOrdRate` 8936). Test
+  account raised to 2000/200, `UEARa`; at a paced 400/s zero rate rejects.
+  Production 1797733477 on George's word.
+- ⚠ **Correction:** the 20/21-08 journals carry NO rate rejects — those runs
+  were on the production account (already raised, by whom unknown). The
+  20/21-08 ladder was rank drift + dropped acks + duplicate-ClOrdID and
+  NOT_CANCELABLE rejects. The rate limit was the test account's default.
+- ⚠ **The weekend:** whatever the granted rate is, ÷ (2 × rungs) = book
+  updates per second. Activity tiers stay a requirement; the Python maker
+  has no pacer.
+
+---
+
+## 2026-08-26d — ✂ The resize pass returns — "copy Python" is narrowed to the inbound leg
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (23:00) ·
+Go PR #22 · N65
+
+- ⭐ On the old-shape test run George read rank drift straight off the panel:
+  BENG.TEST rank 2 at 2,301 (a rank-2 draw is 5,400–9,000), RAVE.TEST rank 5
+  at 7,667. Per side ≤ 6 and no duplicates — the lifecycle held; the sizes
+  were stale by rank. Rest-until-gone keeps a same-price order at the size
+  of the rank it was born at, and the grid re-spaces every dwell. Python
+  has it too ("stale by design", 20-08); one rung hid it.
+- ✂ **The resize pass is the behaviour** (re-affirming 21-08, reversing the
+  26-08c removal): a kept order outside its NEW rank's ±25% band gets one
+  replace to the rank's draw, on the rank basis. Measured on the old shape
+  22:15–22:17Z: 0 rungs carrying another rank's size across ~1,550 orders,
+  170 books, 3–6 a side, 0 duplicates.
+- ✅ **26-08c's inbound-leg fix stands** — that is the half where Python
+  was right and Go was dropping acks; it cured "more than six a side".
+- ⚠ What is left on the panel is N65's jitter inversion (~6% of adjacent
+  pairs). `feat/monotonic-ladder` removes it; both engines; George + Edwin.
+
+---
+
+## 2026-08-26c — ✅ The Go maker follows Python's venue process — no resize, no dropped acks
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] (Part 2) ·
+Go PR `feat/python-lifecycle` `94a21b5` `86ec89e` · N10 · N65
+
+- ✅ **"Just use the same process as the Python one"** (George). The Go
+  maker, at the same 3–6 × 10,000 the Python maker ran supervised, left
+  MORE than six orders a side with a fat middle rung. The Go venue leg now
+  does exactly what Python's does.
+- ✂ **The 21-08 resize pass is REMOVED** — reverses "the resize is the
+  behaviour, not a flag". A kept order rests at its own size until it is
+  gone (N10), whatever rank it now occupies; rank drift is back exactly as
+  Python has it live, and at 1–3 rungs × 550 it costs 550-vs-285 at worst.
+- ⭐ **Three line-by-line comparisons against `f9eec8b`** found every engine
+  and the translator a faithful port. **The divergences that can leave an
+  order standing were all in Go's inbound wrapper**: messages dropped
+  through the boot window, a 4,096 queue that dropped on overflow, refusals
+  skipped where Python halts, poison printed once. A dropped ack is an
+  invisible resting order — a phantom PENDING occupies the price and is
+  never actionable while the real order rests unknown to the diff.
+- ✅ **The inbound leg is Python's**: unbounded, buffered from the
+  subscribe, translated on the tick, alien fills skipped loudly, poison
+  printed every time, a `GatewayTranslationError` halts the run.
+- ⚠ The parity harnesses could not see any of this: on a scripted timeline
+  every ack arrives. A port is proven when every message reaches the
+  engines, not only when the engines agree.
+
+---
+
+## 2026-08-26b — ✅ The Go maker carries E51, and the corpora keep the pin
+
+Session: [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]] ·
+Go PR `feat/e51-parameters` · Python `main@f9eec8b` · N65 · N66
+
+- ✅ **The Go maker's shipped dictionary is Python `f9eec8b`'s:** Edwin's
+  20-08 answers (E51) — `min_width_ticks` 25, `base_size` 550,
+  `min_quantity` 100, `material_qty_change` 50, `skew_reference_shares`
+  48,000, width floors 50/100 — plus George's 26-08 rung ruling, **1–3
+  drawn**, not Edwin's 1/1. The behaviour rides with the numbers: the state
+  floor in the width, the lean's denominator off the float for the PRICE
+  skew only, the applied lean in the position record.
+- ✅ **The corpora fold under the dictionary their manifest's commit names.**
+  Every target under `testdata/` is Python@fd193a4's output under fd193a4's
+  numbers; a fold under the shipped dictionary diverges on every drawn size
+  (measured: three asks where the pin has five). `config.ReferencePin()`
+  carries fd193a4's rows, `config.DictionaryAtCommit` resolves a manifest's
+  commit, and an unknown commit is REFUSED, never guessed. ⚠ The pin is a
+  test target, not an operator option — it fails `Validate()` on purpose.
+- ✅ **`SkewReferenceShares` 0 means "§4.3's float"** — the pre-E51 rule —
+  and is reserved for the pin. A shipped dictionary must be positive.
+- ⚠ **N65 is NOT moot.** The 21-08 note expected `levels 1/1` to dissolve
+  the monotonicity question; the 26-08 ruling keeps depth, so the per-level
+  ±25% draw still inverts adjacent rungs.
+- ⚠ The gateway's per-bot dead-man (#28) is **deployed** (parallel session,
+  26-08 19:39Z). The Go maker still does not run without George's explicit
+  go — that rule is his, restated 26-08.
+
+---
+
+## 2026-08-21 — ✅ Rank drift is the ladder defect, and the resize is behaviour not a flag
+
+Session: [[market-maker/sessions/2026-08-21-go-maker-ladder-shape]] ·
+Go PR #17 `46c9538` `506216f` `8cebdde` `667b181` · N10 · N65 · N66
+
+- ⭐ **RANK DRIFT is why the Go ladders did not decay outward.** §8.1 pass 1
+  keeps a resting order whenever its PRICE is still wanted, so an order born at
+  rank 6 can sit at rank 3 still carrying its rank-6 size. Traced on
+  IPTCJAGU.TEST: a 2-cent grid became a 4-cent grid, three kept orders were left
+  untouched, and a 2,564 sat at rank 3 above a freshly posted 4,069.
+  ⭐ George described the mechanism from the panel before it was measured.
+- ⭐ **The proof it is version mixing:** inside ONE quote version a step can only
+  fall in `[0.432, 1.20]` (the 0.72 decay against the ±25% band). Live steps
+  reached **2.16**.
+- ✅ **The trigger is the RANK BASIS (`Level.PreVariation`), never the drawn
+  size.** The drawn size is re-drawn every version, so comparing against it
+  republished every level every cycle — 246 orders on 10 books, 389 new orders
+  and 550 cancels in three minutes. `quantity.go` already stated the rule:
+  materiality is judged BEFORE variation.
+- ✅ **The resize is the BEHAVIOUR, not an environment variable** (George,
+  21-08). `MM_REQUOTE_CLEAR_FIRST` removed; the parity harnesses pin the
+  reference lifecycle themselves and say why.
+- ✅ **`MMGO` + 14 hex is the Go maker's ClOrdID scheme.** It keeps the `MM` the
+  gateway's namespace check demands and fails the Python healer's `MM` + 16-hex
+  test on the `G`, so our book reads as FOREIGN to it. ⚠ A wholly non-MM prefix
+  is impossible — the gateway refuses it with `MM_PREFIX_REQUIRED`.
+- ⭐ **A test that asserts on ONE reconcile call cannot see churn.** Three live
+  failures passed the entire unit suite. The fix ships with a closed-loop churn
+  simulation; restoring the old trigger fails it by name.
+- ⚠ **tZERO was blameless.** 389 new orders, 157 replaces, 550 cancels, every
+  one acked, zero rejects. Every failure that night was ours.
+
+## 2026-08-26 — ✅ all 170 `.TEST` twins, derived lists, separate test accounts, and a per-bot dead-man
+
+Session: [[market-maker/sessions/2026-08-26-test-ticker-census]] ·
+gateway **PR #27** (merged, staged, not deployed) · **PR #28** (open) ·
+panel **PR #33** (merged, live)
+
+- ✅ **Every production ticker has a `.TEST` twin** — Rob Colucci, 26-08
+  04:56 BST. All 170 validated at the venue by MD probe (35=W each; a bogus
+  control got 35=Y). ✎ Extends 08-08c's ten.
+- ✅ **Twin lists are DERIVED from the real list** in the gateway config and
+  the panel map. A hand-kept list drifted once (the panel was 10 while the
+  venue was 170); it must not exist again.
+- ✅ **Test and production trade on separate venue accounts** — Market
+  Maker (Test) `2559580864`, Market Taker (Test) `1216516809` (Hasan). The
+  account, not the gateway, is the isolation boundary: one FIX session
+  carries both, and Rob's `.TEST`-only entitlement is the hard wall
+  (owed).
+- ✅ **The dead-man is PER BOT** (George: "dead man per bot"), not per
+  market — one process quotes all its books, so a book-level latch would
+  fire 170 times on one death. A dead test bot sweeps only its own quotes;
+  a dead production bot is still caught while a test bot lives. Rows with
+  no `botId` fall to an unattributed bucket swept on global silence only.
+  `cancel_all` stays global. Built as gateway PR #28.
+- ✅ **Isolation is enforced IN the Go maker, not at the venue** (George:
+  "we can just limit it on the market maker"; skip Rob's entitlement).
+  `MM_TEST_ONLY=on`: boot refuses any non-`.TEST` book or the production
+  account; the wire refuses any non-twin `mm.new`. Go only — the Python
+  maker stays as it is (production). Built as Go maker PR #18.
+- ⚠ **George's rule, restated after this session merged two PRs on a
+  misread:** tell first, test locally, then deploy. No gateway restart
+  while the NCAA asks rest (expire 2026-08-27 02:00Z).
+- ⚠ **Unverified:** with 340 symbols and `TZERO_MD_BOOK_SYMBOLS=*`, a
+  restart opens 680 MD subscriptions. Watch the MD logon for 35=Y.
+
+## 2026-08-27 — ✅ the maker returns: NCAA only, three rungs, dead-man timers home
+
+Session: [[market-maker/sessions/2026-08-27-ncaa-only-maker-and-three-rungs]] ·
+MM `main@f9eec8b` · `CFG-0044` then `CFG-0045`
+
+- ✅ **The maker quotes the 138 NCAA books only** (George, 27-08). The 32
+  NFL books carry no maker quote. Two settings move together —
+  `MM_SECURITIES` and `MM_SUPERVISED_INPUTS` — because the engine refuses
+  a reviewed-inputs file that names a ticker outside `MM_SECURITIES`.
+- ✂ **Three rungs a side, drawn 1–3** (`min_levels` 1, `max_levels` 3).
+  **Supersedes Edwin's 20-08 E51 answer 2** — "ONE rung a side… do not
+  build the optionality into v1". `min_step_ticks`/`max_step_ticks` (1–4)
+  revive with it. ⚠ Book-visible, and **Edwin has not been told**.
+  Measured live: 86 books at 1 rung, 92 at 2, 97 at 3.
+- ✅ **The dead-man timers return to 10 s / 30 s** whenever an engine
+  runs. The 7-day offering posture is retired.
+- ⭐ **The per-bot dead-man fired for the first time and was RIGHT.**
+  `mm-test` (2,134 orders) and `snt-1` (1) were swept for silence while
+  `mm-1` kept its whole book, because it heartbeats. The old global latch
+  would have taken all three. ⚠ Corollary: `snt-1` never publishes MM
+  heartbeats by design, so **the taker's resting orders are swept
+  whenever every bot is quiet**.
+- ⚠ **Shape B needs the dead-man ALIVE.** A fresh-journal cutover relies
+  on the sweep to clear the old book at `systemctl stop`. With the timers
+  at 7 days there is no sweep, and the new engine posts beside its own
+  orphans. Restore the timers BEFORE the stop.
+- ⛔ **A heavy log read hung the MM gateway VM** (mine, 12:52Z; instance
+  reset at 13:24:55Z). Never read wire logs on a trading VM. The logs
+  ship to `gs://inplay-fix-gateway-logs/`; read them off the box.
+
+---
+
+## 2026-08-28 — the gateway OOM, and the restart ceremony that broke the book
+
+Session: [[market-maker/sessions/2026-08-28-gateway-oom-and-restart-ceremony]] ·
+gateway PR #29 · `inplay-fix-gateway-go@64dda79`
+
+- ⚠ **A DEAD-MAN SWEEP IS NOT A SUBSTITUTE FOR `cancel_all`.** Stopping the
+  maker and letting the dead-man clear its book leaves the maker's own record
+  saying those orders still rest. On 28-08 that produced **5,164
+  `UNKNOWN_ORDER` rejects** and held mm-1 at 65 of 138 symbols for an hour. The
+  difference is whether the maker knows its book is gone. Cancel from the
+  maker, and confirm `open_orders` reaches ~0, before stopping it.
+- ✅ **A gateway cutover requires a fresh maker journal.** `MM_JOURNAL_PATH` is
+  pinned in `/etc/mm-1/env`, so a restart replays the same journal and re-mints
+  every phantom. `MM_BOOT_HEAL=on` alone is NOT enough — it cleared 706 orders
+  and the next replay brought them back. Point `MM_JOURNAL_PATH` at a new run
+  directory, set `MM_PRIOR_RUN_DIR` to the old one so anchors carry, and bump
+  `MM_CONFIG_VERSION`. Coverage then returned to 138/138 in **77 seconds**.
+- ✅ **`strings.Clone` on `OrderID` and `ExecID` ships; eviction does not, yet.**
+  `fix.ParseMessage` aliases the raw message, so each tracked row pinned its
+  whole ~380-byte execution report. The clone recovers ~31% of the growth and
+  carries no behavioural risk. It is **not** the fix — `OrderTracker.orders`
+  has never evicted a row since 2026-06-02, and only eviction bounds it.
+- ⚠ **The boot grace is the wrong knob.** mm-1's sweep on 27-08 fired 120 s
+  after boot on the **10 s heartbeat timeout**, not the 30 s
+  `MM_DEADMAN_BOOT_GRACE_MS`. Raising the boot grace does not protect a maker
+  that is silent during a ceremony.
+- ⚠ **Cloud Monitoring notifies once per incident.** A condition that stays
+  true goes silent after the first email. `snt-1` has been halted since
+  **22-08 21:45Z** on a reconcile halt (`IPTCFRSB`: venue 433,320, ours 5,078,
+  float 3,847) and nobody was reminded for nearly six days.
+- ⚠ **Nothing watches quote coverage, and the maker logs no venue rejects.**
+  `IPTCFAOW` — the only symbol of 137 with zero house inventory — had every ask
+  refused for sixteen hours in silence. Both gaps were found by eye on the
+  panel, not by an alert.
+
 ## 2026-08-19d — 🔴 the decimal library cannot hold a number Python stores
 
 Session: [[market-maker/sessions/2026-08-19-d-go-port-phase-3]] ·
@@ -189,6 +1269,128 @@ first time. It compares all eighteen subtrees of the canonical state.
   subtrees match. The other 5 stay outside the `built` list, with the real fault
   named against each. `-gate full` still refuses. A test fails if any subtree
   leaves both lists.
+
+---
+
+## 2026-08-19e — ⚠ tZERO position mechanics, measured: UEPR is alive, TxfrCost is a PRICE, and a "no-op" probe destroyed 99,663 shares
+
+Session: [[market-maker/sessions/2026-08-19-c-ipo-test-rig]] · Hasan, measured
+against `FHINPLAY01→TZFIXORDQA` 17:20–17:42 UTC off the session wire log ·
+full write-up `docs/trading/tzero-position-mechanics-verification.html`
+
+Five answers. **Three overturn what this vault recorded**, and one earlier probe
+turns out to have cost the maker real stock.
+
+### What was wrong
+
+- ✂ **UEPR is NOT disabled.** `UEPRa` came back in **8ms**. Every earlier probe
+  sent `Qto=0 / Eto=0` on a **zero-opening** account, which is a genuine no-op —
+  so silence proved nothing either way. ✂ Supersedes the 28-07 finding and the
+  `tags.go` comment built on it, and closes **E27**'s "re-probe UEPR".
+- ✅ **`9381 Qto` is an ABSOLUTE opening quantity**, and `Qt` (current) =
+  opening + intraday activity. Four sends, four exact hits: `Qto` 0→`Qt` 9,
+  3→12, −12→−3, −9→0. Absolute means **idempotent**, so a retry after a timeout
+  is safe — the opposite of UPT.
+- ✅ **UEPR is therefore the UNDO that UPT does not have.** A position was
+  returned to exactly `9383=0` that way.
+- ✂ **A position can be read WITHOUT a fill.** Tags 9383/9384 ride **any**
+  execution report, the plain `39=0` accept included. One 1-share GTD order
+  priced to rest reads any account's position. ✂ Supersedes "9383 only arrives
+  on a fill", which was recorded in the gateway handler, the panel and this log
+  earlier the same day.
+- ✂ **Request For Positions (35=AN → 35=AP) does not exist** in the Account &
+  Position spec OR OE v2.2. Nothing to entitle and nothing to build on our side;
+  it would be a tZERO build. The order IS the read. ✂ Supersedes both of the
+  day's earlier claims — first that the session lacked it, then that we simply
+  had not built it.
+- ✅ **Negative UPT is still one-way.** Re-confirmed: `9386=-4` accepted, `UPTa`
+  echoed the delta, position unmoved (9 before, 9 after).
+
+### ⚠⚠ 9387 TxfrCost is a PRICE PER SHARE, not a total
+
+Measured: **7 shares at `TxfrCost=7.00` booked a basis of 49.00**; a second
+transfer of 2 shares at 3.00 moved the basis by exactly **6.00**. The 05-08
+probe used **1 share at 1.00** — the one quantity where a total and a per-share
+price are the same number, which is why this stood for two weeks.
+
+The spec writes `(TxfrCost / TxfrQty) = averagePrx`, which reads as a total. **The
+spec and the venue disagree and one of them is wrong.** Both
+[[market-maker/reference/claude-trading-ops-guide-hasan-2026-08-07|the ops guide]]
+and the MM build guide say "total" and are now flagged in place.
+
+✅ **SETTLED the same day on the MAKER itself** (IPLM, `1797733477`), so the
+IPLY caveat is closed. 6 shares at `txfrCost=11.00` — a quantity chosen because
+the two readings differ by 55.00 there:
+
+| | `9384` |
+|---|---|
+| baseline | 131,429.863104 |
+| after `UPT 6 @ 11.00` | **131,495.863104** (+66.00 = 6 × 11) |
+| per-share predicts | 131,495.863104 — **exact** |
+| total predicts | 131,440.863104 — out by 55.00 |
+
+**PER-SHARE on both MPIDs.** `scripts/ipo/allocate.py` now defaults
+`--cost-unit=per-share`; `total` stays selectable only because the spec still
+says total. **The seed arithmetic is unblocked.**
+
+### ⚠ But the cost basis is an INSTRUCTION, not a setting (N68)
+
+Reversing that test with `Qto=-6, Eto=-66` returned the **quantity** exactly
+(2002) and left the basis at **131,112.808396**, where pure Eto arithmetic
+predicts **131,429.863104** — **$317.05 low**. The 6 shares came off at
+**63.842451** each: not the 11.00 sent, not the 65.49 book average, but close to
+the instrument's **last traded price of 63.88**. Second sighting — an earlier
+sign-flip on the probe account also re-derived the basis as `Qt × prior average
+price`.
+
+- ✅ **The rule, now in the scripts: plan on the QUANTITY, read the BASIS back.**
+  `9381 Qto` is exact and idempotent. `9382 Eto` and `9387 TxfrCost` are
+  instructions the venue may mark its own way.
+- ⚠ Consequence for the offering: the basis we intend is not the basis we get,
+  so every P&L figure derived from it is the venue's number, not ours.
+
+### ✅ Two accounts, one MPID — N49 answered
+
+Maker **1797733477** (4,464 orders that day) and taker **4963224393** (2,654)
+both trade as **IPLM**; retail is **IPLY**. **Positions are per-account**, so
+they are two separate inventories under one MPID. ✂ The 03-08 note's *"one
+wallet, one MPID, one inventory"* is right about the MPID and **wrong about the
+inventory**. Consequence: **seeding the maker gives the taker nothing.**
+
+### ⚠⚠ The incident: a "no-op" probe destroyed 99,663 shares
+
+At **16:24:35** a `UEPR {qto:0, eto:0}` went to the **maker** account on
+`IPTCJAGU.TEST`, sent by Claude as a harmless entitlement probe on the strength
+of the route's own doc ("the intended first use is a no-op — qto=0, eto=0 on a
+symbol the account has never traded"). **The maker had traded it.** The account
+went from `9383=101665` (11:20:36) to `9383=2002` (17:40) — **99,663 shares
+gone**. Trading did not do it: exactly one execution report exists on that
+account+symbol in the window, and it is the probe order itself. The MM had been
+dark since its dead-man latched at 13:35.
+
+- ⚠ **The lesson, and it is not subtle:** the no-op qualifier was *"on a symbol
+  the account has never traded"*, and nobody established that it held. The read
+  path to check existed the whole time and was believed not to.
+- ✅ **Recoverable in one message** precisely because `Qto` is absolute:
+  `POST /position {"account":"1797733477","symbol":"IPTCJAGU.TEST","secTyp":"EQT","qto":99663,"eto":254196920954.06}`
+- ⚠ But that basis is **$2.5m per share on an instrument that last traded at
+  $63.88** — almost certainly the per-share/total unit error applied at an
+  earlier seed. Restoring it faithfully restores nonsense. **George's call:**
+  restore exactly, re-seed at a defensible basis, or leave it flat.
+
+### Owed to tZERO
+
+1. ~~Confirm **9387 is per-share**~~ — ✅ answered by our own measurement on both
+   MPIDs. Still worth telling them **the spec is wrong**, or that we are reading
+   it wrong.
+1b. **Why does `9382 Eto` not apply as sent, and what price is it marking at?**
+   (N68) It looks like the last traded price.
+2. Why is a **negative UPT accepted and then discarded**? A `UPTx` with a reason
+   in tag 58 would be correct behaviour.
+3. **Was UEPR entitlement changed on our session, and when?** Provably silent
+   07-28, provably answering 19-08.
+4. Why does **`UEPRa` carry none of the `Qt`/`Et`/`Rpnl`/`Upnl` fields** the spec
+   lists for it? Those would remove the need to place an order to read a position.
 
 ---
 
@@ -390,6 +1592,62 @@ defects all caught**.
   that put 19 doubled levels across the six QA books live. Each was found by
   planting the defect and watching the fuzz pass. The defect list is the
   coverage checklist.
+
+---
+
+## 2026-08-20 — The Go maker's first live venue run: four defects, and the market data feed dies under a sweep
+
+Session: [[market-maker/sessions/2026-08-20-b-first-live-venue-run]] ·
+Go repo `feat/phase-3-ingestion` · [[market-maker/go-port-findings|GP-17]]
+
+- ✅ **`gateway_ops` is ported and the boot healer works against a real venue.**
+  `HEALED — 1358 fetched · cancel-unknown 1358 · sent 1358 of 1358 · fetch 54.4 ms`,
+  and a correct zero-cancel read against an empty book earlier the same day.
+  ⚠ It only worked because Hasan fixed **egress rule 2087**, pinned to
+  `10.0.1.2/32` so packets to the new MM gateway were dropped with no RST.
+- ⭐ **The reconciler is certified live.** 82,195 execution reports across 180
+  books from the venue's own wire log: **zero doubled (price,side) levels, ever**,
+  every book inside `MinLevels 3 / MaxLevels 6`, and the wire log's 1,520 live
+  matched `/orders/mm` exactly. **The 08-08 doubled-levels defect does not recur.**
+- ⚠⚠ **Phase 4b's legs were wired at ONE END.** `compose.go` handed each leg's
+  DRAIN to `runtime.Options` but never assigned `inbound`, `readings` or
+  `venueSymbols` on the stack — three fields, zero assignments. The first real
+  gateway message SIGSEGV'd. ⭐ **No test in `cmd/mm` had ever called
+  `composition.build()`**; every test hand-builds a `&stack{}` literal, which can
+  never catch the composition failing to write one. `unwiredLegs()` had been
+  emptied on the strength of half a wiring.
+- ⚠⚠ **A FRESH JOURNAL DOES NOT PRODUCE FRESH ORDER IDS, and the rule was
+  already written down.** The mint is deterministic with no nonce and no run id,
+  so the only lever is `MM_CONFIG_VERSION`. Two duplicate-reject storms, the
+  second at **68%**, from redeploying three times without bumping the salt.
+  `deploy/OBSERVABILITY-REDEPLOY.md` §2.2 records exactly this as the **07-08
+  duplicate-reject deadlock**. Bumping to `CFG-0039-GO` took rejects to zero.
+  ⚠ The salt also re-seeds every DRAWN price, so a bumped engine is not
+  price-comparable to the one it replaced.
+- ⚠⚠ **A newly created JetStream durable replayed a week into a live engine.**
+  Deliver-all is safe only because §7.3 discards what the journal already holds —
+  and a fresh journal holds nothing. 28,592 six-day-old probability updates and
+  **6,636 historical `official_result` settlements** at ~500/s while it quoted a
+  real venue, with 494,228 still pending. Python never met it: `mm-engine` was
+  created months ago and every boot resumes from a cursor. The deliver policy is
+  now an explicit construction-time choice (`MM_READINGS_FROM_NEW`).
+- ⚠⚠ **THE DEAD-MAN WAS OFF, AND SO WAS ITS BOOT GRACE.** Both gateways carried
+  `MM_DEADMAN_TIMEOUT_MS=604800000` **and** `MM_DEADMAN_BOOT_GRACE_MS=604800000`
+  — seven days each; the grace had not been noticed at all. ⚠ The maker has **no
+  cancel-on-shutdown path**, so every stop left its whole book resting and
+  nothing swept it. That is the accumulation behind the thick books. Restored to
+  the 08-14 values (10 s / 30 s) and proven: 1,520 swept, 1,520 confirmed
+  cancelled, zero rejects.
+- ⚠⚠ **A 1,520-CANCEL SWEEP KILLED THE MARKET DATA FEED, AND IT IS STILL DOWN.**
+  `fix-md-v8` stopped at 17:12:20 — eight seconds into the sweep — and every book
+  froze at that instant. It keeps re-broadcasting the frozen frame, so the panel
+  shows **two-sided books that do not exist**. The panel is downstream via
+  `centrifugo-bridge.service`, so it shows the same frozen source. ⚠ For
+  Saturday: a dead-man fire on a full book takes the app's prices with it.
+- ⭐ **A method lesson, paid for repeatedly:** on a moving engine, two reads
+  seconds apart are not evidence. Quiesce the engine or read the wire log. Hours
+  went into reasoning about who owned frozen price levels without ever testing
+  whether the feed producing them was alive.
 
 ---
 
@@ -3296,7 +4554,8 @@ facts are gospel (22-07 filter). What it changes:
 - ⭐ **The seeding dependency on Hasan DISSOLVES.** `POST
   /position-transfer` (35=UPT) is on the gateway VM's own HTTP server,
   reachable by IAP SSH — the same access we already use. Rules
-  restated: `txfrQty` signed delta · `txfrCost` = TOTAL cost (not
+  restated: `txfrQty` signed delta · `txfrCost` = TOTAL cost — ⚠⚠ **WRONG,
+  see 2026-08-19e: the venue behaves as PRICE PER SHARE** — (not
   price), same sign, avg > 0 · replies `UPTa`/`UPTx` land in the
   journal, the 202 is only "sent" · **one-way** (negatives accepted
   then ignored) · **not idempotent** (a retry double-seeds) → keep a

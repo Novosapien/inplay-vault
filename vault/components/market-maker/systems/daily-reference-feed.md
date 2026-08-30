@@ -1,8 +1,18 @@
 ---
-description: "Analysis + design for the daily reference feed pipeline: which of Edwin's models is normative, who produces the file, and our ingestion build plan"
+description: "SUPERSEDED 26-08 by the expected-wins pipeline — retained for its model analysis; the daily-file transport and ingestion design is dead"
 ---
 
 # Daily Reference Feed — analysis and pipeline design
+
+> ⚠️ **SUPERSEDED 2026-08-26.** George ruled Edwin cannot operate a daily
+> hand-off, so the daily file is retired entirely. Expected wins now seed
+> ONCE (`EXPECTED_WINS_SEED`) and are maintained by the absorber — the
+> normative page is now
+> **[[market-maker/systems/expected-wins-pipeline]]**; see also
+> [[market-maker/decisions]] 26-08 and
+> [[market-maker/sessions/2026-08-26-expected-wins-pipeline]]. This page's
+> model analysis (§1) remains valid history; its transport and ingestion
+> design is dead.
 
 > **Component:** [[market-maker/market-maker]] · **Status:** DESIGN — nothing built, nothing deployed
 > **Session:** [[market-maker/sessions/2026-08-13-c-reference-feed-analysis]] (the brief: `vault/drafts/daily-reference-feed-analysis-brief.md`)

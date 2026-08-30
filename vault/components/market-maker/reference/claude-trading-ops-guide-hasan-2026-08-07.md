@@ -145,6 +145,9 @@ gcloud compute ssh inplay-fix-gateway \
 
 The gateway pre-validates all three constraints and refuses locally with a readable error before anything reaches the wire, so a malformed transfer costs nothing. `txfrCost` is the **total cost, not the price** — 5,000 shares at $145 is `txfrCost: 725000`. Getting that wrong sets a wrong basis on a position you cannot unwind.
 
+> ⚠⚠ **CONTRADICTED BY MEASUREMENT, 2026-08-19.** The line above says `txfrCost` is the **total**. Probed live against the session wire log that afternoon, the venue treats **9387 as a PRICE PER SHARE**: 7 shares at `txfrCost=7.00` booked a basis of **49.00**, and a second transfer of 2 shares at 3.00 moved the basis by exactly **6.00**. The 05-08 probe used 1 share at 1.00 — the single quantity where a total and a per-share price are the same number, which is why this went unnoticed for two weeks. The spec's own `(TxfrCost / TxfrQty) = averagePrx` reads as a total, so the spec and the venue disagree and **one of them is wrong**. ⚠ The measurements were taken on an **IPLY** account; the unit is still unconfirmed on **IPLM**, where the maker lives. Settle it with one transfer of a distinctive quantity at a distinctive price into a throwaway symbol BEFORE any real seed — at 900,000 shares the wrong reading is wrong by a factor of 900,000, and UPT cannot be undone. See [[market-maker/decisions]] 2026-08-19e.
+
+
 **`confirmTyp` is not a two-step commit.** The names imply one; the OMS does not implement it that way. Corrected 2026-08-05: each send is an independent transfer regardless of `confirmTyp` — sending 1 then 2 produced **two** transfers (position 2), not one confirmed transfer of 1. Different ClOrdIDs on the two messages were the tell.
 
 **Reply:** `UPTa` accept / `UPTx` reject, in the log. The auto-generated ClOrdID is prefixed `T`.

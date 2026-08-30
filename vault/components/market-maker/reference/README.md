@@ -15,6 +15,8 @@
 
 | Path | What it is |
 |---|---|
+| `ipo-seeding-runbook.md` | **How the IPO offering is seeded and rested at tZERO** — the two access paths, the four phases, and every trap the 19-08 run found the hard way. Ours, not Edwin's |
+| `position-transfer-ledger.md` | Every position transfer ever sent to the venue. The endpoint is one-way, so this is the only complete record |
 | `inplay-reference-feed/` | The complete engine as running code — win-total maths, double-count-safe pricing, the college ratings feed, the IPO formula. Stdlib only. **31 tests, all pass.** |
 | `inplay-reference-feed/README-edwin.md` | Edwin's own map from each email item to each module |
 | `ipo-engine-original.py` | The original IPO pricing computation (`engine.py` in the email). **Authoritative** where it and `inplay_feed/ipo.py` disagree |

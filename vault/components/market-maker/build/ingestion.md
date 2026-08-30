@@ -173,10 +173,10 @@ version, never an automatic overwrite.
 
 | Tier | When | Cadence |
 |---|---|---|
-| LIVE | kickoff passed, no final | ✎ **~2 s per pool as deployed** (measured 15-08: `poll_live_s = 2.0` in `config.py`; bus arrivals ~1.2 s per game = TWO pools at 2 s out of phase). The standing "the deployed PUBLISHER runs 500 ms" line was WRONG — George's 08-11 500 ms ruling never reached the publisher's config. ⚠ the in-engine poller also carries 2 s until it retires |
+| LIVE | kickoff passed, no final | ✎✎ **~1.16 s as deployed (re-measured 29-08 in production, supersedes the 15-08 row)** — `MMPUB_POLL_LIVE_S=0.5` IS now set on the `inplay-mm-publisher` worker pool, so the 08-11 ruling DID reach the config. It cannot take effect: `run_forever(..., tick_s: float = 1.0)` (`worker.py:477`) is a hardcoded default with no settings field, so **one wake per second is the floor**. Measured: 513 fetches in 597 s on one live game = one poll per **1.16 s**. ✂ The 15-08 "two pools at 2 s out of phase" reading is withdrawn — the prod pool alone polls at 1.16 s. ⚠ Cost is small and measured: SR changes an NCAA probability every **7 s** at the median, so the poll oversamples the source ~6× either way. Filed **N74**. ⚠ the in-engine poller also carries 2 s until it retires |
 | PRE_KICKOFF | within 1 h of kickoff | **15 s** (interim — George's 10–30 range) |
 | OVERNIGHT | kickoff > 1 h away | **30 min** (doubles as the N24 pregame-movement watch) |
-| POST_GAME | final seen, ≤ 1 h | **10 min** (the correction watch), then never |
+| POST_GAME | final seen, ≤ 2 h | ✎ **2 s — the LIVE rate** (`poll_post_game_s = 2.0`, `config.py`; `MMPUB_POLL_POST_GAME_S` is UNSET on the pool). ✂ Supersedes the "10 min, then never" row: a slower settle watch starves a finished book into permanent suspension (**N40**, observed 14-08). ⚠ **Wrong in degree** — measured 29-08: 33 finished games from 27–29 Aug were fetched every ~2 s, taking about **14 of every 16 SR calls** while 2 live games took the rest. Past the 2 h window a game drops to OVERNIGHT and **never retires** |
 
 A game with no kickoff errs busy at the live rate; a moved kickoff
 re-stamps and reschedules at once. Kickoffs are converted to the

@@ -11,6 +11,71 @@ description: "Registry of every tunable MM number with value, status and source 
 
 ---
 
+## 🔴 PROPOSED — the 18-08 parameter round (sent to Edwin 20-08, E51)
+
+Nothing here is agreed. Every row is **🔴 pending Edwin**, and no row reaches
+`mm/config/dictionary.py` until he answers. Reasoning and the arithmetic:
+[[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]] ·
+[[market-maker/decisions]] 2026-08-20.
+
+| Parameter | Now | Proposed | Why | Status |
+|---|---|---|---|---|
+| `max_levels` · `min_levels` | 6 · 3 | **3 · 1** | Ask 1, **countered** — Edwin asked for one rung. George's call: 1–3 drawn. Three rungs at 550 hold 1,231 sh/side against 30,739 (−96%) vs 550 for one (−98%); 1–3 keeps §5.2's stress ladder | 🔴 counter sent |
+| `k_intensity` | 1.2 | **0.4** | Ask 2. `C ≈ 2 ÷ k`, so `k` alone sets the resting spread: 1.65 → 4.88 ticks. Calm spread $0.02 → $0.05–$0.08. ⚠ Do not tune below 0.3 — the response accelerates (0.3→0.2 adds 3.1 ticks; 0.2→0.1 adds 8.7) | 🔴 **E31** |
+| `min_width_ticks` | 1 | **5** | Ask 2. A guaranteed floor; `k` cannot give one because `width_extra` can draw 0 | 🔴 **E31** |
+| `base_size` | 10,000 | **550** | Ask 3 — the midpoint of his "500 or 600". ⚠ Re-opens why we set 10,000: the mandate is up to 85 M shares to distribute (N20, E27). Resting size falls from 12.3% of holding to ~0.5% | 🔴 |
+| `min_quantity` | 1,000 | **100** | **Required, or ask 3 is inert** — 550 clamps straight back to 1,000. Tightest case is rung 3 on a long book: 107 sh. ⚠ The 1,000 is §5.7.3, **ours**; no tZERO minimum appears in any venue document — confirm before relying on it | 🔴 |
+| `material_qty_change` | 500 | **50** | §5.8's publish trigger. Against sizes of 206–1,031 a 500-share threshold can never fire | 🔴 |
+| `skew_reference_shares` | 900,000 (the float) | **48,000** | Ask 5, **ours**. What §4.3's ratio divides by. Sets the shares needed to reach the ±$0.25 lean cap: **225,000 → 12,000** (~22 rungs swept). ⚠ **12,000 is the SATURATION point, not the denominator** (`M ÷ S × D` = 0.25 × D). ⚠ 12,000 is Edwin's `inv_ref` figure, fitted to his **250**-share book (48 rungs); at 550 a rung it is 22, so scale-matched it is nearer **26,400**. Put to him as *"how many rungs before we are fully leaned over?"* ⚠ Must apply to the **lean only** — feeding it to `EPR` would saturate the size modifier at 6,000 sh and take books one-sided | 🔴 **N20** |
+| `max_drift_ticks` | none | **25** | Ask 4. The furthest our quote may sit from fair value. ⚠ **A bound on a drift, NOT a deadband on RP**: `centre = RP + drift`, and drift is 0 when nobody trades, so we never quote stale | 🔴 **NEW** |
+| `drift_reset_prob_move` | none | **5%** | Ask 4. The win-probability move that clears the drift. ⚠ **A separate parameter from the 25 cents** — 25c bounds, 5% clears. The earlier claim that `5% × $5.00 = $0.25` made them one rule was coincidence | 🔴 **NEW** |
+| `flow_impact_ticks_per_1000` | none | **6 or 10** | Ask 4. How far 1,000 shares traded moves the drift. **Edwin's own RPV-2 number, and his documents disagree** — `RPV2Config` 6.0, `HANDOFF.md` §3 10. At 6 a 550-share fill moves 3.3 ticks and the limit arrives after ~7.6 rungs; at 10, after 4.5 | 🔴 **E30** |
+| `state_floor_ticks` | none | Edwin's | Per-state minimum width. The equation cannot exceed **$0.15** ever, against §5.2 Defensive $0.40 and overnight $2.50–$5.00 — and a stale feed produces LOW σ², so it quotes **tighter** into §2.3's danger case | 🔴 **E31** |
+
+**One combined bound, not two.** The lean and the drift both respond to our own
+fills, so a single sweep moves the quote twice. Two separate $0.25 limits would
+allow 50 cents of total gap where Edwin asked for 25. Proposed: **one $0.25 bound
+on the total gap from fair value**, covering both — his confirmation is question 6.
+
+**The drift reads EXECUTIONS only, never resting orders** (an order is free and
+§4.2 marks the leaderboard at RP, so an order-derived signal is spoofable).
+Our own fills are journalled; participant-to-participant trades are not visible
+to us today → **T23**.
+
+---
+
+## Off-field (§3.6) — the method is specified, the build is not
+
+⚠ Added 20-08. §3.6 is **fully specified in the v1.3 spec** (seven subsections)
+and **entirely unbuilt**. `realized_off_field` / `expected_off_field` are
+human-reviewed constants in `docs/supervised-inputs-2026-08-07.json`
+($18.31–$30.82 expected · **$0.00 realized**, all seven supervised tickers).
+No BDI, VMI, Popularity Index, capture share or weekly publication exists in code.
+
+| Parameter | Value | Status | Source |
+|---|---|---|---|
+| Per-game pool | **$2.50 per share**, split pro rata by counted share volume | ✅ | §3.6.1 |
+| Zero-volume split | **$1.25 / $1.25** | ✅ | §3.6.4 |
+| **Untradable opponent** | the universe team takes the **FULL $2.50** as both expected and realized; **no capture-share applies** | ✅ **spec — added to this registry 20-08** | §3.6.1. Edwin restated it 18-08 (North Dakota State; **~22 such games this season**, from week zero). It already drives his IPO prices. ⚠ The pair-identity guard is unaffected — gated on `len(sides) == 2` |
+| BDI clamp · blend horizon · capture clamp | 0.10–10.0 · 4 publications · 0.20–0.80 | 🟡 ▸ | §3.6.5 |
+| Publication cadence | post-MNF (NFL) · post-week-final (NCAA) | ✅ | §3.6.4 |
+| Off-field ceiling | `ScheduledGames × $2.50` — NFL $42.50 · NCAA $30.00 | ✅ | §3.6.7 — feeds MEV |
+| **`IPOEligibleOrderShares`** | fixes BDI at IPO completion | 🔴 **no publisher** | E27 family — the IPO runs on the primary plane and never touches us |
+| **Counted participant volume** | every execution with a participant side | 🔴 **not received** | §5.5 unbuilt. We get depth (`market.book`), not a tape → **T23** |
+
+⚠ **§3.6.6 is a Bounded Reflexivity Prohibition:** trading may influence **RP**
+only through §3.6 — capped at $2.50 a game, from counted volume, applied weekly.
+Any other path from order flow into RP is a **Critical defect**. E51's drift moves
+the **quote**, not RP, so it does not engage §3.6.6.
+
+**Not a day-one blocker** — the frozen values carry the right magnitude at
+listing, so RP matches the IPO EV. The error grows across the season: drift is
+`(realized capture − frozen capture) × $2.50` per game, so a team running 0.16
+above its frozen estimate drifts about **$6.85 a share over 17 games** (~14% on a
+$50 book). The §3.6.5 clamp bounds the worst case at $25.50.
+
+---
+
 ## ⭐ v1.3 Build Spec registry (24-07) — THE authoritative set
 
 The v1.3 spec's Configuration Dictionary (§12.2) supersedes the sections
@@ -32,7 +97,7 @@ pending InPlay approval (spec Ch 14-A) · 🔴 = no default, external closure
 | Material IA change · material qty change | $0.005 · 500 sh | ✅ | 5.8 |
 | Public deviation threshold | max($0.50, 10% × RP) | 🟡 ▸ | 5.5 |
 | Price bounds | min $0.01 · max = MEV (season-open NFL $127.50) | ✅ | 5.4 |
-| Valuation sweep · max interval | 2.0 s · 2.5 s | ✅ **E18** | 3.1.4 |
+| ~~Valuation sweep · max interval~~ | ~~2.0 s · 2.5 s~~ | ✂ **RETIRED — the spec-era pair.** Superseded by the built rows: `sweep_cadence_s` = **0.5 s** (George 08-11) and `sweep_max_interval_s` = **2.0 s** (George 14-08). Both are in the Configuration Dictionary at the pin; this row's ✅ was E18's approval of the ORIGINAL spec numbers and it outlived them | 3.1.4 |
 | Live freshness bands | 5 / 10 / 20 s | ✅ **E18** | 3.3.1 |
 | Pregame freshness bands | 24 h / 6 h / 60 min / 15 min | ✅ | 3.3.2 |
 | Status + Market-State promotion dwells | 10 s each | 🟡 ▸ | 3.4.1, 6.4.1 |
@@ -58,7 +123,7 @@ Sources: [[standards/MM-edwin-answers-28-07|Edwin's email, 28-07]] ·
 | `sigma` (feed field) | schedule dispersion √(Σ p(1−p)) | ✅ | a **different object** — never enters the de-vig step. ➕ 13-08 honesty note: validated and stored, **consumed by nothing today** — quote width runs on measured volatility (E31/E44); any future width use of this field is Edwin's |
 | Tie settlement | **x_g = 0.5 → $2.50/share** | ✅ | email item 5 (SDMM-1) |
 | NFL tie rate | ~0.4 % of games *(email/`ipo.py`)* vs **0.08 per team-season** *(`engine.py`)* | ⚠ **conflict — E21** | $0.17 vs $0.20 per share |
-| Reference-number feed cadence | **daily 06:00 ET**, heartbeat even when unchanged | ✅ | email items 3–4 |
+| Reference-number feed cadence | ~~daily 06:00 ET, heartbeat even when unchanged~~ → **hourly, pulled by us** | ✅ 27-08 (George) | ✂ Supersedes email items 3–4. The daily file is retired ([[market-maker/systems/expected-wins-pipeline]]); we pull the season win totals ourselves. **NFL only** — Sportradar's futures product carries NFL season totals and nothing for NCAA. One call returns the league, so 24 calls/day is negligible. ⚠ Two rules make it safe: record a change ONLY when the line moves (no heartbeat events — the journal must not fill with nothing), and close out a finished game in the SAME step as the new line that already accounts for it (else the win counts twice). ⚠ **Entitlement unverified** — futures was checked on a July trial; the August contract fix covered live probabilities, not futures |
 | Missing feed file | **alarm, never a shrug**; hold last value | ✅ | email item 4 |
 | Correction protocol | same `effective_time`, bumped `revision`, `is_correction=true` | ✅ | email item 4 |
 | Popularity weights | **0.6 Brand · 0.4 PerfIndex** | ✅ | email item 6, Supplement §2.1 |
@@ -122,8 +187,8 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `width_extra` | random widening above the risk floor | **0–3 ticks**, seeded, held for the dwell | 🟡 | Additive, not `max()` — he changed this deliberately so the risk term always shows |
 | `width_ref_price` · scale bounds | where `extra` is unscaled | **$65.00** · 0.6–1.6× | 🟡 | Keeps bps spread ~uniform across the price ladder |
 | **`width_floor_by_state`** | minimum width, Defensive / Overnight | — | 🔴 **E31** | ⚠ **The gap.** σ² 400 caps the width at ~$0.13 on a $65 team, ever; §5.2 Defensive is $0.40 and overnight was indicated $2.50–$5.00. And a **dead feed produces LOW σ²**, so the equation quotes tight into the §2.3 danger case |
-| `levels_range` | levels per side | **3–6**, drawn per dwell | 🟡 adopt | Removes another dependency on the unbuilt classifier |
-| `level_step_ticks` | gap between levels | **1–4 ticks**, drawn per dwell | 🟡 adopt | |
+| `levels_range` | levels per side | ✎ **1–3, drawn per dwell — DEPLOYED 27-08 (`CFG-0045`)**. Was 3–6 proposed; Edwin cut it to **1 fixed** on 20-08 (E51 answer 2, "do not build the optionality into v1"); George restored the drawn range on 27-08 after the one-rung book proved it cannot heal a bitten rung. Live shape: 86 books at 1 rung, 92 at 2, 97 at 3 | ✅ deployed 🟡 **Edwin not yet told — book-visible** | decisions 2026-08-27 · sessions/2026-08-27-ncaa-only-maker-and-three-rungs |
+| `level_step_ticks` | gap between levels | **1–4 ticks**, drawn per dwell. ⚠ Inert while `max_levels` was 1 (20-08 → 27-08); **live again from `CFG-0045`** | 🟡 adopt | |
 | `size_decay` | per-level size multiplier | **0.72** | 🟡 adopt | Extends to any level count, unlike three hard-coded numbers |
 | `base_size` | top-of-book size | **10,000 (ours)** — not his 250 | 🟡 ▸ §5.7.1 | His is 40× too small for a book we must distribute |
 | size jitter | per-level quantity variation | **§5.7.3 seeded SHA-256** — not his `random.Random` ±35% | ✅ ours | The fixture we reproduced byte-exact; replay depends on it |
@@ -180,7 +245,7 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `taker cadence per market` | How often the taker touches any single book | roughly every **20 seconds** (it takes continuously across all markets) | ✅ 12-08 | George, 12-08 |
 | `observed order volume` | Orders placed in a day by maker and taker together | ~**1.2 million** across 180 books, business-as-usual cadence | ✅ 12-08 | George, 12-08 |
 | `probability poll interval` | How often the poller calls SR per live game | **~2 s** — matches the measured median update gap | 🟡 evidence-backed, E18 open | 24-07 measurement |
-| `SR update cadence (observed)` | How often SR's probability actually changes in a live game | median **4 s** · mean 11.5 s · p90 28 s · 64 % ≤5 s · 1,089 updates/game | ✅ measured | Chiefs–Ravens capture 24-07 |
+| `SR update cadence (observed)` | How often SR's probability actually changes in a live game | **NFL:** median **4 s** · mean 11.5 s · p90 28 s · 64 % ≤5 s · 1,089 updates/game. ➕ **NCAA (NEW 29-08, first college Saturday):** median **7 s** · mean 13 s · p90 25 s · max 153 s · min 2 s. Measured on `sr:sport_event:70894628` over 704 s: 1,040 reading events carried only **55 distinct probabilities** — the rest are liveness confirmations. ⭐ **College is SLOWER than the NFL, so the source, not the machine, sets how fresh a live NCAA price can be** | ✅ measured | Chiefs–Ravens capture 24-07 · NCAA: production journal `supervised48`, 29-08 16:46–16:58Z |
 | `SR acquisition lag` | SR's own delay before publishing | ~5–15 s (media tier) **or** fast (betting tier) — **contradictory sources** | 🔴 S9 — measure in August | SR service research vs Cody |
 | `ClOrdID` | Client order id format | ≤ **20 chars**, **no leading zeroes**, + gateway's MM prefix; replace/cancel carry **two** ids (new + orig), each ≤20 | ✅ venue-verified 24-07 | tZERO OE spec v2.2 |
 | `MaxOrdRate` | tZERO's per-account message allowance | **5,000/s** · `MaxDupOrdRate` **200/s** (duplicate = same symbol + side + type; raised from the 20/s default for ladder churn) | ✅ **T2 answered** | Hasan's guide 05-08 (live-verified) |
@@ -190,6 +255,9 @@ area by area in [[market-maker/asmm1-adoption-spec]]. His §6 calls these
 | `time-in-force` | TIF on every MM resting order | **DAY (0)** — self-cleaning at tZERO's 23:59 ET boundary; ⚠ nightly book gap → **E36** | 🟡 built as DAY, Edwin rules | Ch 8 build 01-08 |
 | `ClOrdID scheme` | Deterministic order-id minting | **`MM` + 16 hex of SHA-256** over `security\|context\|side\|slot\|config` — 18 of 20 chars, no leading zero, no dots | ✅ ours (replay requirement 24-07) | `mm/venue/reconciler.py` |
 | `MM identity` | `userId` / `botId` / `account` (FIX Tag 1) on the gateway | Loopback: `mm1` / `sdmm-1` / `"loopback"` · real: **`384925384799470102`** / **`mm-1`** / **`1797733477`** (Hasan's guide §4 — the userId keys the reply subject `order.{userId}.>`) | 🟡 **rides ENV, not the dictionary** since 06-08d (`MM_USER_ID` · `MM_BOT_ID` · `MM_VENUE_ACCOUNT` via `compose.Settings` — the env-vs-dictionary split, George 06-08b) | decisions 06-08c · `mm/venue/transport.py` |
+| `MM identity (TEST)` | The test twins' bot ids and venue accounts | maker **`mm-test`** / **`2559580864`** · taker **`snt-test`** / **`1216516809`** (Hasan 26-08; app logins `hasan.ahmed+MMTest@` / `+MTTest@novosapien.ai`) — trade `.TEST` twins only | 🟡 accounts ✅ created; `.TEST`-only entitlement owed (Rob); bot ids proposed | sessions/2026-08-26-test-ticker-census |
+
+| `MM universe` | Which books the maker quotes | ✎ **138 NCAA only from 27-08** (`MM_SECURITIES` + a matching `MM_SUPERVISED_INPUTS` file — the engine refuses a file naming tickers outside `MM_SECURITIES`). The 32 NFL books carry no maker quote | ✅ George 27-08 | sessions/2026-08-27-ncaa-only-maker-and-three-rungs |
 | `EXECUTION idempotency key` | What names one fill | (venue, **client_order_id**, execution_id) — ⚠ supersedes §7.3's (venue, execution_id): **tZERO recycles ExecIDs** (incident 29-07) | ✅ venue-verified | Gateway `e37cd3d` · `mm/events/idempotency.py` |
 | `gateway local-event naming` | Which field names the order on gateway-originated events | **The subject alone** (`order.{user}.{clOrdId}`) — loopback accepts and resolved cancels (dead-man/cancel_all sweeps) carry NO clOrdId in data; adapter falls back to the topic segment | ✅ wire-verified 02-08 | Loopback wire test · `[topic-fallback]` |
 | `gateway event ordering` | Cross-subject timestamp order of order events | **Not guaranteed** — 8 publisher workers; acks for one security observed 10 µs reversed. Handled: per-security cycle-clock floor `[monotonic-at]` | ✅ wire-verified 02-08 | Loopback wire test |
@@ -218,14 +286,16 @@ reasoning: `sessions/2026-08-03-deployment-architecture.md`.
 | `heartbeat_stall_threshold_s` | ⭐ Always-quoting step 3: how long ticks may fail to complete before the beat task WITHHOLDS the heartbeat and the dead-man takes over | **5 s** — above the worst legitimate tick (a fully capped drain at p99 fsync ≈ 2.7 s); a wedged engine's book gets pulled ~threshold + 4 s after the wedge instead of never | 🟡 **OURS (08-13)** | `mm/config/dictionary.py` · `[progress-beat]` in `runtime/loop.py` · MM PR #27 |
 | `checkpoint_interval_s` | §10.3: how often the runtime writes a complete-state checkpoint (bounds boot replay to one hour of tail) | **3,600 s**, written at a tick boundary, local disk beside the journal, keep last 3 | 🟡 ours — **built 06-08d**, equality-proven | `mm/config/dictionary.py` · design 06-08c |
 | `event_idempotency_retention_s` | §12.3's slot: how long a seen idempotency key is remembered | **604,800 s (one week)** = JetStream's redelivery bound; pruned on EVENT time so replay reproduces the same set; duplicates never refresh an age | 🟡 ours — recorded design 06-08c, **built 06-08d** | `mm/events/acceptor.py` `[seen-retention]` |
-| `poll tier — LIVE` | SR poll per live game (kickoff passed, no final) | **500 ms** — ⭐ George's ruling 08-11, matching Edwin's 03-08 number: an unchanged successful fetch is CONFIRMATION (E38), and the cadence buys reaction latency to real changes. ✂ Supersedes the 2 s evidenced interim (SR's 4 s median gap). **Set on the DEPLOYED publisher pools** (`MMPUB_POLL_LIVE_S=0.5`, service PR #15 — #14 was fmt-only mislabelled). ⚠ The MM's IN-ENGINE poller still carries 2 s — it retires at the ingestion switch; if any live game runs on the in-engine path before the switch, bump it or switch first | ✅ **ruled 08-11 · deployed** | service PR #15 · `mm/config/dictionary.py` (engine interim) |
+| `poll tier — LIVE` | SR poll per live game (kickoff passed, no final) | **500 ms** — ⭐ George's ruling 08-11, matching Edwin's 03-08 number: an unchanged successful fetch is CONFIRMATION (E38), and the cadence buys reaction latency to real changes. ✂ Supersedes the 2 s evidenced interim (SR's 4 s median gap). **Set on the DEPLOYED publisher pools** (`MMPUB_POLL_LIVE_S=0.5`, service PR #15 — #14 was fmt-only mislabelled). ⚠ The MM's IN-ENGINE poller still carries 2 s — it retires at the ingestion switch; if any live game runs on the in-engine path before the switch, bump it or switch first ✂ **CORRECTED 29-08 — the 500 ms is SET but UNREACHABLE.** `MMPUB_POLL_LIVE_S=0.5` is on the `inplay-mm-publisher` worker pool, and the loop cannot honour it: `run_forever(..., tick_s: float = 1.0)` in `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py:477` is a hardcoded default with no settings field and no env override, so **one tick per second is the floor**. Measured in production: 513 fetches in 597 s on the live game = **one poll per 1.16 s**. ⚠ Cost, measured rather than assumed: **~0.3 s of average detection latency against a source that changes every 7 s** (row `SR update cadence`), so this is a config-vs-code defect, not a pricing problem. Filed as **N74** — fix out of hours, never mid-slate | ⚠ **env ✅ · behaviour 🟡 1.16 s (measured 29-08)** | service PR #15 · `mm/config/dictionary.py` (engine interim) · correction: [[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]] |
+| `MMPUB_TICK_S` — the publisher's loop tick | How often the publisher wakes to fetch every DUE game. It quantises every poll tier: no tier below this value can take effect | **1.0 s — a hardcoded default, not a setting** (`run_forever(..., tick_s: float = 1.0)`, `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py:477`). ⚠ This is why the LIVE tier's 500 ms is inert. Making it settings-driven is the whole of **N74** | 🔴 **NOT tunable today** — discovered 29-08 | `inplay-sportradar-service/src/app/workers/mm_publisher/worker.py` |
+| `poll tier — POST_GAME` | SR poll for a game whose final the publisher has seen, inside the 2 h settle window | **2.0 s — the code default; `MMPUB_POLL_POST_GAME_S` is NOT set on the pool.** Deliberate in kind: a slower cadence starves a finished game's book into permanent suspension (**N40**, observed 14-08), because the MM prices freshness off successful observations. ⚠ **Wrong in degree.** Measured 29-08 17:00Z: 33 finished games from 27–29 Aug were fetched every ~2 s, so about **14 of every 16 SR calls went to games that will never move again** (11.4 fetches/s on the pool against 2 live games). Raise it well clear of the MM's ~20 s freshness fuse — the settle watch only has to beat that fuse, not the live rate | 🟡 **ours — unset, running on the default** (N74) | `src/app/config.py:492` · [[market-maker/sessions/2026-08-29-ncaa-saturday-cadence-check]] |
 | `tick_interval_s` | The runtime loop's pace (drains, cycles, checkpoints-due) | **0.5 s** — ⭐ George 08-11 (was 1.0 s hardcoded); paired with the 500 ms live cadence | ✅ ruled 08-11 · MM PR #16 | `mm/config/dictionary.py` |
 | `sweep_cadence_s` | §3.1.4's portfolio recompute — now the LIVE quote pulse | **0.5 s** — ✂ supersedes the spec's ✅ 2.0/2.5 s (George 08-11) | ✅ ruled 08-11 · MM PR #16 | `mm/config/dictionary.py` |
-| `sweep_max_interval_s` | How late a sweep may run before it counts as a MISSED interval (§3.1.4) | ✂ **1.0 s** since 08-13 evening — restores the spec's ABSOLUTE slack (the 08-11 cadence ruling kept the 1.25 ratio, silently tightening 500 ms → 125 ms; ordinary ack churn then tripped it on ~7% of ticks and the portfolio-wide counter capped every book at ACTIVE) | ⭐ **ruled 08-13 (George: "let's do 1s")** — deployed supervised25/CFG-0023; first 435 ticks: ZERO misses | `mm/config/dictionary.py` |
+| `sweep_max_interval_s` | How late a sweep may run before it counts as a MISSED interval (§3.1.4) | ✂ **2.0 s** since 14-08 — RELAXES the 1.0 s of 08-13 evening, so ordinary multi-game engine load cannot walk the portfolio into DEFENSIVE through the §3.5 missed-sweep deductions. 2.0 is §3.1.4's own absolute. (The 08-13 evening 1.0 s had itself restored the spec's ABSOLUTE slack: the 08-11 cadence ruling kept the 1.25 ratio, silently tightening 500 ms → 125 ms; ordinary ack churn then tripped it on ~7% of ticks and the portfolio-wide counter capped every book at ACTIVE) | ⭐ **ruled 14-08 (George, pre-slate: range 1.5–2.0, "stable or minimum active unless something's really fucked")** — superseding the 08-13 ruling ("let's do 1s", supervised25/CFG-0023). Verified against the pinned dictionary at `fd193a4` | `mm/config/dictionary.py` |
 | `converge_max_instructions_per_tick` | ⭐ Always-quoting step 4: the most venue instructions one converger PASS sends (suspends → LIVE → round-robin; books atomic) | ✂ **128** — the dictionary default since `g2-throttle` (was 256 at first deploy, halved 00:05Z 08-14 as the live-load lever) and baked into the deployed `feat/always-quoting-step4b`. Under phase B the budget is PER PASS at 0.25 s — outbound ceiling ~512 instr/s | 🟡 **OURS** — 256 (08-13, MM PR #30) → 128 (08-14, deployed in supervised28/CFG-0026) | `[converge]` in `mm/venue/sync.py` |
 | `converge_interval_s` | ⭐ Always-quoting step 4 phase B: the converger runs on its OWN task at this cadence — the tick stages, the task converges; 0 restores the phase-A in-tick pass (the rollback lever and the direct-drive test shape) | **0.25 s** — under the 0.5 s LIVE redraw floor, so a staged live book never waits a full redraw | 🟡 **OURS (08-14)** — **built, NOT deployed** (`feat/always-quoting-step4b` @ `912ba27`) | `[converge-task]` in `mm/runtime/loop.py` |
 | `converge_staleness_alarm_s` | Phase B's outbound staleness alarm: `CONVERGE_STALE` logs once per episode when dirty targets outwait this bound — the outbound DRAIN_CAPPED, an alarm not a mode | **2.0 s** — the step-4 design's §5 proposal | 🟡 **OURS (08-14)** — built, NOT deployed | same |
-| `MM_DEADMAN_TIMEOUT_MS` (gateway) | The dead-man window: MM heartbeat silence before the gateway sweeps the whole resting book | ✂ **10,000 ms since 00:19Z 08-14** (was 4,000 — swept a live book ~130 times on the 08-13 slate at silence 4.0–4.7 s; every observed gap fits under 6 s, 10 s adds margin) | ✅ **deployed** (env row on the gateway VM; default bump in gateway PR #4) — N15 retune after the jitter measurement stands | `/opt/fix-gateway/.env` · `internal/config/settings.go` |
+| `MM_DEADMAN_TIMEOUT_MS` (gateway) | The dead-man window: MM heartbeat silence before the gateway sweeps the whole resting book | ⚠ **THE VAULT WAS WRONG UNTIL 20-08.** Found at **604,800,000 ms (168 h) on BOTH gateways**, together with `MM_DEADMAN_BOOT_GRACE_MS=604800000` — a second variable this table never carried. Restored 20-08 to **10,000 ms timeout / 30,000 ms boot grace**. Was ✂ 10,000 ms since 00:19Z 08-14 (was 4,000 — swept a live book ~130 times on the 08-13 slate at silence 4.0–4.7 s; every observed gap fits under 6 s, 10 s adds margin) | ✅ **deployed** (env row on the gateway VM; default bump in gateway PR #4) — N15 retune after the jitter measurement stands | `/opt/fix-gateway/.env` · `internal/config/settings.go` |
 | `live_redraw_cadence_s` | The republish clock's FLOOR: threshold = max(drawn dwell, this) | **0.5 s** — "new orders every 500 ms, changed or not" in LIVE | ✅ ruled 08-11 · MM PR #16/#18 | `[live-timer]` in `mm/quotes/engine.py` |
 | `dwell table = republish clock` | ✂ Every mode republishes a re-rolled book when its drawn dwell expires, changed or not; materiality publishes sooner | **LIVE 0–0 (500 ms floor) · pre-game 5–20 s · post-game 5–20 s · overnight 20–40 s** — ✂ supersedes Edwin's ASMM-1 rows (3–12/8–30/10–40/20–90) and implements his 23-07 "non-live 30–60 s" | ✅ ruled 08-11b · MM PR #18 · deployed supervised11, live-verified | `mm/config/dictionary.py::dwell_ranges_s` — Edwin flag rides E31/E17 |
 | `poll tier — PRE_KICKOFF` | SR poll within 1 h of the scheduled kickoff | **15 s** — the midpoint of George's 10–30 s range; one dictionary value to change when he picks | 🟡 **interim, built 05-08** | `cf2bc10` |
@@ -237,7 +307,7 @@ reasoning: `sessions/2026-08-03-deployment-architecture.md`.
 | `sweep emission` | When the §3.1.4 sweep writes a journal event | ✂ corrected 04-08: the sweep is **PORTFOLIO-WIDE** (§3.1.4 + §2.5) — **one `VALUATION_SWEEP` event per slot covers all 170 securities — ✂ the slot is **0.5 s since 08-11** (was 2.0 s) = 2 events/s**. The 03-08 "emit on effect / 85 events/s" plan was a per-security misreading, dropped. A stall emits ONE sweep carrying `missed_intervals`, never a backlog | ✅ **built 04-08** (`mm/runtime/loop.py`) — the N28 type blessing rides the Edwin round | `2eaa27b` · `cd6cf21` |
 | `source_liveness_window_s` | How long after the last SUCCESSFUL fetch the source still counts as answering — the `[observation-age]` deviation's one number | **20 s** — deliberately §3.3.1's Invalid bound, so "no successful observation for 20 s" suspends on exactly the spec's timing, applied to the right fact | 🟡 ours (Ch 12) — flagged to Edwin inside **E38** | Built 04/05-08 |
 | `live freshness basis` | Which age §3.3.1's live bands (5/10/20 s) measure | **OBSERVATION age** (time since the last successful fetch) wherever the liveness signal exists — a confirmed number is **CURRENT** through halftime; 20 s of true silence suspends. Reading age applies pregame and wherever no observation ever arrived (the spec's rule, unchanged). ⚠ Deviation from §3.3.1's letter; band VALUES untouched and Edwin's | 🟡 **built our way — E38 carries it to Edwin** with the measurement (SR has no heartbeat; halftime = 2,862 s) | `48b648d` · decisions 05-08 |
-| `source_fetch_timeout_s` | How long one live HTTP fetch may take before it counts as a failed observation | **1.5 s** — short by design: fetches run serially inside the 1 s tick, the heartbeat rides the same tick, and the gateway dead-man sweeps at 4 s; two stuck fetches still leave the next beat inside the window. A timeout is `SourceUnavailable` → the observation stamp stays stale → the liveness rungs grade the silence. ⚠ The serial-fetch shape itself caps out near ~35 live games — the S7 live-bulk endpoint is the season fix | 🟡 ours (Ch 12), **built 05-08b** | `06d6853` · decisions 05-08c |
+| `source_fetch_timeout_s` | How long one live HTTP fetch may take before it counts as a failed observation | **1.5 s** — short by design: fetches run serially inside the 1 s tick, the heartbeat rides the same tick, and the gateway dead-man sweeps at 4 s; two stuck fetches still leave the next beat inside the window. A timeout is `SourceUnavailable` → the observation stamp stays stale → the liveness rungs grade the silence. ✂ **The serial-fetch caveat is WITHDRAWN for the publisher (29-08).** `PublisherWorker.tick()` gathers every due game in ONE `asyncio.gather`, so a round costs one SR round-trip, not N of them; measured 11.4 fetches/s across 35 due games with the round at ~1.16 s. The caveat still describes the MM's own IN-ENGINE poller, which retires at the ingestion switch. The S7 live-bulk endpoint remains the season fix for SR quota, not for round time | 🟡 ours (Ch 12), **built 05-08b** | `06d6853` · decisions 05-08c |
 | `reaction bound` | Accepted reading → published book, in process | **single-digit ms** (measured, real-game tests). §5.8's "200 ms" is a **bound, not a timer** — the budget is spent waiting for SR, not for us | ✅ measured | Real-game tests · 03-08 |
 
 ### The 08-14 fix-set batch (Phase 0 — `specs/2026-08-14-mm-python-fix-set`)
@@ -299,6 +369,35 @@ arrives with its chunk.
 | `classifier thresholds` | Staleness/latency limits per class | — | 🔴 TBD | N3 |
 | `RP publication` | Reference price identity | RP = ESV (mid) · frozen on feed failure | ✅ | CTS-002 + 20-07 |
 
+## 2026-08-26 — the shipped dictionary, both engines (E51 ported to Go)
+
+The rows below are what `dictionary.py` (Python `main@f9eec8b`) and
+`dictionary.go` (Go `feat/e51-parameters`) ship. Every one supersedes the
+§12.2 registry row above it. Edwin's values are 🟡 until the first live 1–3
+book is watched; the two George rows are ✂ his. The full reasoning per row
+is in [[market-maker/sessions/2026-08-20-widen-and-thin-parameter-round]]
+(E51) and [[market-maker/sessions/2026-08-26-b-go-maker-e51-port]].
+
+| Parameter | Value | Was (fd193a4 pin) | Status | Source |
+|---|---|---|---|---|
+| `min_width_ticks` | **25** — a $0.25 baseline touch; ⚠ binds BEFORE the extra, so the realised spread is 25–30 | 1 (🔴 E31) | 🟡 Edwin 20-08 (E51 answer 1) | "I'm not picking a k, I'm picking the room" |
+| `min_levels` / `max_levels` | **1 / 3**, drawn per dwell | 3 / 6 | ✂ 🟡 George 26-08, superseding Edwin's 1/1 (E51 answer 2) — ⚠ book-visible, Edwin to be told | Python `f9eec8b` |
+| `base_size` | **550** | 10,000 (ours) | 🟡 Edwin 20-08 (E51 answer 3) | "500 or 600" |
+| `min_quantity` | **100** — a backstop; the 550 touch draws 412–688 | 1,000 (§5.7.3, ours) | ✂ 🟡 George 20-08 | ⚠ no tZERO minimum in any venue doc |
+| `material_qty_change` | **50** | 500 (§5.8) | ✂ 🟡 George 20-08 | near-dormant; `material_ia_change` does the work |
+| `skew_reference_shares` | **48,000** — the lean's denominator, NOT §4.3's float; saturates at 12,000 net (M ÷ S × row). EPR keeps the real float | the float (900k / 1M) | 🟡 Edwin 20-08 (E51 answer 5) | "maximum skew at ±12,000 net" |
+| `defensive_width_floor_ticks` · `overnight_width_floor_ticks` | **50 · 100** — applied AFTER the extra, widest wins; 100 sits above `max_width_ticks` 60 on purpose | none | 🟡 Edwin 20-08 (E51 answer 6) | "judgement, not derivation — bring the data" |
+| `k_intensity` · `size_decay` · `max_quantity` · `variation ±25%` | unchanged: 1.2 · 0.72 · 15,000 · 0.75–1.25 | same | as above | — |
+
+| `venue_message_rate_limit` | **60 msg/s** on the wire (new + cancel + replace; heartbeat exempt) | none (🔴 T2 unanswered) | 🟡 **MEASURED 27-08** — 100 → 5% refused, 80 → 1.4%, 60 → 0 | Go PR #23; Python has no limiter |
+| `converge_max_instructions_per_tick` | **15** = rate × 0.25 s interval (pinned by Validate) | 128 | ✂ George 26-08, derived | Go PR #23 |
+| `venue_sync_hold_max_s` | **30 s** — a book with orders in flight holds its next version; past the cap it publishes and says so | none | 🟡 ours, George 26-08 | Go PR #23 |
+
+⚠ **The Go tree keeps BOTH sets.** `config.Default()` is this table;
+`config.ReferencePin()` is the "Was" column, because every corpus under
+`testdata/` is Python@fd193a4's output. The pin fails validation on purpose
+and cannot boot.
+
 ## Quoting engine
 
 | Parameter | Meaning | Value | Status | Source |
@@ -307,7 +406,7 @@ arrives with its chunk.
 | `refresh rate` | Quoting cadence | **Bifurcated (supersedes flat 5–10×/sec):** live games ~200ms · non-live 30–60s · earnings burst ~5 min all symbols | ✅ 23-07 | MM call 23-07 |
 | `tick size` | Min price increment | **$0.01** | ✅ | Venue-verified 22-07 |
 | `base spread` | Default half-spread per side (per profile) | **8 to 12 ticks** (Edwin, 17-08). Supersedes the TBD: the weekend book was "like cement", too tight to the win probability for anyone to trade around | ✅ 17-08 | Edwin, 17-08 |
-| `maker resting size` | Displayed size per level | **500 to 3,000**, down from ~10,000. The book was too thick to move | ✅ 17-08 | Edwin, 17-08 |
+| `maker resting size` | Displayed size per level | **500 to 3,000**, down from ~10,000. The book was too thick to move. ⚠⚠ **AGREED, NOT DEPLOYED — checked 20-08.** `internal/quotes/quantity.go:29` and `src/mm/config/dictionary.py:129` at the pin BOTH still hold `base_size = 10,000`. Measured live 20-08: top-of-book median **9,656**. N63 | ✅ agreed 17-08 · 🔴 **not in either engine** | Edwin, 17-08 · verified against both code bases 20-08 |
 | `taker size` | Size the taker crosses with | **up to 5,000**, and **allowed to cross multiple price levels** rather than one. Was randomising ~3 to 400, which is negligible against a 10,000 book | ✅ 17-08 | Edwin, 17-08 |
 | `target intra-game swing` | How far a share price should move within a game | roughly **$1.50 to $8**. The weekend produced only a couple of dollars. Arithmetic puts a win near $4.80; sentiment should swing wider than the maths | ✅ 17-08 | Edwin, 17-08 |
 | `score offset per point` | Dollar value applied per point of score change, as an interim reference price while the win probability is stale | 🔴 **Owed by Edwin**, being derived from NFLverse win probabilities back to 1999. Must remain a point-differential offset only, not a model of injuries or form | 🔴 TBD, this week | Edwin, 17-08 |
@@ -450,6 +549,27 @@ ruling. Code: `inplay-market-maker/src/snt/config.py`.
 | **T-F07 POST window** | **1 h after the final** | 🟡 | ours, 11-08 — copies the service's post-game correction watch. `schedule_post_window_s` |
 | **T-F07 LIVE staleness bound** | **10 min of feed silence** | 🟡 | ours, 11-08 — LIVE (×75) needs a fresh feed; silence past the bound decays the book to OVERNIGHT (err-quiet). ~20× the worst observed live reading gap (30 s) |
 | **T-F07 file-game length** | **4 h from kickoff** | 🟡 | ours, 11-08 — the fallback file source learns no finals, so LIVE ends on this timer (long game + overtime), then the POST window. `schedule_file_game_s` |
+
+## Venue identity + position mechanics — measured 19-08
+
+Read off the session wire log (`FHINPLAY01→TZFIXORDQA`), not inferred. Full
+reasoning in [[market-maker/decisions]] 2026-08-19e.
+
+| Parameter | Value | Status | Notes |
+|---|---|---|---|
+| Maker venue account | **1797733477** | ✅ measured 19-08 | FIX tag 1 on its orders; 4,464 orders that day |
+| Taker venue account | **4963224393** | ✅ measured 19-08 | 2,654 orders that day |
+| House MPID | **IPLM** (retail is **IPLY**) | ✅ measured 19-08 | tag 115 on execution reports |
+| Inventory scope | **PER ACCOUNT** — two separate inventories under one MPID | ✅ measured 19-08 | ✂ corrects the 03-08 *"one wallet, one MPID, one inventory"*: right about the MPID, wrong about the inventory. **Seeding the maker gives the taker nothing** |
+| Maker bot id | **`mm-1`** | ✅ 19-08 | ✂ not `sdmm-1`, which is the loopback/example value |
+| `9381 Qto` (UEPR) | **ABSOLUTE opening quantity**; `Qt` current = opening + intraday | ✅ measured 19-08 | Four sends, four exact hits: 0→9, 3→12, −12→−3, −9→0 |
+| UEPR entitlement | **LIVE — `UEPRa` in 8 ms** | ✅ 19-08 | ✂ supersedes the 28-07 "not enabled". Earlier probes sent `Qto=0` on a ZERO-opening account, a genuine no-op, so silence proved nothing |
+| UEPR idempotency | **Safe to retry** (absolute, not additive) | ✅ 19-08 | The opposite of UPT |
+| Negative UPT | **Accepted (`UPTa`) and DISCARDED** — position unmoved | ✅ re-confirmed 19-08 | 9 before, 9 after. UEPR is the undo, not this |
+| **`9387 TxfrCost` unit** | **PRICE PER SHARE** | ✅ **measured on BOTH MPIDs 19-08 — N67 closed** | On the maker itself: 6 sh @ 11.00 (a quantity where the readings differ by 55.00) moved `9384` by exactly **+66.00**. ⚠ The SPEC still reads as a total (`TxfrCost / TxfrQty = averagePrx`); the venue disagrees and the venue wins |
+| `9382 Eto` / cost basis | **An INSTRUCTION the venue may re-derive** | 🔴 **N68** | A measured reversal (`Qto=-6, Eto=-66`) returned the quantity exactly but left the basis **$317.05** off, marking the shares at **63.842451** — near the last traded price of 63.88, not the value sent. Seen twice. **Plan on the quantity, read the basis back** |
+| Position read path | **Tags 9383/9384 on ANY execution report**, plain `39=0` accept included | ✅ 19-08 | ✂ supersedes "only on a fill". One 1-share GTD order priced to rest reads any account |
+| Request For Positions (35=AN) | **Does not exist** in Account & Position v3 or OE v2.2 | ✅ 19-08 | Nothing to entitle or build our side. The order IS the read |
 
 ## Venue risk + price bands — live-verified 08-09
 

@@ -126,8 +126,9 @@ Every number lives in [[market-maker/parameters]] with a status
 `mm/config/dictionary.py` (§1.6-5). The load-bearing set: $5.00/win ·
 $2.50/tie ✅ · floats 900k/1M ✅ · S=$1.00, M=$0.25 ✅ (N20 caveat) ·
 live bands 5/10/20 s ✅-values/🟡-basis (E38) · γ=0.02, k=1.2, h=20 s,
-H=30 s, σ²∈[0.05,400] 🟡 (E31) · base 10,000 × 0.72^i, clamp
-[1,000, 15,000] 🟡 · tick 0.5 s, sweep 0.5 s, missed past 1.0 s
+H=30 s, σ²∈[0.05,400] 🟡 (E31) · ✂ E51 20-08: min width 25 ticks,
+floors 50/100, base 550 × 0.72^i, clamp [100, 15,000], lean ÷ 48,000
+🟡 · rungs 1–3 ✂ 26-08 · tick 0.5 s, sweep 0.5 s, missed past 1.0 s
 (✂ 08-11/08-13) · dwell = republish clock: LIVE 0–0 · pre 5–20 s ·
 post 5–20 s · overnight 20–40 s ✅ 08-11b · tiers 500 ms (✂ 08-11)/
 15 s/30 min/10 min (LIVE ✅ · PRE 🟡 · slow tiers George's) · drain
