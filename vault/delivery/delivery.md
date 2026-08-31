@@ -9,6 +9,7 @@ description: "Delivery hub for the InPlay app flight plan, the Novosapien/InPlay
 > **Live copy:** `shared/clients/inplay/flight-plans/inplay-app-flight-plan-{date}-{HHMM}.html` (a new timestamped file per build; prior versions stay as the audit trail)
 > **Master:** `Programming/inplay/inplay-app-flight-plan/` (source + build script)
 > **Companion:** [[requirement-changes|Requirement change register]], the citable record of settled requirements later changed
+> **Internal only:** [[commercial-open-items|Commercial open items]], money promised in conversation with no written instrument behind it. Never goes in the flight plan
 > **Latest change list:** [[change-requests-2026-08-18]], the 22 app requests received on 18 August, classified
 > **Last rehearsal:** [[friends-and-family-2026-08-21]], the overnight session before the offering
 
