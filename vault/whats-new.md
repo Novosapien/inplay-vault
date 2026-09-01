@@ -6,6 +6,63 @@ description: "Rolling changelog — dated entries for every major vault update, 
 
 > **Project:** [[index]]
 
+## 2026-09-01: Nobody can log in, and the tool that would find out why is switched off
+
+Digested [[01-09-2026-touchdown]], a short Monday call two days before the first
+week of college football. Edwin was away. Troy cut the meeting short on purpose
+so the engineers could go and work the problem.
+
+**Nobody can get into the app.** Jared was thrown out of it during the call, and
+Cody had already heard the same from friends outside the team. Worse than that,
+the way back in is broken too: no password reset and no login code arrives by
+email, so a locked-out person cannot help themselves. Nobody knows the cause yet,
+and nobody guessed on the call. It could be the identity checker, it could be the
+login system, it could be something else.
+
+**And the tooling is off.** Novosapien's Claude account has been suspended over an
+unpaid bill of about forty-nine thousand dollars, so the team is reading code by
+hand. George: it normally takes ten people, they do it with two to four plus AI,
+and now they are doing it without. His words: it feels like going back to stone
+tools. The bill did not cause the lockout. It decides how long the fix takes, in
+the week the first real games arrive.
+
+**The commercial news is better than it sounds.** Cody named the three ways the
+app can make money: adverts on the pages, video adverts over the game tracker,
+and subscriptions. **Two of the three are ready now.** The page adverts are built
+and running and can be switched on whenever InPlay say so. The video advert is
+built and checked and needs a short test. Only subscriptions need designing, and
+a session was booked for the next day. Cody would like them by early October and
+said so without being asked.
+
+**Brett said something candid worth writing down.** The priorities in the flight
+plan were drafted by asking AI what it thought, based on the conversations so
+far. He asked for two proper sessions instead: one to set the priorities with
+Cody, and a ninety-minute one to walk every user journey before anything gets
+built.
+
+**The market maker got its first real report card.** Troy's rule, and it is a
+good one: there should never be a moment when a team has no buyer and no seller.
+The prices can move apart and back together, but they must not disappear. What he
+saw was the whole book clearing for a split second each time it recalculated, and
+orders failing to fill in that gap. George confirmed that gap is deliberate, not
+a fault: the trading venue cannot swap an order in place, it has to cancel then
+replace. He also raised the bigger problem himself, which is that the market
+maker cannot see its own market. It sets its prices from the win probability and
+nothing else, so it behaves identically whether a thousand people are trading or
+ten thousand.
+
+**One awkward one.** In August the client asked for the market maker's order
+sizes to be cut right down. They were. On Monday the effect of that cut was
+described back to Novosapien as a defect: a thousand-share order can no longer
+fill. Nothing was built wrong. Recorded in
+[[delivery/requirement-changes]] so it is not forgotten.
+
+**Also:** typing `www.inplayglobal.com` no longer works while the plain address
+does, and HubSpot looks responsible. The marketing agency's tester still has no
+test build. Hasan is extending the admin panel so Cody can manage groups and
+share codes himself. And Slack messages only reach the vault when Brett
+remembers to move them, which the client did not know.
+
 ## 2026-08-28: The pricing model gets its numbers, the day before real football
 
 Digested [[28-08-2026-touchdown]], 49 minutes on the Friday before the first live

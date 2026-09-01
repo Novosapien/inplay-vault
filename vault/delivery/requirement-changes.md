@@ -1,5 +1,5 @@
 ---
-description: "Citable register of settled requirements that were later changed, each traced to where it was decided and where it changed, with the change classified so the count is honest."
+description: "The citable register of settled InPlay requirements later changed: reversals, re-reversals, descopes, late parameter changes, late additions and held asks."
 ---
 
 # Requirement change register
@@ -43,8 +43,26 @@ changed.
 | Re-reversal | **3** |
 | Descope | **1** |
 | Late parameter change | **6** |
-| Late scope addition | **8** |
-| **Total recorded changes to settled requirements** | **34** |
+| Late scope addition | **10** |
+| **Total recorded changes to settled requirements** | **36** |
+
+> **Updated 01-09-2026 after the Monday touchdown ([[01-09-2026-touchdown]]).**
+> Two more, both **late scope additions** rather than reversals, and both about
+> the market maker's liquidity. `A11` asks for a book that is never empty and a
+> recalibration that widens rather than clears. `A12` asks the maker to size off
+> in-game trading volume and the number of participants, which is a new input
+> class rather than a new number.
+> ⚠ **Worth reading these two beside `P2` and `P5`.** In August the client asked
+> for the maker's resting size to be cut from around 10,000 per level to 500 to
+> 3,000, and for top of book only. Both were done. On 1 September the effect of
+> those cuts was described back to Novosapien as a defect: *"getting a thousand
+> filled on a market order is pretty much not going to happen."* Nothing was
+> built wrong. This is what the requested parameters do, and it is the clearest
+> example in the register of a change that cost twice: once to make and once to
+> discover.
+> ✅ **The honest half:** `A12` was raised by George against his own machine, not
+> demanded by the client, and it is the right answer to the problem `A11`
+> describes.
 
 > **Updated 28-08-2026 after the Friday touchdown ([[28-08-2026-touchdown]]).**
 > Two more. **R17** reverses a position taken **the previous day**: off-field
@@ -165,6 +183,8 @@ grievances.
 | ~~A8~~ | ~~Every NCAAFB season game populated~~ | Reclassified on the 18-08 call as a **bug**, not a change: the fixtures do populate when the team page is opened and games re-entered. Not counted |
 | A9 | **A tradable team playing an untradeable opponent** | [[18-08-2026-requirements-review]] | Roughly 22 such games this season, possibly one in week zero. Raised by George, confirmed by Edwin, and called non-negotiable rather than optional. Genuinely new: no prior requirement covers a game with only one listed side |
 | A10 | **Buy and sell controls on the horizontal watch surface** | [[18-08-2026-requirements-review]] | Today it carries a trade button that routes the user away and back. Small, and it is what stands between the watch surface and being usable |
+| A11 | ⭐ **A book that is never empty, and a recalibration that widens then tightens rather than clearing.** Troy: *"there should never be a moment where there's not a bid an offer. Now the bid and offers can widen and tighten."* Plus **consistent three levels**, rather than the drawn one-to-three range live since 27 August | [[01-09-2026-touchdown]] | Genuinely new: no prior requirement covers the instant between a cancel and its replacement. George confirmed the gap is by design and named the venue constraint, tZERO having no replace-in-place. ⚠ It is the same fix as the order-granularity work already ruled on 30 August, so the cost is largely already committed. Tracked as `N77` |
+| A12 | ⭐ **The maker sizes off market participation**, taking in-game traded volume and the number of participants into levels and quantity, instead of pricing off the win probability alone | [[01-09-2026-touchdown]] | ✅ **Raised by George against his own machine**, not asked for by the client: *"there could be a thousand users or 10,000 users, the market maker's still going to be functioning in more or less the same way, by design."* A new input class rather than a new number, and determinism constrains the design. Awaiting Edwin. Tracked as `N78` |
 
 ---
 

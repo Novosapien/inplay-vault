@@ -68,6 +68,50 @@ description: "MM build plan — Phase 0 unblockers through ops UI and calibratio
 > record — the MM quoted live on the real venue from 07-08 (six books
 > two-sided; see [[market-maker/decisions]] 2026-08-07d–f).
 
+> **⭐⭐ Update 01-09 (Monday touchdown, [[01-09-2026-touchdown]], Edwin absent):
+> the first client verdict on the live maker, and it is about liquidity, not
+> price.** Three days of real trading produced a coherent critique from Troy and
+> Jared, and George diagnosed his own machine in the same breath.
+> **The rule (Troy):** *"there should never be a moment where there's not a bid
+> an offer."* Bids and offers may widen and tighten; they may not vanish. What he
+> observed is the maker wiping all three levels on recalibration, leaving a
+> split second with nothing on either side. His ask is **consistent three
+> levels** and a recalibration that **widens then tightens** rather than clears.
+> Opened as **`N77`**.
+> **George confirmed the gap is by design and named the venue constraint:** tZERO
+> has no replace-in-place, so a move is cancel then replace. Two directions
+> offered: a topping-up design, or fast enough that the gap does not matter.
+> ⚠ **This is the same ground as `N75`** (order granularity and the 23-07
+> micro-barrier) approached from the user's side rather than the reconciler's,
+> and `N77` should be settled with it rather than beside it.
+> **The user-visible cost is phantom liquidity.** Troy: a market order gets a
+> partial fill, *"then the book would reset... the liquidity is actually more
+> phantom liquidity because it's not there and it's in the process of being
+> cancel replaced."* Jared: no order above roughly 50,000 dollars ever filled
+> fully. ⚠ Note both men are describing the **normal** cancel-replace cycle, not
+> the feed-phantom of `N41`; the word collides and the mechanisms differ.
+> **`N78` is the structural one, and George raised it himself:** the maker
+> *"needs more variables in order to determine levels and quantity... trading
+> volumes during the game... the number of participants in the market."* Today
+> quantity is random within bounds, levels are near-random, and both are driven
+> only by Sportradar's win probability, so *"there could be a thousand users or
+> 10,000 users, the market maker's still going to be functioning in more or less
+> the same way, by design."* He put the decision to Edwin.
+> ⚠ **The size squash is now visible to clients.** George gave the history on the
+> call: the first dry run ran 3 to 6 levels in tranches of 500 with a maximum of
+> 10,000 to 15,000 shares, then *"everyone wanted it squashed right down"* to
+> roughly 500 to 600 per side. The consequence, stated plainly: *"getting a
+> thousand filled on a market order is pretty much not going to happen."* That is
+> `base_size` **550** and `levels_range` **1 to 3** doing exactly what they were
+> set to do. Recorded as **`A11`/`A12`** in [[delivery/requirement-changes]].
+> **UNCC had no bid**, hit by both Cody and Edwin. George traced it to a rule in
+> the standards that *"we need to loosen a bit"* and noted it holds one book
+> rather than the whole market. ⚠ Same shape as the 29-08 Tar Heels stall;
+> recorded against **`N75`** and **`N76`** rather than opened separately.
+> ⚠ **Sequencing reality:** none of this gets worked this week. The app is locked
+> out with no known cause and Novosapien's AI tooling is suspended over an unpaid
+> bill, so the whole team is on the outage by hand. See [[delivery/delivery]].
+
 > **⭐ Update 28-08 (Friday touchdown, [[28-08-2026-touchdown]]), the day before
 > the first live NCAA games.** The 27-08 conversation resumed and finished the
 > valuation half. **The delta model has its numbers** (see

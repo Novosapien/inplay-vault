@@ -1,5 +1,5 @@
 ---
-description: "The advertising section: the outbound onboarding artefacts the Cold Outreach Workforce grounds on, and the open items blocking their use"
+description: "The advertising section: outbound onboarding artefacts and their blockers, the marketing agency timeline, and the three in-app routes to revenue"
 ---
 
 # Advertising
@@ -97,3 +97,43 @@ Firebase**. Without those they cannot instrument anything they are about to
 test, and Sebastian has not responded. Cody agreed to ping him.
 
 _Source: [[28-08-2026-touchdown]]._
+
+---
+
+## ⭐ The three in-app revenue routes, and what is ready (01-09-2026)
+
+Cody named them on the Monday touchdown, under open commercial pressure:
+*"everyone from the team is stressed like right now we have three three options
+towards towards revenue."* Inside the app, there are exactly three:
+
+| # | Route | State on 1 September | Who decides next |
+|---|---|---|---|
+| 1 | **Programmatic ads on the pages** | ✅ **Configured and running.** Not optimised. Can be switched on immediately | InPlay say when |
+| 2 | **Video ads over the field player and gamecast tracker** | ✅ **Built and verified.** Needs a short test pass before it goes live | Novosapien to test, then InPlay |
+| 3 | **Subscriptions and packages** | 🔴 **Not scoped.** Needs a requirement session, booked for 2 September | Joint session |
+
+Brett's exact words on the first two: *"we can be quick if you guys are happy we
+just turn the ads on. We can turn them on because it's all configured
+programmatics running. It's not optimized, but it's running. So, at least you can
+start getting some revenues there."* And on the video: *"we've got it built out.
+It's been verified. We need to get that in and just do run a couple of tests
+first."*
+
+⚠ **The decision on route 1 sits with InPlay and nothing is blocking it.** This
+is worth stating plainly, because the ad stack was removed from the app build on
+17 August and the removal was recorded as reversible. Switching it back on is a
+choice, not a piece of work.
+
+**Why the timing is this week rather than next quarter.** Paid advertising is
+starting outside the Viral App Launch relationship, and Cody expects the traffic
+to compound: *"you add that on the cascade that NFL IPOs and NFL regular season
+are around the corner. This next weekend of college football is first real
+games... we need to be able to monetize the users coming in."*
+
+**Subscription scope belongs to the Research Tab**, where the tier ladder already
+lives. It is recorded in
+[[information-layer/sub-components/research-tab/research-tab]] rather than here,
+because it is a product build with an App Store review attached, not an ad
+placement.
+
+_Source: [[01-09-2026-touchdown]]._

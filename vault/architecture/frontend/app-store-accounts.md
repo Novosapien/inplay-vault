@@ -67,6 +67,25 @@ Cody held both until the **Viral** contract is settled; the kickoff happened on
 raised the change again and accepted the lift: _"that might be a bigger lift than
 we thought."_ (Source: [[26-08-2026-touchdown]])
 
+### Agency TestFlight access still outstanding (01-09-2026)
+
+**The marketing agency's tester has never received a build.** Jared raised it on
+the Monday touchdown: Dimmitri from Viral App Launch *"has not gotten anything
+right"*. Kevin was working it the previous day with Hasan.
+
+⚠ **Double-blocked.** TestFlight distribution needs each tester's Apple ID
+(recorded above, 26-06), and the app itself was locked out that morning, so
+there is nothing usable to hand over even once the invitation lands. Jared put
+it plainly: *"obviously the app's not working right now, but once the app's
+working."*
+
+**Why it matters on a date.** Reviewing the app and the onboarding experience is
+inside the agency's scope for weeks one and two of their timeline (see
+[[advertising/advertising]]), so this is their first deliverable, not a
+convenience.
+
+(Source: [[01-09-2026-touchdown]])
+
 ## Related
 
 - Privacy policy: https://inplaytradingchallenge.com/legal/privacy

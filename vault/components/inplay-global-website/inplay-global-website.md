@@ -61,6 +61,44 @@ Trading Challenge audiences (Crypto-Savvy, Analytical Fan, Finance-Curious Stude
 
 ---
 
+## 🔴 Live defect (01-09-2026): the www address does not resolve
+
+**`inplayglobal.com` works. `www.inplayglobal.com` does not.** A saved bookmark
+opens the site normally; typing the address with the `www` prefix does not.
+Raised on the 1 September touchdown and confirmed live on the call by Brett,
+Cody, Kevin, Troy and Jared.
+
+**When it broke.** Not always the case. Jared: *"I've been able to type in
+probably month ago www.inplay global and that did not come up."* Troy dated it:
+*"something's broke been broken over the last week or so."* Browsers differ,
+which is why it went unnoticed: Troy noted some browsers correct for the missing
+redirect and some do not.
+
+**The likely cause, marked as a diagnosis rather than a finding.** George:
+*"it looks like the HubSpot something to do with HubSpot has changed the DNS for
+www... I think the www c name's been changed."* The normal setup is a redirect
+in one direction or the other between the bare domain and the `www` one, and
+that redirect is what appears to have gone.
+
+**What was ruled out on the call:**
+
+| Ruled out | Why |
+|---|---|
+| Novosapien touching DNS | George: *"we've not touched the DNS"* |
+| The social accounts | Kevin linked Instagram, Facebook, TikTok and X directly, nothing through the website |
+| Viral App Launch | They hold the advertising logins (Meta, Google) but **not** GoDaddy, confirmed by Cody |
+| Any deliberate HubSpot integration | Cody and Kevin both confirmed none was set up |
+
+✅ **Fix authorised on the call.** Brett: *"You guys are fine if we break that and
+bring it back to normal."* Cody: *"Yes, please."*
+
+⚠ Not connected to the app-wide lockout of the same morning, though both surfaced
+together. The lockout is recorded in [[architecture/services/auth-service]].
+
+_Source: [[01-09-2026-touchdown]]._
+
+---
+
 ## Action list (open and outstanding work)
 
 ### Content (Skye + Cody + Troy)
