@@ -54,7 +54,36 @@ is frozen and accumulating.
    for this book since"*. `MARKETABLE_GUARD_STALLED` fired **9 times**
    between 16:53Z and 18:52Z.
 4. Both sides stopped updating. The stale orders stayed resting.
-5. It cleared only when the third party's bid moved.
+5. It cleared only when the blocking bid moved.
+
+### ⭐⭐ CORRECTED 30-08 — the window has TWO causes, not one
+
+`inplay-vault-17` resumed **SNT-1 at 17:20:12Z on 29-08**, inside this
+window; the correction came from that session and both halves are now
+evidenced from the maker's and the taker's own logs.
+
+| Phase | Cause | Evidence |
+|---|---|---|
+| **16:07Z → 17:21Z** | **Third-party onset — the original reading HOLDS** | SNT-1 was journal-halted since 22-08 20:44 and that halt swept its live orders. **Zero** taker orders or fills on IPTCNCTH before 17:21:05Z — only `state IPTCNCTH: LIVE (derived)` lines. Verified on the maker VM |
+| **17:21Z → 18:52Z** | ⭐ **HOUSE-TAKER SUSTAIN — the maker and our OWN taker deadlocked** | First taker fill 17:21:05Z. It then walked the bid **40.43 → 40.53 → 40.54 → 40.55** while the maker's ask sat frozen at **40.26**, and sold repeatedly AT **40.40** — the exact level the guard named |
+
+⚠ **Why our own taker can block the maker: the guard nets
+OWN-ACCOUNT only.** `MARKETABLE_REFUSED` reads *"net-of-own"*, and own
+means the MAKER's account. SNT-1 runs on account **4963224393**, a
+different one, so **the house taker is EXTERNAL to the maker's
+guard**. An ask below our own taker's bid is a self-cross at HOUSE
+level that the guard is structurally unable to see — so it refuses,
+for as long as the taker holds the level.
+
+⚠ **Not confined to one book.** It recurs wherever the maker and the
+taker are both active on a live security — which is every live book,
+by design. Opened as **N76**. `inplay-vault-17` reaches the same root
+cause from the reconcile side in MM PR #59: one venue, two
+strategies, no separation.
+
+📝 **The taker did not CREATE the blocking level** — the 40.40 touch
+existed from 16:07Z while the taker was halted. From 17:21Z it fed
+that level rather than starting it.
 
 📝 **`[cancels-through]` did not save it.** George's 15-08 MED-3 ruling —
 a refused book still sends its cancels — IS in the running tree. It did
