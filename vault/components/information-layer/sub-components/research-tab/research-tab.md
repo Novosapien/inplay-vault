@@ -16,6 +16,39 @@ description: "Sub-component spec for the Research Tab — pre-canned and saved c
 
 ---
 
+## ⭐ Update (01-09-2026): subscriptions get a session, a date and a full scope
+
+**Subscriptions are now one of the three routes to in-app revenue** InPlay are
+counting on, alongside programmatic and video ads (recorded in
+[[advertising/advertising]]). They are the only one of the three that is not
+already built, and the Monday touchdown finally scoped what building them means.
+
+**The date.** Cody, unprompted and without being pushed: *"I didn't expect them
+or us to get to them in September, but I would like them as soon as possible.
+So, if that means, you know, beginning of October, then great."* He separately
+asked for the research function and tools *"in there as soon as possible"*. A
+design session was booked for **2 September**.
+
+**George's scope, laid out before anyone committed to a date.** This is larger
+than a paywall and the middle row is the one people forget:
+
+| Piece | What it means |
+|---|---|
+| **Gating definition** | What a free user gets and what a paid user gets. George thinks the shape is roughly understood but it is not written down |
+| **Payment through Apple** | Native store billing, taking the 30% cut. This restates the position already recorded as **R6** in [[delivery/requirement-changes]]; it is not a new change |
+| ⚠ **Another App Store review** | *"as soon as you change big things like payments that's when we're going to need the app store review."* A submission and a wait, on top of the build |
+| **App changes** | Gating for free users, access for paid users, throughout the app |
+| **Upsell placement** | *"how we can motivate people throughout the app to make those subscriptions and it not just be something that's hidden away"* |
+| **Commercial plumbing** | Brett: *"There's billing, there's onboarding, there's upselling, cross-selling"* |
+
+⚠ **The App Store review is the item most likely to move the date.** It is
+outside Novosapien's control, it sits at the end of the build rather than the
+start, and an early-October target has to contain it.
+
+_Source: [[01-09-2026-touchdown]]._
+
+---
+
 ## 1. What Does This Sub-Component Do?
 
 **Functional purpose:**

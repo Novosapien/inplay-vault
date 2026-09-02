@@ -9,6 +9,7 @@ description: "Delivery hub for the InPlay app flight plan, the Novosapien/InPlay
 > **Live copy:** `shared/clients/inplay/flight-plans/inplay-app-flight-plan-{date}-{HHMM}.html` (a new timestamped file per build; prior versions stay as the audit trail)
 > **Master:** `Programming/inplay/inplay-app-flight-plan/` (source + build script)
 > **Companion:** [[requirement-changes|Requirement change register]], the citable record of settled requirements later changed
+> **Internal only:** [[commercial-open-items|Commercial open items]], money promised in conversation with no written instrument behind it. Never goes in the flight plan
 > **Latest change list:** [[change-requests-2026-08-18]], the 22 app requests received on 18 August, classified
 > **Last rehearsal:** [[friends-and-family-2026-08-21]], the overnight session before the offering
 
@@ -112,6 +113,131 @@ than weeks after it opens. The exposure is that **mailbox warming cannot be
 compressed by effort**: if it is not far enough along by the 25th, the honest
 move is to open at lower volume rather than send anyway and spend the domain
 reputation.
+
+## 1 September: the app is locked out, and the tooling that would find it is switched off
+
+A thirty-minute Monday touchdown, two days before the first week of college
+football. Present: Cody, Troy, Jared, Kevin, Max (InPlay) and Brett, George,
+Hasan, Lily (Novosapien). Edwin was absent. It ended early on purpose: Troy
+cancelled the tZERO call that followed so the engineers could go and work the
+outage.
+
+**Two things dominate the week and they compound each other.**
+
+### The app is locked out and nobody knows why
+
+Jared was dropped mid-call. Cody had it from outside the team as well: *"I had a
+few buddies text me this morning saying they were locked out. They can't retrieve
+a password or a code. It's not sent to their email."* Both of them reproduced it.
+
+The second half is the serious half. **Returning login fails, and the recovery
+path fails with it**, so a locked-out user cannot get back in unaided. No cause
+was identified on the call and nobody pretended otherwise. Brett named the
+candidates and stopped: *"It could be a link to persona. It could be
+authentication. It could be anything."* The live record is in
+[[architecture/services/auth-service]].
+
+The date is what makes it urgent. Cody: *"we have two really two days till more
+trading happens, live games happen. Thursday is when week one kicks off and
+they're both ranked games."* Troy added that the app is taking unprompted traffic
+even off game days.
+
+### The Claude account is suspended over an unpaid bill
+
+This is the item that turns a bad morning into a slow week, and it is worth
+recording exactly as it was said. Brett: *"we're just on manual mode at the
+moment because our clause billing accounts have been suspended... it's going to
+take us a little bit longer."*
+
+The number and the ownership: *"I need to pay the Claude bill which is on our
+side. It's our cost, but it is sitting at about $49,000, which I don't have a
+spare $49,000 just to find to pay."* He is waiting on Edwin over payment.
+
+**What it costs in delivery terms, in George's words:** *"usually it's say 10
+people that would be doing it. Obviously, it's two to four of us with AI. So
+there's going to be a bit more time on that now without the AI."* And,
+unprompted: *"Feels like going back to stone tools."*
+
+⚠ **Two things to keep separate.** The suspension did not cause the lockout. But
+every step of finding the cause, and every fix after it, now runs at hand-coded
+speed on a team sized for AI-assisted speed, in the week the first live college
+games arrive. That is the delivery risk, and it is the honest headline for the
+week.
+
+### The commercial position: three routes to revenue, two of them ready
+
+Cody put the pressure on the table without dressing it up: *"everyone from the
+team is stressed like right now we have three three options towards revenue."*
+Inside the app they are programmatic ads, video ads over the field player, and
+subscriptions. **The first two are ready and the decision sits with InPlay:**
+programmatic is configured and running, unoptimised but live, and the video unit
+is built and verified pending a short test pass. Subscriptions need a
+requirement session, booked for 2 September. Full record in
+[[advertising/advertising]] and
+[[information-layer/sub-components/research-tab/research-tab]].
+
+Cody's timing on subscriptions, offered without being pushed: not expected in
+September, early October acceptable.
+
+### Brett named how the flight plan priorities were set, and asked to redo them
+
+Recorded because it is candid and because it changes how the next plan should be
+built. On Cody's list of asks: *"I think I've got most of that tracked in the
+flight plan"*, then, on the priorities: *"because I just went, 'Hey, AI, what do
+you think?' based on the conversations that we've had. So, let's give it the
+right priorities."*
+
+He asked for two sessions:
+
+1. A **priority session**, loading Cody's list into the flight plan properly.
+2. A **requirement session of about ninety minutes**, walking every user journey
+   and mapping the components before any build. His reasoning: *"it gives it a
+   way better chance if we do an hour and a half session work through in detail
+   every single user journey kind of map it all out and then we load it up then
+   it works really really well."*
+
+### The Slack sweep is manual, and the client thought it was not
+
+Troy raised it as an assumption InPlay have been operating on: *"I know we keep
+sending you stuff one off in the Slack, so we assume that's being picked up by
+AI."*
+
+Brett corrected it honestly: *"I do that once a week. I take everything that's in
+the chat and actually manually put it into the vault. So if we do find stuff that
+we logged in the chat and it hasn't been picked up, it might be because of
+that... it's just a manual, me remembering to do it at the moment."*
+
+⚠ **This is a process gap with a client expectation attached to it.** Items sent
+in Slack are being treated by the client as logged. They are logged weekly, by
+memory. It should be fixed before the requirement sessions rather than after,
+because those sessions will generate exactly this kind of traffic.
+
+### The market maker got its first real client verdict, and it is about liquidity
+
+Three days of live NCAA trading produced a coherent critique rather than a list
+of complaints. Troy's rule: **a book must never be empty, not even for an
+instant.** George confirmed the momentary gap is by design and named the venue
+constraint behind it. George separately raised the structural gap himself: the
+maker prices off the win probability alone and behaves the same whether a
+thousand or ten thousand people are trading. Both are recorded in
+[[market-maker/decisions]] and opened as `N77` and `N78`.
+
+⚠ **The 20 August size cut is now being described back to us as a defect.** The
+parameters are doing exactly what they were set to do, at the client's own ask.
+Recorded in [[delivery/requirement-changes]] as `A11` and `A12`.
+
+### Smaller items with owners
+
+- **The website's www address is broken.** `inplayglobal.com` works,
+  `www.inplayglobal.com` does not, and HubSpot looks responsible for the changed
+  record. Cody authorised the fix on the call. See
+  [[inplay-global-website/inplay-global-website]].
+- **The agency's tester still has no TestFlight build**, and is double-blocked
+  behind the outage.
+- **The admin panel is being extended** so Cody can create groups and edit share
+  codes himself rather than pinging Hasan across timezones.
+- **The tZERO call was cancelled** with nothing outstanding on their side. Rob
+  was away for an evangelist event.
 
 ## 28 August: the day before the first live games
 
@@ -494,7 +620,7 @@ sign of engagement rather than failure.
 
 ## Key dates it currently tracks
 
-- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · **26 Aug (Wed) IPO window closes · 27 Aug (Thu) 09:30 ET NCAA secondary trading opens** (time set 26-08; KYC layer now removed) · 29 Aug first games, 138 teams live · market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement.
+- 19 Aug: NCAA price freeze · 22 Aug: **NCAA IPO opens** · **26 Aug (Wed) IPO window closes · 27 Aug (Thu) 09:30 ET NCAA secondary trading opens** (time set 26-08; KYC layer now removed) · 29 Aug first games, 138 teams live · market maker quoting (E25 pending) · 5 to 6 Sep: NFL IPO · 7 Sep: NFL secondary · **3 Sep (Thu): college week one opens, two ranked games** · ~10 Sep: season kickoff · ~13 Jan 27: season close and settlement. ⚠ **Live from 1 Sep: the app is locked out with no identified cause, and Novosapien's AI tooling is suspended over an unpaid bill.**
 
 ## Delivery notes from the 27-07 → 07-08 touchdowns
 

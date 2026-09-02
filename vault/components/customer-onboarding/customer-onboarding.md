@@ -133,6 +133,29 @@ The flow is identical for all four audiences. The differences are **acquisition 
 > _Sources: [[03-08-2026-touchdown]], [[07-08-2026-touchdown]],
 > [[29-07-2026-touchdown]]._
 
+> ### 🔴 Update (01-09-2026): nobody can log in, and the recovery path fails too
+>
+> **The whole login journey is down and the cause is unknown.** Reported on the
+> Monday touchdown, two days before the first week of college football. Jared
+> was dropped from the app mid-call; Cody reproduced it and had it independently
+> from outside the team: *"I had a few buddies text me this morning saying they
+> were locked out. They can't retrieve a password or a code. It's not sent to
+> their email."*
+>
+> **Two failures, and the second is the serious one.** Returning login fails,
+> which is recoverable in principle. But the **recovery path fails as well**: no
+> password reset and no login code arrives by email, so a locked-out user has no
+> route back into their account without help.
+>
+> **No cause was identified on the call.** Brett named the candidates and left it
+> there: *"It could be a link to persona. It could be authentication. It could be
+> anything."* Persona sits inside this component's journey, so it is in scope
+> until ruled out. The live record is in [[architecture/services/auth-service]];
+> ⚠ diagnosis is running by hand because Novosapien's AI tooling was suspended
+> the same morning (see [[delivery/delivery]]).
+>
+> _Source: [[01-09-2026-touchdown]]._
+
 > ### 🔴 Update (28-08-2026): the KYC-less path creates accounts that cannot trade
 >
 > **Found the day before the first live games, and it is the operational

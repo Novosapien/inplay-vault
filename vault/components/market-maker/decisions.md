@@ -14,6 +14,105 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-09-01 - ⭐ the client's verdict on the live maker: the book must never be empty
+
+Monday touchdown, [[01-09-2026-touchdown]]. Edwin absent. Three days of real
+NCAA trading behind it. `N77` and `N78` opened; `N75`, `N76` gain evidence from
+the user's side of the screen.
+
+- ⭐ **THE ASK (Troy, and it is a principle rather than a bug report): a book
+  must never be empty, not even for an instant.** His words: *"there should
+  never be a moment where there's not a bid an offer. Now the bid and offers
+  can widen and tighten. But what I saw... is that whenever you were
+  re-calibrating, you would wipe out all three levels and then you had like a
+  split second of no bid or offer."* Two parts to it: **consistent three
+  levels**, and a recalibration that **widens out then tightens in** rather
+  than clearing and rebuilding. Opened as **`N77`**.
+- 📝 **His reason is structural and it is correct.** *"there's no other market
+  makers there that can support that liquidity. We are the... So, we almost
+  have to operate as like two or three market makers at once because there's
+  no one else leaning on us or we're not leaning on anyone else."* This is the
+  first time the client has argued the single-maker case as a design
+  constraint rather than as a complaint about a number.
+- ✅ **George confirmed the gap is BY DESIGN, not a fault, and named the venue
+  constraint in the same answer:** *"with T0 you can't do a replace in place.
+  It has to be a cancel and then a replace. So we need to work out how are we
+  going to do it where it's either topping up or it's clearance."* Two
+  directions offered, neither chosen: a topping-up design, or make the cycle
+  fast enough that the gap stops mattering.
+- ⚠ **`N77` IS `N75` seen from the outside.** The 23-07 ordering rules promoted
+  on 30-08 (retreating side first, cancels before creates at overlapping
+  prices, micro-barrier only on the specific orders an advance would cross)
+  are the design that answers Troy's ask. **They should be settled together.**
+  What `N77` adds that `N75` does not carry: an explicit **never-empty**
+  invariant, which is stronger than "do not self-cross" and may not fall out
+  of the ordering rules on its own.
+- 📝 **The user-visible cost has a name now, and the name collides with ours.**
+  Troy: a market order takes a partial fill, *"then the book would reset. So in
+  that reset in that cancel replace the liquidity is actually more **phantom
+  liquidity** because it's not there and it's in the process of being cancel
+  replaced."* ⚠ **This is NOT `N41`'s phantom**, which is the market-data feed
+  showing a touch that does not exist. Troy's phantom is the ordinary
+  cancel-replace window, working as built. Keep the two apart in writing or the
+  register becomes unreadable.
+- 📝 **Jared's measurement, offered independently:** *"there was not actually a
+  single time where I had an order of more than I would say 50,000 that fully
+  filled."* Troy's response is the honest one: at 550 a rung there was never
+  that much liquidity to take.
+- ⭐⭐ **`N78`, AND GEORGE RAISED IT AGAINST HIS OWN MACHINE:** the maker
+  *"needs more variables in order to determine levels and quantity because...
+  it needs to take into account maybe trading volumes during the game. And then
+  expanding out maybe the quantity based on the number of participants in the
+  market."* Today: *"the quantity is random within certain bounds. The levels
+  are almost completely random"*, and the only real input is Sportradar's
+  probability, *"which are more deterministic"*. The consequence he stated
+  himself: *"there could be a thousand users or 10,000 users, the market maker's
+  still going to be functioning in more or less the same way, by design."*
+  ⚠ **He put the call to Edwin**, so this is an ask, not a ruling.
+- 📝 **The scale case is a real game, not a hypothetical.** Jared named Hawaii
+  against Stanford at the weekend: Stanford led by a lot, Hawaii came back,
+  Stanford won it in the last minute. Massive price movement, and the game
+  everybody would have been in, while the quiet games ran fine. Sizing off
+  participation is exactly what would have carried it.
+- ⚠ **THE SIZE SQUASH IS NOW A CLIENT-VISIBLE OUTCOME, and George said so on
+  the call.** His history, verbatim: *"before... it was minimum three levels,
+  maximum six levels with everything in tranches of 500 with a bit of
+  randomization in with the maximum amount of quantity being 10 to 15,000. Then
+  I think everyone wanted it squashed right down. So I think the max quantity
+  per side is between 500 to I need to double check that."* And the
+  consequence: *"getting a thousand filled on a market order is pretty much not
+  going to happen unless it's coming from other people apart from the market
+  maker."* That is `base_size` **550** (Edwin's ask 3, 20-08) and `levels_range`
+  **1 to 3** (`CFG-0045`, 27-08) behaving exactly as configured. ⚠ **Nothing is
+  broken here. The parameters are doing what they were set to do, and the
+  people who asked for the cut are now describing its effect as a defect.**
+  Recorded in [[delivery/requirement-changes]] as `A11` and `A12`.
+- 📝 **Troy questioned the update frequency and explicitly left it with Edwin:**
+  *"I still think the market maker's updating too frequently. But that's
+  Edwin's discretion... I missed the market so many times because every time I
+  was going to hit the market or lift the market the market maker algo was
+  resetting."* ⚠ Worth holding against the 30-08 finding that the publisher's
+  real poll is **1.16 s** against an SR source that moves every ~7 s: the
+  perceived churn may be the 500 ms **quote** pulse rather than the valuation
+  rate, and those are separately tunable.
+- 📝 **UNCC had no bid for a stretch on Saturday**, hit by both Cody and Edwin.
+  George, marking it unfinished: *"there was a criteria in one of the
+  constitutional documents which was basically like if this happens then do
+  that. Which I think we need to loosen a bit. But rather than me giving a
+  half-arsed answer... properly going to investigate it."* He noted the saving
+  grace: *"it kind of fortunately only does it for one market and not the whole
+  market."* ⚠ **Same shape as `IPTCNCTH` on 29-08**: the R-Q09 marketable guard
+  refusing correctly against a touch and holding one book while it does.
+  Recorded against `N75` and `N76`, not opened as a third item.
+- ✅ **One thing that went right, recorded because the register should show
+  it:** Cody on the weekend when the book was healthy, *"when it was working, I
+  was going on both sides relatively seamlessly. So I thought that was good for
+  that game."*
+- ⚠ **NOTHING HERE GETS WORKED THIS WEEK.** The app is locked out for all users
+  with no identified cause, and Novosapien's AI tooling is suspended over an
+  unpaid bill, so the team is diagnosing by hand. Troy cancelled the same-day
+  tZERO call to free them up. See [[delivery/delivery]].
+
 ## 2026-08-30b — ✅ N74 built · ✅ N75 takes the PROPER fix · ⭐ a Python→Go divergence register is born
 
 George's rulings, same session ·
