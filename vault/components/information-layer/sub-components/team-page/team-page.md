@@ -296,3 +296,69 @@ Leaf node -- no further decomposition needed.
 > wrong undermines confidence in the prices sitting next to it. **A full sweep of
 > all 138 NCAA teams is worth doing rather than fixing the four that were
 > reported.**
+
+
+> ### 🔴 Update (02-09-2026): Jared's full reference-data list, and it is not four items
+>
+> The 28-08 note above expected _"probably 15 others"_. Jared has now supplied the
+> list and it runs to **22 corrections across 21 teams**, plus one type-size fix.
+> **Verified against `inplay-app/data/teams.ts` on 2 September: every item below is
+> still wrong in the shipped data.** No commit on any branch, and no uncommitted
+> work, addresses any of them.
+>
+> **Abbreviations (14).** The pattern is that the app carries the school's
+> generic or athletic-department code where the sport uses a different one.
+>
+> | Team | Currently shows | Should be |
+> |---|---|---|
+> | Ball State | `BSU` | **`BALL`** |
+> | Buffalo Bulls | `BUFB` | **`BUFF`** |
+> | Charlotte | `CHAR` | **`CLT`** |
+> | Connecticut | `UCON` | **`CONN`** |
+> | Georgia Southern | | **`GASO`** |
+> | Kennesaw State | | **`KENN`** |
+> | Louisiana Lafayette | | **`UL`** |
+> | Massachusetts | `UMAS` | **`MASS`** |
+> | Miami (OH) | | **`M-OH`** |
+> | Missouri State | | **`MOST`** |
+> | New Mexico | `NM` | **`UNM`** |
+> | South Alabama | | **`USA`** |
+> | Southern Miss | | **`USM`** |
+> | Temple | | **`TEM`** |
+> | Tulsa | | **`TLSA`** |
+> | Utah State | | **`USU`** |
+>
+> **Colours (6).** These are not shades, they are the wrong colour family, which
+> is why they read as errors rather than as approximations.
+>
+> | Team | Currently shows | Should be |
+> |---|---|---|
+> | Bowling Green | Dark green `#004B23` | **Orange** |
+> | Eastern Michigan | Blue | **Green** |
+> | Louisiana Tech | Red `#CB333B` | **Blue** |
+> | Nevada | Purple `#4E2683` | **Blue** |
+> | Northern Illinois | | **Red and black** |
+> | Notre Dame | Navy `#0C2340` only | **Navy and gold** |
+>
+> **Two more, neither a colour nor an abbreviation.**
+>
+> - **Notre Dame is listed in the ACC and must read Independent**, including in
+>   the search bar. Carried from the 28-08 note and still open. Notre Dame is
+>   independent in football, which is exactly the fact this audience knows.
+> - **Reduce the font size on BAMA**, which overflows its container.
+>
+> **Why this is worth a sweep rather than 22 tickets.** Every item is the same
+> class of fault: the reference data was loaded once and the sport-specific
+> corrections were never applied. Fixing the reported 22 leaves the rest of the
+> 138 unchecked, and the next Jared-equivalent finds them. **The right shape of
+> work is a full pass over all 138 NCAA teams against an authoritative source**,
+> with abbreviation and primary colour checked per team, and the 32 NFL teams
+> checked at the same time since they share the file.
+>
+> **Where it lives.** `inplay-app/data/teams.ts` is the shipped list, with
+> `inplay-sportradar-service/src/app/data/team_symbols.py` and
+> `inplay-trading-service/sql/002_seed_assets.sql` as the other two places team
+> identity is written down. A sweep that touches only the app leaves the other two
+> disagreeing with it.
+>
+> _Source: Jared Sapirman, written feedback, 2 September 2026._

@@ -238,3 +238,53 @@ This is a utility screen, not a destination -- users visit briefly, get the info
 3. Partial reload -- if referral wallet can't fully reload to 100K, is a partial reload useful or confusing?
 4. Should the reload prompt also appear as a push notification when the user isn't looking at the wallet page?
 5. End-of-season referral wallet reset -- how much warning does the user get?
+
+
+> ### 🔴 Update (02-09-2026): the 25,000 threshold is still in the shipped app
+>
+> **The requirement changed on 18 August and the code did not.** Change request
+> 22, graded and dated on the [[18-08-2026-requirements-review]] call, retired the
+> threshold: a trader may top the trading wallet up **at any time while flat**,
+> **instantly**, **up to 100,000 and never above**. It is recorded as **P6** in
+> [[requirement-changes]].
+>
+> **Verified in code on 2 September.** `RELOAD_THRESHOLD = 25_000` is still
+> present in two places in the app:
+>
+> - `inplay-app/components/trading/TradingContext.tsx`
+> - `inplay-app/app/(tabs)/trading/wallet.tsx`
+>
+> **No commit on any branch, and no uncommitted work, changes either one.** A user
+> today still cannot reach their referral dollars until the trading wallet falls
+> below 25,000.
+>
+> ⚠ **There is a second gap, and it is the more awkward half.** The top-up that
+> *was* built, on 12 August, is an **end-of-day** job: a redemption ledger with a
+> top-up scheduled against the venue calendar. The 18 August decision asks for
+> **instant**. So the mechanism is not merely gated by the wrong number, it runs
+> on the wrong cadence. George's own note on the call was that instant is *easier*
+> than the mechanism that exists, so this is a replacement rather than a
+> parameter change.
+>
+> **What "done" means, in three parts:**
+>
+> 1. **Remove the threshold.** The top-up is available whenever the user is flat,
+>    regardless of balance.
+> 2. **Make it instant.** Not end of day. The referral ledger debits and the
+>    trading wallet credits in the same action.
+> 3. **Hold the cap.** Up to 100,000 and never above, which has never changed and
+>    is Edwin's fairness rule from the 6 May vision workshop: nobody trades
+>    $5,000,000 because they have a big network.
+>
+> It also needs the **flat test** (no open position, and a rule for what happens
+> mid-game), and the **accounting entry** so the referral bank and the trading
+> wallet reconcile.
+>
+> ⚠ **This document, and five others, still describe the old rule.** The 25,000
+> threshold appears in [[referral/referral]], [[trading/trading]], [[vision]],
+> [[components]] and the beginner trading guide as well as here. The guide is the
+> one that matters most, because it is in front of users. **They are stale, not
+> wrong-by-decision**, and they should be swept when the build lands rather than
+> before, so the documentation and the app change together.
+>
+> _Raised by Brett, 2 September 2026, against [[18-08-2026-requirements-review]] item 22._
