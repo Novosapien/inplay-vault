@@ -193,7 +193,7 @@ somewhere durable.
 
 ## 6 · Still open
 
-1. **Does GTD survive the 00:01 ET boundary?** Unproven. DAY definitively does
+1. ~~**Does GTD survive the 00:01 ET boundary?**~~ ✅ **Yes — proved 05-09** (N78): the 32 NFL asks rested GTD across the 6 Sep 00:01 ET boundary and the venue's MD feed showed all 32 at 04:02Z and 11:15Z. Original text: Unproven. DAY definitively does
    not, and the vault's earlier belief that it did was an inference from silence.
    ⚠ **Prove this before an offering is left resting overnight** — one GTD order
    on a `.TEST` twin answers it and costs nothing.
