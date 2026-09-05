@@ -1,5 +1,5 @@
 ---
-description: "How the IPO offering is seeded and rested at tZERO — the two access paths, the four phases, and every trap the 19-08 run found the hard way"
+description: "How the IPO offering is seeded and rested at tZERO — the access paths, the four phases, the 5 Sep procedure beside a live maker, and every trap two runs found"
 ---
 
 # IPO Seeding — the runbook
@@ -51,6 +51,7 @@ same number or one share is on sale at two prices.
 | **The dead-man sweeps the whole offering** | The gateway cancels every resting MM order when the maker heartbeat stops. It arms on a heartbeat OR on a restart that rehydrates orders, then fires after the grace | Raise `MM_DEADMAN_TIMEOUT_MS` and `MM_DEADMAN_BOOT_GRACE_MS` past the window while the maker is stopped. **Restore them before the maker runs again** |
 | **Reading a position costs a VISIBLE order** | There is no query message — Request For Positions exists in neither tZERO spec. Tags 9383/9384 ride any execution report, including a plain `39=0` accept | Rest a 1-share order priced away from the market. ⚠ Participants can see it. Read **before** a window opens, never during |
 | **The cost basis is an instruction, not a setting** | `9382 Eto` and `TxfrCost` may be re-derived by the venue at its own mark — one reversal landed $317.05 off, pricing at the last trade | **Plan on the quantity, read the basis back** |
+| **On an EMPTY book the reads set the price-band anchor** (5 Sep) | The half-price read bids became the sell-side anchor; all 32 asks at the IPO price were refused `Passive SELL … 85 percent ABOVE the ASK(half price)`. A bid cannot move it: a BUY above the ask is *aggressive*, 3% band | Rest a **1-share passive SELL at 0.9 × IPO** (`read_positions.py --side sell --price-frac 0.9`), wait ~4 min, **cancel it** (`cancel_reads.py` — a resting hop counts against `Pos − livS`), rest the ask within seconds. Proper fix: tZERO sets an IPO Reference Price (T-item) |
 
 ---
 
@@ -220,3 +221,24 @@ Recorded because each one is cheap to repeat:
   and were noticed immediately.
 - **Believed the gateway's order count.** It said 170 open while the venue held
   none.
+
+---
+
+## 8 · 5 Sep — an offering beside a LIVE maker (the NFL run)
+
+The 19-08 procedure stops the maker for the whole offering. On 5 Sep the NCAA
+maker had to run while the NFL offering rested. What made that safe, and what
+the run found, is in the session note
+[[market-maker/sessions/2026-09-05-power-up-and-nfl-offering]] and in
+`scripts/ipo/README.md` §5 on `inplay-market-maker@feat/ipo-nfl-offering`:
+
+- Post the offering under a **distinct `userId` and `botId`** on the maker's
+  account. The maker adopts only acks on its own user id; the dead-man sweeps
+  only its own bot. Never `cancel_all`; no gateway restart for the window.
+- Removal is **UEPR** (`set_position.py --mode zero`), never UPT. Then the read,
+  then `--mode target` (Qto = float − activity). On 5 Sep every read returned
+  `9383=0` after the zero, so Qto was the full float.
+- **The anchor trap** (§2, last row) cost the first 32 asks. The hop recipe
+  rested all 32 on the second pass: 28,800,000 shares, $1,836,063,000, GTD
+  `2026-09-07T02:00:00Z`, every accept `39=0` with `9383=900000`.
+
