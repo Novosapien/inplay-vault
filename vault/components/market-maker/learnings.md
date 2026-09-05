@@ -13,6 +13,36 @@ description: "Running log of distilled MM understanding — why SNT-1 exists, th
 
 ---
 
+## 2026-09-05b — a guard that refuses to lie makes a dark window as long as the source's status lag
+
+Two books went dark for nine minutes at the end of their game, twice in one
+Saturday, and every part of the machine did what it was built to do.
+
+**The chain.** The publisher's re-offer keeps the MM's observation clock fresh
+while SR is quiet. The 15-08 guard (`_reoffer_would_mislead`) withholds that
+re-offer when three facts hold at once: the score has moved past the newest
+reading, the book is undecided, and the reading is older than 120 s. That is
+right for a mid-game score, because SR re-prices within seconds. At a game's
+LAST score SR never re-prices. It moves the status to closed instead, and that
+took nine minutes today. So the MM heard silence, the 20 s liveness fuse blew,
+`restriction()` returned SUSPENDED, and the books came back by themselves the
+second the final landed. ⭐ The rule: a guard that chooses "dark" over "wrong"
+makes the dark window exactly as long as the upstream's slowest signal. Measure
+that signal before you choose the grace. Open as N80.
+
+**Where a suspension is written down.** Nowhere in the engine journal. There is
+no market-state transition event. The record is the checker's gauge
+(`journalctl -u snt-halt-check`) and the journal's `valuation_sweep`
+`observations[game_id]` clock, which names the exact second the source went
+quiet. Readings key on `game_id` and `sr:competitor` ids, never on the ticker —
+`src/mm/bindings.py` is the map. The publisher's own words live under
+`resource.type="cloud_run_worker_pool"`, not the API service.
+
+**Alert latency is the floor, not the threshold.** The policy fired 33 s after
+the books had recovered: ~8 min from first violation to page, as the 17-08
+drill measured. A 240 s threshold cannot page faster than that.
+---
+
 ## 2026-08-19 — a library is an assumption, and a corpus can carry a fault
 
 Gate 0-b ran for the first time and found four defects. Three lessons transfer.
