@@ -591,6 +591,12 @@ Measured from reject texts on the real venue (decisions `2026-08-09`).
 | LmtPerc anchor refresh | ~3–5 min, and it FOLLOWS prints | ✅ 08-11 | measured across the four JETS walk hops |
 | LmtPerc reference | can be CROSSED | ⚠ | EAGL observed with BID 145.25 and ASK 77.80 simultaneously → no legal sell price exists on that book at all |
 | DONE_FOR_DAY (39=3) | **never observed** | ⚠ | orders survive the 23:59 ET boundary — see T14; the 22-07 adopted "fact" is contradicted |
+| LmtPerc anchor on an EMPTY book | follows the last RESTING order, per side | ✅ 05-09 | 32 half-price read bids set the sell-side anchor; every ask at the IPO price was refused `Passive SELL … 85 percent ABOVE the ASK(half price)`. The buy side stayed at the stored 20-08 ask |
+| LmtPerc anchor refresh (measured again) | ≤ 3.5 min | ✅ 05-09 | reads 00:28:32Z → asks judged against them at 00:32:09Z; hop 00:37:06Z → ask passed at 00:42:30Z |
+| A BUY above the ask | AGGRESSIVE, 3% band ($50+) | ✅ 05-09 | `Aggressive BUY LmtPrx(77.71) is more than 3 percent ABOVE the ASK(72.88)` — a bid cannot move the anchor |
+| The anchor hop | 1-share passive SELL at 0.9 × IPO | ✅ 05-09 | inside every passive tier (80/85/90%) from a half-price anchor; the ask at the IPO price is then +11% |
+| Sellable while a hop rests | `Pos − livS` counts the 1-share hop | ✅ 05-09 | `You can SELL at most 899999 shares … Pos=900000 livS=1` — cancel the hop, rest within seconds |
+| `UEPRa` payload | carries NO `9383` | ✅ 05-09 | the position reads back only on an order's execution report |
 
 ## Observability + manual orders — the 12-08 spec (`specs/2026-08-12-admin-trading-observability/`)
 

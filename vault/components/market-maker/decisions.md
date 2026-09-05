@@ -14,6 +14,36 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-09-05 — ⭐ the power-up, and the NFL offering rested beside a LIVE maker
+
+Session: [[market-maker/sessions/2026-09-05-power-up-and-nfl-offering]] ·
+scripts `inplay-market-maker@feat/ipo-nfl-offering` (`98eeaea`, `4545ac6`)
+
+- ✅ **2026-09-05a — an offering may rest while the maker runs.** Three
+  mechanics make it safe, all from the gateway source: adoption is by
+  `userId` (a routing key the venue never sees), the dead-man is per `botId`
+  (a bot with no heartbeat arms only on a gateway restart), `cancel_all` is
+  global. Rule: distinct `userId` (`ipo-nfl-user`) and `botId` (`ipo-nfl`) on
+  the maker's account; nobody sends `cancel_all`; no gateway restart for the
+  window. ✎ Extends R-V08 and 26-08's per-bot dead-man.
+- ✅ **2026-09-05b — the anchor hop.** On an EMPTY book the venue's price-band
+  anchor follows the last resting order per side (refresh ≤ 3.5 min). The
+  half-price reads set it; every ask at the IPO price was refused (85% band).
+  A bid cannot move it (aggressive, 3%). A **1-share passive SELL at 0.9 × IPO**
+  can, and its accept carries `9383`. Cancel the hop before the ask
+  (`sellable = Pos − livS`). Until tZERO sets an IPO Reference Price (T-item),
+  this is the procedure — [[market-maker/reference/ipo-seeding-runbook]] §2.
+- ✅ **2026-09-05c — `mm-1` and `snt-1` stay `disabled`.** Both auto-started on
+  the 1 Sep journal at VM boot. Manual starts only; the fresh-journal ceremony
+  every time.
+- ✅ **2026-09-05d — the taker is OFF for Saturday 6 Sep** (George). It booted
+  `AUTO`; the 22-08 reconcile ruling is still unmade (N77).
+- ✅ **2026-09-05e — CFG-0047 / `supervised49`** (prior `supervised48`, heal on,
+  138 NCAA) is the live maker since 00:49Z. 138/138 in 90 s, 0 NFL.
+- ✅ **The NFL offering rests:** 32 × 900,000 at `assets.ipo_ask_price` (read
+  5 Sep; all 32 differ from the 20-08 file), GTD `2026-09-07T02:00:00Z`,
+  positions confirmed 900,000 each by `9383` on 32 accepts.
+
 ## 2026-09-01 - ⭐ the client's verdict on the live maker: the book must never be empty
 
 Monday touchdown, [[01-09-2026-touchdown]]. Edwin absent. Three days of real
