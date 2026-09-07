@@ -36,8 +36,9 @@ George's rulings during the incident ·
 - ✅ **A replace ack that names no order DRAINS** — PR #61, the alien drain's
   rule applied one step earlier: no order id → no exposure this engine owns
   → count (`malformed_acks`), log on the first and every hundredth, skip. The
-  guard runs before the alien check because that check needs the ids. ⏳ Not
-  deployed — a stop/start of the live engine, George's moment.
+  guard runs before the alien check because that check needs the ids. ✅
+  **Deployed 13:26:18Z** on George's "merge it and get it going" —
+  `supervised51` / CFG-0049, under a minute dark.
 - 📝 The reset recipe (18-08, 27-08, 07-09) is now three-for-three and is
   recorded as such in the session note; it depends on the unit being
   manual-start.

@@ -10,7 +10,7 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 > [[market-maker/sessions/2026-08-18-the-cutover-and-the-vm-hang]] (the same shape) ·
 > [[market-maker/sessions/2026-09-05-power-up-and-nfl-offering]] (the run this broke) ·
 > gateway `/health` dead-man record · MM VM serial console
-> **⚠ Ends with:** `mm-1` LIVE on **`supervised50` / CFG-0048**, 138 NCAA books, `Restart=no`,
+> **⚠ Ends with:** `mm-1` LIVE on **`supervised51` / CFG-0049** (PR #61 deployed), 138 NCAA books, `Restart=no`,
 > NFL secondary opening 09:30 ET with **no maker quote on the 32 NFL books** (George's call pending).
 
 ## What we did
@@ -35,10 +35,13 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 - **`Restart=no` on `mm-1`** (drop-in
   `/etc/systemd/system/mm-1.service.d/no-auto-restart.conf`, daemon-reload
   only — the running engine untouched). See Decisions.
-- **The crash fixed in code — PR #61**, not deployed: `_apply_replace` drains
-  a replace ack that names no order instead of raising. 1,330 tests, ruff +
-  mypy clean, three new tests. Deploying is a stop/start of the live engine,
-  so it waits for George's moment.
+- **The crash fixed in code — PR #61, merged `main@06c1735` and DEPLOYED
+  13:26:18Z** (George: "merge it and get it going"): `_apply_replace` drains a
+  replace ack that names no order instead of raising. 1,330 tests, ruff + mypy
+  clean, three new tests. Cutover: stop 13:25:51Z → dead-man swept → VM
+  checkout `mm-main-9aacef4` by bundle → **`supervised51` / CFG-0049 / prior
+  `supervised50`** → replayed 1, heal 0, 548/138 standing; gateway 553 orders /
+  138 books, heartbeats 21,349. Under a minute dark, 09:26 ET on a Monday.
 
 ## What we learned
 
@@ -113,8 +116,7 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 1. **George's NFL call** — 138 or 170. If 170: `MM_SECURITIES` + the 170
    supervised-inputs file (`[exact-set]`), CFG-0049, fresh journal, and note
    IPTCRAMS has no Sportradar binding.
-2. **Deploy PR #61** at a quiet moment (stop → dead-man → start on
-   `supervised51` / CFG-0049 or -0050).
+2. ~~Deploy PR #61~~ — done 13:26Z.
 3. **N80** — decide how the journal is bounded before the next crash makes
    this note a fourth copy.
 4. Wire `snt-halt-check`'s `maker=ABSENT` into an alert someone receives.
