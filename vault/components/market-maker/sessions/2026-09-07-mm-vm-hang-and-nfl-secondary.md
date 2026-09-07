@@ -10,8 +10,8 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 > [[market-maker/sessions/2026-08-18-the-cutover-and-the-vm-hang]] (the same shape) ·
 > [[market-maker/sessions/2026-09-05-power-up-and-nfl-offering]] (the run this broke) ·
 > gateway `/health` dead-man record · MM VM serial console
-> **⚠ Ends with:** `mm-1` LIVE on **`supervised51` / CFG-0049** (PR #61 deployed), 138 NCAA books, `Restart=no`,
-> NFL secondary opening 09:30 ET with **no maker quote on the 32 NFL books** (George's call pending).
+> **⚠ Ends with:** `mm-1` LIVE on **`supervised52` / CFG-0050**, **all 170 books** (PR #61 deployed), `Restart=no`;
+> NFL secondary opened 09:30 ET with no maker until **12:24 ET**, when George's "the mm is not running" put it on the 32 NFL books.
 
 ## What we did
 
@@ -94,9 +94,14 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 - ✅ **`mm-1` does not auto-restart** (`Restart=no`, George 07-09, extending
   his 05-09 "manual starts only"). A crash leaves the engine DOWN; the
   dead-man sweeps the book in 10 s; a human starts it on a fresh journal.
-- ✅ **Recovery on 138 NCAA books, not 170** — the 27-08 ruling stands until
-  George says otherwise; the NFL question was put to him twice and not
-  answered before the open.
+- ✅ **Recovery on 138 NCAA books first; then 170 at 16:24Z.** The 27-08 ruling
+  stood through the open; George's "the mm is not running" (12:18 ET, looking at
+  NFL) was the go. NFL secondary traded maker-less 09:30–12:24 ET: one market
+  order refused `NO_MARKET` (409) at 13:31Z, no fills seen.
+- ✅ **The 170 inputs file is `/home/georgewestbrook/supervised-inputs-170.json`**
+  (20 Aug) — George: "there is an input file for the NFL books"; found via the
+  env backups' `MM_SUPERVISED_INPUTS` history. NFL rows are Edwin's 11 Aug
+  numbers; NCAA rows identical to the 138 file.
 - ✅ **The malformed-ack drain is the fix shape** (PR #61) — the same rule as
   the alien drain: no order id → no exposure → count, log, skip.
 
@@ -113,9 +118,9 @@ description: "The 6–7 Sep maker outage — a KeyError crash, an auto-restart i
 
 ## Next
 
-1. **George's NFL call** — 138 or 170. If 170: `MM_SECURITIES` + the 170
-   supervised-inputs file (`[exact-set]`), CFG-0049, fresh journal, and note
-   IPTCRAMS has no Sportradar binding.
+1. ~~George's NFL call~~ — 170 since 16:24Z (CFG-0050 / `supervised52`). Watch
+   the NFL books' first quotes against the IPO prices paid; IPTCRAMS has no
+   Sportradar binding.
 2. ~~Deploy PR #61~~ — done 13:26Z.
 3. **N80** — decide how the journal is bounded before the next crash makes
    this note a fourth copy.

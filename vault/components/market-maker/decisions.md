@@ -29,10 +29,14 @@ George's rulings during the incident ·
   for 29 hours with stale quotes resting. **Down is the safe failure; slow is
   the dangerous one.** ⚠ Reads with the 01-09 verdict, not against it: a
   book that is stale for a day is the emptier book.
-- ✅ **Recovered on 138 NCAA books.** The 27-08 ruling ("the 32 NFL books
-  carry no maker quote until George says otherwise") stands; the NFL question
-  was put to George before the 09:30 ET open and not answered. Config:
-  `supervised50` / **CFG-0048** / `MM_PRIOR_RUN_DIR=supervised49` / heal on.
+- ✅ **Recovered on 138 NCAA books; then ✂ the 27-08 NFL ruling ends — the
+  maker quotes all 170 from 16:24Z.** "The 32 NFL books carry no maker quote
+  until George says otherwise" — he said otherwise at 12:18 ET ("the mm is not
+  running", looking at NFL). Inputs: `supervised-inputs-170.json` (20 Aug,
+  Edwin's 11 Aug NFL numbers). Config: `supervised52` / **CFG-0050** /
+  `MM_PRIOR_RUN_DIR=supervised51`. ⚠ Book-visible: NFL RP seeds at model EV,
+  not the IPO price paid; where they differ, the first quotes sit that far from
+  buyers' cost.
 - ✅ **A replace ack that names no order DRAINS** — PR #61, the alien drain's
   rule applied one step earlier: no order id → no exposure this engine owns
   → count (`malformed_acks`), log on the first and every hundredth, skip. The
