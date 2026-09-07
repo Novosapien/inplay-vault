@@ -14,6 +14,42 @@ Format: newest first. ✅ decision · ✂ supersession of a standard · ⚠ cave
 
 ---
 
+## 2026-09-07 — ✅ `mm-1` does not auto-restart · ✅ recovery on 138 · ✅ the malformed-ack drain (PR #61)
+
+George's rulings during the incident ·
+[[market-maker/sessions/2026-09-07-mm-vm-hang-and-nfl-secondary]] ·
+`inplay-market-maker` PR #61
+
+- ✅ **`mm-1` does not auto-restart.** `Restart=no` via
+  `/etc/systemd/system/mm-1.service.d/no-auto-restart.conf`, extending the
+  05-09 "manual starts only". A crash leaves the engine DOWN, the gateway
+  dead-man sweeps the book within 10 s, and a human starts it on a fresh
+  journal. The alternative was demonstrated 6–7 Sep: `Restart=on-failure`
+  re-started a crashed engine into a 13 GB journal replay and the VM crawled
+  for 29 hours with stale quotes resting. **Down is the safe failure; slow is
+  the dangerous one.** ⚠ Reads with the 01-09 verdict, not against it: a
+  book that is stale for a day is the emptier book.
+- ✅ **Recovered on 138 NCAA books; then ✂ the 27-08 NFL ruling ends — the
+  maker quotes all 170 from 16:24Z.** "The 32 NFL books carry no maker quote
+  until George says otherwise" — he said otherwise at 12:18 ET ("the mm is not
+  running", looking at NFL). Inputs: `supervised-inputs-170.json` (20 Aug,
+  Edwin's 11 Aug NFL numbers). Config: `supervised52` / **CFG-0050** /
+  `MM_PRIOR_RUN_DIR=supervised51`. ⚠ Book-visible: NFL RP seeds at model EV,
+  not the IPO price paid; where they differ, the first quotes sit that far from
+  buyers' cost.
+- ✅ **A replace ack that names no order DRAINS** — PR #61, the alien drain's
+  rule applied one step earlier: no order id → no exposure this engine owns
+  → count (`malformed_acks`), log on the first and every hundredth, skip. The
+  guard runs before the alien check because that check needs the ids. ✅
+  **Deployed 13:26:18Z** on George's "merge it and get it going" —
+  `supervised51` / CFG-0049, under a minute dark.
+- 📝 The reset recipe (18-08, 27-08, 07-09) is now three-for-three and is
+  recorded as such in the session note; it depends on the unit being
+  manual-start.
+
+---
+
+
 ## 2026-09-01 - ⭐ the client's verdict on the live maker: the book must never be empty
 
 Monday touchdown, [[01-09-2026-touchdown]]. Edwin absent. Three days of real
