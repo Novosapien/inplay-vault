@@ -55,8 +55,13 @@ writer:
   below 40%. Hard cgroup caps (`CPUQuota=25%`, reads 25 MB/s) protect the
   heartbeat. The alert "MM journal disk /var/lib/mm > 80%" pages on high
   use, or when the gauge is absent for 8 h. ⚠ The offload cannot move the
-  LIVE journal (~5.5 GB/day). Only a shape-B cutover retires the live
-  journal. The old `mm-journal-prune` (delete-only, never enabled) is in
+  LIVE journal (~5.7 GB/day). Only a shape-B cutover retires the live
+  journal, so since 28-09 `mm-daily-cutover.timer` does one every night at
+  23:59:20 ET, in the venue's closed window. It skips a night when any book
+  is live (R11) and rolls back to the old journal if the boot does not show
+  `anchor seed: JOURNALLED` and `book standing`. ⚠ `realized_pnl_total`
+  now starts again from zero each night. Alert: "MM-1 nightly cutover
+  FAILED or did not run". Runbook: `deploy/MM-DAILY-CUTOVER.md`. The old `mm-journal-prune` (delete-only, never enabled) is in
   `/root/retired-units/`. Runbook: `inplay-market-maker/deploy/MM-JOURNAL-OFFLOAD.md`.
 - **Restart posture:** systemd `Restart=always` with a rate limit (~5 in
   60 s then stay down), alarm on repeats. Replay makes restart safe;
